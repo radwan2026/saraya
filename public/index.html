@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>الضوء الأحمر الضوء الأخضر</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- المسرح بحجم ثابت 1080×1920 ويتم تكبيره/تصغيره ليناسب النافذة -->
+  <div id="stage">
+    <div class="bg"></div>
+
+    <!-- الشريط العلوي -->
+    <header class="top">
+      <div class="title">
+        <span class="light green">●</span> الضوء الأخضر <span class="sep">/</span> الأحمر <span class="light red">●</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><small>الجولة</small><b id="round">0</b></div>
+        <div class="stat"><small>اللاعبون</small><b id="alive">0</b></div>
+        <div class="stat"><small>خرجوا</small><b id="out">0</b></div>
+      </div>
+    </header>
+
+    <!-- الدمية -->
+    <section class="doll-area">
+      <div id="doll" class="doll back">
+        <div class="doll-hair"></div>
+        <div class="doll-head">
+          <div class="doll-face">
+            <i class="eye l"></i><i class="eye r"></i>
+            <i class="mouth"></i>
+          </div>
+          <div class="doll-back-hair"></div>
+        </div>
+        <div class="doll-body"></div>
+      </div>
+      <div id="dollNumber" class="doll-number hidden">
+        <small>رقم الدمية</small>
+        <b>?</b>
+      </div>
+      <div id="banner" class="banner">اكتب رقماً للانضمام</div>
+      <div id="timer" class="timer hidden"><span>0</span></div>
+    </section>
+
+    <!-- الملعب -->
+    <section class="field" id="field">
+      <div class="finish-line"><span>🏁 خط النهاية</span></div>
+      <div class="start-line"><span>البداية</span></div>
+      <div class="ticks" id="ticks"></div>
+      <div id="tokens"></div>
+      <div id="fieldMsg" class="field-msg"></div>
+    </section>
+
+    <!-- المتصدرون -->
+    <aside class="leaders">
+      <h3>المتصدرون</h3>
+      <ol id="leaders"></ol>
+    </aside>
+
+    <!-- التعليمات وبطاقات الانضمام -->
+    <footer class="bottom">
+      <div id="cards" class="cards"></div>
+      <div class="howto">
+        <div class="howto-main">اكتب رقماً من <b id="minN">1</b> إلى <b id="maxN">10</b> في التعليقات للانضمام!</div>
+        <div class="howto-rule">رقمك <b>≥</b> رقم الدمية = <span class="bad">تخرج</span> &nbsp;•&nbsp; رقمك <b>&lt;</b> رقم الدمية = <span class="good">تتقدّم برقمك</span></div>
+      </div>
+    </footer>
+
+    <!-- شاشة الفوز -->
+    <div id="winner" class="overlay hidden">
+      <canvas id="confetti"></canvas>
+      <div class="win-box">
+        <div class="crown">👑</div>
+        <div class="win-avatar"><img id="winAvatar" alt=""></div>
+        <div class="win-label">الفائز!</div>
+        <div id="winName" class="win-name"></div>
+        <div id="winUser" class="win-user"></div>
+        <div id="winInfo" class="win-info"></div>
+      </div>
+    </div>
+
+    <!-- لا يوجد فائز -->
+    <div id="gameover" class="overlay dark hidden">
+      <div class="go-box">
+        <div class="go-icon">💀</div>
+        <div class="go-title">خرج الجميع!</div>
+        <div class="go-sub">لا يوجد فائز هذه المرة — لعبة جديدة قريباً</div>
+      </div>
+    </div>
+
+    <div id="conn" class="conn hidden">جارٍ الاتصال بالخادم...</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/game.js"></script>
+</body>
+</html>

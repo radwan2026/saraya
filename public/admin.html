@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة التحكم</title>
+  <style>
+    :root { --bg:#0f1220; --card:#181c30; --line:#2a3050; --ink:#eef; --muted:#9aa3c7; --pink:#ff2e7e; --teal:#18c7a4; --red:#ff4d4d; --gold:#ffd23f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+    main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+    h1 { margin: 0; padding: 16px; font-size: 22px; max-width: 1200px; margin-inline: auto; }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+    h2 { margin: 0 0 12px; font-size: 17px; color: var(--gold); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    input { flex: 1; min-width: 120px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0b0e1a; color: var(--ink); font-size: 15px; }
+    button { padding: 10px 14px; border-radius: 10px; border: 0; background: var(--line); color: var(--ink); font-size: 15px; font-weight: 700; cursor: pointer; }
+    button:hover { filter: brightness(1.2); }
+    button.primary { background: var(--pink); }
+    button.teal { background: var(--teal); color: #032; }
+    button.danger { background: var(--red); }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 13px; font-weight: 700; background: var(--line); }
+    .pill.connected, .pill.on { background: var(--teal); color: #032; }
+    .pill.connecting { background: var(--gold); color: #321; }
+    .pill.error { background: var(--red); }
+    .muted { color: var(--muted); font-size: 14px; }
+    .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 15px; }
+    .kv b { color: var(--teal); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+    td.n { overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    tr.dead td { opacity: .45; text-decoration: line-through; }
+    .scroll { max-height: 360px; overflow: auto; }
+    .log div { padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+    .log .r { font-size: 12px; padding: 1px 6px; border-radius: 6px; background: var(--line); margin-inline-start: 6px; }
+    .log .r.joined { background: var(--teal); color: #032; }
+    .log .r.changed { background: #4363d8; }
+    a { color: var(--teal); }
+    code { background: #0b0e1a; padding: 2px 6px; border-radius: 6px; direction: ltr; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>🎮 لوحة تحكم لعبة الضوء الأحمر / الأخضر</h1>
+  <main>
+    <section>
+      <h2>اتصال تيك توك لايف</h2>
+      <div class="row">
+        <input id="username" placeholder="اسم الحساب بدون @" dir="ltr">
+        <button class="primary" id="connect">اتصال</button>
+        <button id="disconnect">قطع</button>
+      </div>
+      <div class="row"><span id="ttPill" class="pill">غير متصل</span> <span id="ttMsg" class="muted"></span></div>
+      <p class="muted">شاشة اللعبة لإضافتها في OBS / LIVE Studio: <code id="overlayUrl"></code><br>
+        خلفية شفافة: أضف <code>?transparent=1</code> — بدون صوت: <code>?sound=0</code></p>
+    </section>
+
+    <section>
+      <h2>التحكم في اللعبة</h2>
+      <div class="kv" style="margin-bottom:12px">
+        <span>المرحلة</span><b id="phase">-</b>
+        <span>الجولة</span><b id="round">0</b>
+        <span>اللاعبون (أحياء/الكل)</span><b id="counts">0/0</b>
+        <span>آخر رقم للدمية</span><b id="doll">-</b>
+      </div>
+      <div class="row">
+        <button class="primary" id="start">▶ ابدأ اللعبة الآن</button>
+        <button class="teal" id="skip">⏭ تخطّي المرحلة</button>
+        <button class="danger" id="reset">⟲ لعبة جديدة</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>وضع التجربة (Demo)</h2>
+      <div class="row"><span>الحالة:</span> <span id="demoPill" class="pill">متوقف</span></div>
+      <div class="row">
+        <button class="teal" id="demoOn">تشغيل اللاعبين الوهميين</button>
+        <button id="demoOff">إيقاف</button>
+      </div>
+      <div class="row">
+        <input id="botCount" type="number" min="1" max="100" value="10" style="max-width:100px">
+        <button id="addBots">+ أضف لاعبين وهميين</button>
+      </div>
+      <h2 style="margin-top:16px">محاكاة تعليق يدوي</h2>
+      <div class="row">
+        <input id="fakeName" placeholder="الاسم" value="مختبر">
+        <input id="fakeText" placeholder="التعليق (مثلاً 4)" style="max-width:140px">
+        <button id="sendFake">إرسال</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>آخر التعليقات</h2>
+      <div id="log" class="log scroll"></div>
+    </section>
+
+    <section style="grid-column: 1 / -1">
+      <h2>اللاعبون</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>#</th><th>الاسم</th><th>الحساب</th><th>الرقم</th><th>الموقع</th><th>الحالة</th></tr></thead>
+          <tbody id="players"></tbody>
+        </table>
+      </div>
+      <h2 style="margin-top:16px">آخر الفائزين</h2>
+      <div id="history" class="muted">لا يوجد بعد</div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const socket = io();
+    const PHASES = { lobby: 'الردهة (انضمام)', choosing: 'الضوء الأخضر (اختيار)', doll: 'الدمية تلتفت', result: 'نتيجة الجولة', winner: 'شاشة الفوز', gameover: 'خرج الجميع' };
+    const RESULTS = { joined: 'انضم', changed: 'غيّر رقمه', ignored: 'تجاهل', closed: 'الانضمام مغلق', full: 'ممتلئ', eliminated: 'خارج اللعبة' };
+    const TT = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل', error: 'خطأ' };
+
+    $('overlayUrl').textContent = `${location.origin}/`;
+
+    $('connect').onclick = () => socket.emit('admin:connect', $('username').value);
+    $('disconnect').onclick = () => socket.emit('admin:disconnect');
+    $('start').onclick = () => socket.emit('admin:start');
+    $('skip').onclick = () => socket.emit('admin:skip');
+    $('reset').onclick = () => { if (confirm('بدء لعبة جديدة ومسح اللاعبين الحاليين؟')) socket.emit('admin:reset'); };
+    $('demoOn').onclick = () => socket.emit('admin:demo', true);
+    $('demoOff').onclick = () => socket.emit('admin:demo', false);
+    $('addBots').onclick = () => socket.emit('admin:addBots', Number($('botCount').value));
+    const sendFake = () => { socket.emit('admin:comment', { name: $('fakeName').value, text: $('fakeText').value }); $('fakeText').value = ''; };
+    $('sendFake').onclick = sendFake;
+    $('fakeText').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendFake(); });
+
+    socket.on('tiktokStatus', (s) => {
+      $('ttPill').textContent = TT[s.state] || s.state;
+      $('ttPill').className = `pill ${s.state}`;
+      $('ttMsg').textContent = s.message || '';
+      if (s.username && !$('username').value) $('username').value = s.username;
+    });
+    socket.on('demoStatus', (d) => {
+      $('demoPill').textContent = d.running ? 'يعمل' : 'متوقف';
+      $('demoPill').className = `pill ${d.running ? 'on' : ''}`;
+    });
+
+    function logLine(c) {
+      const d = document.createElement('div');
+      const src = c.source === 'tiktok' ? '📱' : c.source === 'demo' ? '🤖' : '⌨️';
+      d.textContent = `${src} ${c.nickname}: ${c.text}`;
+      const r = document.createElement('span');
+      r.className = `r ${c.result}`;
+      r.textContent = RESULTS[c.result] || c.result;
+      d.appendChild(r);
+      return d;
+    }
+    socket.on('commentLog', (list) => { $('log').replaceChildren(...list.map(logLine)); });
+    socket.on('comment', (c) => {
+      const log = $('log');
+      log.prepend(logLine(c));
+      while (log.children.length > 50) log.lastChild.remove();
+    });
+
+    socket.on('state', (s) => {
+      $('phase').textContent = PHASES[s.phase] || s.phase;
+      $('round').textContent = s.round;
+      $('counts').textContent = `${s.aliveCount}/${s.players.length}`;
+      $('doll').textContent = s.dollNumber ?? '-';
+      const rows = [...s.players].sort((a, b) => (b.alive - a.alive) || b.position - a.position || a.order - b.order).map((p) => {
+        const tr = document.createElement('tr');
+        if (!p.alive) tr.className = 'dead';
+        const cells = [p.order, p.nickname, '@' + p.uniqueId, p.number, `${p.position}/${s.trackLength}`, p.alive ? 'في اللعبة' : `خرج (جولة ${p.eliminatedRound})`];
+        cells.forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 1) td.className = 'n'; tr.appendChild(td); });
+        return tr;
+      });
+      $('players').replaceChildren(...rows);
+      $('history').textContent = s.history.length
+        ? s.history.map((w) => `🏆 ${w.nickname} (@${w.uniqueId}) — ${w.rounds} جولات`).join('  •  ')
+        : 'لا يوجد بعد';
+    });
+  </script>
+</body>
+</html>
