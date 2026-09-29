@@ -99,7 +99,7 @@ export class TikTokSource extends EventEmitter {
     } catch (err) {
       if (this.connection !== conn) return;
       const msg = err?.message || String(err);
-      const offline = /offline|not live|UserOffline|Room ID/i.test(msg) || err?.name === 'UserOfflineError';
+      const offline = /offline|online|not live|UserOffline|Room ID/i.test(msg) || err?.name === 'UserOfflineError';
       this.setStatus('error', offline
         ? `الحساب @${this.username} ليس في بث مباشر الآن — إعادة المحاولة بعد 10 ثوانٍ`
         : `فشل الاتصال: ${msg} — إعادة المحاولة بعد 10 ثوانٍ`);
