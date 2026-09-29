@@ -78,7 +78,12 @@ export class TikTokSource extends EventEmitter {
     conn.on(WebcastEvent.CHAT, (data) => {
       const user = normalizeUser(data.user || data);
       if (!user.id) return;
-      this.emit('comment', { user, text: commentText(data) });
+      const text = commentText(data);
+      if (!text && !this.warnedEmpty) {
+        this.warnedEmpty = true;
+        console.warn('[TikTok] وصل تعليق بدون نص. الحقول الموجودة:', Object.keys(data || {}).join(', '));
+      }
+      this.emit('comment', { user, text });
     });
 
     conn.on(ControlEvent.DISCONNECTED, () => {
