@@ -12,6 +12,11 @@ function pickAvatar(u) {
   return '';
 }
 
+/** نص التعليق: الإصدار 2 من المكتبة يضعه في content، والإصدارات القديمة في comment */
+export function commentText(data = {}) {
+  return String(data.content ?? data.comment ?? '');
+}
+
 export function normalizeUser(u = {}) {
   const uniqueId = u.uniqueId || u.displayId || '';
   const id = String(u.userId || u.id || uniqueId || '');
@@ -73,7 +78,7 @@ export class TikTokSource extends EventEmitter {
     conn.on(WebcastEvent.CHAT, (data) => {
       const user = normalizeUser(data.user || data);
       if (!user.id) return;
-      this.emit('comment', { user, text: String(data.comment || '') });
+      this.emit('comment', { user, text: commentText(data) });
     });
 
     conn.on(ControlEvent.DISCONNECTED, () => {
