@@ -83,20 +83,54 @@ tiktok.on('gift', ({ user, gift, count }) => actions.gift(user, gift, count));
 
 const demoStatus = () => ({ running: demo.running });
 
+// ------------------------------------------------------------------
+// الشرح الصوتي: تكرار شرح اللعبة تلقائياً
+// ------------------------------------------------------------------
+const narration = { enabled: config.narration?.enabled !== false, introEveryMinutes: Number(config.narration?.introEveryMinutes ?? 4) };
+let lastIntro = 0;
+let voiceStatus = null;
+function narrate(key = 'intro') {
+  if (key === 'intro') lastIntro = Date.now();
+  io.emit('narrate', { key });
+}
+game.on('phase', ({ phase }) => {
+  // شرح اللعبة عند انتظار اللاعبين (إن لم يُشرح مؤخراً)
+  if (narration.enabled && phase === 'waiting' && Date.now() - lastIntro > 60_000) setTimeout(() => narrate('intro'), 4000);
+});
+setInterval(() => {
+  if (!narration.enabled || !narration.introEveryMinutes) return;
+  if (!['waiting', 'battle'].includes(game.phase)) return;
+  if (Date.now() - lastIntro >= narration.introEveryMinutes * 60_000) narrate('intro');
+}, 10_000);
+
 io.on('connection', (socket) => {
   socket.emit('state', game.snapshot());
   socket.emit('tiktokStatus', tiktok.status());
+  socket.emit('narrationConfig', narration);
+
+  socket.on('voiceStatus', (st) => {
+    if (st?.page !== 'game') return;
+    voiceStatus = st;
+    io.to('admin').emit('voiceStatus', st);
+  });
 
   socket.on('admin:hello', () => {
     socket.join('admin');
     socket.emit('demoStatus', demoStatus());
     socket.emit('logAll', eventLog);
     socket.emit('demoGifts', DEMO_GIFTS);
+    if (voiceStatus) socket.emit('voiceStatus', voiceStatus);
   });
 
   // ---- أوامر لوحة التحكم ----
   socket.on('admin:restart', () => game.restartRound());
   socket.on('admin:skip', () => game.skip());
+  socket.on('admin:narrate', (key) => narrate(typeof key === 'string' ? key : 'intro'));
+  socket.on('admin:narration', (cfg = {}) => {
+    if (typeof cfg.enabled === 'boolean') narration.enabled = cfg.enabled;
+    if (cfg.introEveryMinutes != null) narration.introEveryMinutes = Math.max(0, Math.min(60, Number(cfg.introEveryMinutes) || 0));
+    io.emit('narrationConfig', narration);
+  });
   socket.on('admin:resetSession', () => game.resetSession());
   socket.on('admin:demo', (on) => {
     if (on) demo.start(); else demo.stop();

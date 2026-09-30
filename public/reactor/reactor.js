@@ -445,6 +445,26 @@
         });
         socket.on('round', () => { this.feed = []; FX.mines = []; });
         socket.on('fx', (f) => this.onFx(f));
+        this.setupNarrator(socket);
+      },
+
+      // ---- الشرح الصوتي العربي ----
+      setupNarrator(socket) {
+        if (params.get('voice') === '0' || !window.Narrator) return;
+        const narrator = new window.Narrator({
+          captionEl: document.getElementById('caption'),
+          onStatus: (st) => socket.emit('voiceStatus', { ...st, page: 'game' }),
+        });
+        narrator.init();
+        window.attachNarrator(socket, narrator, (t) => (t.phaseEndsAt ? (t.phaseEndsAt - t.serverNow) / 1000 : 0));
+        socket.on('connect', () => narrator.report());
+        // في المتصفح العادي يحتاج الصوت نقرة واحدة على الصفحة (في OBS و LIVE Studio يعمل تلقائياً)
+        window.addEventListener('pointerdown', () => {
+          if (!('speechSynthesis' in window)) return;
+          const u = new SpeechSynthesisUtterance(' ');
+          u.volume = 0;
+          speechSynthesis.speak(u);
+        }, { once: true });
       },
 
       applyTick(t) {

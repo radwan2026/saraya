@@ -103,12 +103,31 @@
     </section>
 
     <section style="grid-column: 1 / -1">
+      <h2>🎙 الشرح الصوتي بالعربية</h2>
+      <div class="kv" style="margin-bottom:12px">
+        <span>صوت شاشة اللعبة</span><b id="voiceMode">لم تُفتح شاشة اللعبة بعد</b>
+      </div>
+      <div class="row">
+        <button class="gold" id="narrateNow">📢 اشرح اللعبة الآن</button>
+        <label class="row" style="margin:0"><input type="checkbox" id="narrOn" style="flex:none;min-width:0"> تشغيل الشرح الصوتي</label>
+        <span>كرّر الشرح كل</span>
+        <input id="narrEvery" type="number" min="0" max="60" style="max-width:80px"> <span>دقيقة (0 = بدون تكرار)</span>
+      </div>
+      <div class="row">
+        <label class="row" style="margin:0"><input type="checkbox" id="adminVoice" style="flex:none;min-width:0"> شغّل الصوت من هذه الصفحة أيضاً (إن لم يصل صوت شاشة اللعبة إلى البث)</label>
+      </div>
+      <p class="muted" id="adminCaption" style="min-height:22px"></p>
+      <p class="muted">لاستخدام صوتك أنت: سجّل الجمل وضعها في المجلد <code>public/reactor/voice</code> (الأسماء والنصوص في ملف <code>README.txt</code> داخله)، ثم حدّث شاشة اللعبة.</p>
+    </section>
+
+    <section style="grid-column: 1 / -1">
       <h2>آخر الأحداث</h2>
       <div id="log" class="log"></div>
     </section>
   </main>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/narrator.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     const socket = io();
@@ -176,6 +195,34 @@
       d.appendChild(r);
       return d;
     }
+    // ---- الشرح الصوتي ----
+    const MODES = { files: 'ملفات صوتك المسجّلة', tts: 'صوت الجهاز العربي', text: '⚠ نص فقط — لا يوجد صوت عربي في هذا المتصفح' };
+    socket.on('voiceStatus', (v) => {
+      $('voiceMode').textContent = `${MODES[v.mode] || v.mode}${v.voice && v.mode !== 'files' ? ` (${v.voice})` : ''}${v.files ? ` — ${v.files}/${v.total} ملفات` : ''}`;
+    });
+    socket.on('narrationConfig', (c) => { $('narrOn').checked = c.enabled; $('narrEvery').value = c.introEveryMinutes; });
+    $('narrateNow').onclick = () => socket.emit('admin:narrate', 'intro');
+    $('narrOn').onchange = () => socket.emit('admin:narration', { enabled: $('narrOn').checked });
+    $('narrEvery').onchange = () => socket.emit('admin:narration', { introEveryMinutes: Number($('narrEvery').value) });
+
+    const adminNarrator = new Narrator();
+    adminNarrator.caption = (t) => { $('adminCaption').textContent = t ? `🎙 ${t}` : ''; };
+    let adminVoiceOn = false;
+    try { adminVoiceOn = localStorage.getItem('reactorAdminVoice') === '1'; } catch { /* تجاهل */ }
+    $('adminVoice').checked = adminVoiceOn;
+    adminNarrator.enabled = adminVoiceOn;
+    adminNarrator.init();
+    attachNarrator(socket, adminNarrator, (t) => (t.phaseEndsAt ? (t.phaseEndsAt - t.serverNow) / 1000 : 0));
+    // attachNarrator يضبط enabled من إعدادات الخادم؛ نحترم اختيار هذه الصفحة أيضاً
+    socket.on('narrationConfig', (c) => { adminNarrator.enabled = adminVoiceOn && c.enabled !== false; });
+    $('adminVoice').onchange = () => {
+      adminVoiceOn = $('adminVoice').checked;
+      adminNarrator.enabled = adminVoiceOn;
+      if (!adminVoiceOn) adminNarrator.stop();
+      try { localStorage.setItem('reactorAdminVoice', adminVoiceOn ? '1' : '0'); } catch { /* تجاهل */ }
+      if (adminVoiceOn) adminNarrator.say('intro');
+    };
+
     socket.on('logAll', (list) => { $('log').replaceChildren(...list.map(logLine)); });
     socket.on('log', (e) => { $('log').prepend(logLine(e)); while ($('log').children.length > 80) $('log').lastChild.remove(); });
   </script>

@@ -243,10 +243,14 @@
     </template>
   </div>
 
+  <!-- ترجمة الشرح الصوتي -->
+  <div class="caption" id="caption"><span class="cap-icon">🎙</span><span class="cap-text"></span></div>
+
   <div class="conn" x-show="!connected">⚠ غير متصل بالخادم…</div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/narrator.js"></script>
 <script src="/reactor.js"></script>
 <script defer src="/vendor/alpine.js"></script>
 </body>

@@ -68,6 +68,12 @@ export default {
     },
   },
 
+  // الشرح الصوتي العربي للمتابعين (يُقرأ بصوت الجهاز، أو بملفاتك المسجّلة في public/reactor/voice)
+  narration: {
+    enabled: true,
+    introEveryMinutes: 4, // تكرار شرح طريقة اللعب كل كم دقيقة (0 = بدون تكرار تلقائي)
+  },
+
   demoBots: {
     count: 24,          // عدد الجنود الوهميين
     giftsPerMinute: 30, // معدل الورود الوهمية
