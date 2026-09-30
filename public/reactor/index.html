@@ -183,13 +183,14 @@
     <div class="w-inner">
       <div class="w-icon">⚛</div>
       <div class="w-title">بانتظار المحاربين!</div>
-      <div class="w-sub">تبدأ المعركة عندما ينضم لاعب واحد على الأقل لكل فريق</div>
+      <div class="w-sub">اكتب <b>1</b> أو <b>2</b> في التعليقات — تبدأ المعركة عند انضمام <b class="num" x-text="minToStart"></b> لاعبين</div>
+      <div class="w-progress num" dir="ltr"><span x-text="roster.blue.count + roster.red.count"></span> / <span x-text="minToStart"></span> 👥</div>
       <div class="w-teams">
         <template x-for="team in ['blue', 'red']" :key="team">
-          <div class="w-team" :class="[team, { ready: roster[team].count >= minPerTeam }]">
+          <div class="w-team" :class="[team, { ready: roster[team].count > 0 }]">
             <b x-text="TEAM[team].name"></b>
             <span>اكتب <em class="num" x-text="TEAM[team].key"></em></span>
-            <i class="num" x-text="roster[team].count >= minPerTeam ? '✔ جاهز' : roster[team].count + ' / ' + minPerTeam"></i>
+            <i class="num" x-text="'👥 ' + roster[team].count"></i>
           </div>
         </template>
       </div>

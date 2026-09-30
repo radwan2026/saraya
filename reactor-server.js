@@ -50,7 +50,7 @@ function log(entry) {
 const actions = {
   comment(user, text, source = 'tiktok') {
     const result = game.handleComment(user, text);
-    if (result !== 'ignored' || source !== 'tiktok') log({ kind: 'comment', source, nickname: user.nickname, text, result });
+    log({ kind: 'comment', source, nickname: user.nickname, text, result });
     return result;
   },
   like(user, count, source = 'tiktok') {

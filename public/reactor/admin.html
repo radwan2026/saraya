@@ -99,7 +99,7 @@
         <button class="gold" data-gift="Whale diving|2150">🐋 حوت</button>
         <button class="gold" data-gift="Lion|29999">🦁 أسد</button>
       </div>
-      <p class="muted">المختبر ينضم تلقائياً للفريق الأقل عدداً إن لم يختر فريقاً.</p>
+      <p class="muted">كل ضغطة على «انضم» تضيف مختبراً جديداً. الهدايا واللايكات تُرسل باسم آخر مختبر في الخانة.</p>
     </section>
 
     <section style="grid-column: 1 / -1">
@@ -149,7 +149,15 @@
     $('demoOff').onclick = () => socket.emit('admin:demo', false);
     $('addBots').onclick = () => socket.emit('admin:addBots', $('botCount').value);
     $('like').onclick = () => socket.emit('admin:like', { name: $('fakeName').value, count: 30 });
-    document.querySelectorAll('[data-comment]').forEach((b) => { b.onclick = () => socket.emit('admin:comment', { name: $('fakeName').value, text: b.dataset.comment }); });
+    let testerN = 0;
+    document.querySelectorAll('[data-comment]').forEach((b) => {
+      b.onclick = () => {
+        // كل ضغطة = مختبر جديد (نفس الاسم يعني نفس الشخص، فيبدّل فريقه فقط)
+        const base = ($('fakeName').value || 'مختبر').replace(/\s*\d+$/, '');
+        $('fakeName').value = `${base} ${++testerN}`;
+        socket.emit('admin:comment', { name: $('fakeName').value, text: b.dataset.comment });
+      };
+    });
     document.querySelectorAll('[data-gift]').forEach((b) => {
       b.onclick = () => {
         const [name, diamonds, count] = b.dataset.gift.split('|');

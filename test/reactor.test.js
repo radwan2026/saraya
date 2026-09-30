@@ -25,7 +25,15 @@ test('parseTeam يقرأ 1 / 2 والأرقام العربية وأسماء ال
   assert.equal(parseTeam('Blue'), 'blue');
   assert.equal(parseTeam('12'), null);
   assert.equal(parseTeam('3'), null);
-  assert.equal(parseTeam('انا مع 1'), null);
+  assert.equal(parseTeam('انا مع 1'), 'blue');
+  assert.equal(parseTeam('1❤️'), 'blue');
+  assert.equal(parseTeam('1️⃣'), 'blue');
+  assert.equal(parseTeam('2 احمر 🔥'), 'red');
+  assert.equal(parseTeam('يلا الأزرق'), 'blue');
+  assert.equal(parseTeam('اتنين'), 'red');
+  assert.equal(parseTeam('اكتب 1 للأزرق و2 للأحمر'), null); // الفريقان معاً
+  assert.equal(parseTeam('مرحبا كيف حالكم'), null);
+  assert.equal(parseTeam('هذه جملة طويلة جداً فيها رقم 1 وكلام كثير آخر'), null);
   assert.equal(parseTeam(undefined), null);
 });
 
@@ -46,7 +54,7 @@ test('الانضمام والتبديل (مقفل أثناء المعركة)', (
   assert.equal(game.handleComment(u('a'), '1'), 'same');
   assert.equal(game.handleComment(u('a'), '2'), 'switched'); // مسموح قبل المعركة
   battle();
-  assert.equal(game.handleComment(u('a'), '1'), 'locked');
+  assert.notEqual(game.handleComment(u('a'), '1'), 'switched'); // مقفل (قد يُحتسب كتعليق فقط)
   assert.equal(game.members.get('a').team, 'red');
   assert.equal(game.handleComment(u('b'), 'hello'), 'ignored');
   game.destroy();
@@ -188,13 +196,14 @@ test('التفعيل التلقائي: المكبّس غير المنضم يُض
   s2.game.destroy();
 });
 
-test('الجولة تنتظر لاعباً في كل فريق قبل العد التنازلي', () => {
+test('الجولة تنتظر انضمام لاعبين اثنين قبل العد التنازلي', () => {
   const { game, u } = setup();
   assert.equal(game.phase, Phase.WAITING);
   assert.equal(game.phaseEndsAt, null);
   game.handleComment(u('a'), '1');
+  assert.equal(game.handleComment(u('a'), '2'), 'switched'); // نفس الشخص يبدّل فقط
   assert.equal(game.phase, Phase.WAITING);
-  game.handleComment(u('b'), '2');
+  game.handleComment(u('b'), '2'); // ولو في نفس الفريق
   assert.equal(game.phase, Phase.COUNTDOWN);
   game.destroy();
 });

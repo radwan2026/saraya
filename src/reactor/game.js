@@ -23,16 +23,26 @@ export const other = (team) => (team === 'blue' ? 'red' : 'blue');
 const DIGITS = { '٠': 0, '١': 1, '٢': 2, '٣': 3, '٤': 4, '٥': 5, '٦': 6, '٧': 7, '٨': 8, '٩': 9,
   '۰': 0, '۱': 1, '۲': 2, '۳': 3, '۴': 4, '۵': 5, '۶': 6, '۷': 7, '۸': 8, '۹': 9 };
 
+const BLUE_WORDS = new Set(['1', 'واحد', 'ازرق', 'أزرق', 'الازرق', 'الأزرق', 'زرق', 'blue']);
+const RED_WORDS = new Set(['2', 'اثنين', 'اثنان', 'اتنين', 'إثنين', 'احمر', 'أحمر', 'الاحمر', 'الأحمر', 'حمر', 'red']);
+
 /**
- * يقرأ اختيار الفريق من تعليق: "1" أو "2" (بالأرقام العربية أيضاً) أو اسم اللون.
+ * يقرأ اختيار الفريق من تعليق بشكل مرن:
+ * "1" ، "١" ، "1❤️" ، "1️⃣" ، "انا مع الأزرق" ، "2 احمر" ...
+ * يُقبل التعليق فقط إن كان قصيراً ويشير إلى فريق واحد (حتى لا تُحتسب جملة مثل «اكتب 1 للأزرق و2 للأحمر»).
  * @returns {'blue'|'red'|null}
  */
 export function parseTeam(text) {
   if (typeof text !== 'string') return null;
-  const t = text.replace(/[٠-٩۰-۹]/g, (d) => String(DIGITS[d])).trim().replace(/^#\s*/, '').toLowerCase();
-  if (t === '1' || /^(أزرق|ازرق|الأزرق|الازرق|blue)$/.test(t)) return 'blue';
-  if (t === '2' || /^(أحمر|احمر|الأحمر|الاحمر|red)$/.test(t)) return 'red';
-  return null;
+  const normalized = text.replace(/[٠-٩۰-۹]/g, (d) => String(DIGITS[d])).replace(/ـ/g, '').toLowerCase();
+  // فصل الأرقام عن الحروف الملاصقة لها («و2» ← «و» + «2»)
+  const tokens = normalized.replace(/(\p{N}+)/gu, ' $1 ').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  if (!tokens.length || tokens.length > 7) return null;
+  // أسماء الألوان مع السوابق مثل «للأزرق» و«بالأحمر»
+  const blue = tokens.some((t) => BLUE_WORDS.has(t) || /زرق/.test(t));
+  const red = tokens.some((t) => RED_WORDS.has(t) || /حمر/.test(t));
+  if (blue === red) return null; // لا شيء أو الفريقان معاً
+  return blue ? 'blue' : 'red';
 }
 
 /**
@@ -97,8 +107,7 @@ export class ReactorGame extends EventEmitter {
 
   /** هل يوجد العدد الأدنى من اللاعبين في كل فريق لبدء الجولة؟ */
   enoughPlayers() {
-    const min = this.opt.minPlayersPerTeam ?? 1;
-    return TEAMS.every((t) => this.countTeam(t) >= min);
+    return this.members.size >= (this.opt.minPlayersToStart ?? 2);
   }
 
   /** يبدأ العد التنازلي عند اكتمال الفريقين أثناء الانتظار */
@@ -232,7 +241,12 @@ export class ReactorGame extends EventEmitter {
 
   handleComment(user, text) {
     const team = parseTeam(text);
-    if (team) return this.join(user, team);
+    if (team) {
+      const r = this.join(user, team);
+      // الجندي الذي يكرر اسم فريقه أثناء المعركة («يلا الأزرق») يحصل على دفعة التعليق
+      if (r !== 'same' && r !== 'locked') return r;
+      return this.chatPower(user) === 'chat' ? 'chat' : r;
+    }
     return this.chatPower(user);
   }
 
@@ -475,7 +489,7 @@ export class ReactorGame extends EventEmitter {
       winner: this.winner,
       history: this.history,
       battleSeconds: this.opt.battleSeconds,
-      minPlayersPerTeam: this.opt.minPlayersPerTeam ?? 1,
+      minPlayersToStart: this.opt.minPlayersToStart ?? 2,
     };
   }
 }

@@ -387,7 +387,7 @@
       now: Date.now(),
       offset: 0,
       battleSeconds: 300,
-      minPerTeam: 1,
+      minToStart: 2,
       lastCd: null,
 
       fmt, avatar, fallbackAvatar,
@@ -427,7 +427,7 @@
           this.commander = st.commander;
           this.winner = st.winner;
           this.battleSeconds = st.battleSeconds || this.battleSeconds;
-          this.minPerTeam = st.minPlayersPerTeam || 1;
+          this.minToStart = st.minPlayersToStart || 2;
           if (st.phase !== 'battle') FX.mines = [];
         });
         socket.on('tick', (t) => this.applyTick(t));

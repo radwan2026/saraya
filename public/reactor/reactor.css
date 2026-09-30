@@ -293,6 +293,7 @@ body.transparent .bg { display: none; }
 .w-icon { font-size: 170px; line-height: 1; filter: drop-shadow(0 0 40px #9a6bff); animation: spin 8s linear infinite; }
 .w-title { font-size: 84px; font-weight: 900; text-shadow: 0 0 30px #9a6bff; }
 .w-sub { font-size: 34px; font-weight: 800; color: var(--muted); max-width: 900px; }
+.w-progress { font-size: 64px; color: var(--gold); text-shadow: 0 0 24px rgba(255, 210, 63, .6); }
 .w-teams { display: flex; gap: 30px; margin-top: 16px; }
 .w-team { --c: var(--blue); display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 380px; padding: 26px 20px;
   border-radius: 28px; border: 3px solid var(--c); background: color-mix(in srgb, var(--c) 18%, rgba(0, 0, 0, .6)); box-shadow: 0 0 40px color-mix(in srgb, var(--c) 45%, transparent); }
