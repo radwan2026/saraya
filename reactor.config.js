@@ -6,7 +6,7 @@
 
 export default {
   // اسم حساب تيك توك الذي يبث مباشرة (بدون @). يمكن تركه فارغاً وإدخاله من لوحة التحكم.
-  tiktokUsername: '',
+  tiktokUsername: 'radwanzenati0',
 
   // مفتاح Euler Stream (اختياري) — عند ظهور خطأ sign أو rate limit. مجاني من https://www.eulerstream.com
   signApiKey: '',
