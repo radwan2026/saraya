@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة تحكم حصار المفاعل</title>
+  <style>
+    :root { --bg:#070a18; --card:#10152b; --line:#232b4d; --ink:#eef; --muted:#9aa3c7; --blue:#2e8bff; --red:#ff2d55; --gold:#ffd23f; --teal:#18c7a4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+    main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+    h1 { margin: 0 auto; padding: 16px; font-size: 22px; max-width: 1200px; }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+    h2 { margin: 0 0 12px; font-size: 17px; color: var(--gold); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    input, select { flex: 1; min-width: 110px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #060914; color: var(--ink); font-size: 15px; }
+    button { padding: 10px 14px; border-radius: 10px; border: 0; background: var(--line); color: var(--ink); font-size: 15px; font-weight: 700; cursor: pointer; }
+    button:hover { filter: brightness(1.25); }
+    .blue { background: var(--blue); } .red { background: var(--red); }
+    .gold { background: var(--gold); color: #321; } .teal { background: var(--teal); color: #032; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 13px; font-weight: 700; background: var(--line); }
+    .pill.connected, .pill.on { background: var(--teal); color: #032; }
+    .pill.connecting { background: var(--gold); color: #321; }
+    .pill.error { background: var(--red); }
+    .muted { color: var(--muted); font-size: 14px; }
+    .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 15px; }
+    .kv b { color: var(--teal); }
+    .meter { height: 26px; border-radius: 99px; overflow: hidden; display: flex; margin: 10px 0; border: 1px solid var(--line); }
+    .meter i { display: block; height: 100%; transition: width .2s; }
+    .log { max-height: 380px; overflow: auto; }
+    .log div { padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+    .log .r { font-size: 12px; padding: 1px 6px; border-radius: 6px; background: var(--line); margin-inline-start: 6px; }
+    code { background: #060914; padding: 2px 6px; border-radius: 6px; direction: ltr; display: inline-block; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>⚛ لوحة تحكم «حصار المفاعل»</h1>
+  <main>
+    <section>
+      <h2>اتصال تيك توك لايف</h2>
+      <div class="row">
+        <input id="username" placeholder="اسم الحساب بدون @" dir="ltr">
+        <button class="teal" id="connect">اتصال</button>
+        <button id="disconnect">قطع</button>
+      </div>
+      <div class="row"><span id="ttPill" class="pill">غير متصل</span> <span id="ttMsg" class="muted"></span></div>
+      <p class="muted">رابط شاشة اللعبة لـ OBS / LIVE Studio (1080×1920): <code id="overlayUrl"></code><br>
+        خلفية شفافة: <code>?transparent=1</code> — بدون صوت: <code>?sound=0</code></p>
+    </section>
+
+    <section>
+      <h2>الجولة</h2>
+      <div class="kv">
+        <span>المرحلة</span><b id="phase">-</b>
+        <span>الجولة</span><b id="round">0</b>
+        <span>الوقت المتبقي</span><b id="left">-</b>
+        <span>الجنود (أزرق / أحمر)</span><b id="counts">0 / 0</b>
+        <span>قائد الأسطول</span><b id="cmd">—</b>
+      </div>
+      <div class="meter"><i id="mBlue" style="background:var(--blue);width:50%"></i><i id="mRed" style="background:var(--red);width:50%"></i></div>
+      <div class="row">
+        <button class="teal" id="skip">⏭ تخطّي المرحلة / إنهاء الجولة</button>
+        <button id="restart">⟲ إعادة الجولة من الصفر</button>
+        <button class="red" id="resetSession">🗑 مسح الكل (الجنود + القائد)</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>وضع التجربة (Demo)</h2>
+      <div class="row"><span>الحالة:</span> <span id="demoPill" class="pill">متوقف</span></div>
+      <div class="row">
+        <button class="teal" id="demoOn">تشغيل الجنود والهدايا الوهمية</button>
+        <button id="demoOff">إيقاف</button>
+      </div>
+      <div class="row">
+        <input id="botCount" type="number" min="1" max="100" value="10" style="max-width:100px">
+        <button id="addBots">+ أضف جنوداً وهميين</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>محاكاة يدوية</h2>
+      <div class="row">
+        <input id="fakeName" placeholder="اسم الداعم" value="مختبر">
+      </div>
+      <div class="row">
+        <button class="blue" data-comment="1">انضم للأزرق (1)</button>
+        <button class="red" data-comment="2">انضم للأحمر (2)</button>
+        <button id="like">👆 30 لايك</button>
+      </div>
+      <div class="row">
+        <button data-gift="Rose|1">🌹 وردة</button>
+        <button data-gift="Rose|1|10">🌹 ×10</button>
+        <button data-gift="Perfume|20">💣 عطر (ألغام)</button>
+        <button data-gift="TikTok|1">⚡ TikTok (تعطيل)</button>
+        <button class="gold" data-gift="Whale diving|2150">🐋 حوت</button>
+        <button class="gold" data-gift="Lion|29999">🦁 أسد</button>
+      </div>
+      <p class="muted">المختبر ينضم تلقائياً للفريق الأقل عدداً إن لم يختر فريقاً.</p>
+    </section>
+
+    <section style="grid-column: 1 / -1">
+      <h2>آخر الأحداث</h2>
+      <div id="log" class="log"></div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const socket = io();
+    const PH = { countdown: 'عد تنازلي', battle: '⚔ المعركة', victory: '🏆 شاشة الفوز' };
+    const TT = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل', error: 'خطأ' };
+    const RES = { joined: 'انضم', switched: 'بدّل فريقه', same: 'نفس الفريق', locked: 'التبديل مقفل أثناء المعركة', ignored: 'تجاهل',
+      laser: 'ليزر', mines: 'ألغام', emp: 'تعطيل', overload: 'OVERLOAD' };
+    let st = null; let offset = 0;
+
+    $('overlayUrl').textContent = `${location.origin}/`;
+    socket.on('connect', () => socket.emit('admin:hello'));
+
+    $('connect').onclick = () => socket.emit('admin:connect', $('username').value);
+    $('disconnect').onclick = () => socket.emit('admin:disconnect');
+    $('skip').onclick = () => socket.emit('admin:skip');
+    $('restart').onclick = () => socket.emit('admin:restart');
+    $('resetSession').onclick = () => confirm('مسح كل الجنود ولقب القائد وسجل الجولات؟') && socket.emit('admin:resetSession');
+    $('demoOn').onclick = () => socket.emit('admin:demo', true);
+    $('demoOff').onclick = () => socket.emit('admin:demo', false);
+    $('addBots').onclick = () => socket.emit('admin:addBots', $('botCount').value);
+    $('like').onclick = () => socket.emit('admin:like', { name: $('fakeName').value, count: 30 });
+    document.querySelectorAll('[data-comment]').forEach((b) => { b.onclick = () => socket.emit('admin:comment', { name: $('fakeName').value, text: b.dataset.comment }); });
+    document.querySelectorAll('[data-gift]').forEach((b) => {
+      b.onclick = () => {
+        const [name, diamonds, count] = b.dataset.gift.split('|');
+        socket.emit('admin:gift', { name: $('fakeName').value, gift: { name, diamonds: Number(diamonds) }, count: Number(count || 1) });
+      };
+    });
+
+    socket.on('tiktokStatus', (s) => {
+      $('ttPill').className = `pill ${s.state}`;
+      $('ttPill').textContent = TT[s.state] || s.state;
+      $('ttMsg').textContent = s.message || '';
+      if (s.username && !$('username').value) $('username').value = s.username;
+    });
+    socket.on('demoStatus', (d) => {
+      $('demoPill').className = `pill ${d.running ? 'on' : ''}`;
+      $('demoPill').textContent = d.running ? 'يعمل' : 'متوقف';
+    });
+
+    function render() {
+      if (!st) return;
+      $('phase').textContent = PH[st.phase] || st.phase;
+      $('round').textContent = st.round;
+      const left = st.phaseEndsAt ? Math.max(0, Math.ceil((st.phaseEndsAt - Date.now() - offset) / 1000)) : 0;
+      $('left').textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+      $('mBlue').style.width = `${st.teams.blue.energy}%`;
+      $('mRed').style.width = `${st.teams.red.energy}%`;
+    }
+    socket.on('state', (s) => {
+      st = s; offset = s.serverNow - Date.now();
+      $('counts').textContent = `${s.roster.blue.count} / ${s.roster.red.count}`;
+      $('cmd').textContent = s.commander ? `${s.commander.nickname} (${s.commander.coins} 🪙)` : '—';
+      render();
+    });
+    socket.on('tick', (t) => { st = { ...st, ...t }; offset = t.serverNow - Date.now(); render(); });
+    socket.on('roster', (r) => { $('counts').textContent = `${r.blue.count} / ${r.red.count}`; });
+    socket.on('commander', ({ commander: c }) => { $('cmd').textContent = c ? `${c.nickname} (${c.coins} 🪙)` : '—'; });
+
+    function logLine(e) {
+      const d = document.createElement('div');
+      const t = new Date(e.at).toLocaleTimeString();
+      d.textContent = `${t} — [${e.source}] ${e.nickname}: ${e.text}`;
+      const r = document.createElement('span'); r.className = 'r'; r.textContent = RES[e.result] || e.result;
+      d.appendChild(r);
+      return d;
+    }
+    socket.on('logAll', (list) => { $('log').replaceChildren(...list.map(logLine)); });
+    socket.on('log', (e) => { $('log').prepend(logLine(e)); while ($('log').children.length > 80) $('log').lastChild.remove(); });
+  </script>
+</body>
+</html>

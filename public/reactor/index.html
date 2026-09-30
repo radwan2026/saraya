@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>حصار المفاعل — Reactor Siege</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Orbitron:wght@700;900&display=swap">
+  <link rel="stylesheet" href="/reactor.css">
+</head>
+<body x-data="reactorApp()" :class="{ transparent: opts.transparent }">
+<div id="stage" :class="{ shake: shaking }">
+  <div class="bg"><div class="nebula"></div><div class="stars"></div><div class="grid-floor top"></div><div class="grid-floor bottom"></div></div>
+
+  <!-- ================= الشريط العلوي ================= -->
+  <header class="hud">
+    <div class="hud-side">
+      <small>الجولة</small>
+      <b class="num" x-text="s.round"></b>
+    </div>
+    <div class="hud-timer" :class="{ danger: s.phase === 'battle' && remaining <= 30 }">
+      <div class="logo">⚛ حصار المفاعل <span>REACTOR SIEGE</span></div>
+      <div class="clock num" x-text="clock"></div>
+      <div class="time-bar"><i :style="`width:${timePct}%`"></i></div>
+    </div>
+    <div class="hud-side">
+      <small>الجنود</small>
+      <b class="num" x-text="roster.blue.count + roster.red.count"></b>
+    </div>
+  </header>
+
+  <!-- ================= قاعدة الفريق الأحمر (أعلى) ================= -->
+  <template x-for="team in ['red', 'blue']" :key="team">
+    <section class="base" :class="[team, { jammed: s.teams[team].jammedMs > 0, low: s.teams[team].energy < 20, hit: hit[team] }]" :style="`--sh:${(s.teams[team].jammedMs > 0 ? 0 : s.teams[team].shield) / 100}`">
+      <div class="base-head">
+        <div class="team-name">
+          <span class="dot"></span>
+          <b x-text="TEAM[team].name"></b>
+          <span class="join-hint">اكتب <em x-text="TEAM[team].key"></em> للانضمام</span>
+        </div>
+        <div class="energy">
+          <small>الطاقة</small>
+          <b class="num"><span x-text="Math.round(s.teams[team].energy)"></span><i>%</i></b>
+        </div>
+      </div>
+
+      <div class="base-body">
+        <div class="soldiers">
+          <template x-for="m in vis[team]" :key="m.id">
+            <div class="soldier" :data-id="m.id" :class="{ vip: m.roundCoins > 0, fresh: fresh[m.id] > now }" :title="m.nickname">
+              <img :src="avatar(m)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(m.nickname)" alt="">
+            </div>
+          </template>
+          <div class="soldier more" x-show="roster[team].count > vis[team].length">
+            <span x-text="'+' + (roster[team].count - vis[team].length)"></span>
+          </div>
+          <div class="empty-base" x-show="roster[team].count === 0">
+            القاعدة فارغة… اكتب <b x-text="TEAM[team].key"></b> وكن أول جندي!
+          </div>
+        </div>
+        <div class="top-supporters">
+          <template x-for="(m, i) in roster[team].top" :key="m.id">
+            <div class="sup">
+              <span class="rank" x-text="['🥇','🥈','🥉'][i]"></span>
+              <img :src="avatar(m)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(m.nickname)" alt="">
+              <span class="n" x-text="m.nickname"></span>
+              <span class="c num" x-text="m.roundCoins ? fmt(m.roundCoins) + '🪙' : fmt(m.roundLikes) + '👆'"></span>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- الدرع -->
+      <div class="shield">
+        <svg viewBox="0 0 1080 120" preserveAspectRatio="none">
+          <defs>
+            <pattern :id="'hex-' + team" width="28" height="24" patternUnits="userSpaceOnUse">
+              <path d="M7 0h14l7 12-7 12H7L0 12z" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".7"/>
+            </pattern>
+            <linearGradient :id="'sg-' + team" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="currentColor" stop-opacity=".05"/>
+              <stop offset="1" stop-color="currentColor" stop-opacity=".55"/>
+            </linearGradient>
+          </defs>
+          <path class="dome" d="M0 120 Q540 -40 1080 120 Z" :fill="`url(#sg-${team})`"/>
+          <path class="dome hex" d="M0 120 Q540 -40 1080 120 Z" :fill="`url(#hex-${team})`"/>
+          <path class="rim" d="M0 120 Q540 -40 1080 120" fill="none" stroke="currentColor" stroke-width="5"/>
+        </svg>
+        <div class="shield-label">
+          <template x-if="s.teams[team].jammedMs > 0">
+            <span class="jam">⚡ الدفاعات معطّلة <b class="num" x-text="Math.ceil(s.teams[team].jammedMs / 1000)"></b></span>
+          </template>
+          <template x-if="!(s.teams[team].jammedMs > 0)">
+            <span>🛡 الدرع <b class="num" x-text="Math.round(s.teams[team].shield) + '%'"></b> — كبّسوا لشحنه!</span>
+          </template>
+        </div>
+        <div class="shield-bar"><i :style="`width:${s.teams[team].shield}%`"></i></div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ================= ساحة المفاعل ================= -->
+  <section class="arena">
+    <div class="glow red" id="glowRed"></div>
+    <div class="glow blue" id="glowBlue"></div>
+    <div class="conduit">
+      <div class="flow red" id="flowRed"></div>
+      <div class="flow blue" id="flowBlue"></div>
+    </div>
+    <div class="front" id="front"></div>
+
+    <div class="core" id="core">
+      <svg viewBox="0 0 300 300">
+        <defs>
+          <radialGradient id="coreGrad" cx="50%" cy="45%" r="55%">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".35" stop-color="var(--core-a)"/>
+            <stop offset=".75" stop-color="var(--core-b)"/>
+            <stop offset="1" stop-color="#0a0520"/>
+          </radialGradient>
+        </defs>
+        <circle cx="150" cy="150" r="146" fill="none" stroke="var(--core-a)" stroke-width="2" opacity=".35"/>
+        <g class="ring r1"><circle cx="150" cy="150" r="132" fill="none" stroke="var(--core-a)" stroke-width="6" stroke-dasharray="40 18 6 18"/></g>
+        <g class="ring r2"><circle cx="150" cy="150" r="112" fill="none" stroke="var(--core-b)" stroke-width="4" stroke-dasharray="2 10"/></g>
+        <g class="ring r3">
+          <path d="M150 30 L162 52 L138 52Z M150 270 L162 248 L138 248Z M30 150 L52 138 L52 162Z M270 150 L248 138 L248 162Z" fill="var(--core-a)"/>
+        </g>
+        <circle class="sphere" cx="150" cy="150" r="82" fill="url(#coreGrad)"/>
+        <circle cx="150" cy="150" r="82" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+        <ellipse cx="128" cy="118" rx="26" ry="14" fill="#fff" opacity=".45"/>
+      </svg>
+      <div class="core-label num" x-text="coreLabel"></div>
+    </div>
+
+    <!-- آخر الأحداث -->
+    <aside class="feed">
+      <template x-for="f in feed" :key="f.key">
+        <div class="feed-item" :class="[f.team, f.kind]">
+          <img :src="avatar(f.user)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(f.user.nickname)" alt="">
+          <div><b x-text="f.user.nickname"></b><span x-text="f.text"></span></div>
+          <i x-text="f.icon"></i>
+        </div>
+      </template>
+    </aside>
+
+    <!-- قائد الأسطول (مثبّت) -->
+    <aside class="commander" x-show="commander" x-transition.duration.500ms :class="commander && commander.team">
+      <template x-if="commander">
+        <div>
+          <div class="crown">👑</div>
+          <div class="c-title">قائد الأسطول</div>
+          <div class="c-avatar"><img :src="avatar(commander)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(commander.nickname)" alt=""></div>
+          <div class="c-name" x-text="commander.nickname"></div>
+          <div class="c-team" x-text="TEAM[commander.team].name"></div>
+          <div class="c-coins num"><span x-text="fmt(commander.coins)"></span> 🪙</div>
+          <div class="c-hint">تغلّب عليه لتأخذ اللقب!</div>
+        </div>
+      </template>
+    </aside>
+  </section>
+
+  <!-- ================= دليل الهدايا ================= -->
+  <footer class="legend">
+    <div><i>🌹</i><b>وردة</b><span>ليزر يدفع المفاعل</span></div>
+    <div><i>🪄</i><b>متوسطة</b><span>ألغام / تعطيل الدرع 10ث</span></div>
+    <div class="big"><i>🦁</i><b>أسد / حوت</b><span>OVERLOAD + لقب القائد</span></div>
+    <div><i>👆</i><b>تكبيس</b><span>يشحن درع قاعدتك</span></div>
+  </footer>
+
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <div class="flash" id="flash"></div>
+
+  <!-- ================= العد التنازلي ================= -->
+  <div class="overlay countdown" x-show="s.phase === 'countdown'" x-transition.opacity>
+    <div class="cd-title">استعدوا للمعركة!</div>
+    <div class="cd-num num" x-text="Math.max(1, Math.ceil(remaining))"></div>
+    <div class="cd-teams"><span class="blue">اكتب 1 🔵 الأزرق</span><span class="red">اكتب 2 🔴 الأحمر</span></div>
+  </div>
+
+  <!-- ================= Overload ================= -->
+  <div class="overlay overload" x-show="overload" x-transition.opacity.duration.300ms :class="overload && overload.team">
+    <template x-if="overload">
+      <div class="ov-inner">
+        <div class="ov-rays"></div>
+        <div class="ov-kicker">⚠ إعادة تشغيل المفاعل ⚠</div>
+        <div class="ov-title">OVERLOAD</div>
+        <div class="ov-avatar"><img :src="avatar(overload.user)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(overload.user.nickname)" alt=""></div>
+        <div class="ov-rank" x-show="overload.commander">👑 قائد الأسطول الجديد 👑</div>
+        <div class="ov-name" x-text="overload.user.nickname"></div>
+        <div class="ov-gift">
+          <img x-show="overload.gift.image" :src="overload.gift.image" referrerpolicy="no-referrer" alt="">
+          <span x-text="`${overload.gift.name} ×${overload.count}`"></span>
+        </div>
+        <div class="ov-effect" x-text="`مسح نصف طاقة ${TEAM[overload.target].name}!`"></div>
+      </div>
+    </template>
+  </div>
+
+  <!-- ================= شاشة الفوز ================= -->
+  <div class="overlay victory" x-show="s.phase === 'victory' && winner" x-transition.opacity.duration.600ms :class="winner && (winner.team || 'draw')">
+    <template x-if="winner">
+      <div class="v-inner">
+        <div class="v-kicker" x-text="winner.reason === 'destroyed' ? '💥 تم تدمير قاعدة الخصم 💥' : '⏱ انتهى الوقت'"></div>
+        <div class="v-title" x-text="winner.team ? 'انتصار ' + TEAM[winner.team].name + '!' : 'تعادل!'"></div>
+        <template x-if="winner.mvp">
+          <div class="v-mvp">
+            <div class="v-avatar"><img :src="avatar(winner.mvp)" referrerpolicy="no-referrer" @error="$el.src = fallbackAvatar(winner.mvp.nickname)" alt=""></div>
+            <div><small>بطل الجولة</small><b x-text="winner.mvp.nickname"></b>
+              <span class="num" x-text="winner.mvp.roundCoins ? fmt(winner.mvp.roundCoins) + ' 🪙' : fmt(winner.mvp.roundLikes) + ' 👆'"></span></div>
+          </div>
+        </template>
+        <div class="v-stats">
+          <template x-for="team in ['blue', 'red']" :key="team">
+            <div :class="team">
+              <b x-text="TEAM[team].name"></b>
+              <span>👥 <i class="num" x-text="winner.stats[team].members"></i></span>
+              <span>🪙 <i class="num" x-text="fmt(winner.stats[team].coins)"></i></span>
+              <span>👆 <i class="num" x-text="fmt(winner.stats[team].likes)"></i></span>
+            </div>
+          </template>
+        </div>
+        <div class="v-next">جولة جديدة خلال <b class="num" x-text="Math.max(0, Math.ceil(remaining))"></b></div>
+      </div>
+    </template>
+  </div>
+
+  <div class="conn" x-show="!connected">⚠ غير متصل بالخادم…</div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/reactor.js"></script>
+<script defer src="/vendor/alpine.js"></script>
+</body>
+</html>

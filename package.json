@@ -1,12 +1,14 @@
 {
-  "name": "tiktok-red-light-game",
+  "name": "tiktok-live-games",
   "version": "1.0.0",
-  "description": "لعبة تفاعلية لبث تيك توك المباشر: الضوء الأحمر / الضوء الأخضر (مستوحاة من لعبة الحبار)",
+  "description": "ألعاب تفاعلية لبث تيك توك المباشر: الضوء الأحمر/الأخضر، وحصار المفاعل (Reactor Siege)",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "demo": "node server.js --demo",
+    "reactor": "node reactor-server.js",
+    "reactor:demo": "node reactor-server.js --demo",
     "test": "node --test test/*.test.js"
   },
   "engines": {
@@ -14,6 +16,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "alpinejs": "^3.17.4",
     "express": "^5.1.0",
     "socket.io": "^4.8.1",
     "tiktok-live-connector": "^2.5.0"
