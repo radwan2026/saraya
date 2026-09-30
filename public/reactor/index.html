@@ -178,6 +178,24 @@
     <div class="cd-teams"><span class="blue">اكتب 1 🔵 الأزرق</span><span class="red">اكتب 2 🔴 الأحمر</span></div>
   </div>
 
+  <!-- ================= انتظار اللاعبين ================= -->
+  <div class="overlay waiting" x-show="s.phase === 'waiting'" x-transition.opacity>
+    <div class="w-inner">
+      <div class="w-icon">⚛</div>
+      <div class="w-title">بانتظار المحاربين!</div>
+      <div class="w-sub">تبدأ المعركة عندما ينضم لاعب واحد على الأقل لكل فريق</div>
+      <div class="w-teams">
+        <template x-for="team in ['blue', 'red']" :key="team">
+          <div class="w-team" :class="[team, { ready: roster[team].count >= minPerTeam }]">
+            <b x-text="TEAM[team].name"></b>
+            <span>اكتب <em class="num" x-text="TEAM[team].key"></em></span>
+            <i class="num" x-text="roster[team].count >= minPerTeam ? '✔ جاهز' : roster[team].count + ' / ' + minPerTeam"></i>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= Overload ================= -->
   <div class="overlay overload" x-show="overload" x-transition.opacity.duration.300ms :class="overload && overload.team">
     <template x-if="overload">

@@ -10,6 +10,7 @@ import { EventEmitter } from 'node:events';
 // ===============================================================
 
 export const Phase = Object.freeze({
+  WAITING: 'waiting',     // انتظار انضمام لاعب واحد على الأقل في كل فريق
   COUNTDOWN: 'countdown', // عد تنازلي قبل الجولة
   BATTLE: 'battle',       // المعركة
   VICTORY: 'victory',     // شاشة الفوز
@@ -88,8 +89,21 @@ export class ReactorGame extends EventEmitter {
     if (!this.opt.keepTeamsBetweenRounds) this.members.clear();
     for (const m of this.members.values()) { m.roundCoins = 0; m.roundLikes = 0; }
     this.rosterDirty = true;
-    this.setPhase(Phase.COUNTDOWN, this.opt.countdownSeconds);
+    this.lastComment = new Map();
+    if (this.enoughPlayers()) this.setPhase(Phase.COUNTDOWN, this.opt.countdownSeconds);
+    else this.setPhase(Phase.WAITING, null);
     this.emit('round', { round: this.round });
+  }
+
+  /** هل يوجد العدد الأدنى من اللاعبين في كل فريق لبدء الجولة؟ */
+  enoughPlayers() {
+    const min = this.opt.minPlayersPerTeam ?? 1;
+    return TEAMS.every((t) => this.countTeam(t) >= min);
+  }
+
+  /** يبدأ العد التنازلي عند اكتمال الفريقين أثناء الانتظار */
+  maybeStartCountdown() {
+    if (this.phase === Phase.WAITING && this.enoughPlayers()) this.setPhase(Phase.COUNTDOWN, this.opt.countdownSeconds);
   }
 
   setPhase(phase, seconds) {
@@ -177,6 +191,7 @@ export class ReactorGame extends EventEmitter {
       existing.team = team;
       this.rosterDirty = true;
       this.emit('fx', { type: 'join', team, user: pub(existing), switched: true });
+      this.maybeStartCountdown();
       return 'switched';
     }
     const m = {
@@ -194,6 +209,7 @@ export class ReactorGame extends EventEmitter {
     this.members.set(m.id, m);
     this.rosterDirty = true;
     this.emit('fx', { type: 'join', team, user: pub(m) });
+    this.maybeStartCountdown();
     return 'joined';
   }
 
@@ -216,8 +232,23 @@ export class ReactorGame extends EventEmitter {
 
   handleComment(user, text) {
     const team = parseTeam(text);
-    if (!team) return 'ignored';
-    return this.join(user, team);
+    if (team) return this.join(user, team);
+    return this.chatPower(user);
+  }
+
+  /** أي تعليق من جندي أثناء المعركة يعطي فريقه دفعة صغيرة (مرة كل commentCooldown ثانية لكل شخص) */
+  chatPower(user) {
+    const push = this.opt.commentPush || 0;
+    if (!push || this.phase !== Phase.BATTLE) return 'ignored';
+    const m = user?.id && this.members.get(user.id);
+    if (!m) return 'ignored';
+    const now = this.now();
+    const last = this.lastComment.get(m.id) || 0;
+    if (now - last < (this.opt.commentCooldown ?? 3) * 1000) return 'ignored';
+    this.lastComment.set(m.id, now);
+    this.move(m.team, push);
+    this.emit('fx', { type: 'chat', team: m.team, user: pub(m) });
+    return 'chat';
   }
 
   /** التكبيس: يشحن درع قاعدة الفريق (ودفعة صغيرة جداً للمفاعل) */
@@ -376,7 +407,7 @@ export class ReactorGame extends EventEmitter {
 
   /** تخطي المرحلة الحالية */
   skip() {
-    if (this.phase === Phase.COUNTDOWN) this.setPhase(Phase.BATTLE, this.opt.battleSeconds);
+    if (this.phase === Phase.WAITING || this.phase === Phase.COUNTDOWN) this.setPhase(Phase.BATTLE, this.opt.battleSeconds);
     else if (this.phase === Phase.BATTLE) this.finish(this.core > 0 ? 'blue' : this.core < 0 ? 'red' : null, 'admin');
     else this.newRound();
   }
@@ -444,6 +475,7 @@ export class ReactorGame extends EventEmitter {
       winner: this.winner,
       history: this.history,
       battleSeconds: this.opt.battleSeconds,
+      minPlayersPerTeam: this.opt.minPlayersPerTeam ?? 1,
     };
   }
 }

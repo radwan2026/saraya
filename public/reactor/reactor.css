@@ -275,6 +275,22 @@ body.transparent .bg { display: none; }
 @keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
 
 /* ---------- الطبقات ---------- */
+.waiting { background: radial-gradient(circle, rgba(30, 15, 70, .6), rgba(0, 0, 0, .85)); }
+.w-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.w-icon { font-size: 170px; line-height: 1; filter: drop-shadow(0 0 40px #9a6bff); animation: spin 8s linear infinite; }
+.w-title { font-size: 84px; font-weight: 900; text-shadow: 0 0 30px #9a6bff; }
+.w-sub { font-size: 34px; font-weight: 800; color: var(--muted); max-width: 900px; }
+.w-teams { display: flex; gap: 30px; margin-top: 16px; }
+.w-team { --c: var(--blue); display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 380px; padding: 26px 20px;
+  border-radius: 28px; border: 3px solid var(--c); background: color-mix(in srgb, var(--c) 18%, rgba(0, 0, 0, .6)); box-shadow: 0 0 40px color-mix(in srgb, var(--c) 45%, transparent); }
+.w-team.red { --c: var(--red); }
+.w-team b { font-size: 44px; }
+.w-team span { font-size: 36px; font-weight: 800; }
+.w-team em { font-style: normal; background: var(--c); padding: 0 16px; border-radius: 10px; margin: 0 6px; }
+.w-team i { font-style: normal; font-size: 40px; color: var(--muted); }
+.w-team.ready { animation: pulse 1.2s ease-in-out infinite; }
+.w-team.ready i { color: #3ddc84; }
+
 .overlay { position: absolute; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; text-align: center; }
 
 .countdown { background: radial-gradient(circle, rgba(20, 10, 50, .55), rgba(0, 0, 0, .8)); flex-direction: column; }

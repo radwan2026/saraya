@@ -387,6 +387,7 @@
       now: Date.now(),
       offset: 0,
       battleSeconds: 300,
+      minPerTeam: 1,
       lastCd: null,
 
       fmt, avatar, fallbackAvatar,
@@ -426,6 +427,7 @@
           this.commander = st.commander;
           this.winner = st.winner;
           this.battleSeconds = st.battleSeconds || this.battleSeconds;
+          this.minPerTeam = st.minPlayersPerTeam || 1;
           if (st.phase !== 'battle') FX.mines = [];
         });
         socket.on('tick', (t) => this.applyTick(t));
@@ -503,6 +505,9 @@
             break;
           case 'like':
             FX.likes(f.team, f.count);
+            break;
+          case 'chat':
+            FX.laser(f.team, f.user.id, 0);
             break;
           case 'laser': {
             const shots = Math.min(5, f.count);

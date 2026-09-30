@@ -112,9 +112,9 @@
   <script>
     const $ = (id) => document.getElementById(id);
     const socket = io();
-    const PH = { countdown: 'عد تنازلي', battle: '⚔ المعركة', victory: '🏆 شاشة الفوز' };
+    const PH = { waiting: '⏳ انتظار اللاعبين', countdown: 'عد تنازلي', battle: '⚔ المعركة', victory: '🏆 شاشة الفوز' };
     const TT = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل', error: 'خطأ' };
-    const RES = { joined: 'انضم', switched: 'بدّل فريقه', same: 'نفس الفريق', locked: 'التبديل مقفل أثناء المعركة', ignored: 'تجاهل',
+    const RES = { chat: 'دفعة تعليق', joined: 'انضم', switched: 'بدّل فريقه', same: 'نفس الفريق', locked: 'التبديل مقفل أثناء المعركة', ignored: 'تجاهل',
       laser: 'ليزر', mines: 'ألغام', emp: 'تعطيل', overload: 'OVERLOAD' };
     let st = null; let offset = 0;
 

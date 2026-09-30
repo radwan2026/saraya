@@ -8,7 +8,11 @@ function setup(over = {}) {
   const clock = { now: () => t, advance: (ms) => { t += ms; } };
   const game = new ReactorGame({ ...config.game, ...over }, { now: clock.now });
   game.lastTick = t;
-  const battle = () => { clock.advance(config.game.countdownSeconds * 1000 + 1); game.tick(); assert.equal(game.phase, Phase.BATTLE); };
+  const battle = () => {
+    if (game.phase === Phase.WAITING) game.skip(); // بدء إجباري كما في لوحة التحكم
+    clock.advance(config.game.countdownSeconds * 1000 + 1); game.tick();
+    assert.equal(game.phase, Phase.BATTLE);
+  };
   const u = (id) => ({ id, uniqueId: id, nickname: id });
   return { game, clock, battle, u };
 }
@@ -129,6 +133,7 @@ test('Overload يمسح نصف طاقة الخصم ويمنح لقب القائ�
 test('تدمير القاعدة ينهي الجولة ثم تبدأ جولة جديدة بعدادات مصفّرة', () => {
   const { game, battle, clock, u } = setup();
   game.handleComment(u('a'), '1');
+  game.handleComment(u('b'), '2');
   battle();
   game.handleGift(u('a'), { name: 'Rose', diamonds: 1 }, 1000);
   assert.equal(game.phase, Phase.VICTORY);
@@ -181,4 +186,29 @@ test('التفعيل التلقائي: المكبّس غير المنضم يُض
   s2.battle();
   assert.equal(s2.game.handleLike(s2.u('y'), 5), 'ignored');
   s2.game.destroy();
+});
+
+test('الجولة تنتظر لاعباً في كل فريق قبل العد التنازلي', () => {
+  const { game, u } = setup();
+  assert.equal(game.phase, Phase.WAITING);
+  assert.equal(game.phaseEndsAt, null);
+  game.handleComment(u('a'), '1');
+  assert.equal(game.phase, Phase.WAITING);
+  game.handleComment(u('b'), '2');
+  assert.equal(game.phase, Phase.COUNTDOWN);
+  game.destroy();
+});
+
+test('التعليق أثناء المعركة يدفع المفاعل مرة كل فترة لكل شخص', () => {
+  const { game, battle, clock, u } = setup();
+  game.handleComment(u('a'), '1');
+  game.handleComment(u('b'), '2');
+  battle();
+  assert.equal(game.handleComment(u('a'), 'يلا يا أزرق'), 'chat');
+  assert.equal(game.core, config.game.commentPush);
+  assert.equal(game.handleComment(u('a'), 'مرة ثانية'), 'ignored'); // سبام
+  clock.advance(config.game.commentCooldown * 1000 + 1);
+  assert.equal(game.handleComment(u('a'), 'هيا'), 'chat');
+  assert.equal(game.handleComment(u('zzz'), 'غريب'), 'ignored'); // غير منضم
+  game.destroy();
 });
