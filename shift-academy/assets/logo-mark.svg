@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -10 184 106" role="img" aria-label="Shift Academy">
+  <defs>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8E8E8E"/><stop offset=".55" stop-color="#BCBCBC"/><stop offset="1" stop-color="#E6E6E6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB11A"/><stop offset=".45" stop-color="#FFB11A"/><stop offset="1" stop-color="#BC8A33"/>
+    </linearGradient>
+  </defs>
+  <g transform="skewX(-22) translate(34 0)">
+    <polygon points="30,36 48,36 78,80 60,80" fill="url(#fold)"/>
+    <rect x="30" y="30" width="54" height="19" rx="5" fill="#FFFFFF"/>
+    <rect x="4" y="71" width="76" height="19" rx="5" fill="#FFFFFF"/>
+    <polygon points="90,32 108,32 137,86 121,86" fill="url(#fold)"/>
+    <rect x="88" y="30" width="19" height="60" rx="5" fill="#FFFFFF"/>
+    <path d="M121 24h19v61a5 5 0 0 1-5 5h-9a5 5 0 0 1-5-5z" fill="url(#gold)"/>
+    <polygon points="113,28 148,28 130.5,-6" fill="#FFB11A"/>
+  </g>
+</svg>
