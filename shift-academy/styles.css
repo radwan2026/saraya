@@ -21,6 +21,9 @@
   --f-body: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --f-latin: "Nunito Sans", system-ui, sans-serif;
 }
+/* English uses the brand's Latin family; Arabic keeps Cairo + IBM Plex Sans Arabic. */
+html[lang="en"] { --f-head: "Nunito Sans", system-ui, sans-serif; --f-body: "Nunito Sans", system-ui, sans-serif; }
+html[lang="en"] h1, html[lang="en"] h2 { letter-spacing: -.01em; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 84px; }
@@ -83,6 +86,13 @@ img, svg { display: block; }
 }
 .main-nav a:not(.btn):hover::after { transform: scaleX(1); }
 .nav-cta { padding: .5em 1.3em; }
+.header-tools { display: flex; align-items: center; gap: .6rem; }
+.lang-toggle {
+  font-family: "Cairo", "Nunito Sans", system-ui, sans-serif; font-weight: 700; font-size: .9rem; cursor: pointer;
+  color: var(--gold-rise); background: transparent; border: 1.5px solid rgba(255,177,26,.6);
+  border-radius: 999px; padding: .3em 1em; transition: .2s;
+}
+.lang-toggle:hover { background: var(--gold-rise); color: var(--navy); }
 .nav-toggle { display: none; background: none; border: 0; padding: 8px; cursor: pointer; }
 .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--white); margin: 5px 0; transition: .25s; }
 
@@ -100,8 +110,9 @@ img, svg { display: block; }
 }
 .eyebrow {
   font-family: var(--f-latin); font-style: italic; font-weight: 700;
-  color: var(--gold-rise); letter-spacing: .04em; margin-bottom: .6rem; text-align: right;
+  color: var(--gold-rise); letter-spacing: .04em; margin-bottom: .6rem; text-align: start;
 }
+[dir="rtl"] .eyebrow { text-align: right; }
 .hero h1 { font-size: clamp(2rem, 4.4vw, 3.3rem); font-weight: 800; }
 .hero h1::after {
   content: ""; display: block; width: 110px; height: 4px; border-radius: 4px;
@@ -116,10 +127,11 @@ img, svg { display: block; }
   background: rgba(29, 39, 71, .7); border: 1px solid rgba(255,255,255,.07);
 }
 .stats strong {
-  text-align: right; unicode-bidi: isolate;
+  text-align: left; unicode-bidi: isolate;
   display: block; font-family: var(--f-latin); font-style: italic; font-weight: 800;
   font-size: 2rem; line-height: 1.2; color: var(--gold-rise);
 }
+[dir="rtl"] .stats strong { text-align: right; }
 .stats span { color: var(--muted-on-navy); font-size: .95rem; }
 
 .hero-visual { position: relative; display: grid; place-items: center; aspect-ratio: 1; }
@@ -212,8 +224,9 @@ img, svg { display: block; }
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-top: 4rem; position: relative; }
 .steps::before {
   content: ""; position: absolute; top: 22px; inset-inline: 12%; height: 2px;
-  background: linear-gradient(to left, var(--navy), var(--gold-rise));
+  background: linear-gradient(to right, var(--navy), var(--gold-rise));
 }
+[dir="rtl"] .steps::before { background: linear-gradient(to left, var(--navy), var(--gold-rise)); }
 .step { text-align: center; position: relative; }
 .step-dot {
   width: 46px; height: 46px; border-radius: 50%; display: inline-grid; place-items: center;

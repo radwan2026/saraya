@@ -1,16 +1,20 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shift Academy — من التأسيس إلى القمة</title>
-  <meta name="description" content="Shift Academy — منصة تعلّم عميقة يقودها ممارسون في الذكاء الاصطناعي، الأمن السيبراني، البلوك تشين والبرمجة.">
+  <title>Shift Academy — Ascend Your Knowledge</title>
+  <meta name="description" content="Shift Academy — deep, practitioner-led courses in AI, Cybersecurity, Blockchain and Programming.">
   <meta name="theme-color" content="#27345D">
   <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Nunito+Sans:ital,wght@1,700;1,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Apply saved language before first paint to avoid a flash of the wrong direction.
+    try { if (localStorage.getItem('sa-lang') === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; } } catch (e) {}
+  </script>
 </head>
 <body>
 
@@ -39,21 +43,24 @@
 
   <header class="site-header" id="top">
     <div class="container header-inner">
-      <a href="#top" dir="ltr" class="brand" aria-label="Shift Academy — الصفحة الرئيسية">
+      <a href="#top" dir="ltr" class="brand" aria-label="Shift Academy">
         <svg class="brand-mark"><use href="#sa-mark"/></svg>
-        <span class="wordmark" dir="ltr"><span class="w-gold">Shift</span> Academy</span>
+        <span class="wordmark"><span class="w-gold">Shift</span> Academy</span>
       </a>
-      <nav class="main-nav" id="main-nav" aria-label="القائمة الرئيسية">
-        <a href="#tracks">المسارات</a>
-        <a href="#courses">الدورات</a>
-        <a href="#why">لماذا Shift</a>
-        <a href="#instructors">المدرّبون</a>
-        <a href="#faq">الأسئلة الشائعة</a>
-        <a href="#join" class="btn btn-gold nav-cta">ابدأ رحلتك</a>
+      <nav class="main-nav" id="main-nav" data-i18n-aria="nav.label">
+        <a href="#tracks" data-i18n="nav.tracks">Tracks</a>
+        <a href="#courses" data-i18n="nav.courses">Courses</a>
+        <a href="#why" data-i18n="nav.why">Why Shift</a>
+        <a href="#instructors" data-i18n="nav.instructors">Instructors</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="#join" class="btn btn-gold nav-cta" data-i18n="nav.cta">Start Learning</a>
       </nav>
-      <button class="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="فتح القائمة">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-tools">
+        <button class="lang-toggle" type="button" id="lang-toggle" aria-label="العربية" lang="ar">العربية</button>
+        <button class="nav-toggle" aria-controls="main-nav" aria-expanded="false" data-i18n-aria="nav.open">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -63,26 +70,26 @@
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow" dir="ltr">Ascend Your Knowledge</p>
-          <h1>من التأسيس إلى القمة…<br><span class="hl">خطوةً بخطوة</span></h1>
-          <p class="lead">
-            دورات عميقة يقودها ممارسون حقيقيون في <strong>الذكاء الاصطناعي</strong>، <strong>الأمن السيبراني</strong>،
-            <strong>البلوك تشين</strong> و<strong>البرمجة</strong> — للأفراد والمؤسسات وحديثي التخرّج الجاهزين للتقدّم.
+          <h1 data-i18n-html="hero.title">From Foundation to the Summit…<br><span class="hl">One Step at a Time</span></h1>
+          <p class="lead" data-i18n-html="hero.lead">
+            Deep, practitioner-led courses in <strong>AI</strong>, <strong>Cybersecurity</strong>,
+            <strong>Blockchain</strong> and <strong>Programming</strong> — for individuals, organizations and fresh graduates ready to get ahead.
           </p>
           <div class="hero-actions">
-            <a href="#courses" class="btn btn-gold">استكشف الدورات</a>
-            <a href="#tracks" class="btn btn-ghost">تعرّف على المسارات</a>
+            <a href="#courses" class="btn btn-gold" data-i18n="hero.cta1">Explore Courses</a>
+            <a href="#tracks" class="btn btn-ghost" data-i18n="hero.cta2">Discover the Tracks</a>
           </div>
-          <ul class="stats" aria-label="أرقام الأكاديمية">
-            <li><strong dir="ltr" class="counter" data-target="340" data-suffix="+">0</strong><span>متعلّم نشط</span></li>
-            <li><strong dir="ltr" class="counter" data-target="14" data-suffix="+">0</strong><span>دورة بإشراف خبراء</span></li>
-            <li><strong dir="ltr" class="counter" data-target="94" data-suffix="%">0</strong><span>نسبة إتمام الدورات</span></li>
+          <ul class="stats" data-i18n-aria="stats.label">
+            <li><strong dir="ltr" class="counter" data-target="340" data-suffix="+">0</strong><span data-i18n="stats.learners">Active learners</span></li>
+            <li><strong dir="ltr" class="counter" data-target="14" data-suffix="+">0</strong><span data-i18n="stats.courses">Expert-led courses</span></li>
+            <li><strong dir="ltr" class="counter" data-target="94" data-suffix="%">0</strong><span data-i18n="stats.completion">Completion rate</span></li>
           </ul>
         </div>
         <div class="hero-visual" aria-hidden="true">
           <div class="orbit"></div>
           <svg class="hero-mark"><use href="#sa-mark"/></svg>
           <div class="chips">
-            <span>حركة</span><span>تطوّر</span><span>تجدّد</span>
+            <span data-i18n="chip.1">Motion</span><span data-i18n="chip.2">Growth</span><span data-i18n="chip.3">Renewal</span>
           </div>
         </div>
       </div>
@@ -92,42 +99,42 @@
     <section class="section light" id="tracks">
       <div class="container">
         <div class="section-head">
-          <p class="kicker">01 — المسارات التعليمية</p>
-          <h2>مسارات مبنيّة للعمق… لا للاتساع</h2>
-          <p>كل مسار يأخذك من الأساسيات إلى إتقان الممارس المحترف، عبر مشاريع واقعية وتقييمات عملية.</p>
+          <p class="kicker" data-i18n="tracks.kicker">01 — Learning Tracks</p>
+          <h2 data-i18n="tracks.title">Pathways built for depth — not breadth</h2>
+          <p data-i18n="tracks.sub">Each track takes you from fundamentals to practitioner-grade mastery through real projects and hands-on assessments.</p>
         </div>
         <div class="tracks-grid">
           <article class="track-card">
             <div class="track-icon">
               <svg viewBox="0 0 24 24"><path d="M9 3h6M12 3v3M5 9a7 7 0 0 1 14 0v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><circle cx="9.5" cy="12" r="1"/><circle cx="14.5" cy="12" r="1"/><path d="M9 21h6"/></svg>
             </div>
-            <h3>الذكاء الاصطناعي</h3>
-            <p>تعلّم الآلة، النماذج اللغوية الكبيرة، وبناء تطبيقات ذكية قابلة للنشر.</p>
-            <ul class="track-meta"><li>4 دورات</li><li>من المبتدئ إلى المتقدّم</li></ul>
+            <h3 data-i18n="track.ai">Artificial Intelligence</h3>
+            <p data-i18n="track.ai.desc">Machine learning, large language models, and building deployable intelligent applications.</p>
+            <ul class="track-meta"><li data-i18n="track.ai.m1">4 courses</li><li data-i18n="track.ai.m2">Beginner to advanced</li></ul>
           </article>
           <article class="track-card">
             <div class="track-icon">
               <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
             </div>
-            <h3>الأمن السيبراني</h3>
-            <p>اختبار الاختراق، أمن الشبكات والتطبيقات، والاستجابة للحوادث.</p>
-            <ul class="track-meta"><li>4 دورات</li><li>مختبرات عملية</li></ul>
+            <h3 data-i18n="track.cyber">Cybersecurity</h3>
+            <p data-i18n="track.cyber.desc">Penetration testing, network and application security, and incident response.</p>
+            <ul class="track-meta"><li data-i18n="track.cyber.m1">4 courses</li><li data-i18n="track.cyber.m2">Hands-on labs</li></ul>
           </article>
           <article class="track-card">
             <div class="track-icon">
               <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><path d="M10 6.5h4M17.5 10v4M6.5 10v7.5H14"/></svg>
             </div>
-            <h3>البلوك تشين</h3>
-            <p>العقود الذكية، التطبيقات اللامركزية، وأساسيات التشفير والاقتصاد الرقمي.</p>
-            <ul class="track-meta"><li>3 دورات</li><li>مشاريع على شبكات تجريبية</li></ul>
+            <h3 data-i18n="track.chain">Blockchain</h3>
+            <p data-i18n="track.chain.desc">Smart contracts, decentralized apps, and the fundamentals of cryptography and digital economies.</p>
+            <ul class="track-meta"><li data-i18n="track.chain.m1">3 courses</li><li data-i18n="track.chain.m2">Testnet projects</li></ul>
           </article>
           <article class="track-card">
             <div class="track-icon">
               <svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>
             </div>
-            <h3>البرمجة</h3>
-            <p>من أساسيات التفكير البرمجي إلى تطوير الويب والخدمات الخلفية باحتراف.</p>
-            <ul class="track-meta"><li>3 دورات</li><li>بناء معرض أعمال</li></ul>
+            <h3 data-i18n="track.code">Programming</h3>
+            <p data-i18n="track.code.desc">From computational thinking to professional web and back-end development.</p>
+            <ul class="track-meta"><li data-i18n="track.code.m1">3 courses</li><li data-i18n="track.code.m2">Build a portfolio</li></ul>
           </article>
         </div>
       </div>
@@ -137,16 +144,16 @@
     <section class="section" id="courses">
       <div class="container">
         <div class="section-head">
-          <p class="kicker">02 — الدورات</p>
-          <h2>اختر دورتك التالية</h2>
-          <p>محتوى محدّث باستمرار، وجلسات تطبيقية، وشهادة إتمام معتمدة من الأكاديمية.</p>
+          <p class="kicker" data-i18n="courses.kicker">02 — Courses</p>
+          <h2 data-i18n="courses.title">Choose your next course</h2>
+          <p data-i18n="courses.sub">Continuously updated content, hands-on sessions, and an academy certificate of completion.</p>
         </div>
-        <div class="filters" role="tablist" aria-label="تصفية الدورات">
-          <button class="filter active" data-filter="all" role="tab" aria-selected="true">الكل</button>
-          <button class="filter" data-filter="ai" role="tab" aria-selected="false">الذكاء الاصطناعي</button>
-          <button class="filter" data-filter="cyber" role="tab" aria-selected="false">الأمن السيبراني</button>
-          <button class="filter" data-filter="chain" role="tab" aria-selected="false">البلوك تشين</button>
-          <button class="filter" data-filter="code" role="tab" aria-selected="false">البرمجة</button>
+        <div class="filters" role="tablist" data-i18n-aria="courses.filter">
+          <button class="filter active" data-filter="all" role="tab" aria-selected="true" data-i18n="filter.all">All</button>
+          <button class="filter" data-filter="ai" role="tab" aria-selected="false" data-i18n="track.ai">Artificial Intelligence</button>
+          <button class="filter" data-filter="cyber" role="tab" aria-selected="false" data-i18n="track.cyber">Cybersecurity</button>
+          <button class="filter" data-filter="chain" role="tab" aria-selected="false" data-i18n="track.chain">Blockchain</button>
+          <button class="filter" data-filter="code" role="tab" aria-selected="false" data-i18n="track.code">Programming</button>
         </div>
         <div class="courses-grid" id="courses-grid"><!-- rendered by script.js --></div>
       </div>
@@ -156,32 +163,32 @@
     <section class="section light" id="why">
       <div class="container">
         <div class="section-head">
-          <p class="kicker">03 — لمن صُمّمت الأكاديمية</p>
-          <h2>حركةٌ لا تتوقف… كالتعلّم المتجدد</h2>
+          <p class="kicker" data-i18n="why.kicker">03 — Who It's For</p>
+          <h2 data-i18n="why.title">Motion that never stops — like learning itself</h2>
         </div>
         <div class="audience-grid">
           <article class="audience-card">
             <span class="num">01</span>
-            <h3>الأفراد</h3>
-            <p>طوّر مهاراتك بمسار واضح وتوجيه مباشر، وانتقل إلى مستوى مهني جديد بثقة.</p>
+            <h3 data-i18n="aud.1.t">Individuals</h3>
+            <p data-i18n="aud.1.d">Grow your skills with a clear path and direct mentorship, and step into a new professional level with confidence.</p>
           </article>
           <article class="audience-card">
             <span class="num">02</span>
-            <h3>المؤسسات</h3>
-            <p>برامج تدريب مخصّصة لفرقكم، مع تقارير تقدّم وقياس أثر حقيقي على الأداء.</p>
+            <h3 data-i18n="aud.2.t">Organizations</h3>
+            <p data-i18n="aud.2.d">Tailored training programs for your teams, with progress reports and measurable impact on performance.</p>
           </article>
           <article class="audience-card">
             <span class="num">03</span>
-            <h3>حديثو التخرّج</h3>
-            <p>اسدّ الفجوة بين الجامعة وسوق العمل بمشاريع عملية تُضاف مباشرة لسيرتك الذاتية.</p>
+            <h3 data-i18n="aud.3.t">Fresh Graduates</h3>
+            <p data-i18n="aud.3.d">Bridge the gap between university and the job market with practical projects that go straight onto your CV.</p>
           </article>
         </div>
 
         <div class="steps">
-          <div class="step"><span class="step-dot">1</span><h4>التأسيس</h4><p>مفاهيم متينة تُبنى عليها كل خطوة لاحقة.</p></div>
-          <div class="step"><span class="step-dot">2</span><h4>التطبيق</h4><p>مختبرات ومشاريع تحاكي بيئات العمل الفعلية.</p></div>
-          <div class="step"><span class="step-dot">3</span><h4>الإتقان</h4><p>مشروع تخرّج مُقيّم من ممارسين في المجال.</p></div>
-          <div class="step"><span class="step-dot gold">↑</span><h4>القمة</h4><p>شهادة، ومعرض أعمال، وجاهزية للفرص.</p></div>
+          <div class="step"><span class="step-dot">1</span><h4 data-i18n="step.1.t">Foundation</h4><p data-i18n="step.1.d">Solid concepts that every next step builds on.</p></div>
+          <div class="step"><span class="step-dot">2</span><h4 data-i18n="step.2.t">Practice</h4><p data-i18n="step.2.d">Labs and projects that mirror real work environments.</p></div>
+          <div class="step"><span class="step-dot">3</span><h4 data-i18n="step.3.t">Mastery</h4><p data-i18n="step.3.d">A capstone project reviewed by industry practitioners.</p></div>
+          <div class="step"><span class="step-dot gold">↑</span><h4 data-i18n="step.4.t">Summit</h4><p data-i18n="step.4.d">A certificate, a portfolio, and readiness for opportunity.</p></div>
         </div>
       </div>
     </section>
@@ -190,19 +197,19 @@
     <section class="section" id="instructors">
       <div class="container instructors">
         <div class="instructors-copy">
-          <p class="kicker">04 — المدرّبون</p>
-          <h2>تعلّم من ممارسين… لا من مُلقّنين</h2>
-          <p>
-            يجمع مدرّبونا أكثر من <strong class="hl">أربعة عقود</strong> من الخبرة العملية المشتركة في تطوير المنتجات،
-            الأمن، والهندسة. يعملون يومياً على ما يدرّسونه، لذلك ستتعلّم ما يُطبَّق فعلاً في الميدان.
+          <p class="kicker" data-i18n="ins.kicker">04 — Instructors</p>
+          <h2 data-i18n="ins.title">Learn from practitioners — not lecturers</h2>
+          <p data-i18n-html="ins.body">
+            Together our instructors bring more than <strong class="hl">four decades</strong> of combined hands-on practice across
+            product, security and engineering. They work every day on what they teach — so you learn what actually ships.
           </p>
-          <a href="#join" class="btn btn-gold">انضم كمتعلّم</a>
+          <a href="#join" class="btn btn-gold" data-i18n="ins.cta">Join as a Learner</a>
         </div>
         <div class="instructor-cards">
-          <div class="instructor"><div class="avatar">AI</div><div><h4>مهندس تعلّم آلة</h4><p>12+ سنة · أنظمة إنتاجية</p></div></div>
-          <div class="instructor"><div class="avatar">SEC</div><div><h4>خبير أمن هجومي</h4><p>10+ سنوات · اختبار اختراق</p></div></div>
-          <div class="instructor"><div class="avatar">WEB3</div><div><h4>مطوّر عقود ذكية</h4><p>8+ سنوات · تطبيقات لامركزية</p></div></div>
-          <div class="instructor"><div class="avatar">DEV</div><div><h4>مهندس برمجيات أول</h4><p>12+ سنة · منصّات واسعة النطاق</p></div></div>
+          <div class="instructor"><div class="avatar">AI</div><div><h4 data-i18n="ins.1.t">Machine Learning Engineer</h4><p data-i18n="ins.1.d">12+ years · Production systems</p></div></div>
+          <div class="instructor"><div class="avatar">SEC</div><div><h4 data-i18n="ins.2.t">Offensive Security Expert</h4><p data-i18n="ins.2.d">10+ years · Penetration testing</p></div></div>
+          <div class="instructor"><div class="avatar">WEB3</div><div><h4 data-i18n="ins.3.t">Smart Contract Developer</h4><p data-i18n="ins.3.d">8+ years · Decentralized apps</p></div></div>
+          <div class="instructor"><div class="avatar">DEV</div><div><h4 data-i18n="ins.4.t">Senior Software Engineer</h4><p data-i18n="ins.4.d">12+ years · Large-scale platforms</p></div></div>
         </div>
       </div>
     </section>
@@ -211,21 +218,21 @@
     <section class="section light">
       <div class="container">
         <div class="section-head">
-          <p class="kicker">05 — قصص المتعلّمين</p>
-          <h2>ماذا يقول متعلّمونا</h2>
+          <p class="kicker" data-i18n="q.kicker">05 — Learner Stories</p>
+          <h2 data-i18n="q.title">What our learners say</h2>
         </div>
         <div class="quotes">
           <figure class="quote">
-            <blockquote>«أول دورة أشعر فيها أنني أبني شيئاً حقيقياً من الأسبوع الأول. المشروع النهائي صار جزءاً من معرض أعمالي.»</blockquote>
-            <figcaption>متعلّم في مسار الذكاء الاصطناعي</figcaption>
+            <blockquote data-i18n="q.1.t">“The first course where I felt I was building something real from week one. My final project is now part of my portfolio.”</blockquote>
+            <figcaption data-i18n="q.1.a">Learner — AI track</figcaption>
           </figure>
           <figure class="quote">
-            <blockquote>«المختبرات العملية في الأمن السيبراني نقلتني من القراءة النظرية إلى التطبيق الفعلي.»</blockquote>
-            <figcaption>خرّيجة حديثة — مسار الأمن السيبراني</figcaption>
+            <blockquote data-i18n="q.2.t">“The hands-on cybersecurity labs took me from theory to real practice.”</blockquote>
+            <figcaption data-i18n="q.2.a">Fresh graduate — Cybersecurity track</figcaption>
           </figure>
           <figure class="quote">
-            <blockquote>«درّبنا فريقاً كاملاً عبر برنامج المؤسسات، والفرق في جودة العمل كان واضحاً خلال أسابيع.»</blockquote>
-            <figcaption>مدير تقني — شريك مؤسسي</figcaption>
+            <blockquote data-i18n="q.3.t">“We trained an entire team through the organizations program, and the difference in work quality was clear within weeks.”</blockquote>
+            <figcaption data-i18n="q.3.a">CTO — Corporate partner</figcaption>
           </figure>
         </div>
       </div>
@@ -235,25 +242,25 @@
     <section class="section" id="faq">
       <div class="container faq-wrap">
         <div class="section-head">
-          <p class="kicker">06 — الأسئلة الشائعة</p>
-          <h2>لديك سؤال؟</h2>
+          <p class="kicker" data-i18n="faq.kicker">06 — FAQ</p>
+          <h2 data-i18n="faq.title">Have a question?</h2>
         </div>
         <div class="faq">
           <details open>
-            <summary>هل الدورات حضورية أم عن بُعد؟</summary>
-            <p>جميع الدورات متاحة عبر الإنترنت، مع جلسات مباشرة أسبوعية وتسجيلات يمكنك الرجوع إليها في أي وقت.</p>
+            <summary data-i18n="faq.1.q">Are the courses in person or online?</summary>
+            <p data-i18n="faq.1.a">All courses are available online, with weekly live sessions and recordings you can revisit any time.</p>
           </details>
           <details>
-            <summary>هل أحتاج خبرة سابقة؟</summary>
-            <p>كل مسار يبدأ من مستوى التأسيس. بعض الدورات المتقدّمة تتطلّب إكمال دورة سابقة، وهذا موضّح في صفحة كل دورة.</p>
+            <summary data-i18n="faq.2.q">Do I need prior experience?</summary>
+            <p data-i18n="faq.2.a">Every track starts at the foundation level. Some advanced courses require completing an earlier course, as noted on each course.</p>
           </details>
           <details>
-            <summary>هل أحصل على شهادة؟</summary>
-            <p>نعم، تحصل على شهادة إتمام من Shift Academy بعد اجتياز المشروع النهائي والتقييمات العملية.</p>
+            <summary data-i18n="faq.3.q">Will I get a certificate?</summary>
+            <p data-i18n="faq.3.a">Yes — you receive a Shift Academy certificate of completion after passing the final project and practical assessments.</p>
           </details>
           <details>
-            <summary>هل توجد برامج للمؤسسات؟</summary>
-            <p>نعم، نصمّم برامج تدريب مخصّصة للفرق والمؤسسات. تواصل معنا عبر النموذج أدناه لنرتّب لقاءً تعريفياً.</p>
+            <summary data-i18n="faq.4.q">Do you offer programs for organizations?</summary>
+            <p data-i18n="faq.4.a">Yes, we design custom training programs for teams and organizations. Reach out using the form below to schedule an intro call.</p>
           </details>
         </div>
       </div>
@@ -263,23 +270,23 @@
     <section class="section cta" id="join">
       <div class="container cta-inner">
         <div>
-          <p class="kicker">ابدأ الآن</p>
-          <h2>خطوتك الأولى نحو القمة تبدأ هنا</h2>
-          <p>سجّل اهتمامك وسيتواصل معك فريقنا لمساعدتك في اختيار المسار الأنسب.</p>
+          <p class="kicker" data-i18n="join.kicker">Start Now</p>
+          <h2 data-i18n="join.title">Your first step to the summit starts here</h2>
+          <p data-i18n="join.sub">Register your interest and our team will help you choose the right track.</p>
         </div>
         <form class="join-form" id="join-form" novalidate>
-          <label>الاسم الكامل<input type="text" name="name" required autocomplete="name"></label>
-          <label>البريد الإلكتروني<input type="email" name="email" required autocomplete="email" dir="ltr"></label>
-          <label>المسار المفضّل
+          <label><span data-i18n="form.name">Full name</span><input type="text" name="name" required autocomplete="name"></label>
+          <label><span data-i18n="form.email">Email address</span><input type="email" name="email" required autocomplete="email" dir="ltr"></label>
+          <label><span data-i18n="form.track">Preferred track</span>
             <select name="track">
-              <option>الذكاء الاصطناعي</option>
-              <option>الأمن السيبراني</option>
-              <option>البلوك تشين</option>
-              <option>البرمجة</option>
-              <option>برنامج للمؤسسات</option>
+              <option value="ai" data-i18n="track.ai">Artificial Intelligence</option>
+              <option value="cyber" data-i18n="track.cyber">Cybersecurity</option>
+              <option value="chain" data-i18n="track.chain">Blockchain</option>
+              <option value="code" data-i18n="track.code">Programming</option>
+              <option value="org" data-i18n="form.org">Program for organizations</option>
             </select>
           </label>
-          <button type="submit" class="btn btn-gold">أرسل طلبي</button>
+          <button type="submit" class="btn btn-gold" data-i18n="form.submit">Send my request</button>
           <p class="form-msg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -289,38 +296,39 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <a href="#top" dir="ltr" class="brand">
+        <a href="#top" dir="ltr" class="brand" aria-label="Shift Academy">
           <svg class="brand-mark"><use href="#sa-mark"/></svg>
-          <span class="wordmark" dir="ltr"><span class="w-gold">Shift</span> Academy</span>
+          <span class="wordmark"><span class="w-gold">Shift</span> Academy</span>
         </a>
-        <p>من التأسيس إلى القمة… خطوةً بخطوة.</p>
+        <p data-i18n="footer.tag">From foundation to the summit — one step at a time.</p>
       </div>
       <div>
-        <h4>المسارات</h4>
-        <a href="#tracks">الذكاء الاصطناعي</a>
-        <a href="#tracks">الأمن السيبراني</a>
-        <a href="#tracks">البلوك تشين</a>
-        <a href="#tracks">البرمجة</a>
+        <h4 data-i18n="nav.tracks">Tracks</h4>
+        <a href="#tracks" data-i18n="track.ai">Artificial Intelligence</a>
+        <a href="#tracks" data-i18n="track.cyber">Cybersecurity</a>
+        <a href="#tracks" data-i18n="track.chain">Blockchain</a>
+        <a href="#tracks" data-i18n="track.code">Programming</a>
       </div>
       <div>
-        <h4>الأكاديمية</h4>
-        <a href="#why">لمن الأكاديمية</a>
-        <a href="#instructors">المدرّبون</a>
-        <a href="#faq">الأسئلة الشائعة</a>
-        <a href="#join">تواصل معنا</a>
+        <h4 data-i18n="footer.academy">Academy</h4>
+        <a href="#why" data-i18n="footer.who">Who it's for</a>
+        <a href="#instructors" data-i18n="nav.instructors">Instructors</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="#join" data-i18n="footer.contact">Contact us</a>
       </div>
       <div>
-        <h4>تواصل</h4>
+        <h4 data-i18n="footer.reach">Get in touch</h4>
         <a href="mailto:info@shiftacademy.ly" dir="ltr">info@shiftacademy.ly</a>
-        <span>طرابلس، ليبيا</span>
+        <span data-i18n="footer.city">Tripoli, Libya</span>
       </div>
     </div>
     <div class="container footer-bottom">
-      <span>© <span id="year">2026</span> Shift Academy. جميع الحقوق محفوظة.</span>
+      <span>© <span id="year">2026</span> Shift Academy. <span data-i18n="footer.rights">All rights reserved.</span></span>
       <span dir="ltr" class="latin">Ascend Your Knowledge</span>
     </div>
   </footer>
 
+  <script src="i18n.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

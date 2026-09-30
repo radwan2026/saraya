@@ -1,28 +1,59 @@
 (function () {
   'use strict';
 
-  var TRACKS = {
-    ai: 'الذكاء الاصطناعي',
-    cyber: 'الأمن السيبراني',
-    chain: 'البلوك تشين',
-    code: 'البرمجة'
-  };
+  var DICT = window.SA_I18N;
+  var lang = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+  var currentFilter = 'all';
+
+  function t(key, vars) {
+    var s = (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.replace('{' + k + '}', vars[k]); });
+    return s;
+  }
 
   var COURSES = [
-    { track: 'ai', title: 'أساسيات تعلّم الآلة', level: 'مبتدئ', weeks: 6, desc: 'الانحدار، التصنيف، وتقييم النماذج باستخدام Python وscikit-learn.' },
-    { track: 'ai', title: 'التعلّم العميق التطبيقي', level: 'متوسط', weeks: 8, desc: 'الشبكات العصبية والرؤية الحاسوبية وبناء نماذج بـ PyTorch.' },
-    { track: 'ai', title: 'هندسة تطبيقات النماذج اللغوية', level: 'متقدّم', weeks: 6, desc: 'الاسترجاع المعزّز (RAG)، الوكلاء الذكيون، وتقييم الأنظمة في بيئة الإنتاج.' },
-    { track: 'ai', title: 'علم البيانات للأعمال', level: 'مبتدئ', weeks: 5, desc: 'تحليل البيانات وتصويرها واتخاذ قرارات مبنية على الأرقام.' },
-    { track: 'cyber', title: 'مدخل إلى الأمن السيبراني', level: 'مبتدئ', weeks: 5, desc: 'المفاهيم الأساسية، التهديدات الشائعة، وأساسيات حماية الأنظمة.' },
-    { track: 'cyber', title: 'اختبار اختراق تطبيقات الويب', level: 'متوسط', weeks: 8, desc: 'OWASP Top 10 ومختبرات عملية لاكتشاف الثغرات والإبلاغ عنها.' },
-    { track: 'cyber', title: 'أمن الشبكات والبنية التحتية', level: 'متوسط', weeks: 7, desc: 'الجدران النارية، أنظمة كشف التسلّل، وتقوية الخوادم.' },
-    { track: 'cyber', title: 'الاستجابة للحوادث والتحليل الجنائي', level: 'متقدّم', weeks: 6, desc: 'التعامل مع الحوادث، تحليل السجلات، وجمع الأدلة الرقمية.' },
-    { track: 'chain', title: 'أساسيات البلوك تشين', level: 'مبتدئ', weeks: 4, desc: 'كيف تعمل السلاسل، آليات الإجماع، والمحافظ والتشفير.' },
-    { track: 'chain', title: 'تطوير العقود الذكية بـ Solidity', level: 'متوسط', weeks: 8, desc: 'كتابة واختبار ونشر العقود الذكية بأمان على شبكات تجريبية.' },
-    { track: 'chain', title: 'بناء التطبيقات اللامركزية', level: 'متقدّم', weeks: 6, desc: 'ربط الواجهات بالعقود الذكية وتصميم تجربة مستخدم Web3.' },
-    { track: 'code', title: 'أساسيات البرمجة بـ Python', level: 'مبتدئ', weeks: 6, desc: 'التفكير البرمجي، هياكل البيانات، وكتابة كود نظيف من اليوم الأول.' },
-    { track: 'code', title: 'تطوير الويب الشامل', level: 'متوسط', weeks: 10, desc: 'HTML وCSS وJavaScript وReact وNode.js لبناء تطبيقات متكاملة.' },
-    { track: 'code', title: 'هندسة الخدمات الخلفية', level: 'متقدّم', weeks: 8, desc: 'واجهات API، قواعد البيانات، الاختبارات والنشر السحابي.' }
+    { track: 'ai', level: 'beginner', weeks: 6,
+      en: ['Machine Learning Fundamentals', 'Regression, classification and model evaluation with Python and scikit-learn.'],
+      ar: ['أساسيات تعلّم الآلة', 'الانحدار، التصنيف، وتقييم النماذج باستخدام Python وscikit-learn.'] },
+    { track: 'ai', level: 'intermediate', weeks: 8,
+      en: ['Applied Deep Learning', 'Neural networks, computer vision and building models with PyTorch.'],
+      ar: ['التعلّم العميق التطبيقي', 'الشبكات العصبية والرؤية الحاسوبية وبناء نماذج بـ PyTorch.'] },
+    { track: 'ai', level: 'advanced', weeks: 6,
+      en: ['LLM Application Engineering', 'Retrieval-augmented generation (RAG), AI agents and evaluating systems in production.'],
+      ar: ['هندسة تطبيقات النماذج اللغوية', 'الاسترجاع المعزّز (RAG)، الوكلاء الذكيون، وتقييم الأنظمة في بيئة الإنتاج.'] },
+    { track: 'ai', level: 'beginner', weeks: 5,
+      en: ['Data Science for Business', 'Analyse and visualise data, and make decisions backed by numbers.'],
+      ar: ['علم البيانات للأعمال', 'تحليل البيانات وتصويرها واتخاذ قرارات مبنية على الأرقام.'] },
+    { track: 'cyber', level: 'beginner', weeks: 5,
+      en: ['Introduction to Cybersecurity', 'Core concepts, common threats and the basics of protecting systems.'],
+      ar: ['مدخل إلى الأمن السيبراني', 'المفاهيم الأساسية، التهديدات الشائعة، وأساسيات حماية الأنظمة.'] },
+    { track: 'cyber', level: 'intermediate', weeks: 8,
+      en: ['Web Application Penetration Testing', 'OWASP Top 10 and hands-on labs for finding and reporting vulnerabilities.'],
+      ar: ['اختبار اختراق تطبيقات الويب', 'OWASP Top 10 ومختبرات عملية لاكتشاف الثغرات والإبلاغ عنها.'] },
+    { track: 'cyber', level: 'intermediate', weeks: 7,
+      en: ['Network & Infrastructure Security', 'Firewalls, intrusion detection systems and server hardening.'],
+      ar: ['أمن الشبكات والبنية التحتية', 'الجدران النارية، أنظمة كشف التسلّل، وتقوية الخوادم.'] },
+    { track: 'cyber', level: 'advanced', weeks: 6,
+      en: ['Incident Response & Forensics', 'Handling incidents, log analysis and collecting digital evidence.'],
+      ar: ['الاستجابة للحوادث والتحليل الجنائي', 'التعامل مع الحوادث، تحليل السجلات، وجمع الأدلة الرقمية.'] },
+    { track: 'chain', level: 'beginner', weeks: 4,
+      en: ['Blockchain Fundamentals', 'How chains work, consensus mechanisms, wallets and cryptography.'],
+      ar: ['أساسيات البلوك تشين', 'كيف تعمل السلاسل، آليات الإجماع، والمحافظ والتشفير.'] },
+    { track: 'chain', level: 'intermediate', weeks: 8,
+      en: ['Smart Contracts with Solidity', 'Write, test and securely deploy smart contracts on testnets.'],
+      ar: ['تطوير العقود الذكية بـ Solidity', 'كتابة واختبار ونشر العقود الذكية بأمان على شبكات تجريبية.'] },
+    { track: 'chain', level: 'advanced', weeks: 6,
+      en: ['Building Decentralized Apps', 'Connect front ends to smart contracts and design Web3 user experiences.'],
+      ar: ['بناء التطبيقات اللامركزية', 'ربط الواجهات بالعقود الذكية وتصميم تجربة مستخدم Web3.'] },
+    { track: 'code', level: 'beginner', weeks: 6,
+      en: ['Programming Fundamentals with Python', 'Computational thinking, data structures and writing clean code from day one.'],
+      ar: ['أساسيات البرمجة بـ Python', 'التفكير البرمجي، هياكل البيانات، وكتابة كود نظيف من اليوم الأول.'] },
+    { track: 'code', level: 'intermediate', weeks: 10,
+      en: ['Full-Stack Web Development', 'HTML, CSS, JavaScript, React and Node.js to build complete applications.'],
+      ar: ['تطوير الويب الشامل', 'HTML وCSS وJavaScript وReact وNode.js لبناء تطبيقات متكاملة.'] },
+    { track: 'code', level: 'advanced', weeks: 8,
+      en: ['Back-End Engineering', 'APIs, databases, testing and cloud deployment.'],
+      ar: ['هندسة الخدمات الخلفية', 'واجهات API، قواعد البيانات، الاختبارات والنشر السحابي.'] }
   ];
 
   // ---- Courses grid + filters ----
@@ -36,15 +67,17 @@
   }
 
   function render(filter) {
+    currentFilter = filter;
     var list = COURSES.filter(function (c) { return filter === 'all' || c.track === filter; });
     grid.innerHTML = list.map(function (c, i) {
+      var txt = c[lang];
       return '<article class="course" style="animation-delay:' + (i * 40) + 'ms">' +
-        '<div class="course-top"><span class="tag">' + esc(TRACKS[c.track]) + '</span>' +
-        '<span class="level">' + esc(c.level) + '</span></div>' +
-        '<h3>' + esc(c.title) + '</h3>' +
-        '<p>' + esc(c.desc) + '</p>' +
-        '<div class="course-foot"><span>' + c.weeks + ' أسابيع</span>' +
-        '<a href="#join">سجّل اهتمامك ←</a></div>' +
+        '<div class="course-top"><span class="tag">' + esc(t('track.' + c.track)) + '</span>' +
+        '<span class="level">' + esc(t('level.' + c.level)) + '</span></div>' +
+        '<h3>' + esc(txt[0]) + '</h3>' +
+        '<p>' + esc(txt[1]) + '</p>' +
+        '<div class="course-foot"><span>' + esc(t('course.weeks', { n: c.weeks })) + '</span>' +
+        '<a href="#join">' + esc(t('course.cta')) + '</a></div>' +
         '</article>';
     }).join('');
   }
@@ -58,7 +91,30 @@
       render(btn.dataset.filter);
     });
   });
-  render('all');
+
+  // ---- Language switch (English default, Arabic optional) ----
+  var langBtn = document.getElementById('lang-toggle');
+
+  function applyLang(next) {
+    lang = next;
+    var root = document.documentElement;
+    root.lang = lang;
+    root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-html]').forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+    langBtn.textContent = t('lang.switch');
+    langBtn.setAttribute('lang', lang === 'ar' ? 'en' : 'ar');
+    langBtn.setAttribute('aria-label', t('lang.switch'));
+    render(currentFilter);
+    var msg = document.querySelector('.form-msg');
+    if (msg) { msg.textContent = ''; msg.className = 'form-msg'; }
+    try { localStorage.setItem('sa-lang', lang); } catch (e) {}
+  }
+
+  langBtn.addEventListener('click', function () { applyLang(lang === 'ar' ? 'en' : 'ar'); });
+  applyLang(lang);
 
   // ---- Mobile nav ----
   var toggle = document.querySelector('.nav-toggle');
@@ -120,11 +176,11 @@
     var email = form.email.value.trim();
     msg.className = 'form-msg';
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      msg.textContent = 'يرجى إدخال الاسم وبريد إلكتروني صحيح.';
+      msg.textContent = t('form.err');
       msg.classList.add('err');
       return;
     }
-    msg.textContent = 'شكراً ' + name + '! تم استلام طلبك وسنتواصل معك قريباً.';
+    msg.textContent = t('form.ok', { name: name });
     msg.classList.add('ok');
     form.reset();
   });
