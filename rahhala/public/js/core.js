@@ -182,7 +182,7 @@ export function printHtml(title, bodyHtml) {
   w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(title)}</title>
     <style>${PRINT_CSS}</style></head><body>
     <div class="head"><div><h1>${esc(s.company_name)}</h1><div>${esc(s.company_address || '')}</div><div>${esc(s.company_phone || '')}</div></div>
-    <div class="logo"><img src="${location.origin}/img/logo.png" alt="الرحالة"></div></div>
+    <div class="logo"><img src="${location.origin}/img/logo-green.png" alt="الرحالة"></div></div>
     ${bodyHtml}
     <div class="footer">${esc(s.invoice_footer || '')}</div>
     <script>window.onload = () => setTimeout(() => window.print(), 300);<\/script></body></html>`);

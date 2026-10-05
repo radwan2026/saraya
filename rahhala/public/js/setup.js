@@ -401,7 +401,7 @@ export function openAbout() {
   return openWindow({
     key: 'about', title: 'حول النظام', width: 520, height: 380,
     render: (win) => win.body.append(h('div', { style: { textAlign: 'center' } },
-      h('img.brand-logo', { src: 'img/logo.png', alt: 'الرحالة' }),
+      h('img.brand-logo', { src: 'img/logo-green.png', alt: 'الرحالة' }),
       h('p', 'منظومة متكاملة لإدارة حسابات مكاتب السياحة والسفر'),
       h('p.muted', 'الفواتير والتذاكر • إيصالات القبض والدفع • إشعارات التسوية • كشوف الحسابات • الخزينة • العملات • التقارير'),
       h('p', `الإصدار ${state.version}`))),

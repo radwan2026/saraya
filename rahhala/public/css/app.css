@@ -65,7 +65,9 @@ input.ltr { direction: ltr; text-align: left; }
 .login-card label { display: grid; gap: 4px; font-weight: 600; }
 .logo-text { font-family: 'Reem Kufi', var(--font); font-size: 52px; text-align: center; color: var(--accent); line-height: 1.1; }
 .brand-logo { display: block; width: min(230px, 70%); height: auto; margin: 0 auto; }
-.login-card { border-top: 5px solid var(--gold); }
+.login-card { border-top: 5px solid var(--gold); padding-top: 0; overflow: hidden; }
+.login-brand { margin: 0 -28px 4px; padding: 26px 0 20px; background: radial-gradient(circle at 50% 30%, var(--bg3), var(--accent) 55%, var(--bg1)); text-align: center; }
+.login-brand img { width: min(210px, 62%); height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
 .login-card p { margin: 0; text-align: center; }
 
 /* ------------------------------------------------------------ desktop */
@@ -73,7 +75,7 @@ input.ltr { direction: ltr; text-align: left; }
 .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 2px 12px; background: var(--chrome); border-bottom: 1px solid var(--border); font-size: 12px; }
 .titlebar { border-bottom: 2px solid var(--gold); }
 .titlebar .app-name { display: flex; align-items: center; gap: 6px; font-family: 'Reem Kufi', var(--font); color: var(--accent); font-size: 15px; }
-.titlebar .app-name img { height: 22px; width: auto; }
+.titlebar .app-name img { height: 22px; width: 22px; border-radius: 5px; }
 .menubar { display: flex; background: var(--chrome); border-bottom: 1px solid var(--border); padding: 0 4px; position: relative; z-index: 5000; flex-wrap: wrap; }
 .menu-top { position: relative; }
 .menu-top > button { background: none; border: 1px solid transparent; padding: 4px 12px; cursor: pointer; }
@@ -99,9 +101,8 @@ input.ltr { direction: ltr; text-align: left; }
 .swirl path { fill: none; stroke: var(--gold); stroke-opacity: .55; stroke-width: 2.5; }
 .swirl path:nth-child(2) { stroke: #fff; stroke-opacity: .3; }
 .swirl circle { fill: rgba(255,255,255,.08); stroke: rgba(255,255,255,.25); }
-.wallpaper-emblem { width: clamp(140px, 22vw, 260px); height: auto; margin: 0 auto -6px; position: relative;
-  padding: 34px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.97) 62%, rgba(255,255,255,0) 71%); }
-.wallpaper-logo { font-family: 'Reem Kufi', var(--font); font-size: clamp(56px, 10vw, 120px); color: #fff; text-shadow: 0 6px 20px rgba(0,0,0,.25); line-height: 1.1; position: relative; }
+.wallpaper-emblem { width: clamp(180px, 24vw, 300px); height: auto; margin: 0 auto 4px; position: relative; filter: drop-shadow(0 6px 18px rgba(0,0,0,.3)); }
+.wallpaper-logo { font-family: 'Reem Kufi', var(--font); font-size: clamp(40px, 6vw, 72px); color: #fff; text-shadow: 0 6px 20px rgba(0,0,0,.25); line-height: 1.1; position: relative; }
 .wallpaper-sub { color: var(--gold-soft); letter-spacing: .5px; font-size: clamp(14px, 2vw, 22px); position: relative; }
 
 .dashboard { position: absolute; left: 12px; bottom: 12px; display: grid; grid-template-columns: repeat(2, minmax(150px, 1fr)); gap: 8px; width: min(360px, calc(100% - 24px)); }
