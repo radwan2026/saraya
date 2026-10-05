@@ -164,7 +164,8 @@ export function exportCSV(filename, cols, rows) {
 const PRINT_CSS = `
   body { font-family: 'Cairo', Tahoma, sans-serif; direction: rtl; color: #111; margin: 24px; font-size: 13px; }
   .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px double #333; padding-bottom: 10px; margin-bottom: 14px; }
-  .head h1 { margin: 0; font-size: 22px; } .head .logo { font-size: 30px; font-weight: 700; color: #0b5fae; }
+  .head h1 { margin: 0; font-size: 22px; color: #0b6b42; } .head .logo img { height: 90px; } .head { border-bottom-color: #b49f62 !important; }
+  th { background: #e8f2ec !important; }
   h2 { text-align: center; margin: 6px 0 14px; font-size: 20px; }
   table { width: 100%; border-collapse: collapse; margin: 8px 0; }
   th, td { border: 1px solid #555; padding: 5px 6px; text-align: right; }
@@ -181,7 +182,7 @@ export function printHtml(title, bodyHtml) {
   w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(title)}</title>
     <style>${PRINT_CSS}</style></head><body>
     <div class="head"><div><h1>${esc(s.company_name)}</h1><div>${esc(s.company_address || '')}</div><div>${esc(s.company_phone || '')}</div></div>
-    <div class="logo">الرحالة</div></div>
+    <div class="logo"><img src="${location.origin}/img/logo.png" alt="الرحالة"></div></div>
     ${bodyHtml}
     <div class="footer">${esc(s.invoice_footer || '')}</div>
     <script>window.onload = () => setTimeout(() => window.print(), 300);<\/script></body></html>`);

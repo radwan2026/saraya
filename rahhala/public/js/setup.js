@@ -346,10 +346,10 @@ export function openChangePassword() {
 }
 
 // ------------------------------------------------------------ المظهر العام وبيانات المكتب
-export const THEMES = { blue: 'أزرق (افتراضي)', green: 'أخضر', sand: 'رملي', purple: 'بنفسجي', dark: 'داكن' };
+export const THEMES = { rahhala: 'هوية الرحالة - أخضر وذهبي (افتراضي)', blue: 'أزرق', sand: 'رملي', purple: 'بنفسجي', dark: 'داكن' };
 
 export function applyTheme(theme) {
-  document.documentElement.dataset.theme = THEMES[theme] ? theme : 'blue';
+  document.documentElement.dataset.theme = THEMES[theme] ? theme : 'rahhala';
 }
 
 export function openSettings(onSaved) {
@@ -401,7 +401,7 @@ export function openAbout() {
   return openWindow({
     key: 'about', title: 'حول النظام', width: 520, height: 380,
     render: (win) => win.body.append(h('div', { style: { textAlign: 'center' } },
-      h('div.logo-text', 'الرحالة'),
+      h('img.brand-logo', { src: 'img/logo.png', alt: 'الرحالة' }),
       h('p', 'منظومة متكاملة لإدارة حسابات مكاتب السياحة والسفر'),
       h('p.muted', 'الفواتير والتذاكر • إيصالات القبض والدفع • إشعارات التسوية • كشوف الحسابات • الخزينة • العملات • التقارير'),
       h('p', `الإصدار ${state.version}`))),

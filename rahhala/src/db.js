@@ -160,7 +160,7 @@ const DEFAULT_SETTINGS = {
   company_address: '',
   office_no: '0001',
   base_currency: 'LYD',
-  theme: 'blue',
+  theme: 'rahhala',
   invoice_footer: 'شكراً لتعاملكم معنا',
 };
 
@@ -185,6 +185,11 @@ export function openDb(file = ':memory:') {
 }
 
 function seed(db) {
+  // One-time switch of installs still on the old default colours to the Rahhala brand theme.
+  if (!db.prepare("SELECT 1 FROM settings WHERE key = 'brand_theme_applied'").get()) {
+    db.prepare("UPDATE settings SET value = 'rahhala' WHERE key = 'theme' AND value IN ('blue', 'green')").run();
+    db.prepare("INSERT INTO settings (key, value) VALUES ('brand_theme_applied', '1')").run();
+  }
   const insSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
   for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) insSetting.run(k, v);
 

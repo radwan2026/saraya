@@ -6,13 +6,15 @@
   <title>الرحالة - منظومة مكاتب السياحة والسفر</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Reem+Kufi:wght@600;700&display=swap">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <meta name="theme-color" content="#0b6b42">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <!-- شاشة الدخول -->
   <section id="login" class="login hidden">
     <form id="login-form" class="login-card">
-      <div class="logo-text">الرحالة</div>
+      <img class="brand-logo" src="img/logo.png" alt="الرحالة - Al-Rahhala Travel Management System">
       <p class="muted">منظومة إدارة حسابات مكاتب السياحة والسفر</p>
       <label>اسم المستخدم<input name="username" autocomplete="username" required value="admin"></label>
       <label>كلمة المرور<input name="password" type="password" autocomplete="current-password" required></label>
@@ -26,7 +28,7 @@
   <section id="desktop" class="desktop hidden">
     <header class="titlebar">
       <span id="company-title" class="company"></span>
-      <span class="app-name">الرحالة</span>
+      <span class="app-name"><img src="img/favicon.png" alt="">الرحالة</span>
     </header>
     <nav id="menubar" class="menubar" aria-label="القائمة الرئيسية"></nav>
     <div id="toolbar" class="toolbar"></div>
@@ -38,6 +40,7 @@
           <path d="M-50 160 C 200 260, 420 40, 700 140 S 1100 260, 1260 120" />
           <circle cx="180" cy="200" r="90" /><circle cx="980" cy="560" r="60" /><circle cx="720" cy="260" r="30" />
         </svg>
+        <img class="wallpaper-emblem" src="img/emblem.png" alt="">
         <div class="wallpaper-logo">الرحالة</div>
         <div class="wallpaper-sub">لإدارة مكاتب السياحة والسفر</div>
       </div>
