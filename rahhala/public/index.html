@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>الرحالة - منظومة مكاتب السياحة والسفر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Reem+Kufi:wght@600;700&display=swap">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- شاشة الدخول -->
+  <section id="login" class="login hidden">
+    <form id="login-form" class="login-card">
+      <div class="logo-text">الرحالة</div>
+      <p class="muted">منظومة إدارة حسابات مكاتب السياحة والسفر</p>
+      <label>اسم المستخدم<input name="username" autocomplete="username" required value="admin"></label>
+      <label>كلمة المرور<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">دخول</button>
+      <p id="login-error" class="error"></p>
+      <p class="muted small">المستخدم الافتراضي: admin / admin</p>
+    </form>
+  </section>
+
+  <!-- سطح المكتب -->
+  <section id="desktop" class="desktop hidden">
+    <header class="titlebar">
+      <span id="company-title" class="company"></span>
+      <span class="app-name">الرحالة</span>
+    </header>
+    <nav id="menubar" class="menubar" aria-label="القائمة الرئيسية"></nav>
+    <div id="toolbar" class="toolbar"></div>
+    <main id="workspace" class="workspace">
+      <div class="wallpaper" aria-hidden="true">
+        <svg class="swirl" viewBox="0 0 1200 700" preserveAspectRatio="none">
+          <path d="M-50 520 C 250 380, 520 700, 820 520 S 1180 300, 1260 420" />
+          <path d="M-50 560 C 280 420, 560 720, 860 560 S 1200 360, 1260 470" />
+          <path d="M-50 160 C 200 260, 420 40, 700 140 S 1100 260, 1260 120" />
+          <circle cx="180" cy="200" r="90" /><circle cx="980" cy="560" r="60" /><circle cx="720" cy="260" r="30" />
+        </svg>
+        <div class="wallpaper-logo">الرحالة</div>
+        <div class="wallpaper-sub">لإدارة مكاتب السياحة والسفر</div>
+      </div>
+      <div id="dashboard" class="dashboard"></div>
+    </main>
+    <div id="taskbar" class="taskbar"></div>
+    <footer class="statusbar">
+      <span>المستخدم: <b id="st-user"></b></span>
+      <span>رقم المكتب: <b id="st-office"></b></span>
+      <span>الوقت: <b id="st-time"></b></span>
+      <span>التاريخ: <b id="st-date"></b></span>
+      <span>الإصدار: <b id="st-version"></b></span>
+    </footer>
+  </section>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

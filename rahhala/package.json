@@ -1,0 +1,18 @@
+{
+  "name": "rahhala",
+  "version": "1.0.0",
+  "description": "منظومة الرحالة لإدارة حسابات مكاتب السياحة والسفر",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
