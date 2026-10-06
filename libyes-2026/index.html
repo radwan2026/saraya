@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المدار الجديد · ليبيا للطاقة 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#183418; --dark2:#21432a; --green:#4f8a2b; --lime:#8cc63f; --yellow:#f2c12e;
+  --cream:#f3f6ee; --card:#fafbf7; --line:#dde4d3; --ink:#1b2c19; --gray:#5d6659; --pale:#e2ecd6;
+  --page:#d9ded3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--ink);font-family:"Rubik",system-ui,sans-serif;line-height:1.5}
+img{display:block;max-width:100%}
+
+/* ---------- toolbar ---------- */
+.bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  padding:10px 16px;background:var(--dark);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.bar .brand{font-weight:700;margin-inline-end:auto;font-size:15px}
+.bar button{font:inherit;font-size:14px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);
+  color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer}
+.bar button:hover{background:rgba(255,255,255,.18)}
+.bar button.on{background:var(--yellow);color:var(--dark);border-color:var(--yellow);font-weight:600}
+.bar .st{font-size:12px;opacity:.75;min-width:90px}
+.hint{max-width:1200px;margin:14px auto 0;padding:0 16px;font-size:14px;color:var(--gray)}
+
+/* ---------- deck & slide frame ---------- */
+.deck{max-width:1200px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:22px}
+.slide{container-type:inline-size;border-radius:10px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.12);background:var(--cream)}
+.in{--u:1cqw;
+  --f-eye:calc(1.2*var(--u)); --f-ttl:calc(3.3*var(--u)); --f-b:calc(1.35*var(--u));
+  --f-s:calc(1.2*var(--u)); --f-l:calc(1.65*var(--u));
+  aspect-ratio:16/9;position:relative;display:flex;flex-direction:column;
+  padding:calc(7.2*var(--u)) calc(6.7*var(--u)) calc(3.2*var(--u))}
+.slide.dark{background:var(--dark);color:#fff}
+.slide.yellow{background:var(--yellow)}
+.slide.white{background:#fcfcf8}
+.logo{position:absolute;top:calc(2*var(--u));left:calc(6.7*var(--u));width:calc(11*var(--u))}
+.dark .logo{filter:brightness(0) invert(1)}
+.eye{font-size:var(--f-eye);font-weight:600;color:var(--green)}
+.dark .eye{color:var(--lime)}
+.ttl{font-size:var(--f-ttl);font-weight:800;line-height:1.25;margin-bottom:calc(2.6*var(--u))}
+.body{flex:1;min-height:0}
+.ft{display:flex;justify-content:space-between;font-size:calc(1.1*var(--u));color:var(--gray);margin-top:auto;padding-top:calc(1*var(--u))}
+.dark .ft{color:rgba(255,255,255,.6)}
+.b{font-size:var(--f-b)} .s{font-size:var(--f-s);color:var(--gray)} .dark .s{color:rgba(255,255,255,.72)}
+.grid{display:grid;gap:calc(1.5*var(--u))}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}.c5{grid-template-columns:repeat(5,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:calc(1*var(--u));padding:calc(1.8*var(--u))}
+.dark .card{background:var(--dark2);border-color:transparent}
+.ph{border-radius:calc(1*var(--u));object-fit:cover;width:100%;height:100%}
+
+/* slide 1 – cover */
+.cover .in{padding:0;flex-direction:row}
+.cover .txt{flex:1;padding:calc(5*var(--u)) calc(6.7*var(--u)) calc(4*var(--u));display:flex;flex-direction:column}
+.cover .big-logo{width:calc(19*var(--u));align-self:flex-start;margin-inline-start:auto;margin-bottom:calc(4.5*var(--u))}
+.cover h1{font-size:calc(4.6*var(--u));font-weight:800;line-height:1.2;margin:calc(1.5*var(--u)) 0 calc(2.2*var(--u))}
+.cover .eye{font-size:calc(1.35*var(--u))}
+.cover .sub{font-size:var(--f-l);color:var(--gray)}
+.cover .when{font-size:var(--f-b);font-weight:600;margin-top:calc(.6*var(--u))}
+.cover .lib{width:calc(29*var(--u));margin-top:auto;align-self:flex-start;border-radius:4px}
+.cover .pic{width:43%;border-inline-start:calc(.6*var(--u)) solid var(--yellow);background:#333}
+.cover .pic img{width:100%;height:100%;object-fit:cover}
+
+/* slide 2 – agenda */
+.agenda{grid-template-columns:1fr 1fr;column-gap:calc(5*var(--u))}
+.agenda li{list-style:none;display:flex;gap:calc(3.5*var(--u));align-items:baseline;border-bottom:1px solid var(--line);padding:calc(1.6*var(--u)) 0}
+.agenda .n{font-size:calc(2.1*var(--u));font-weight:700;color:var(--green);min-width:calc(3*var(--u))}
+.agenda .t{font-size:var(--f-l)}
+
+/* slide 3 */
+.state{font-size:calc(3.3*var(--u));font-weight:700;line-height:1.45;max-width:90%}
+.facts{margin-top:auto}
+.facts>div{border-top:3px solid var(--yellow);padding-top:calc(1.7*var(--u))}
+.facts h3{font-size:calc(1.65*var(--u));font-weight:700}
+
+/* slide 4 */
+.split{display:grid;grid-template-columns:1.1fr 1fr;gap:calc(3*var(--u));height:100%}
+.split.even{grid-template-columns:1fr 1fr}
+.split.wide{grid-template-columns:1.3fr .9fr}
+.dl>div{display:grid;grid-template-columns:calc(13*var(--u)) 1fr;gap:calc(1.5*var(--u));border-bottom:1px solid var(--line);padding:calc(1*var(--u)) 0}
+.dl dt{font-weight:700;color:var(--green);font-size:var(--f-l)}
+.dl dd{font-size:var(--f-b)}
+.note{font-size:var(--f-b);color:var(--gray);margin-top:calc(1.5*var(--u))}
+
+/* stats */
+.stat .num{font-size:calc(4.2*var(--u));font-weight:700;line-height:1.1;color:var(--yellow);direction:ltr;text-align:right}
+.stat.lime .num{color:var(--lime)}
+.stat .s{margin-top:calc(.4*var(--u))}
+.dark .stat .s{color:#fff;font-size:var(--f-b)}
+.stat2 .num{font-size:calc(2.6*var(--u));font-weight:700;color:var(--green);line-height:1.3}
+.stat2 .s{color:var(--ink);font-size:var(--f-b);margin-top:calc(.5*var(--u))}
+.banner{margin-top:calc(2.5*var(--u));background:var(--dark);color:#fff;border-radius:calc(1*var(--u));padding:calc(2*var(--u)) calc(2.5*var(--u));display:grid;grid-template-columns:1fr calc(22*var(--u));gap:calc(3*var(--u));align-items:center}
+.banner p{font-size:var(--f-l);line-height:1.7}
+.banner img{border-radius:6px}
+
+/* bars */
+.bars .row{margin-bottom:calc(1.4*var(--u))}
+.bars .lab{display:flex;justify-content:space-between;font-size:var(--f-l);align-items:baseline}
+.bars .pct{color:var(--green);font-weight:700;direction:ltr}
+.bars .track{direction:ltr;height:calc(1.1*var(--u));background:var(--pale);border-radius:99px;margin-top:calc(.5*var(--u));overflow:hidden}
+.bars .fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+
+/* yellow quote */
+.quote{margin:auto 0;max-width:80%}
+.quote h2{font-size:calc(4.2*var(--u));font-weight:800;line-height:1.35}
+.quote p{font-size:calc(2*var(--u));margin-top:calc(1.5*var(--u))}
+
+/* goals */
+.goal .num{font-size:calc(3*var(--u));font-weight:700;color:var(--lime);line-height:1.2}
+.goal h3{font-size:calc(1.8*var(--u));font-weight:700;line-height:1.3;margin:calc(1*var(--u)) 0}
+.goal p{font-size:var(--f-b);color:var(--gray);line-height:1.6}
+
+/* icon cards */
+.ic{width:calc(2*var(--u));height:calc(2*var(--u));color:var(--yellow);margin-bottom:calc(1.2*var(--u))}
+.icbox{width:calc(4.2*var(--u));height:calc(4.2*var(--u));border-radius:calc(.6*var(--u));background:var(--dark);color:var(--lime);display:grid;place-items:center;margin-bottom:calc(1.8*var(--u))}
+.icbox svg{width:45%;height:45%}
+.feat h3{font-size:calc(1.7*var(--u));font-weight:700;line-height:1.3;margin-bottom:calc(.8*var(--u))}
+.feat p{font-size:var(--f-b);line-height:1.6}
+.light .feat p{color:var(--gray)}
+.dark .feat p{color:rgba(255,255,255,.78)}
+.offer{margin-top:calc(2.5*var(--u));background:var(--yellow);border-radius:calc(1*var(--u));padding:calc(2*var(--u)) calc(2.5*var(--u));display:flex;gap:calc(2*var(--u));align-items:center;font-size:calc(1.6*var(--u));font-weight:700}
+.offer svg{width:calc(2*var(--u));height:calc(2*var(--u));flex:none}
+
+/* tables */
+.tbl-wrap{border:1px solid var(--line);border-radius:4px;padding:calc(1*var(--u))}
+table{width:100%;border-collapse:collapse;font-size:var(--f-b)}
+th{background:var(--dark);color:#fff;font-weight:500;text-align:right;padding:calc(.8*var(--u)) calc(1*var(--u))}
+td{border:1px solid var(--line);padding:calc(.75*var(--u)) calc(1*var(--u));background:var(--card)}
+tbody tr:nth-child(even) td{background:#eff3e9}
+td.sol{color:var(--green)}
+
+/* package */
+.pk h3{display:flex;gap:calc(1*var(--u));align-items:center;font-size:calc(1.7*var(--u));font-weight:700;margin-bottom:calc(.8*var(--u))}
+.pk h3 svg{width:calc(1.7*var(--u));height:calc(1.7*var(--u));color:var(--green);flex:none}
+.pk p{font-size:var(--f-b);color:var(--gray);line-height:1.6}
+.hero{background:var(--dark);color:#fff;border-radius:calc(1*var(--u));border-top:calc(.6*var(--u)) solid var(--yellow);padding:calc(2.8*var(--u))}
+.hero .tag{color:var(--yellow);font-weight:700;font-size:var(--f-l)}
+.hero h3{font-size:calc(2.4*var(--u));font-weight:700;line-height:1.4;margin:calc(1.2*var(--u)) 0}
+.hero p{font-size:var(--f-b);color:rgba(255,255,255,.85);line-height:1.7}
+.hero .mail{color:var(--lime);margin-top:calc(2*var(--u));direction:ltr;text-align:right}
+
+/* booth plan */
+.plan{border:2px dashed var(--green);border-radius:calc(1*var(--u));padding:calc(1.3*var(--u));display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:calc(1*var(--u));background:var(--card)}
+.zone{border-radius:calc(.6*var(--u));padding:calc(1.8*var(--u));display:flex;flex-direction:column;justify-content:center}
+.zone h3{font-size:calc(1.6*var(--u));font-weight:700}
+.zone p{font-size:var(--f-s)}
+.z1{background:var(--dark);color:#fff}.z1 p{color:rgba(255,255,255,.8)}
+.z2{background:var(--lime)}
+.z3{background:var(--pale)}
+.z4{background:var(--yellow)}
+.plan .r2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.25fr;gap:calc(1*var(--u))}
+.spec>div{border-bottom:1px solid var(--line);padding:calc(1*var(--u)) 0}
+.spec h4{color:var(--green);font-size:var(--f-b);font-weight:700}
+.spec p{font-size:var(--f-l)}
+
+/* 3D list */
+.steps li{list-style:none;display:flex;gap:calc(1.4*var(--u));align-items:center;border-bottom:1px solid var(--line);padding:calc(.9*var(--u)) 0}
+.steps .k{flex:none;width:calc(2.9*var(--u));height:calc(2.9*var(--u));border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:var(--f-b)}
+.steps h3{font-size:calc(1.55*var(--u));font-weight:700}
+.steps p{font-size:var(--f-s);color:var(--gray)}
+
+/* phases */
+.phase .hd{border-radius:calc(.8*var(--u));padding:calc(1.6*var(--u)) calc(1.8*var(--u));color:#fff}
+.phase .hd h3{font-size:calc(1.8*var(--u));font-weight:700}
+.phase .hd p{color:var(--yellow);font-size:var(--f-b)}
+.phase ul{margin-top:calc(1.6*var(--u));padding-inline-start:calc(1.6*var(--u))}
+.phase li{font-size:var(--f-b);margin-bottom:calc(.6*var(--u))}
+
+/* kpis */
+.kpi{border-top:3px solid var(--yellow);padding-top:calc(2.5*var(--u))}
+.kpi .num{font-size:calc(4*var(--u));font-weight:700;color:var(--yellow);line-height:1.1}
+.kpi h3{font-size:calc(1.6*var(--u));font-weight:700;margin-top:calc(1*var(--u))}
+
+/* budget */
+.budget td.cost{width:34%;padding:0}
+.budget input{width:100%;border:0;background:transparent;font:inherit;padding:calc(.75*var(--u)) calc(1*var(--u));direction:ltr;text-align:right;color:var(--ink)}
+.budget input:focus{outline:2px solid var(--green);outline-offset:-2px;background:#fff}
+.budget input::placeholder{color:var(--ink);opacity:.8}
+.budget tfoot td{background:var(--yellow);font-weight:700;border-color:#d7aa22}
+.budget .tot{direction:ltr;text-align:right}
+.budget td.act{width:1%;padding:0 4px;border:0;background:transparent!important}
+.del{border:0;background:#f6dcdc;color:#a33;border-radius:6px;width:calc(2.2*var(--u));height:calc(2.2*var(--u));min-width:24px;min-height:24px;cursor:pointer;font-size:var(--f-b);line-height:1}
+.del:hover{background:#efbcbc}
+.add{margin-top:calc(1*var(--u));font:inherit;font-size:var(--f-b);border:1.5px dashed var(--green);background:transparent;color:var(--green);border-radius:6px;padding:calc(.6*var(--u)) calc(1.4*var(--u));cursor:pointer;font-weight:600}
+.add:hover{background:var(--pale)}
+.contact h3{font-size:calc(1.8*var(--u));font-weight:700;margin-bottom:calc(1*var(--u))}
+.contact p{font-size:var(--f-b);color:var(--gray);margin-top:calc(.9*var(--u))}
+.contact .m{color:var(--green);direction:ltr;text-align:right}
+.view .del,.view .add,.view td.act{display:none}
+
+/* decision */
+.checks li{list-style:none;display:flex;gap:calc(1.4*var(--u));align-items:center;border-bottom:1px solid var(--line);padding:calc(1.3*var(--u)) 0;font-size:calc(1.75*var(--u))}
+.checks .ok{flex:none;width:calc(3*var(--u));height:calc(3*var(--u));border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center}
+.checks .ok svg{width:50%;height:50%}
+.count{background:var(--yellow);border-radius:calc(1*var(--u));padding:calc(3*var(--u));display:flex;flex-direction:column;justify-content:center}
+.count .num{font-size:calc(6.5*var(--u));font-weight:800;line-height:1}
+.count h3{font-size:calc(2.1*var(--u));font-weight:800;margin-top:calc(1*var(--u))}
+.count p{font-size:var(--f-b);color:#4a4a2a}
+
+/* thanks */
+.thanks .in{align-items:center;justify-content:center;text-align:center;border-top:calc(.7*var(--u)) solid var(--yellow)}
+.thanks .big-logo{width:calc(27*var(--u))}
+.thanks h2{font-size:calc(5.4*var(--u));font-weight:800;margin-top:calc(1.5*var(--u))}
+.thanks p{font-size:calc(1.9*var(--u));color:var(--gray)}
+.thanks .lib{width:calc(27*var(--u));margin-top:calc(2.5*var(--u));border-radius:4px}
+
+/* ---------- editing affordances ---------- */
+.editing [contenteditable="true"]{outline:1px dashed transparent;outline-offset:2px;transition:outline-color .15s}
+.editing [contenteditable="true"]:hover{outline-color:rgba(79,138,43,.55)}
+.editing [contenteditable="true"]:focus{outline:2px solid var(--yellow);background:rgba(242,193,46,.1)}
+
+/* ---------- phone width: slides reflow instead of shrinking ---------- */
+@container (max-width:720px){
+  .in{--u:8px;--f-eye:13px;--f-ttl:24px;--f-b:15px;--f-s:13px;--f-l:16px;aspect-ratio:auto;padding:76px 16px 16px}
+  .logo{left:16px;top:16px;width:96px}
+  .c3,.c4,.c5,.agenda,.banner{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr!important;height:auto!important}
+  .c4.stats,.c5.kpis,.c5.goals{grid-template-columns:1fr 1fr}
+  .state{font-size:22px;max-width:none;margin-bottom:24px}
+  .quote{max-width:none;padding:24px 0}.quote h2{font-size:28px}.quote p{font-size:17px}
+  .cover .in{flex-direction:column-reverse}
+  .cover .pic{width:100%;height:220px;border-inline-start:0;border-top:5px solid var(--yellow)}
+  .cover .txt{padding:24px 16px}
+  .cover h1{font-size:34px}.cover .big-logo{width:150px;margin-bottom:24px}.cover .lib{width:220px;margin-top:24px}
+  .dl>div{grid-template-columns:1fr;gap:2px}
+  .ph{height:auto;max-height:280px}
+  .banner img{max-width:240px}
+  .goal h3{font-size:17px}
+  .plan{min-height:320px}
+  .steps h3,.feat h3,.pk h3,.kpi h3,.phase .hd h3,.contact h3{font-size:17px}
+  .hero h3{font-size:20px}
+  .checks li{font-size:16px}
+  .count .num{font-size:56px}.count h3{font-size:20px}
+  .thanks .in{padding:48px 16px}.thanks .big-logo,.thanks .lib{width:220px}.thanks h2{font-size:40px}.thanks p{font-size:17px}
+  .tbl-wrap{overflow-x:auto}
+  .budget td.cost{width:40%}
+  .del{width:28px;height:28px}
+}
+
+/* ---------- print / PDF: one slide per page ---------- */
+@page{size:13.333in 7.5in;margin:0}
+@media print{
+  body{background:#fff}
+  .bar,.hint,.del,.add,td.act{display:none!important}
+  .deck{max-width:none;padding:0;gap:0}
+  .slide{border-radius:0;box-shadow:none;break-after:page;height:7.5in;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .slide:last-child{break-after:auto}
+  .in{height:100%;aspect-ratio:auto}
+}
+</style>
+</head>
+<body class="editing">
+
+<div class="bar" role="toolbar">
+  <span class="brand">المدار الجديد · LIBYES 2026</span>
+  <span class="st" id="status" aria-live="polite"></span>
+  <button id="btnEdit" class="on" type="button">✎ التعديل: مفعّل</button>
+  <button id="btnSave" type="button">⬇ حفظ نسخة HTML</button>
+  <button id="btnPrint" type="button">🖨 طباعة / PDF</button>
+  <button id="btnReset" type="button">↺ استعادة الأصل</button>
+</div>
+<p class="hint">انقر على أي نص لتعديله مباشرة. التعديلات تُحفظ تلقائياً في هذا المتصفح. في شريحة الميزانية أدخل المبالغ، وأضف أو احذف البنود، ويُحسب الإجمالي تلقائياً.</p>
+
+<main class="deck" id="deck">
+
+<!-- 01 cover -->
+<section class="slide cover white"><div class="in">
+  <div class="txt">
+    <img class="big-logo" src="assets/logo.png" alt="المدار الجديد">
+    <p class="eye">مقترح مشاركة مقدَّم إلى الإدارة العليا</p>
+    <h1>المدار الجديد في معرض ليبيا للطاقة 2026</h1>
+    <p class="sub">حلول الاتصالات والخدمات السحابية لقطاع الطاقة الليبي</p>
+    <p class="when">طرابلس، من 24 إلى 26 نوفمبر 2026</p>
+    <img class="lib" src="assets/libyes.jpg" alt="LIBYES – Libya Energy Show 2026">
+  </div>
+  <div class="pic"><img src="assets/cover.jpg" alt="أجنحة معرض الطاقة"></div>
+</div></section>
+
+<!-- 02 agenda -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">محتوى العرض</p>
+  <h2 class="ttl">ثمانية محاور لقرار واحد</h2>
+  <div class="body grid agenda">
+    <ul>
+      <li><span class="n">01</span><span class="t">السياق والدعوة</span></li>
+      <li><span class="n">02</span><span class="t">المعرض بالأرقام</span></li>
+      <li><span class="n">03</span><span class="t">فرصة قطاع الطاقة</span></li>
+      <li><span class="n">04</span><span class="t">أهداف المشاركة</span></li>
+    </ul>
+    <ul>
+      <li><span class="n">05</span><span class="t">المنافع التسويقية</span></li>
+      <li><span class="n">06</span><span class="t">عروضنا السحابية وخدمات B2B</span></li>
+      <li><span class="n">07</span><span class="t">الجناح وخطة الأنشطة</span></li>
+      <li><span class="n">08</span><span class="t">المؤشرات والميزانية والقرار</span></li>
+    </ul>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>02</span></footer>
+</div></section>
+
+<!-- 03 context -->
+<section class="slide dark"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye" style="margin-bottom:calc(3*var(--u))">السياق والدعوة</p>
+  <p class="state">بناءً على مراسلة الشركة القابضة للاتصالات، نقترح أن تشارك المدار الجديد في أول معرض ومؤتمر دولي للطاقة على أرض ليبية.</p>
+  <div class="grid c3 facts">
+    <div><h3>المؤسسة الوطنية للنفط</h3><p class="s">الشريك الاستراتيجي وراعي الحدث</p></div>
+    <div><h3>من 24 إلى 26 نوفمبر 2026</h3><p class="s">ثلاثة أيام معرض ومؤتمر</p></div>
+    <div><h3>طرابلس، ليبيا</h3><p class="s">في قلب السوق الذي نخدمه</p></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>03</span></footer>
+</div></section>
+
+<!-- 04 about -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">عن المعرض</p>
+  <h2 class="ttl">معرض ليبيا للطاقة 2026 (LIBYES)</h2>
+  <div class="body split">
+    <div>
+      <dl class="dl">
+        <div><dt>التاريخ</dt><dd>من 24 إلى 26 نوفمبر 2026</dd></div>
+        <div><dt>المكان</dt><dd>طرابلس، ليبيا</dd></div>
+        <div><dt>الشريك الاستراتيجي</dt><dd>المؤسسة الوطنية للنفط</dd></div>
+        <div><dt>التنظيم</dt><dd>ACG-ITF مع الشريك المحلي الواحة للمعارض</dd></div>
+        <div><dt>القطاعات</dt><dd>النفط والغاز والطاقات المتجددة والكهرباء والبنية التحتية</dd></div>
+      </dl>
+      <p class="note">الشعار: إطلاق إمكانات ليبيا في الطاقة: الاستثمار والتنمية والنمو المستدام</p>
+    </div>
+    <img class="ph" src="assets/expo.jpg" alt="صورة من المعرض">
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>04</span></footer>
+</div></section>
+
+<!-- 05 numbers -->
+<section class="slide dark"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">المعرض بالأرقام</p>
+  <h2 class="ttl">جمهور واسع من قطاع الطاقة في مكان واحد</h2>
+  <div class="body grid c4 stats" style="align-content:start">
+    <div class="card stat"><p class="num">10,000+</p><p class="s">زائر</p></div>
+    <div class="card stat"><p class="num">160+</p><p class="s">عارض</p></div>
+    <div class="card stat"><p class="num">800+</p><p class="s">مندوب في المؤتمر</p></div>
+    <div class="card stat"><p class="num">120+</p><p class="s">متحدث</p></div>
+    <div class="card stat lime"><p class="num">50+</p><p class="s">شركة نفط وطاقة وطنية ودولية</p></div>
+    <div class="card stat lime"><p class="num">25+</p><p class="s">دولة مشاركة</p></div>
+    <div class="card stat lime"><p class="num">60+</p><p class="s">جلسة مؤتمر</p></div>
+    <div class="card stat lime"><p class="num">6</p><p class="s">أجنحة وطنية</p></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>05</span></footer>
+</div></section>
+
+<!-- 06 opportunity -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">فرصة قطاع الطاقة</p>
+  <h2 class="ttl">قطاع الطاقة الليبي مقبل على موجة استثمار</h2>
+  <div class="body">
+    <div class="grid c5">
+      <div class="card stat2"><p class="num">+50 مليار</p><p class="s">استثمارات طاقة مخطط لها</p></div>
+      <div class="card stat2"><p class="num">2 مليون</p><p class="s">برميل يومياً هدف الإنتاج بحلول 2030</p></div>
+      <div class="card stat2"><p class="num">2,600</p><p class="s">ميغاواط قدرة متجددة مستهدفة بحلول 2030</p></div>
+      <div class="card stat2"><p class="num">+130 كم</p><p class="s">خطوط غاز جديدة</p></div>
+      <div class="card stat2"><p class="num">+37</p><p class="s">شركة طاقة دولية في جولة التراخيص</p></div>
+    </div>
+    <div class="banner">
+      <p><b>ما يعنيه ذلك لنا:</b> مواقع إنتاج نائية، وشركات دولية جديدة، ومشاريع بنية تحتية ضخمة؛ وجميعها تحتاج إلى اتصال وبيانات وحوسبة سحابية موثوقة.</p>
+      <img src="assets/signing.jpg" alt="توقيع اتفاقية">
+    </div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>06</span></footer>
+</div></section>
+
+<!-- 07 audience -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">جمهور المعرض</p>
+  <h2 class="ttl">زوار المعرض هم عملاء B2B الذين نستهدفهم</h2>
+  <div class="body split">
+    <div class="bars">
+      <div class="row"><div class="lab"><span>شركات الطاقة المتكاملة والوطنية</span><span class="pct">37.1%</span></div><div class="track"><div class="fill"></div></div></div>
+      <div class="row"><div class="lab"><span>مقاولو EPC ومزودو الخدمات</span><span class="pct">33.3%</span></div><div class="track"><div class="fill"></div></div></div>
+      <div class="row"><div class="lab"><span>شركات النفط الدولية والوطنية</span><span class="pct">21.3%</span></div><div class="track"><div class="fill"></div></div></div>
+      <div class="row"><div class="lab"><span>شركات تحول الطاقة</span><span class="pct">8.3%</span></div><div class="track"><div class="fill"></div></div></div>
+      <p class="note">التوزيع الجغرافي: ليبيا 30%، أوروبا 27.4%، الشرق الأوسط 15.8%، آسيا 10%</p>
+    </div>
+    <img class="ph" src="assets/map.jpg" alt="خريطة التوزيع الجغرافي للزوار">
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>07</span></footer>
+</div></section>
+
+<!-- 08 quote -->
+<section class="slide yellow"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <div class="quote">
+    <h2>كل حقل وكل منصة حفر وكل خط أنابيب يحتاج إلى اتصال موثوق.</h2>
+    <p>والمدار الجديد جاهزة لتكون الشريك الرقمي لقطاع الطاقة الليبي.</p>
+  </div>
+</div></section>
+
+<!-- 09 goals -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">أهداف المشاركة</p>
+  <h2 class="ttl">خمسة أهداف واضحة للمشاركة</h2>
+  <div class="body grid c5 goals" style="align-items:start">
+    <div class="card goal"><p class="num">01</p><h3>حضور في قطاع الطاقة</h3><p>ترسيخ اسم المدار الجديد مزوداً للاتصالات والحلول الرقمية أمام صناع القرار.</p></div>
+    <div class="card goal"><p class="num">02</p><h3>كسب عملاء B2B</h3><p>بناء قائمة فرص مؤهلة من العارضين والزوار وتحويلها إلى عقود.</p></div>
+    <div class="card goal"><p class="num">03</p><h3>إطلاق الخدمات السحابية</h3><p>تقديم حلولنا السحابية لشركات الطاقة المحلية والدولية وتجربتها مباشرة.</p></div>
+    <div class="card goal"><p class="num">04</p><h3>دعم توجه الشركة القابضة</h3><p>المشاركة ضمن رؤية الشركة القابضة للاتصالات لتمكين القطاعات الحيوية رقمياً.</p></div>
+    <div class="card goal"><p class="num">05</p><h3>شراكات دولية</h3><p>التواصل مع الشركات الدولية الداخلة إلى السوق وتقديم حزم اتصال جاهزة لها.</p></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>09</span></footer>
+</div></section>
+
+<!-- 10 benefits -->
+<section class="slide dark"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">المنافع التسويقية</p>
+  <h2 class="ttl">ماذا تكسب المدار الجديد من المشاركة؟</h2>
+  <div class="body grid c3">
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg><h3>الوصول إلى صناع القرار</h3><p>لقاءات مباشرة مع قيادات المؤسسة الوطنية للنفط وشركاتها التابعة.</p></div>
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5C9.4 18.7 8.1 15.5 8.1 12S9.4 5.3 12 2.5z"/></svg><h3>تغطية إعلامية واسعة</h3><p>نستفيد من حملة المنظمين: إعلام مطبوع ورقمي وإذاعة ولوحات طرق و20,000 دعوة تجارية.</p></div>
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><rect x="5" y="10" width="3" height="8" rx="1"/><rect x="10.5" y="5" width="3" height="13" rx="1"/><rect x="16" y="8" width="3" height="10" rx="1"/></svg><h3>فرص بيع مباشرة</h3><p>ثلاثة أيام من اللقاءات مع أكثر من 160 عارضاً و10,000 زائر.</p></div>
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><h3>السبق إلى قطاع الطاقة</h3><p>نكون من أوائل مزودي الاتصالات الذين يقدّمون حلولاً متكاملة لهذا القطاع.</p></div>
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"/></svg><h3>محتوى لحملاتنا</h3><p>صور ومقاطع ولقاءات تغذي منصاتنا الرقمية لأسابيع بعد المعرض.</p></div>
+    <div class="card feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><h3>علاقات طويلة المدى</h3><p>حفل العشاء وجلسات المؤتمر ونادي كبار الشخصيات (VIP).</p></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>10</span></footer>
+</div></section>
+
+<!-- 11 cloud -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">عروضنا السحابية</p>
+  <h2 class="ttl">خدماتنا السحابية لشركات الطاقة</h2>
+  <div class="body">
+    <div class="grid c4">
+      <div class="card feat"><div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></div><h3>الخوادم الافتراضية والاستضافة</h3><p>بنية حوسبة مرنة داخل ليبيا لتطبيقات الشركات وأنظمتها.</p></div>
+      <div class="card feat"><div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H7a5 5 0 1 1 1-9.9A6 6 0 0 1 19.6 11 4 4 0 0 1 17.5 19z"/><path d="M14.5 13.5a2.5 2.5 0 1 1-1-2"/></svg></div><h3>التخزين والنسخ الاحتياطي</h3><p>حفظ آمن لبيانات المشاريع والحقول مع استعادة سريعة.</p></div>
+      <div class="card feat"><div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4M7 17l3-3 2.5 2 4-4.5"/></svg></div><h3>استمرارية الأعمال</h3><p>حلول التعافي من الكوارث لضمان استمرار العمليات الحرجة.</p></div>
+      <div class="card feat"><div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2.5"/></svg></div><h3>بياناتك داخل ليبيا</h3><p>استضافة محلية تساعد على الالتزام بمتطلبات حفظ البيانات داخل البلاد.</p></div>
+    </div>
+    <div class="offer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span>عرض المعرض: تجربة مجانية لمدة [__] يوماً لكل شركة تسجّل في جناحنا</span></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>11</span></footer>
+</div></section>
+
+<!-- 12 B2B -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">خدمات B2B</p>
+  <h2 class="ttl">حلولنا عبر سلسلة قيمة الطاقة</h2>
+  <div class="body tbl-wrap" style="flex:none">
+    <table>
+      <thead><tr><th>القطاع</th><th>الاحتياج</th><th>حل المدار الجديد</th></tr></thead>
+      <tbody>
+        <tr><td>الاستكشاف والإنتاج</td><td>اتصال موثوق في الحقول والمواقع النائية</td><td class="sol">شبكات بيانات خاصة (APN) وباقات بيانات للمواقع</td></tr>
+        <tr><td>خطوط الأنابيب</td><td>مراقبة المعدات وقراءتها عن بُعد</td><td class="sol">شرائح إنترنت الأشياء وربط أنظمة المراقبة</td></tr>
+        <tr><td>الصحة والسلامة والأمن</td><td>تتبع الأساطيل والتواصل في الطوارئ</td><td class="sol">حلول تتبع المركبات ومجموعات الاتصال</td></tr>
+        <tr><td>المكاتب والإدارات</td><td>إدارة اتصالات الموظفين بكفاءة</td><td class="sol">باقات الشركات والخطوط المؤسسية والرسائل الجماعية</td></tr>
+        <tr><td>الشركات الدولية الجديدة</td><td>جاهزية فورية عند دخول السوق</td><td class="sol">حزم ترحيب للموظفين الأجانب وحلول سحابية جاهزة</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>12</span></footer>
+</div></section>
+
+<!-- 13 package -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">فكرة تسويقية</p>
+  <h2 class="ttl">حزمة المدار الجديد للعارضين والزوار</h2>
+  <div class="body split wide" style="height:auto;align-items:start">
+    <div class="grid c2">
+      <div class="card pk"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5C9.4 18.7 8.1 15.5 8.1 12S9.4 5.3 12 2.5z"/></svg><span>شرائح الزوار الدوليين</span></h3><p>شريحة ترحيبية بباقة بيانات لزوار أكثر من 25 دولة، تُفعَّل في جناحنا.</p></div>
+      <div class="card pk"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2.5L4.5 13.5H12l-1 8 8.5-11H12z"/></svg><span>إنترنت الأجنحة</span></h3><p>أجهزة 4G جاهزة لتشغيل أجنحة العارضين طوال أيام المعرض.</p></div>
+      <div class="card pk"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="4.5"/><path d="M11.2 11.2L20 20M16.5 16.5l2-2M14 14l2-2"/></svg><span>خصم المعرض</span></h3><p>خصم [__%] على باقات الشركات للعقود الموقعة حتى [التاريخ].</p></div>
+      <div class="card pk"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19H7a5 5 0 1 1 1-9.9A6 6 0 0 1 19.6 11 4 4 0 0 1 17.5 19z"/></svg><span>تجربة سحابية مجانية</span></h3><p>[__] يوماً من خدماتنا السحابية لكل عارض يسجّل خلال المعرض.</p></div>
+    </div>
+    <div class="hero">
+      <p class="tag">مقترح نوعي</p>
+      <h3>التفاوض على لقب «الشريك الرسمي للاتصالات» في المعرض</h3>
+      <p>يضمن ظهور شعارنا في كل مواد المعرض، ويجعلنا مزود الإنترنت والشرائح المعتمد لجميع العارضين.</p>
+      <p class="mail">sponsor@libyes.com</p>
+    </div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>13</span></footer>
+</div></section>
+
+<!-- 14 booth plan -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">تصور الجناح</p>
+  <h2 class="ttl">جناح من أربع مناطق تخدم أهدافنا</h2>
+  <div class="body split even">
+    <div class="spec">
+      <div><h4>المساحة المقترحة</h4><p>[__] م²</p></div>
+      <div><h4>الموقع</h4><p>قرب الممر الرئيسي أو جناح المؤسسة الوطنية للنفط [يحدد مع المنظم]</p></div>
+      <div><h4>الفريق</h4><p>[__] موظفين: مبيعات الشركات، فني سحابة، خدمة عملاء</p></div>
+      <div><h4>الهوية</h4><p>الأخضر والأبيض بلمسات صفراء</p></div>
+    </div>
+    <div class="plan">
+      <div class="zone z1"><h3>جدار الهوية</h3><p>شعار المدار الجديد وشاشة عرض رئيسية</p></div>
+      <div class="zone z2"><h3>عرض السحابة</h3><p>شاشة تفاعلية لتجربة الخدمات</p></div>
+      <div class="r2">
+        <div class="zone z3"><h3>ركن لقاءات B2B</h3><p>طاولة اجتماعات لمواعيد مجدولة</p></div>
+        <div class="zone z4"><h3>مكتب التفعيل</h3><p>تفعيل الشرائح وتسجيل التجارب</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>14</span></footer>
+</div></section>
+
+<!-- 15 3D -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">التصور ثلاثي الأبعاد</p>
+  <h2 class="ttl">هكذا سيبدو جناح المدار الجديد</h2>
+  <div class="body split" style="grid-template-columns:.75fr 1fr">
+    <ul class="steps">
+      <li><span class="k" style="background:var(--lime)">1</span><div><h3>سحابة المدار (Almadar Cloud)</h3><p>منصة الخدمات السحابية بشاشة تفاعلية ومكتب استقبال</p></div></li>
+      <li><span class="k" style="background:var(--green);color:#fff">2</span><div><h3>الشاشة الرئيسية</h3><p>رسالة «شريكك في مستقبل أكثر اتصالاً» بعرض بصري كبير</p></div></li>
+      <li><span class="k" style="background:var(--pale)">3</span><div><h3>منطقة الجلوس واللقاءات</h3><p>طاولات مفتوحة لاستقبال الزوار والاجتماعات السريعة</p></div></li>
+      <li><span class="k" style="background:var(--dark);color:#fff">4</span><div><h3>قطاع الأعمال B2B</h3><p>مكتب مخصص لحلول الشركات وتوقيع الاتفاقيات</p></div></li>
+      <li><span class="k" style="background:var(--yellow)">5</span><div><h3>منطقة كبار الزوار (VIP)</h3><p>صالة خاصة لقيادات المؤسسة الوطنية للنفط والشركات</p></div></li>
+    </ul>
+    <img class="ph" src="assets/stand.jpg" alt="تصور ثلاثي الأبعاد لجناح المدار الجديد">
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>15</span></footer>
+</div></section>
+
+<!-- 16 plan -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">خطة الأنشطة</p>
+  <h2 class="ttl">ثلاث مراحل تبدأ من الآن</h2>
+  <div class="body grid c3" style="align-items:start">
+    <div class="phase"><div class="hd" style="background:var(--green)"><h3>قبل المعرض</h3><p>أكتوبر ونوفمبر</p></div>
+      <ul><li>التواصل مع العارضين وحجز المواعيد مسبقاً</li><li>حملة على منصات التواصل: نلقاكم في LIBYES</li><li>تجهيز العروض والعقود النموذجية</li></ul></div>
+    <div class="phase"><div class="hd" style="background:var(--dark)"><h3>خلال المعرض</h3><p>من 24 إلى 26 نوفمبر</p></div>
+      <ul><li>لقاءات B2B مجدولة مع شركات الطاقة</li><li>تفعيل الشرائح وعروض سحابية حية</li><li>طلب مداخلة في جلسات التحول الرقمي</li></ul></div>
+    <div class="phase"><div class="hd" style="background:var(--dark2)"><h3>بعد المعرض</h3><p>حتى نهاية ديسمبر</p></div>
+      <ul><li>متابعة كل فرصة خلال سبعة أيام</li><li>عروض أسعار مخصصة لكل عميل</li><li>تقرير نتائج للإدارة العليا</li></ul></div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>16</span></footer>
+</div></section>
+
+<!-- 17 KPIs -->
+<section class="slide dark"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">مؤشرات النجاح</p>
+  <h2 class="ttl">كيف نقيس عائد المشاركة؟</h2>
+  <div class="body grid c5 kpis" style="align-items:start">
+    <div class="kpi"><p class="num">[__]</p><h3>لقاء B2B</h3><p class="s">خلال أيام المعرض</p></div>
+    <div class="kpi"><p class="num">[__]</p><h3>فرصة مؤهلة</h3><p class="s">مسجلة في قاعدة العملاء</p></div>
+    <div class="kpi"><p class="num">[__]</p><h3>عقد موقّع</h3><p class="s">خلال 90 يوماً</p></div>
+    <div class="kpi"><p class="num">[__]</p><h3>شريحة مفعّلة</h3><p class="s">للزوار والعارضين</p></div>
+    <div class="kpi"><p class="num">[__]</p><h3>تجربة سحابية</h3><p class="s">مفعّلة لشركات الطاقة</p></div>
+  </div>
+  <p class="b" style="margin-top:calc(2*var(--u))">نقترح أن تحدد إدارة المبيعات المستهدفات، ويُقدَّم تقرير النتائج بعد 30 و90 يوماً من المعرض.</p>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>17</span></footer>
+</div></section>
+
+<!-- 18 budget -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">الميزانية التقديرية</p>
+  <h2 class="ttl">بنود الميزانية المطلوب اعتمادها</h2>
+  <div class="body split" style="grid-template-columns:1.5fr 1fr;height:auto;align-items:start">
+    <div>
+      <div class="tbl-wrap">
+        <table class="budget" id="budget">
+          <thead><tr><th>البند</th><th>التكلفة التقديرية (<span>د.ل</span>)</th><th class="act" aria-label="حذف" style="background:transparent"></th></tr></thead>
+          <tbody>
+            <tr><td>مساحة الجناح</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+            <tr><td>تصميم الجناح وتنفيذه</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+            <tr><td>المطبوعات والهدايا الترويجية</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+            <tr><td>الشرائح والأجهزة التجريبية</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+            <tr><td>الفريق والتنقل والضيافة</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+            <tr><td>الرعاية (اختياري): الشريك الرسمي للاتصالات</td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td><td class="act"><button class="del" type="button" title="حذف البند">×</button></td></tr>
+          </tbody>
+          <tfoot><tr><td>الإجمالي</td><td class="tot" id="total">[__]</td><td class="act"></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add" id="addRow" type="button">+ إضافة بند</button>
+    </div>
+    <div class="card contact">
+      <h3>طلب عروض الأسعار</h3>
+      <p>حجز المساحات:</p><p class="m">exhibit@libyes.com</p>
+      <p>باقات الرعاية:</p><p class="m">sponsor@libyes.com</p>
+      <p>المكتب المحلي في ليبيا:</p><p class="m">sales.libya@libyes.com</p>
+    </div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>18</span></footer>
+</div></section>
+
+<!-- 19 decision -->
+<section class="slide light"><div class="in">
+  <img class="logo" src="assets/logo.png" alt="">
+  <p class="eye">القرار المطلوب</p>
+  <h2 class="ttl">أربع موافقات لننطلق</h2>
+  <div class="body split" style="grid-template-columns:1.15fr 1fr;height:auto;align-items:start">
+    <ul class="checks">
+      <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>اعتماد المشاركة وحجم الجناح</span></li>
+      <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>اعتماد الميزانية وتحديد خيار الرعاية</span></li>
+      <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>تكليف فريق عمل من مبيعات الشركات والسحابة والتسويق</span></li>
+      <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>مراسلة المنظمين قبل [التاريخ] لحجز موقع مميز</span></li>
+    </ul>
+    <div class="count">
+      <p class="num">8</p>
+      <h3>أسابيع تقريباً تفصلنا عن الافتتاح</h3>
+      <p>أفضل المواقع في المعرض تُحجز أولاً.</p>
+    </div>
+  </div>
+  <footer class="ft"><span>المدار الجديد · معرض ليبيا للطاقة 2026</span><span>19</span></footer>
+</div></section>
+
+<!-- 20 thanks -->
+<section class="slide thanks white"><div class="in">
+  <img class="big-logo" src="assets/logo.png" alt="المدار الجديد">
+  <h2>شكراً لكم</h2>
+  <p>نحو شراكة رقمية مع قطاع الطاقة الليبي</p>
+  <img class="lib" src="assets/libyes.jpg" alt="LIBYES – Libya Energy Show 2026">
+</div></section>
+
+</main>
+
+<script>
+(function(){
+  var deck = document.getElementById('deck');
+  var tbody = document.querySelector('#budget tbody');
+  var totalEl = document.getElementById('total');
+  var statusEl = document.getElementById('status');
+  var KEY = 'almadar-libyes-2026:' + location.pathname;
+  var SKIP = {SCRIPT:1, STYLE:1, BUTTON:1, INPUT:1, IMG:1, svg:1};
+  var editing = true, fields = [];
+
+  // ---- find every editable text block (outside the budget body, which is rebuilt from data)
+  function collect(){
+    fields = [];
+    (function walk(el){
+      for (var c = el.firstElementChild; c; c = c.nextElementSibling){
+        if (SKIP[c.tagName]) continue;
+        if (c === tbody || c.id === 'total') continue;
+        var own = false;
+        for (var n = c.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.nodeValue.trim()) { own = true; break; }
+        if (own) fields.push(c); else walk(c);
+      }
+    })(deck);
+  }
+  function setEditable(on){
+    editing = on;
+    document.body.classList.toggle('editing', on);
+    document.body.classList.toggle('view', !on);
+    fields.forEach(function(f){ f.contentEditable = on ? 'true' : 'false'; });
+    tbody.querySelectorAll('td.item').forEach(function(td){ td.contentEditable = on ? 'true' : 'false'; });
+    tbody.querySelectorAll('input').forEach(function(i){ i.readOnly = !on; });
+    var b = document.getElementById('btnEdit');
+    b.textContent = on ? '✎ التعديل: مفعّل' : '👁 وضع العرض';
+    b.classList.toggle('on', on);
+  }
+
+  // ---- budget
+  function num(v){ var s = String(v || '').replace(/[٠-٩]/g, function(d){ return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[٬,\s]/g, '').replace('٫', '.'); var n = parseFloat(s); return isNaN(n) ? null : n; }
+  function fmt(n){ return n.toLocaleString('en-US', {maximumFractionDigits: 2}); }
+  function rowHTML(){
+    return '<td class="item"></td><td class="cost"><input inputmode="decimal" placeholder="[__]" aria-label="التكلفة"></td>' +
+      '<td class="act"><button class="del" type="button" title="حذف البند">×</button></td>';
+  }
+  function addRow(item, cost, focus){
+    var tr = document.createElement('tr');
+    tr.innerHTML = rowHTML();
+    tr.firstChild.textContent = item || '';
+    var inp = tr.querySelector('input');
+    if (cost !== null && cost !== undefined && cost !== '') { inp.value = fmt(num(cost) ?? 0); inp.setAttribute('value', inp.value); }
+    tbody.appendChild(tr);
+    tr.firstChild.contentEditable = editing ? 'true' : 'false';
+    inp.readOnly = !editing;
+    if (focus) tr.firstChild.focus();
+    return tr;
+  }
+  function readRows(){
+    return Array.prototype.map.call(tbody.rows, function(tr){
+      return { item: tr.cells[0].innerText.trim(), cost: num(tr.querySelector('input').value) };
+    });
+  }
+  function recalc(){
+    var sum = 0, any = false;
+    readRows().forEach(function(r){ if (r.cost !== null){ sum += r.cost; any = true; } });
+    totalEl.textContent = any ? fmt(sum) : '[__]';
+  }
+  // normalise the rows written in the markup so they share one shape
+  (function(){
+    var initial = readRows(); tbody.innerHTML = '';
+    initial.forEach(function(r){ addRow(r.item, r.cost); });
+  })();
+
+  tbody.addEventListener('click', function(e){
+    var b = e.target.closest('.del'); if (!b) return;
+    var tr = b.closest('tr'), name = tr.cells[0].innerText.trim();
+    if (!confirm('حذف البند' + (name ? ' «' + name + '»' : '') + '؟')) return;
+    tr.remove(); recalc(); save();
+  });
+  tbody.addEventListener('input', function(e){
+    if (e.target.tagName === 'INPUT') e.target.setAttribute('value', e.target.value);
+    recalc();
+  });
+  tbody.addEventListener('focusout', function(e){
+    var i = e.target; if (i.tagName !== 'INPUT') return;
+    var n = num(i.value); i.value = n === null ? '' : fmt(n); i.setAttribute('value', i.value);
+  });
+  tbody.addEventListener('keydown', function(e){
+    // Enter: item name -> its cost; cost -> next row's name (adds a row at the end)
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var tr = e.target.closest('tr');
+    if (e.target.tagName !== 'INPUT') { tr.querySelector('input').focus(); return; }
+    var next = tr.nextElementSibling || addRow('', null);
+    next.cells[0].focus(); save();
+  });
+  document.getElementById('addRow').addEventListener('click', function(){ addRow('', null, true); save(); });
+
+  // ---- audience bars follow the typed percentage
+  function syncBars(){
+    document.querySelectorAll('.bars .row').forEach(function(r){
+      var p = num(r.querySelector('.pct').innerText.replace('%', '')) || 0;
+      r.querySelector('.fill').style.width = Math.max(0, Math.min(100, p / 60 * 100)) + '%';
+    });
+  }
+
+  // ---- persistence (per browser)
+  var t;
+  function save(){
+    clearTimeout(t);
+    t = setTimeout(function(){
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ f: fields.map(function(f){ return f.innerHTML; }), rows: readRows() }));
+        statusEl.textContent = 'تم الحفظ ✓';
+      } catch (err) { statusEl.textContent = 'تعذّر الحفظ التلقائي'; }
+    }, 400);
+  }
+  function restore(){
+    var d; try { d = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { d = null; }
+    if (!d) return;
+    if (d.f && d.f.length === fields.length) d.f.forEach(function(h, i){ fields[i].innerHTML = h; });
+    if (d.rows){ tbody.innerHTML = ''; d.rows.forEach(function(r){ addRow(r.item, r.cost); }); }
+    statusEl.textContent = 'تمت استعادة آخر تعديل';
+  }
+
+  deck.addEventListener('input', function(e){ if (e.target.closest('.bars')) syncBars(); save(); });
+  // paste as plain text so formatting from Word/WhatsApp does not leak in
+  deck.addEventListener('paste', function(e){
+    if (!e.target.closest('[contenteditable="true"]')) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  });
+
+  // ---- toolbar
+  document.getElementById('btnEdit').onclick = function(){ setEditable(!editing); };
+  document.getElementById('btnPrint').onclick = function(){ window.print(); };
+  document.getElementById('btnReset').onclick = function(){
+    if (!confirm('سيتم حذف كل التعديلات والعودة إلى النص الأصلي. متابعة؟')) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.reload();
+  };
+  document.getElementById('btnSave').onclick = function(){
+    var doc = document.documentElement.cloneNode(true);
+    doc.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+    doc.querySelector('#status').textContent = '';
+    var html = '<!doctype html>\n' + doc.outerHTML;
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], {type: 'text/html'}));
+    var dt = new Date().toISOString().slice(0, 10);
+    a.download = 'المدار-الجديد-LIBYES-2026-' + dt + '.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+  };
+
+  collect();
+  restore();
+  setEditable(true);
+  syncBars();
+  recalc();
+})();
+</script>
+</body>
+</html>
