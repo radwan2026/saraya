@@ -1,12 +1,14 @@
 {
   "name": "tiktok-red-light-game",
   "version": "1.0.0",
-  "description": "لعبة تفاعلية لبث تيك توك المباشر: الضوء الأحمر / الضوء الأخضر (مستوحاة من لعبة الحبار)",
+  "description": "ألعاب تفاعلية لبث تيك توك المباشر: حرب الفرق (هدايا + لايكات + معلّق صوتي بالذكاء الاصطناعي) والضوء الأحمر / الضوء الأخضر",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "demo": "node server.js --demo",
+    "battle": "node battle-server.js",
+    "battle:demo": "node battle-server.js --demo",
     "test": "node --test test/*.test.js"
   },
   "engines": {

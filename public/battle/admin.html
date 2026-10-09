@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تحكم حرب الفرق</title>
+  <style>
+    :root { --bg:#0d0b1c; --card:#17142d; --line:#2c2752; --ink:#eef; --muted:#9a9cc7; --pink:#ff2e7e; --teal:#18c7a4; --red:#ff4d4d; --gold:#ffd23f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+    main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+    h1 { margin: 0 auto; padding: 16px; font-size: 22px; max-width: 1200px; }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+    h2 { margin: 0 0 12px; font-size: 17px; color: var(--gold); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    input, select { flex: 1; min-width: 110px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0a0817; color: var(--ink); font-size: 15px; }
+    button { padding: 10px 14px; border-radius: 10px; border: 0; background: var(--line); color: var(--ink); font-size: 15px; font-weight: 700; cursor: pointer; }
+    button:hover { filter: brightness(1.2); }
+    button.primary { background: var(--pink); }
+    button.teal { background: var(--teal); color: #032; }
+    button.danger { background: var(--red); }
+    button.gold { background: var(--gold); color: #321; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 13px; font-weight: 700; background: var(--line); }
+    .pill.connected, .pill.on { background: var(--teal); color: #032; }
+    .pill.connecting { background: var(--gold); color: #321; }
+    .pill.error { background: var(--red); }
+    .muted { color: var(--muted); font-size: 14px; }
+    .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 15px; }
+    .kv b { color: var(--teal); }
+    .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .team { border-radius: 12px; padding: 10px; background: #0a0817; border-top: 4px solid var(--c); }
+    .team b { display: block; font-size: 22px; }
+    .log { max-height: 300px; overflow: auto; }
+    .log div { padding: 5px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+    code { background: #0a0817; padding: 2px 6px; border-radius: 6px; direction: ltr; display: inline-block; }
+    a { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <h1>⚔️ لوحة تحكم «حرب الفرق»</h1>
+  <main>
+    <section>
+      <h2>اتصال تيك توك لايف</h2>
+      <div class="row">
+        <input id="username" placeholder="اسم الحساب بدون @" dir="ltr">
+        <button class="primary" id="connect">اتصال</button>
+        <button id="disconnect">قطع</button>
+      </div>
+      <div class="row"><span id="ttPill" class="pill">غير متصل</span> <span id="ttMsg" class="muted"></span></div>
+      <p class="muted">رابط شاشة اللعبة لـ OBS / LIVE Studio (1080×1920): <code id="overlayUrl"></code><br>
+        خلفية شفافة <code>?transparent=1</code> · بدون معلّق <code>?voice=0</code> · بدون مؤثرات <code>?sound=0</code> · بدون ترجمة <code>?subs=0</code></p>
+    </section>
+
+    <section>
+      <h2>التحكم في الجولة</h2>
+      <div class="kv" style="margin-bottom:12px">
+        <span>المرحلة</span><b id="phase">-</b>
+        <span>الجولة</span><b id="round">0</b>
+        <span>الوقت المتبقي</span><b id="left">-</b>
+        <span>الأعضاء</span><b id="members">0</b>
+      </div>
+      <div class="teams" id="teams"></div>
+      <div class="row">
+        <button class="primary" id="start">▶ ابدأ الجولة</button>
+        <button class="teal" id="skip">⏭ تخطّي المرحلة</button>
+        <button class="danger" id="reset">⟲ مسح كل شيء</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>🎙️ المعلّق الصوتي</h2>
+      <div class="kv" style="margin-bottom:12px">
+        <span>مزوّد الصوت</span><b id="voiceProvider">-</b>
+        <span>آخر خطأ</span><b id="voiceErr" style="color:var(--muted)">-</b>
+      </div>
+      <div class="row">
+        <button class="gold" id="howto">📢 اشرح طريقة اللعب الآن</button>
+      </div>
+      <div class="row">
+        <input id="sayText" placeholder="اكتب جملة ليقولها المعلّق (مثال: يا جماعة باقي دقيقة!)">
+        <button class="teal" id="say">🎙️ قُل</button>
+      </div>
+      <div class="row">
+        <button class="sayq">🔥 حمّس الجمهور</button>
+        <button class="sayq">❤️ اطلب لايكات</button>
+        <button class="sayq">➕ اطلب متابعة</button>
+        <button class="sayq">🔗 اطلب مشاركة</button>
+      </div>
+      <p class="muted">الصوت يُشغَّل من شاشة اللعبة نفسها حتى يلتقطه البث. يجب أن تكون صفحة اللعبة مفتوحة.</p>
+    </section>
+
+    <section>
+      <h2>وضع التجربة والمحاكاة</h2>
+      <div class="row"><span>المتابعون الوهميون:</span> <span id="demoPill" class="pill">متوقف</span>
+        <button class="teal" id="demoOn">تشغيل</button><button id="demoOff">إيقاف</button></div>
+      <div class="row">
+        <input id="simName" placeholder="اسم المتابع" value="مختبر">
+        <input id="simText" placeholder="تعليق (مثلاً 1)" value="1">
+        <button id="simComment">💬 تعليق</button>
+      </div>
+      <div class="row">
+        <button id="simLike">❤️ 10 لايك</button>
+        <button id="simFollow">➕ متابعة</button>
+        <button id="simShare">🔗 مشاركة</button>
+      </div>
+      <div class="row">
+        <button class="gift" data-name="وردة" data-emoji="🌹" data-coins="1">🌹 1</button>
+        <button class="gift" data-name="دونات" data-emoji="🍩" data-coins="30">🍩 30</button>
+        <button class="gift" data-name="قبعة وشارب" data-emoji="🎩" data-coins="99">🎩 99 ⚡</button>
+        <button class="gift" data-name="كورجي" data-emoji="🐶" data-coins="299">🐶 299 💣</button>
+        <button class="gift" data-name="المجرّة" data-emoji="🌌" data-coins="1000">🌌 1000</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>📊 إحصائيات البث</h2>
+      <div class="kv" id="stats"></div>
+      <h2 style="margin-top:16px">🏆 آخر الجولات</h2>
+      <div class="log" id="history"></div>
+    </section>
+
+    <section>
+      <h2>🗣️ آخر ما قاله المعلّق</h2>
+      <div class="log" id="sayLog"></div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  (() => {
+    const $ = (id) => document.getElementById(id);
+    const socket = io();
+    let state = null; let offset = 0;
+    $('overlayUrl').textContent = location.origin + '/';
+    const PH = { lobby: 'اختيار الفرق', battle: 'المعركة', winner: 'شاشة الفوز' };
+
+    $('connect').onclick = () => socket.emit('admin:connect', $('username').value);
+    $('disconnect').onclick = () => socket.emit('admin:disconnect');
+    $('start').onclick = () => socket.emit('admin:start');
+    $('skip').onclick = () => socket.emit('admin:skip');
+    $('reset').onclick = () => confirm('مسح كل الأعضاء والنقاط والسجل؟') && socket.emit('admin:reset');
+    $('demoOn').onclick = () => socket.emit('admin:demo', true);
+    $('demoOff').onclick = () => socket.emit('admin:demo', false);
+    $('howto').onclick = () => socket.emit('admin:howto');
+    $('say').onclick = () => { socket.emit('admin:say', $('sayText').value); $('sayText').value = ''; };
+    const QUICK = {
+      '🔥 حمّس الجمهور': 'يا جماعة الحماس نار! مين الفريق الأقوى الليلة؟ أثبتوها بالتعليقات واللايكات!',
+      '❤️ اطلب لايكات': 'اضغطوا على الشاشة بقوة! كل لايك نقطة لفريقكم! يلا نوصل عشرة آلاف لايك!',
+      '➕ اطلب متابعة': 'اللي ما تابع الحساب، تابع الآن! المتابعة تعطي فريقك ثلاثين نقطة فوراً!',
+      '🔗 اطلب مشاركة': 'شاركوا البث مع أصحابكم وخلّوهم يدعمون فريقكم! كل مشاركة عشرين نقطة!',
+    };
+    document.querySelectorAll('.sayq').forEach((b) => { b.onclick = () => socket.emit('admin:say', QUICK[b.textContent]); });
+    const name = () => $('simName').value || 'مختبر';
+    $('simComment').onclick = () => socket.emit('admin:comment', { name: name(), text: $('simText').value });
+    $('simLike').onclick = () => socket.emit('admin:like', { name: name(), count: 10 });
+    $('simFollow').onclick = () => socket.emit('admin:follow', { name: name() });
+    $('simShare').onclick = () => socket.emit('admin:share', { name: name() });
+    document.querySelectorAll('.gift').forEach((b) => {
+      b.onclick = () => socket.emit('admin:gift', { name: name(), gift: b.dataset.name, emoji: b.dataset.emoji, coins: Number(b.dataset.coins) });
+    });
+
+    socket.on('tiktokStatus', (s) => {
+      $('ttPill').className = 'pill ' + s.state;
+      $('ttPill').textContent = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل', error: 'خطأ' }[s.state] || s.state;
+      $('ttMsg').textContent = s.message || '';
+      if (s.username && !$('username').value) $('username').value = s.username;
+    });
+    socket.on('demoStatus', (d) => {
+      $('demoPill').className = 'pill ' + (d.running ? 'on' : '');
+      $('demoPill').textContent = d.running ? 'يعمل' : 'متوقف';
+    });
+    socket.on('voiceInfo', (v) => {
+      $('voiceProvider').textContent = v.provider;
+      $('voiceErr').textContent = v.lastError || '-';
+    });
+    socket.on('stats', (s) => {
+      const rows = [['💬 تعليقات', s.comments], ['❤️ لايكات', s.likes], ['🎁 هدايا', s.gifts], ['🪙 عملات', s.coins], ['➕ متابعات', s.follows], ['🔗 مشاركات', s.shares]];
+      $('stats').innerHTML = '';
+      for (const [k, v] of rows) {
+        const a = document.createElement('span'); a.textContent = k;
+        const b = document.createElement('b'); b.textContent = Number(v).toLocaleString('en-US');
+        $('stats').append(a, b);
+      }
+    });
+    socket.on('say', (line) => {
+      const d = document.createElement('div');
+      d.textContent = `${new Date(line.at).toLocaleTimeString()} — ${line.text}`;
+      $('sayLog').prepend(d);
+      while ($('sayLog').children.length > 40) $('sayLog').lastChild.remove();
+    });
+    socket.on('state', (s) => {
+      state = s; offset = s.serverNow - Date.now();
+      $('phase').textContent = PH[s.phase] + (s.final ? ' (الوقت الحاسم)' : '') + (s.overtime ? ' (وقت إضافي)' : '');
+      $('round').textContent = s.round;
+      $('members').textContent = s.totalMembers;
+      $('teams').innerHTML = '';
+      for (const t of s.teams) {
+        const d = document.createElement('div');
+        d.className = 'team'; d.style.setProperty('--c', t.color);
+        d.textContent = `${t.id} ${t.emoji} ${t.name}`;
+        const b = document.createElement('b'); b.textContent = (t.points + t.bank).toLocaleString('en-US');
+        const m = document.createElement('div'); m.className = 'muted'; m.textContent = `👥 ${t.members} · 🏆 ${t.wins}`;
+        d.append(b, m);
+        $('teams').append(d);
+      }
+      $('history').innerHTML = '';
+      for (const h of s.history) {
+        const t = s.teams.find((x) => x.id === h.teamId);
+        const d = document.createElement('div');
+        d.textContent = `الجولة ${h.round}: ${t ? t.emoji + ' ' + t.name : '-'} — ${h.points.toLocaleString('en-US')} نقطة${h.mvp ? ' — البطل: ' + h.mvp : ''}`;
+        $('history').append(d);
+      }
+    });
+    setInterval(() => {
+      if (!state) return;
+      $('left').textContent = state.phaseEndsAt ? Math.max(0, Math.ceil((state.phaseEndsAt - Date.now() - offset) / 1000)) + ' ث' : '-';
+    }, 500);
+  })();
+  </script>
+</body>
+</html>

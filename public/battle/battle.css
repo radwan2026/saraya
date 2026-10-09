@@ -1,0 +1,344 @@
+:root {
+  --gold: #ffd23f;
+  --hot: #ff2e7e;
+  --cyan: #29e7ff;
+  --ink: #fff;
+  --muted: rgba(255, 255, 255, .72);
+  --panel: rgba(12, 10, 32, .62);
+  --stroke: rgba(255, 255, 255, .14);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; width: 100%; height: 100%; overflow: hidden;
+  background: #04030c;
+  font-family: "Cairo", "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+  color: var(--ink);
+}
+body.transparent, body.transparent #stage { background: transparent !important; }
+body.transparent .bg { display: none; }
+
+#stage {
+  position: absolute; top: 50%; left: 50%;
+  width: 1080px; height: 1920px;
+  transform-origin: center center;
+  overflow: hidden;
+  background: #070514;
+}
+.hidden { display: none !important; }
+
+/* ---------------- الخلفية ---------------- */
+.bg { position: absolute; inset: 0; overflow: hidden; }
+.bg::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 46, 126, .35), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 0% 60%, rgba(41, 231, 255, .18), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 70%, rgba(179, 107, 255, .22), transparent 70%),
+    linear-gradient(180deg, #120a2e 0%, #090620 45%, #05040f 100%);
+}
+.bg-grid {
+  position: absolute; left: -50%; right: -50%; bottom: -10%; height: 70%;
+  background-image:
+    linear-gradient(rgba(255,255,255,.07) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255,255,255,.07) 2px, transparent 2px);
+  background-size: 90px 90px;
+  transform: perspective(600px) rotateX(62deg);
+  transform-origin: bottom;
+  animation: gridMove 4s linear infinite;
+  mask-image: linear-gradient(0deg, #000 30%, transparent 95%);
+}
+@keyframes gridMove { to { background-position: 0 90px, 0 90px; } }
+.bg-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 210, 63, .0), transparent 60%);
+  transition: background .6s;
+}
+body.final .bg-glow { background: radial-gradient(circle at 50% 45%, rgba(255, 40, 60, .35), transparent 65%); animation: pulseBg 1s ease-in-out infinite; }
+@keyframes pulseBg { 50% { opacity: .45; } }
+
+#particles, #confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ---------------- الرأس ---------------- */
+.head {
+  position: absolute; top: 34px; left: 40px; right: 40px; height: 150px;
+  display: flex; align-items: center; justify-content: space-between; z-index: 5;
+}
+.logo { text-align: center; }
+.logo-main {
+  font-size: 84px; font-weight: 900; line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, #ffe27a 45%, #ff8a3d 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 6px 0 rgba(120, 20, 60, .9)) drop-shadow(0 0 30px rgba(255, 120, 60, .55));
+  letter-spacing: 1px;
+}
+.logo-sub { margin-top: 10px; font-size: 26px; font-weight: 800; color: var(--cyan); letter-spacing: 4px; text-shadow: 0 0 14px rgba(41, 231, 255, .7); }
+
+.members, .clock {
+  width: 170px; height: 150px; border-radius: 34px;
+  background: var(--panel); border: 2px solid var(--stroke);
+  backdrop-filter: blur(8px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.members span { font-size: 40px; line-height: 1; }
+.members b { font-size: 50px; font-weight: 900; line-height: 1.1; }
+.members small { font-size: 22px; color: var(--muted); }
+
+.clock { position: relative; border-radius: 50%; width: 150px; }
+.clock svg { position: absolute; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); transform: rotate(-90deg); }
+.clock .track { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 10; }
+.clock .arc { fill: none; stroke: var(--cyan); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 327; stroke-dashoffset: 0; transition: stroke-dashoffset .3s linear, stroke .3s; filter: drop-shadow(0 0 8px currentColor); }
+.clock b { position: relative; font-size: 46px; font-weight: 900; }
+body.final .clock .arc { stroke: #ff3a4f; }
+body.final .clock { animation: beat 1s infinite; border-color: #ff3a4f; }
+@keyframes beat { 50% { transform: scale(1.08); } }
+
+/* ---------------- الشريط ---------------- */
+.banner {
+  position: absolute; top: 205px; left: 50%; transform: translateX(-50%);
+  min-width: 760px; padding: 16px 40px; border-radius: 999px;
+  text-align: center; font-size: 40px; font-weight: 900; z-index: 5;
+  background: linear-gradient(90deg, rgba(255,46,126,.9), rgba(179,107,255,.9));
+  box-shadow: 0 0 40px rgba(255, 46, 126, .55), inset 0 2px 0 rgba(255,255,255,.3);
+  white-space: nowrap;
+}
+body.phase-battle .banner { background: linear-gradient(90deg, #ff7a18, #ff2e7e); }
+body.final .banner { background: linear-gradient(90deg, #ff1f3d, #ff9a00); animation: beat .8s infinite; }
+body.phase-winner .banner { background: linear-gradient(90deg, #ffb800, #ffe27a); color: #3a1d00; }
+.banner.pop { animation: bannerPop .5s; }
+@keyframes bannerPop { 0% { transform: translateX(-50%) scale(.7); } 70% { transform: translateX(-50%) scale(1.08); } 100% { transform: translateX(-50%) scale(1); } }
+
+/* ---------------- الساحة ---------------- */
+.arena { position: absolute; top: 300px; left: 40px; right: 40px; height: 860px; z-index: 3; }
+.goal-line {
+  position: absolute; top: 62px; left: 0; right: 0; height: 0;
+  border-top: 4px dashed rgba(255, 210, 63, .7);
+  filter: drop-shadow(0 0 8px rgba(255, 210, 63, .8));
+}
+.towers { position: absolute; inset: 0; display: flex; gap: 26px; justify-content: center; }
+
+.tower { position: relative; flex: 1; max-width: 230px; display: flex; flex-direction: column; align-items: center; --c: #fff; }
+.tower .tube {
+  position: relative; width: 100%; height: 600px; margin-top: 64px;
+  border-radius: 34px 34px 20px 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.09));
+  border: 3px solid color-mix(in srgb, var(--c) 45%, transparent);
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0,0,0,.6);
+}
+.tower .fill {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0%;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--c) 100%, #fff 35%) 0%, var(--c) 30%, color-mix(in srgb, var(--c) 70%, #000) 100%);
+  box-shadow: 0 0 40px var(--c), inset 0 6px 0 rgba(255,255,255,.45);
+  transition: height .45s cubic-bezier(.2, 1.4, .4, 1);
+}
+.tower .fill::before {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(-45deg, rgba(255,255,255,.18) 0 18px, transparent 18px 36px);
+  animation: stripes 1.2s linear infinite;
+}
+@keyframes stripes { to { background-position: 51px 0; } }
+.tower .fill::after {
+  content: ""; position: absolute; left: -10%; right: -10%; top: -14px; height: 28px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.9), transparent 70%);
+  filter: blur(4px);
+}
+.tower .bank {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0%;
+  background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--c) 45%, transparent) 0 10px, transparent 10px 20px);
+  border-top: 3px dashed var(--c);
+}
+.tower .pts {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 46px; z-index: 2; transition: bottom .45s cubic-bezier(.2, 1.4, .4, 1); font-weight: 900; white-space: nowrap;
+  text-shadow: 0 0 16px var(--c), 0 4px 0 rgba(0,0,0,.6);
+  transition: transform .2s;
+}
+.tower .pts.bump { animation: bump .35s; }
+@keyframes bump { 40% { transform: translateX(-50%) scale(1.25); } }
+.tower .badge {
+  position: relative; margin-top: -60px; width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 55%, color-mix(in srgb, var(--c) 55%, #000));
+  border: 6px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 84px;
+  box-shadow: 0 0 36px var(--c), 0 10px 0 rgba(0,0,0,.35);
+  z-index: 2;
+}
+.tower .num {
+  position: absolute; bottom: -14px; right: -10px;
+  width: 62px; height: 62px; border-radius: 50%;
+  background: #fff; color: #120a2e; font-size: 40px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 0 rgba(0,0,0,.35);
+}
+.tower .name { margin-top: 18px; font-size: 40px; font-weight: 900; text-shadow: 0 0 16px var(--c); }
+.tower .meta { font-size: 24px; color: var(--muted); }
+.tower .crown {
+  position: absolute; top: -4px; left: 50%; transform: translateX(-50%) translateY(20px);
+  font-size: 58px; line-height: 1; z-index: 3; opacity: 0; transition: opacity .3s, transform .3s;
+  filter: drop-shadow(0 0 18px rgba(255,210,63,.9));
+}
+.tower.leader .crown { opacity: 1; transform: translateX(-50%) translateY(0); animation: float 1.6s ease-in-out infinite; }
+@keyframes float { 50% { margin-top: -12px; } }
+.tower.leader .tube { border-color: var(--gold); box-shadow: inset 0 0 30px rgba(0,0,0,.6), 0 0 40px rgba(255,210,63,.45); }
+.tower .boost {
+  position: absolute; top: 78px; left: 50%; transform: translateX(-50%);
+  padding: 4px 14px; border-radius: 999px; font-size: 24px; font-weight: 900; white-space: nowrap;
+  background: linear-gradient(90deg, #ffe000, #ff7a00); color: #2a1200;
+  box-shadow: 0 0 30px #ffb300; z-index: 3;
+  animation: boostBeat .6s infinite;
+}
+@keyframes boostBeat { 50% { transform: translateX(-50%) scale(1.1); } }
+.tower.hit .tube { animation: shake .5s; }
+@keyframes shake {
+  10%, 90% { transform: translateX(-4px); } 20%, 80% { transform: translateX(8px); }
+  30%, 50%, 70% { transform: translateX(-14px); } 40%, 60% { transform: translateX(14px); }
+}
+.floater {
+  position: absolute; left: 50%; font-size: 40px; font-weight: 900; pointer-events: none;
+  text-shadow: 0 0 12px var(--c), 0 3px 0 #000; white-space: nowrap; z-index: 4;
+  animation: floatUp 1.3s ease-out forwards;
+}
+@keyframes floatUp { from { transform: translate(-50%, 0) scale(.6); opacity: 0; } 15% { opacity: 1; transform: translate(-50%, -20px) scale(1.15); } to { transform: translate(-50%, -170px) scale(1); opacity: 0; } }
+
+/* ---------------- الأبطال والمباشر ---------------- */
+.mid { position: absolute; top: 1176px; left: 40px; right: 40px; height: 360px; display: flex; gap: 24px; z-index: 4; }
+.panel {
+  background: var(--panel); border: 2px solid var(--stroke); border-radius: 30px;
+  backdrop-filter: blur(10px); padding: 16px 22px; overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+}
+.panel h3 { margin: 0 0 6px; font-size: 30px; font-weight: 900; }
+.heroes { flex: 1.05; position: relative; }
+.heroes ol { list-style: none; margin: 0; padding: 0; }
+.heroes li { display: flex; align-items: center; gap: 12px; height: 46px; font-size: 26px; font-weight: 800; }
+.heroes li .rk { width: 38px; text-align: center; font-size: 28px; }
+.heroes li img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 3px solid var(--c); }
+.heroes li .nm { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.heroes li .tm { font-size: 26px; }
+.heroes li .pt { color: var(--gold); }
+.heroes .empty { color: var(--muted); font-size: 24px; padding-top: 30px; text-align: center; }
+.king {
+  position: absolute; left: 16px; right: 16px; bottom: 12px; height: 52px; border-radius: 16px;
+  background: linear-gradient(90deg, rgba(255,210,63,.25), rgba(255,138,61,.15));
+  border: 2px solid rgba(255,210,63,.55);
+  display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 24px; font-weight: 800;
+}
+.king:empty { display: none; }
+.king img { width: 36px; height: 36px; border-radius: 50%; }
+
+.feed-panel { flex: 1; }
+.feed-panel .dot { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #ff2b48; box-shadow: 0 0 14px #ff2b48; animation: blink 1s infinite; vertical-align: middle; }
+@keyframes blink { 50% { opacity: .3; } }
+#feed { list-style: none; margin: 0; padding: 0; }
+#feed li {
+  display: flex; align-items: center; gap: 10px; height: 48px; margin-bottom: 6px;
+  padding: 0 12px; border-radius: 14px; font-size: 24px; font-weight: 700;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 30%, transparent), transparent);
+  border-right: 5px solid var(--c);
+  animation: feedIn .4s ease-out;
+  white-space: nowrap; overflow: hidden;
+}
+#feed li img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex: none; }
+#feed li .t { overflow: hidden; text-overflow: ellipsis; }
+#feed li.gift { background: linear-gradient(90deg, rgba(255,210,63,.35), transparent); border-right-color: var(--gold); }
+#feed li.big { box-shadow: 0 0 20px rgba(255,210,63,.6); }
+@keyframes feedIn { from { transform: translateX(-60px); opacity: 0; } }
+
+/* ---------------- الترجمة ---------------- */
+.subtitle {
+  position: absolute; left: 50px; right: 50px; top: 1546px; z-index: 6;
+  padding: 10px 24px; border-radius: 22px;
+  background: rgba(0,0,0,.72); border: 2px solid rgba(41, 231, 255, .5);
+  font-size: 26px; font-weight: 800; line-height: 1.4; text-align: center;
+  box-shadow: 0 0 30px rgba(41, 231, 255, .25);
+  max-height: 96px; overflow: hidden;
+  animation: feedIn .3s;
+}
+.subtitle .mic { margin-left: 10px; }
+
+/* ---------------- طريقة اللعب ---------------- */
+.howto { position: absolute; left: 40px; right: 40px; bottom: 34px; height: 250px; z-index: 5; }
+.join-cta {
+  height: 100px; border-radius: 28px; display: flex; align-items: center; justify-content: center; gap: 18px;
+  background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.16), rgba(255,255,255,.08));
+  border: 2px solid rgba(255,255,255,.25);
+  font-size: 36px; font-weight: 900;
+}
+.join-cta .lbl { color: var(--gold); }
+.join-cta .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 16px; border-radius: 999px; background: var(--c); color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.35); box-shadow: 0 0 18px var(--c); }
+.rules { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.rule {
+  height: 62px; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--panel); border: 2px solid var(--stroke); font-size: 25px; font-weight: 800; white-space: nowrap;
+}
+.rule b { color: var(--gold); }
+.rule.power { border-color: rgba(255, 179, 0, .65); background: linear-gradient(90deg, rgba(255,122,0,.3), rgba(255,0,90,.25)); }
+
+/* ---------------- المؤثرات المركزية ---------------- */
+.splash {
+  position: absolute; top: 560px; left: 50%; transform: translateX(-50%);
+  width: 900px; padding: 30px; border-radius: 40px; z-index: 20; text-align: center;
+  background: radial-gradient(circle at 50% 0%, rgba(255,210,63,.35), rgba(12,8,30,.92) 70%);
+  border: 4px solid var(--gold);
+  box-shadow: 0 0 80px rgba(255,210,63,.6);
+  animation: splashIn .5s cubic-bezier(.2, 1.6, .4, 1);
+}
+.splash .ico { font-size: 170px; line-height: 1.1; filter: drop-shadow(0 0 30px rgba(255,255,255,.6)); animation: wobble 1s ease-in-out infinite; }
+.splash .ico img { width: 190px; height: 190px; object-fit: contain; }
+.splash .who { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: 46px; font-weight: 900; }
+.splash .who img { width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; }
+.splash .what { font-size: 38px; font-weight: 800; color: var(--muted); }
+.splash .plus { font-size: 76px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px rgba(255,210,63,.9), 0 5px 0 #6b3a00; }
+.splash.boost { border-color: #ffb300; background: radial-gradient(circle at 50% 0%, rgba(255,179,0,.5), rgba(30,12,0,.94) 70%); }
+.splash.bomb { border-color: #ff3a3a; background: radial-gradient(circle at 50% 0%, rgba(255,60,40,.6), rgba(30,0,4,.94) 70%); box-shadow: 0 0 120px rgba(255,40,40,.8); }
+.splash.big { font-size: 120%; }
+@keyframes splashIn { from { transform: translateX(-50%) scale(.3) rotate(-8deg); opacity: 0; } }
+@keyframes wobble { 25% { transform: rotate(-8deg) scale(1.05); } 75% { transform: rotate(8deg) scale(1.05); } }
+
+.flash { position: absolute; inset: 0; z-index: 19; pointer-events: none; opacity: 0; background: #fff; }
+.flash.go { animation: flash .7s ease-out; }
+@keyframes flash { 0% { opacity: .85; } 100% { opacity: 0; } }
+#stage.shake { animation: stageShake .6s; }
+@keyframes stageShake {
+  10%, 90% { margin-left: -6px; } 20%, 80% { margin-left: 12px; }
+  30%, 50%, 70% { margin-left: -20px; margin-top: 8px; } 40%, 60% { margin-left: 20px; margin-top: -8px; }
+}
+
+/* ---------------- شاشة الفوز ---------------- */
+.overlay { position: absolute; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; background: rgba(5, 3, 15, .82); }
+.win-box { position: relative; width: 940px; text-align: center; animation: splashIn .7s cubic-bezier(.2, 1.5, .4, 1); --c: var(--gold); }
+.win-rays {
+  position: absolute; top: 120px; left: 50%; width: 1400px; height: 1400px; margin: -700px 0 0 -700px;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c) 35%, transparent) 0 10deg, transparent 10deg 20deg);
+  mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+  animation: spin 18s linear infinite; z-index: -1;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.win-title { font-size: 60px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px rgba(255,210,63,.8); }
+.win-emoji { font-size: 300px; line-height: 1.15; filter: drop-shadow(0 0 60px var(--c)); animation: float 2s ease-in-out infinite; }
+.win-team { font-size: 120px; font-weight: 900; line-height: 1.1; text-shadow: 0 0 40px var(--c), 0 8px 0 rgba(0,0,0,.5); }
+.win-points { font-size: 48px; font-weight: 800; color: var(--muted); }
+.win-mvp {
+  margin: 30px auto 0; width: 760px; padding: 20px; border-radius: 30px;
+  background: rgba(255,255,255,.08); border: 3px solid var(--gold);
+  display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 900; text-align: right;
+}
+.win-mvp:empty { display: none; }
+.win-mvp img { width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--gold); object-fit: cover; }
+.win-mvp small { display: block; font-size: 28px; color: var(--gold); }
+.win-rank { margin-top: 26px; display: flex; justify-content: center; gap: 18px; font-size: 32px; font-weight: 800; }
+.win-rank span { padding: 8px 18px; border-radius: 16px; background: rgba(255,255,255,.08); }
+.win-next { margin-top: 30px; font-size: 32px; color: var(--cyan); font-weight: 800; animation: blink 1.4s infinite; }
+
+.unlock {
+  position: absolute; bottom: 330px; left: 50%; transform: translateX(-50%); z-index: 50;
+  font: inherit; font-size: 40px; font-weight: 900; padding: 24px 48px; border-radius: 999px; border: 0; cursor: pointer;
+  background: linear-gradient(90deg, #29e7ff, #b36bff); color: #fff; box-shadow: 0 0 40px rgba(41,231,255,.7);
+  animation: beat 1.2s infinite;
+}
+.conn { position: absolute; bottom: 20px; left: 20px; z-index: 60; background: #c00; padding: 10px 20px; border-radius: 12px; font-size: 24px; }

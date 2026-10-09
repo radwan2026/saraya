@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>حرب الفرق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&display=swap">
+  <link rel="stylesheet" href="battle.css">
+</head>
+<body class="phase-lobby">
+  <div id="stage">
+    <div class="bg"><div class="bg-grid"></div><div class="bg-glow"></div></div>
+    <canvas id="particles"></canvas>
+
+    <!-- الرأس -->
+    <header class="head">
+      <div class="members"><span>👥</span><b id="members">0</b><small>مقاتل</small></div>
+      <div class="logo">
+        <div class="logo-main">⚔️ حرب الفرق</div>
+        <div class="logo-sub"><span id="roundLbl">الجولة 1</span><span id="goalLbl"></span></div>
+      </div>
+      <div class="clock" id="clock">
+        <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle id="clockArc" class="arc" cx="60" cy="60" r="52"/></svg>
+        <b id="clockTxt">--</b>
+      </div>
+    </header>
+
+    <div class="banner" id="banner"><span id="bannerTxt">اختر فريقك! اكتب رقمه في التعليقات</span></div>
+
+    <!-- الساحة: أبراج الفرق -->
+    <section class="arena">
+      <div class="goal-line" id="goalLine"></div>
+      <div class="towers" id="towers"></div>
+    </section>
+
+    <!-- الأبطال + البث المباشر للأحداث -->
+    <section class="mid">
+      <div class="panel heroes">
+        <h3>🏆 أبطال الجولة</h3>
+        <ol id="heroes"></ol>
+        <div class="king" id="king"></div>
+      </div>
+      <div class="panel feed-panel">
+        <h3><i class="dot"></i> مباشر</h3>
+        <ul id="feed"></ul>
+      </div>
+    </section>
+
+    <!-- ترجمة كلام المعلّق -->
+    <div class="subtitle hidden" id="subtitle"><span class="mic">🎙️</span><span id="subtitleTxt"></span></div>
+
+    <!-- طريقة اللعب -->
+    <footer class="howto">
+      <div class="join-cta" id="joinCta"></div>
+      <div class="rules" id="rules"></div>
+    </footer>
+
+    <!-- مؤثرات مركزية -->
+    <div class="splash hidden" id="splash"></div>
+    <div class="flash" id="flash"></div>
+
+    <!-- شاشة الفوز -->
+    <div class="overlay hidden" id="winner">
+      <canvas id="confetti"></canvas>
+      <div class="win-box">
+        <div class="win-rays"></div>
+        <div class="win-title">🏆 الفريق الفائز 🏆</div>
+        <div class="win-emoji" id="winEmoji"></div>
+        <div class="win-team" id="winTeam"></div>
+        <div class="win-points" id="winPoints"></div>
+        <div class="win-mvp" id="winMvp"></div>
+        <div class="win-rank" id="winRank"></div>
+        <div class="win-next">الجولة القادمة بعد قليل — اختر فريقك!</div>
+      </div>
+    </div>
+
+    <button class="unlock hidden" id="unlock">🔊 اضغط هنا لتفعيل صوت المعلّق</button>
+    <div class="conn hidden" id="conn">جارٍ الاتصال بالخادم...</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="battle.js"></script>
+</body>
+</html>

@@ -28,9 +28,40 @@ export function normalizeUser(u = {}) {
   };
 }
 
+/** أول رابط صورة من ImageModel أو حقول المكتبة القديمة */
+function imageUrl(img) {
+  if (!img) return '';
+  if (typeof img === 'string') return img;
+  const list = img.urlList || img.url_list || img.url;
+  return Array.isArray(list) && list.length ? list[0] : '';
+}
+
+/**
+ * يوحّد بيانات الهدية بين إصدارات المكتبة.
+ * الهدايا المتتالية (combo، type = 1) تُرسل عدة رسائل أثناء السلسلة؛ نحتسبها مرة واحدة عند repeatEnd.
+ * @returns {{id:number, name:string, diamonds:number, count:number, coins:number, image:string, streaking:boolean}}
+ */
+export function normalizeGift(data = {}) {
+  const d = data.giftDetails || {};
+  const ext = data.extendedGiftInfo || {};
+  const type = d.type ?? data.giftType ?? ext.type ?? 0;
+  const diamonds = Number(d.diamondCount ?? data.diamondCount ?? ext.diamond_count ?? ext.diamondCount ?? 0) || 0;
+  const count = Math.max(1, Number(data.repeatCount) || 1);
+  return {
+    id: Number(data.giftId ?? d.id ?? 0),
+    name: d.name || data.giftName || ext.name || 'هدية',
+    diamonds,
+    count,
+    coins: diamonds * count,
+    image: imageUrl(d.image) || imageUrl(d.icon) || data.giftPictureUrl || imageUrl(ext.image) || '',
+    streaking: Number(type) === 1 && !data.repeatEnd,
+  };
+}
+
 /**
  * غلاف بسيط حول tiktok-live-connector يعيد الاتصال تلقائياً عند الانقطاع.
- * الأحداث: 'comment' ({user, text}), 'status' ({state, message, roomId?})
+ * الأحداث: 'comment' ({user, text}), 'gift' ({user, gift}), 'like' ({user, count}),
+ * 'follow' ({user}), 'share' ({user}), 'status' ({state, message, roomId?})
  */
 export class TikTokSource extends EventEmitter {
   constructor({ signApiKey } = {}) {
@@ -84,6 +115,29 @@ export class TikTokSource extends EventEmitter {
         console.warn('[TikTok] وصل تعليق بدون نص. الحقول الموجودة:', Object.keys(data || {}).join(', '));
       }
       this.emit('comment', { user, text });
+    });
+
+    conn.on(WebcastEvent.GIFT, (data) => {
+      const user = normalizeUser(data.user || data);
+      const gift = normalizeGift(data);
+      if (!user.id || gift.streaking) return;
+      this.emit('gift', { user, gift });
+    });
+
+    conn.on(WebcastEvent.LIKE, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (!user.id) return;
+      this.emit('like', { user, count: Number(data.count ?? data.likeCount) || 1 });
+    });
+
+    conn.on(WebcastEvent.FOLLOW, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (user.id) this.emit('follow', { user });
+    });
+
+    conn.on(WebcastEvent.SHARE, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (user.id) this.emit('share', { user });
     });
 
     conn.on(ControlEvent.DISCONNECTED, () => {

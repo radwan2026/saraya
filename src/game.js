@@ -13,6 +13,11 @@ export const Phase = Object.freeze({
 const ARABIC_DIGITS = { '٠': 0, '١': 1, '٢': 2, '٣': 3, '٤': 4, '٥': 5, '٦': 6, '٧': 7, '٨': 8, '٩': 9,
   '۰': 0, '۱': 1, '۲': 2, '۳': 3, '۴': 4, '۵': 5, '۶': 6, '۷': 7, '۸': 8, '۹': 9 };
 
+/** يحوّل الأرقام العربية والفارسية إلى أرقام إنجليزية */
+export function toLatinDigits(text) {
+  return String(text).replace(/[٠-٩۰-۹]/g, (d) => String(ARABIC_DIGITS[d]));
+}
+
 /**
  * يستخرج رقماً من تعليق. يقبل الأرقام الإنجليزية والعربية والفارسية.
  * التعليق يجب أن يكون رقماً فقط (مع مسافات أو # اختيارية) حتى لا تُحتسب الجمل العادية.
@@ -20,7 +25,7 @@ const ARABIC_DIGITS = { '٠': 0, '١': 1, '٢': 2, '٣': 3, '٤': 4, '٥': 5, '�
  */
 export function parseNumberComment(text, min = 1, max = 10) {
   if (typeof text !== 'string') return null;
-  const normalized = text.replace(/[٠-٩۰-۹]/g, (d) => String(ARABIC_DIGITS[d])).trim();
+  const normalized = toLatinDigits(text).trim();
   const m = normalized.match(/^#?\s*(\d{1,3})\s*$/);
   if (!m) return null;
   const n = Number(m[1]);
