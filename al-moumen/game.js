@@ -282,6 +282,7 @@ async function stepMove(p, steps) {
     if (next < 0 || p.pos >= END) break;
     p.pos = next;
     placeTokens();
+    Sound.sfx('step');
     await sleep(240);
     if (p.pos >= END) break;
   }
@@ -344,6 +345,7 @@ function setDie(v) {
 async function rollDie() {
   const die = $('die');
   die.classList.add('rolling');
+  Sound.sfx('dice');
   for (let i = 0; i < 9; i++) { setDie(1 + Math.floor(Math.random() * 6)); await sleep(65); }
   const v = 1 + Math.floor(Math.random() * 6);
   setDie(v);
@@ -363,6 +365,7 @@ function openCard(type, kindLabel, inner) {
     <div class="card-arch"><div class="card-kind">${kindLabel}</div>${inner}</div>
     <div class="card-actions"></div></div>`;
   ov.hidden = false;
+  Sound.sfx('card');
   return { root: ov.querySelector('.card'), arch: ov.querySelector('.card-arch'), actions: ov.querySelector('.card-actions') };
 }
 function closeCard() { $('cardOverlay').hidden = true; $('cardOverlay').innerHTML = ''; }
@@ -387,6 +390,7 @@ async function luckCard(p) {
     `<div class="card-sub">${esc(p.name)}</div><p class="card-text">${esc(c.title)}:<br>${esc(c.text)}<br>${effect}</p>`);
   await waitButtons(actions, [['حسناً', 'primary', 1]]);
   closeCard();
+  Sound.sfx(c.extra || c.steps > 0 ? 'bonus' : 'back');
   if (c.extra) { state.extraTurn = true; log(`${p.name}: ${c.title} ← رمية إضافية`, 'good'); return; }
   log(`${p.name}: ${c.title} ← ${effect}`, c.steps > 0 ? 'good' : 'bad');
   await stepMove(p, c.steps);
@@ -399,6 +403,7 @@ async function questionCard(p) {
      <div class="reward" aria-label="الجائزة: تقدم ${c.steps}">تقدم<b>${c.steps}</b></div>`);
   const ans = await waitButtons(actions, [['صح', 'primary', true], ['خطأ', 'danger', false]]);
   const ok = ans === c.a;
+  Sound.sfx(ok ? 'correct' : 'wrong');
   arch.querySelector('.slot').innerHTML =
     `<div class="verdict ${c.a}">${c.a ? 'صح' : 'خطأ'}</div>
      <div class="card-answer">${esc(c.ex)}</div>
@@ -426,6 +431,7 @@ async function challengeCard(p) {
   box.focus();
   await new Promise(res => { reveal.onclick = res; skip.onclick = () => { box.value = ''; res(); }; });
   const written = box.value.trim();
+  Sound.sfx('click');
   arch.querySelector('.answer-box').innerHTML = written
     ? `<span class="answer-label">إجابة ${esc(p.name)}</span><div class="player-answer">${esc(written)}</div>`
     : `<div class="player-answer empty">لم يكتب ${esc(p.name)} إجابة</div>`;
@@ -433,6 +439,7 @@ async function challengeCard(p) {
   const ok = written
     ? await waitButtons(actions, [['صحيحة، تقدّم خطوتين', 'primary', true], ['إجابة غير صحيحة', 'danger', false]])
     : (await waitButtons(actions, [['متابعة', 'primary', 1]]), false);
+  if (written) Sound.sfx(ok ? 'correct' : 'wrong');
   closeCard();
   log(`${p.name}: تحدٍّ — ${ok ? 'نجح ← تقدّم خطوتين' : 'لم يوفّق'}`, ok ? 'good' : 'bad');
   if (ok) await stepMove(p, 2);
@@ -447,6 +454,7 @@ async function treasureCard(p, target) {
   actions.innerHTML = '';
   const chosen = await new Promise(res => arch.querySelectorAll('.options button').forEach(b => b.addEventListener('click', () => res(+b.dataset.i))));
   const ok = opts[chosen].ok;
+  Sound.sfx(ok ? 'treasure' : 'wrong');
   arch.querySelectorAll('.options button').forEach((b, i) => {
     b.disabled = true;
     if (opts[i].ok) b.classList.add('correct');
@@ -464,6 +472,7 @@ async function resolveTile(p) {
   const n = p.pos;
   if (n < 1 || n > LAST) return;
   if (TORNADO[n]) {
+    Sound.sfx('tornado');
     toast(`زوبعة! تحملك إلى المربع ${TORNADO[n]}`);
     log(`${p.name}: زوبعة ← المربع ${TORNADO[n]}`, 'bad');
     await sleep(500); highlight(TORNADO[n]);
@@ -471,6 +480,7 @@ async function resolveTile(p) {
     return;
   }
   if (LADDERS[n]) {
+    Sound.sfx('ladder');
     toast(`سلّم! اصعد إلى المربع ${LADDERS[n]}`);
     log(`${p.name}: سلّم ← المربع ${LADDERS[n]}`, 'good');
     await sleep(500); highlight(LADDERS[n]);
@@ -480,6 +490,7 @@ async function resolveTile(p) {
   }
   if (TREASURE[n]) return treasureCard(p, TREASURE[n]);
   if (BONUS[n]) {
+    Sound.sfx('bonus');
     toast(`مكافأة! تقدّم ${stepsWord(BONUS[n])}`);
     log(`${p.name}: مكافأة +${BONUS[n]}`, 'good');
     await sleep(400);
@@ -515,6 +526,7 @@ function finish(winner) {
   winner.pos = END;
   placeTokens(); renderPlayers(); setBusy(false);
   log(`🏆 الفائز: ${winner.name}`, 'gold');
+  Sound.sfx('win');
   const ranking = state.players.slice().sort((a, b) => b.pos - a.pos);
   const ov = $('cardOverlay');
   ov.innerHTML = `<div class="sheet win" role="dialog" aria-modal="true">
@@ -615,6 +627,21 @@ $('setupForm').addEventListener('submit', e => {
 // ───────── الأزرار العامة ─────────
 function openRules() { $('rules').hidden = false; $('rulesClose').focus(); }
 $('btnRules').addEventListener('click', openRules);
+
+// ───────── الصوت ─────────
+function renderSoundButtons() {
+  $('btnMusic').setAttribute('aria-pressed', Sound.musicOn);
+  $('btnMusic').querySelector('.state').textContent = Sound.musicOn ? 'تعمل' : 'متوقفة';
+  $('btnSfx').setAttribute('aria-pressed', Sound.sfxOn);
+  $('btnSfx').querySelector('.state').textContent = Sound.sfxOn ? 'تعمل' : 'متوقفة';
+}
+$('btnMusic').addEventListener('click', () => { Sound.toggleMusic(); renderSoundButtons(); });
+$('btnSfx').addEventListener('click', () => { Sound.toggleSfx(); renderSoundButtons(); });
+// المتصفحات لا تسمح بالصوت إلا بعد أول تفاعل من المستخدم
+const unlockAudio = () => { Sound.unlock(); window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio); };
+window.addEventListener('pointerdown', unlockAudio);
+window.addEventListener('keydown', unlockAudio);
+renderSoundButtons();
 $('setupRules').addEventListener('click', openRules);
 $('rulesClose').addEventListener('click', () => { $('rules').hidden = true; });
 $('rules').addEventListener('click', e => { if (e.target.id === 'rules') $('rules').hidden = true; });
