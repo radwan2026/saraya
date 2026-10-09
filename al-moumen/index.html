@@ -42,7 +42,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 button { font-family: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
 .app { max-width: 1440px; margin: 0 auto; padding: 12px 16px 24px; display: flex; flex-direction: column; gap: 12px; }
 
@@ -167,6 +167,12 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--ink); outli
 .verdict.true { background: #9cc66b; }
 .verdict.false { background: #ad7f78; }
 .card .divider { height: 2px; background: var(--wood); opacity: .5; margin: 0 10%; }
+.answer-box { display: flex; flex-direction: column; gap: 6px; }
+.answer-box label, .answer-label { font-weight: 800; font-size: 14px; color: var(--ink-soft); }
+.answer-box textarea { width: 100%; resize: vertical; min-height: 84px; border: 2px solid #e6c46a; border-radius: 12px; padding: 10px 12px; font: 600 16px/1.6 var(--font-body); color: #1b1209; background: #fffbea; }
+.answer-box textarea:focus-visible { outline: 3px solid #d78a12; outline-offset: 1px; }
+.player-answer { background: #fffbea; border: 2px dashed #e6c46a; border-radius: 12px; padding: 10px 12px; font-weight: 700; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.player-answer.empty { color: var(--ink-soft); text-align: center; }
 .answer-gold { color: #9c6b07; font-family: var(--font-display); font-size: 22px; text-align: center; line-height: 1.6; }
 .options { display: flex; flex-direction: column; gap: 8px; }
 .options button { text-align: start; border: 2px solid transparent; background: #f6f8ef; border-radius: 10px; padding: 12px 14px; font-weight: 800; font-size: 16px; color: #1b1209; display: flex; gap: 10px; align-items: center; }
@@ -290,7 +296,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--ink); outli
     <ul>
       <li><span class="tile-key" style="background:var(--tile-white)"></span><strong>الأبيض — بطاقة سؤال:</strong> عبارة عن الخلفاء الراشدين، تجيب عنها بـ«صح» أو «خطأ». تظهر الإجابة الصحيحة مع شرحها، وإن أصبت تتقدّم بعدد الخطوات المكتوب على البطاقة.</li>
       <li><span class="tile-key" style="background:var(--tile-gray)"></span><strong>الرمادي — بطاقة حظ:</strong> موقف من حياتك اليومية. العمل الطيب يقدّمك خطوات، والتقصير يعيدك خطوات، وبعض البطاقات تمنحك رمية إضافية.</li>
-      <li><span class="tile-key" style="background:var(--tile-yellow)"></span><strong>الأصفر — بطاقة تحدٍّ:</strong> تظهر لك رموز، فتذكر القصة التي تدل عليها بصوت مسموع، ثم اضغط «أظهر الإجابة». إذا اتفق باقي اللاعبين على أن إجابتك صحيحة تتقدّم خطوتين.</li>
+      <li><span class="tile-key" style="background:var(--tile-yellow)"></span><strong>الأصفر — بطاقة تحدٍّ:</strong> تظهر لك رموز، فتكتب في المساحة المخصصة القصة التي تدل عليها، ثم تضغط «أظهر الإجابة» لتظهر إجابتك بجانب الإجابة الصحيحة. إذا اتفق باقي اللاعبين على أن إجابتك صحيحة تتقدّم خطوتين، وإن لم تعرف اضغط «لا أعرف».</li>
       <li><span class="tile-key" style="background:var(--tile-green)"></span><strong>الأخضر — الكنوز والسلالم:</strong>
         <ul>
           <li><strong>نقطة الكنز</strong> (مكتوب عليها «كنز» ورقم): أجب عن سؤال الكنز باختيار واحد من ثلاثة خيارات. إن أصبت تنتقل فوراً إلى مربع الكنز الذي يحمل ذلك الرقم.</li>

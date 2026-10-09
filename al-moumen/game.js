@@ -412,10 +412,27 @@ async function questionCard(p) {
 async function challengeCard(p) {
   const c = drawCard('challenge');
   const { arch, actions } = openCard('challenge', 'بطاقات التحدي',
-    `<div class="card-sub">${esc(p.name)}، أجب بصوت مسموع</div><p class="card-text">${esc(c.q)}</p><div class="slot"></div>`);
-  await waitButtons(actions, [['أظهر الإجابة', 'primary', 1]]);
-  arch.querySelector('.slot').innerHTML = `<div class="divider"></div><div class="answer-gold">الإجابة<br>${esc(c.a)}</div>`;
-  const ok = await waitButtons(actions, [['أجاب صحيحاً (+2)', 'primary', true], ['لم يوفّق', 'danger', false]]);
+    `<div class="card-sub">${esc(p.name)}، اكتب إجابتك ثم اضغط «أظهر الإجابة»</div><p class="card-text">${esc(c.q)}</p>
+     <div class="answer-box"><label for="challengeAnswer">إجابتك</label>
+     <textarea id="challengeAnswer" rows="3" maxlength="300" placeholder="اكتب هنا القصة التي يدل عليها الرمزان..."></textarea></div>
+     <div class="slot"></div>`);
+  const box = arch.querySelector('#challengeAnswer');
+  actions.innerHTML = '';
+  const reveal = button('أظهر الإجابة', 'primary', () => {});
+  const skip = button('لا أعرف', '', () => {});
+  reveal.disabled = true;
+  actions.append(reveal, skip);
+  box.addEventListener('input', () => { reveal.disabled = !box.value.trim(); });
+  box.focus();
+  await new Promise(res => { reveal.onclick = res; skip.onclick = () => { box.value = ''; res(); }; });
+  const written = box.value.trim();
+  arch.querySelector('.answer-box').innerHTML = written
+    ? `<span class="answer-label">إجابة ${esc(p.name)}</span><div class="player-answer">${esc(written)}</div>`
+    : `<div class="player-answer empty">لم يكتب ${esc(p.name)} إجابة</div>`;
+  arch.querySelector('.slot').innerHTML = `<div class="divider"></div><div class="answer-gold">الإجابة الصحيحة<br>${esc(c.a)}</div>`;
+  const ok = written
+    ? await waitButtons(actions, [['صحيحة، تقدّم خطوتين', 'primary', true], ['إجابة غير صحيحة', 'danger', false]])
+    : (await waitButtons(actions, [['متابعة', 'primary', 1]]), false);
   closeCard();
   log(`${p.name}: تحدٍّ — ${ok ? 'نجح ← تقدّم خطوتين' : 'لم يوفّق'}`, ok ? 'good' : 'bad');
   if (ok) await stepMove(p, 2);
