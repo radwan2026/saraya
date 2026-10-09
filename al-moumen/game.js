@@ -396,7 +396,7 @@ async function questionCard(p) {
   const c = drawCard('question');
   const { arch, actions } = openCard('question', 'بطاقات الأسئلة',
     `<div class="card-sub">${esc(p.name)} — صح أم خطأ؟</div><p class="card-text">${esc(c.q)}</p><div class="slot"></div>
-     <div class="reward">تقدم<b>${c.steps}</b></div>`);
+     <div class="reward" aria-label="الجائزة: تقدم ${c.steps}">تقدم<b>${c.steps}</b></div>`);
   const ans = await waitButtons(actions, [['صح', 'primary', true], ['خطأ', 'danger', false]]);
   const ok = ans === c.a;
   arch.querySelector('.slot').innerHTML =
