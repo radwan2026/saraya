@@ -127,7 +127,9 @@ server.listen(PORT, () => {
     console.log(' وضع التجربة مفعّل: متابعون وهميون يتفاعلون تلقائياً.');
     demo.start();
   }
-  if (USERNAME) tiktok.connect(USERNAME);
+  // في وضع التجربة لا نتصل تلقائياً بالحساب المحفوظ (إلا إذا مُرّر --user)، حتى لا تتكرر رسائل «ليس في بث مباشر»
+  if (USERNAME && (!DEMO || args.user)) tiktok.connect(USERNAME);
+  else if (USERNAME) console.log(` الحساب @${USERNAME} محفوظ. للاتصال بالبث اضغط «اتصال» في لوحة التحكم أو شغّل: npm run battle`);
   else if (!DEMO) console.log(' لم يُحدَّد حساب تيك توك. أدخله من لوحة التحكم أو شغّل: npm run battle -- --user=اسم_الحساب');
   if (args.howto) console.log(howtoText(config.battle));
 });
