@@ -88,6 +88,7 @@ const demoStatus = () => ({ running: demo.running });
 // ------------------------------------------------------------------
 const narration = { enabled: config.narration?.enabled !== false, introEveryMinutes: Number(config.narration?.introEveryMinutes ?? 4) };
 let lastIntro = 0;
+const musicCfg = { enabled: config.music?.enabled !== false, volume: Number(config.music?.volume ?? 0.35) };
 let voiceStatus = null;
 function narrate(key = 'intro') {
   if (key === 'intro') lastIntro = Date.now();
@@ -107,6 +108,7 @@ io.on('connection', (socket) => {
   socket.emit('state', game.snapshot());
   socket.emit('tiktokStatus', tiktok.status());
   socket.emit('narrationConfig', narration);
+  socket.emit('musicConfig', musicCfg);
 
   socket.on('voiceStatus', (st) => {
     if (st?.page !== 'game') return;
@@ -125,6 +127,11 @@ io.on('connection', (socket) => {
   // ---- أوامر لوحة التحكم ----
   socket.on('admin:restart', () => game.restartRound());
   socket.on('admin:skip', () => game.skip());
+  socket.on('admin:music', (cfg = {}) => {
+    if (typeof cfg.enabled === 'boolean') musicCfg.enabled = cfg.enabled;
+    if (cfg.volume != null) musicCfg.volume = Math.max(0, Math.min(1, Number(cfg.volume) || 0));
+    io.emit('musicConfig', musicCfg);
+  });
   socket.on('admin:narrate', (key) => narrate(typeof key === 'string' ? key : 'intro'));
   socket.on('admin:narration', (cfg = {}) => {
     if (typeof cfg.enabled === 'boolean') narration.enabled = cfg.enabled;

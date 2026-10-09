@@ -103,6 +103,18 @@
     </section>
 
     <section style="grid-column: 1 / -1">
+      <h2>🎵 الموسيقى الخلفية</h2>
+      <div class="row">
+        <label class="row" style="margin:0"><input type="checkbox" id="musicOn" style="flex:none;min-width:0"> تشغيل الموسيقى</label>
+        <span>مستوى الصوت</span>
+        <input id="musicVol" type="range" min="0" max="100" style="max-width:260px">
+        <b id="musicVolTxt" style="min-width:48px"></b>
+      </div>
+      <p class="muted">موسيقى خيال علمي تُولَّد داخل اللعبة (بدون حقوق نشر) وتتغير حسب المرحلة: هادئة في الانتظار، حماسية في المعركة، أسرع في الدقيقة الأخيرة، واحتفالية عند الفوز. تنخفض تلقائياً أثناء الشرح الصوتي.<br>
+        لاستخدام موسيقاك: ضع ملفات <code>waiting.mp3</code> و <code>battle.mp3</code> و <code>final.mp3</code> و <code>victory.mp3</code> في المجلد <code>public/reactor/music</code> (⚠ استخدم موسيقى خالية من الحقوق حتى لا يكتم تيك توك البث).</p>
+    </section>
+
+    <section style="grid-column: 1 / -1">
       <h2>🎙 الشرح الصوتي بالعربية</h2>
       <div class="kv" style="margin-bottom:12px">
         <span>صوت شاشة اللعبة</span><b id="voiceMode">لم تُفتح شاشة اللعبة بعد</b>
@@ -230,6 +242,16 @@
       try { localStorage.setItem('reactorAdminVoice', adminVoiceOn ? '1' : '0'); } catch { /* تجاهل */ }
       if (adminVoiceOn) adminNarrator.say('intro');
     };
+
+    // ---- الموسيقى ----
+    socket.on('musicConfig', (c) => {
+      $('musicOn').checked = c.enabled;
+      $('musicVol').value = Math.round(c.volume * 100);
+      $('musicVolTxt').textContent = `${Math.round(c.volume * 100)}%`;
+    });
+    $('musicOn').onchange = () => socket.emit('admin:music', { enabled: $('musicOn').checked });
+    $('musicVol').oninput = () => { $('musicVolTxt').textContent = `${$('musicVol').value}%`; };
+    $('musicVol').onchange = () => socket.emit('admin:music', { volume: Number($('musicVol').value) / 100 });
 
     socket.on('logAll', (list) => { $('log').replaceChildren(...list.map(logLine)); });
     socket.on('log', (e) => { $('log').prepend(logLine(e)); while ($('log').children.length > 80) $('log').lastChild.remove(); });

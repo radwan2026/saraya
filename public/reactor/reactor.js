@@ -20,6 +20,7 @@
   const coreStageY = (core) => G.arenaTop + G.arenaH / 2 - core * (G.arenaH / 2 / 100);
 
   const MAX_VISIBLE = 34;
+  let MUSIC = null; // الموسيقى الخلفية (music.js)
 
   // ------------------------------------------------------------------
   // أدوات
@@ -445,7 +446,22 @@
         });
         socket.on('round', () => { this.feed = []; FX.mines = []; });
         socket.on('fx', (f) => this.onFx(f));
+        this.setupMusic(socket);
         this.setupNarrator(socket);
+      },
+
+      // ---- الموسيقى الخلفية ----
+      setupMusic(socket) {
+        if (params.get('music') === '0' || !window.Music) return;
+        const music = new window.Music();
+        MUSIC = music;
+        window.reactorMusic = music; // للتشخيص من أدوات المطوّر
+        music.init().then(() => music.apply());
+        socket.on('musicConfig', (c) => {
+          music.setVolume(Number(c.volume ?? 0.35));
+          music.setEnabled(c.enabled !== false);
+        });
+        window.addEventListener('pointerdown', () => music.unlock());
       },
 
       // ---- الشرح الصوتي العربي ----
@@ -453,6 +469,7 @@
         if (params.get('voice') === '0' || !window.Narrator) return;
         const narrator = new window.Narrator({
           captionEl: document.getElementById('caption'),
+          onSpeaking: (on) => MUSIC && MUSIC.duck(on), // خفض الموسيقى أثناء الشرح
           onStatus: (st) => socket.emit('voiceStatus', { ...st, page: 'game' }),
         });
         narrator.init();
@@ -471,6 +488,11 @@
         this.offset = t.serverNow - Date.now();
         this.s = { ...this.s, ...t, teams: t.teams };
         FX.target = t.core;
+        if (MUSIC) {
+          const rem = t.phaseEndsAt ? (t.phaseEndsAt - t.serverNow) / 1000 : 0;
+          MUSIC.setMood(t.phase === 'battle' ? (rem > 0 && rem <= 60 ? 'final' : 'battle')
+            : t.phase === 'victory' ? 'victory' : 'waiting');
+        }
       },
 
       setRoster(r) {

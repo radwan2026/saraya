@@ -41,7 +41,8 @@
   const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? ''));
 
   class Narrator {
-    constructor({ captionEl, onStatus } = {}) {
+    constructor({ captionEl, onStatus, onSpeaking } = {}) {
+      this.onSpeaking = onSpeaking || (() => {});
       this.captionEl = captionEl || null;
       this.onStatus = onStatus || (() => {});
       this.enabled = true;
@@ -110,14 +111,16 @@
       if (this.hasTTS) speechSynthesis.cancel();
       this.caption('');
       this.busy = false;
+      this.onSpeaking(false);
     }
 
     next() {
       const item = this.queue.shift();
-      if (!item) { this.busy = false; this.caption(''); return; }
+      if (!item) { this.busy = false; this.caption(''); this.onSpeaking(false); return; }
       // الأحداث القديمة (أكثر من 12 ثانية) لم تعد مهمة
       if (item.key !== 'intro' && Date.now() - item.at > 12000) { this.next(); return; }
       this.busy = true;
+      this.onSpeaking(true);
       const sentences = LINES[item.key].map((s) => fill(s, item.vars));
       const done = () => { clearTimeout(this.guard); setTimeout(() => this.next(), 400); };
 

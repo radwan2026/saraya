@@ -74,6 +74,12 @@ export default {
     introEveryMinutes: 4, // تكرار شرح طريقة اللعب كل كم دقيقة (0 = بدون تكرار تلقائي)
   },
 
+  // الموسيقى الخلفية: تُولَّد في المتصفح (بدون حقوق نشر) أو من ملفاتك في public/reactor/music
+  music: {
+    enabled: true,
+    volume: 0.35, // من 0 إلى 1
+  },
+
   demoBots: {
     count: 24,          // عدد الجنود الوهميين
     giftsPerMinute: 30, // معدل الورود الوهمية
