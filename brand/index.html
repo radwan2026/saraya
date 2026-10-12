@@ -1,0 +1,726 @@
+<title>دليل هوية لجنة الأنشطة</title>
+<meta name="description" content="دليل العلامة والهوية البصرية للجنة الأنشطة في شركة المدار الجديد">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a printed brand book — numbered chapters down a single column, specimen plates set on paper,
+   with a narrow margin rail holding chapter numbers (the book's real order). */
+:root{
+  /* brand colours (fixed — these ARE the specimens) */
+  --brand-green:#00603C;
+  --brand-deep:#003C24;
+  --brand-gold:#B8913F;
+  --brand-gold-light:#D8B460;
+  --brand-gold-ink:#8C6B2A;
+  --brand-ivory:#F4EFE3;
+  --brand-char:#2B2B29;
+  --parent-green:#6A9C2E;
+
+  /* page tokens (light) */
+  --bg:#F7F4EC;
+  --paper:#FFFDF8;
+  --fg:#1F2620;
+  --muted:#5D655C;
+  --line:#E2DAC6;
+  --accent:#00603C;
+  --accent-2:#8C6B2A;
+  --plate:#EFE9DA;
+  --danger:#B3261E;
+  --ok:#00603C;
+
+  --font-display:"Reem Kufi","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+
+  --step--1:.8125rem; --step-0:1rem; --step-1:1.25rem; --step-2:1.6rem; --step-3:2.2rem; --step-4:3.2rem;
+  --gutter:clamp(16px,4vw,48px);
+  --radius:6px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1712; --paper:#13211A; --fg:#EFEAD9; --muted:#A9B2A6; --line:#26392E;
+    --accent:#D8B460; --accent-2:#D8B460; --plate:#192B21; --danger:#F2867D; --ok:#7FD1A6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1712; --paper:#13211A; --fg:#EFEAD9; --muted:#A9B2A6; --line:#26392E;
+  --accent:#D8B460; --accent-2:#D8B460; --plate:#192B21; --danger:#F2867D; --ok:#7FD1A6;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:var(--step-0);line-height:1.8;direction:rtl}
+h1,h2,h3{font-family:var(--font-display);line-height:1.3;text-wrap:balance;margin:0;font-weight:600}
+p{margin:0}
+img{max-width:100%;display:block}
+.mono{font-family:var(--font-mono);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wrap{max-width:1120px;margin-inline:auto;padding-inline:var(--gutter)}
+
+/* ---------- cover ---------- */
+.cover{background:var(--brand-deep);color:var(--brand-ivory);position:relative;overflow:hidden}
+.cover-inner{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,64px);align-items:center;padding-block:clamp(48px,8vw,96px)}
+.cover .eyebrow{color:var(--brand-gold-light);letter-spacing:.06em;font-size:var(--step--1);font-weight:500}
+.cover h1{font-size:clamp(2.2rem,6vw,4rem);color:var(--brand-ivory);margin-block:12px 18px}
+.cover h1 span{color:var(--brand-gold-light)}
+.cover p.lead{color:#CFD8CC;max-width:44ch;font-size:var(--step-1);font-weight:300}
+.cover-meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:32px;font-size:var(--step--1);color:#B9C4B5}
+.cover-meta b{display:block;color:var(--brand-gold-light);font-weight:500}
+.cover-logo{justify-self:center;width:min(100%,380px)}
+.ribbons{position:absolute;inset:auto 0 0 0;height:56px;pointer-events:none}
+.cover-company{display:flex;align-items:center;gap:12px;margin-top:28px}
+.cover-company img{height:36px;width:auto}
+.cover-company span{font-size:var(--step--1);color:#B9C4B5}
+
+/* ---------- toc ---------- */
+.toc{border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.toc ol{list-style:none;margin:0;padding:10px 0;display:flex;gap:4px 18px;overflow-x:auto;scrollbar-width:none;font-size:var(--step--1);white-space:nowrap}
+.toc a{color:var(--muted);text-decoration:none;padding:4px 0;display:inline-flex;gap:6px}
+.toc a:hover{color:var(--accent)}
+.toc .n{font-family:var(--font-mono);color:var(--accent-2)}
+
+/* ---------- chapters ---------- */
+.chapter{padding-block:clamp(48px,7vw,88px);border-bottom:1px solid var(--line)}
+.ch-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 20px;align-items:baseline;margin-bottom:clamp(24px,4vw,40px)}
+.ch-num{font-family:var(--font-mono);font-size:var(--step-1);color:var(--accent-2)}
+.ch-head h2{font-size:clamp(1.7rem,3.6vw,var(--step-3))}
+.ch-head p{grid-column:2;color:var(--muted);max-width:62ch}
+.kicker{font-size:var(--step--1);letter-spacing:.04em;color:var(--accent-2);font-weight:600;margin-bottom:6px;display:block}
+h3{font-size:var(--step-1);margin-bottom:8px}
+
+.grid{display:grid;gap:clamp(16px,2.4vw,28px)}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.prose{max-width:66ch;display:grid;gap:14px}
+.prose p{color:var(--fg)}
+.muted{color:var(--muted)}
+.small{font-size:var(--step--1)}
+
+.plate{background:var(--plate);border-radius:var(--radius);display:grid;place-items:center;padding:clamp(20px,4vw,40px);min-height:220px;position:relative}
+.plate img{max-height:240px;width:auto}
+.plate.light{background:#FFFFFF}
+.plate.ivory{background:var(--brand-ivory)}
+.plate.green{background:var(--brand-green)}
+.plate.deep{background:var(--brand-deep)}
+.plate.gold{background:var(--brand-gold)}
+.caption{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:var(--step--1);color:var(--muted)}
+.caption b{color:var(--fg);font-weight:600}
+figure{margin:0;min-width:0}
+
+/* values */
+.values{counter-reset:none}
+.value{border-top:2px solid var(--accent);padding-top:14px;display:grid;gap:6px}
+.value h3{margin:0}
+.value p{color:var(--muted);font-size:.95rem}
+
+/* anatomy */
+.anatomy{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.anatomy-fig{position:relative;background:#fff;border-radius:var(--radius);padding:clamp(16px,3vw,32px)}
+.anatomy-fig img{width:100%;max-width:420px;margin-inline:auto}
+.pin{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--brand-deep);color:var(--brand-gold-light);font:600 13px/26px var(--font-mono);text-align:center;box-shadow:0 0 0 3px #fff}
+.parts{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.parts li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px}
+.parts .pn{width:26px;height:26px;border-radius:50%;background:var(--brand-deep);color:var(--brand-gold-light);font:600 13px/26px var(--font-mono);text-align:center;margin-top:4px}
+.parts b{display:block;font-family:var(--font-display);font-weight:600;font-size:1.05rem}
+.parts span{color:var(--muted);font-size:.95rem}
+
+/* clear space */
+.clearspace{position:relative;background:#fff;border-radius:var(--radius);padding:56px;display:grid;place-items:center}
+.cs-box{position:relative;padding:34px;outline:1.5px dashed #C9A85A;background:repeating-linear-gradient(45deg,rgba(184,145,63,.10) 0 6px,transparent 6px 12px)}
+.cs-box img{width:220px;max-width:100%;background:#fff}
+.cs-x{position:absolute;font:600 13px var(--font-mono);color:#8C6B2A}
+.cs-x.t{top:8px;left:50%;transform:translateX(-50%)}
+.cs-x.b{bottom:8px;left:50%;transform:translateX(-50%)}
+.cs-x.l{left:10px;top:50%;transform:translateY(-50%)}
+.cs-x.r{right:10px;top:50%;transform:translateY(-50%)}
+.sizes{display:flex;flex-wrap:wrap;align-items:flex-end;gap:28px;background:#fff;border-radius:var(--radius);padding:28px}
+.sizes figure{display:grid;gap:8px;justify-items:center}
+.sizes figcaption{font:500 12px var(--font-mono);color:#5D655C}
+.rule-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.rule-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+.rule-list li::before{content:"";width:8px;height:8px;margin-top:10px;background:var(--brand-gold);transform:rotate(45deg)}
+
+/* misuse */
+.dont .plate{min-height:170px;background:#fff;overflow:hidden}
+.dont .plate img{max-height:130px}
+.dont .tag{position:absolute;top:10px;inset-inline-start:10px;width:24px;height:24px;border-radius:50%;background:var(--danger);display:grid;place-items:center}
+.dont .tag svg{width:12px;height:12px}
+.dont p{margin-top:8px;font-size:var(--step--1);color:var(--muted)}
+.do .tag{background:var(--ok)}
+
+/* colour */
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.swatch{border-radius:var(--radius);overflow:hidden;background:var(--paper);border:1px solid var(--line);display:flex;flex-direction:column}
+.swatch .chip{height:150px;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.swatch.primary .chip{height:200px}
+.swatch .chip .role{font-size:12px;font-weight:600;letter-spacing:.03em;opacity:.9}
+.swatch .chip .nm{font-family:var(--font-display);font-size:1.3rem;font-weight:600}
+.swatch dl{margin:0;padding:12px 14px 14px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:12.5px}
+.swatch dt{color:var(--muted)}
+.swatch dd{margin:0;text-align:left}
+.copy{all:unset;cursor:pointer;font-family:var(--font-mono);direction:ltr;border-bottom:1px dotted currentColor}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copy.done::after{content:"  ✓";color:var(--ok)}
+.span2{grid-column:span 2}
+.ratio{display:flex;height:56px;border-radius:var(--radius);overflow:hidden;margin-top:8px}
+.ratio div{display:flex;align-items:flex-end;padding:8px 12px;font:500 12px var(--font-mono);direction:ltr}
+.pairs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pair{border-radius:var(--radius);padding:16px;display:grid;gap:4px}
+.pair b{font-family:var(--font-display);font-size:1.25rem;font-weight:600}
+.pair span{font:500 12px var(--font-mono);direction:ltr;text-align:right}
+
+/* type */
+.type-specimen{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,3vw,32px);display:grid;gap:14px;min-width:0}
+.type-specimen .big{font-size:clamp(2.4rem,7vw,4.4rem);line-height:1.15;color:var(--accent)}
+.type-specimen .alpha{font-size:1.35rem;color:var(--muted);word-break:break-word}
+.scale{display:grid;gap:0;border-top:1px solid var(--line)}
+.scale-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:baseline;padding-block:14px;border-bottom:1px solid var(--line)}
+.scale-row .meta{font:12px var(--font-mono);color:var(--muted);direction:ltr;text-align:right}
+
+/* graphic elements */
+.pattern-plate{height:200px;border-radius:var(--radius);overflow:hidden}
+.pattern-plate svg{width:100%;height:100%;display:block}
+
+/* applications */
+.app-photo{border-radius:var(--radius);overflow:hidden}
+.app-photo img{width:100%;height:auto}
+.badge{width:100%;max-width:260px;margin-inline:auto;aspect-ratio:54/86;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,40,24,.18);overflow:hidden;display:flex;flex-direction:column;color:#1F2620}
+.badge .top{background:var(--brand-deep);padding:16px 16px 48px;display:grid;place-items:center;position:relative}
+.badge .top img{height:84px;width:auto}
+.badge .body{flex:1;display:grid;justify-items:center;align-content:center;gap:4px;padding:12px;text-align:center}
+.badge .avatar{width:72px;height:72px;border-radius:50%;background:#EFE9DA;border:3px solid var(--brand-gold);margin-top:-48px;position:relative}
+.badge .name{font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--brand-green)}
+.badge .role{font-size:.8rem;color:#5D655C}
+.badge .foot{border-top:3px solid var(--brand-gold);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;font:500 10px var(--font-mono);color:#5D655C}
+.badge .foot img{height:20px;width:auto}
+
+.post{aspect-ratio:1/1;max-width:100%;border-radius:var(--radius);background:var(--brand-deep);color:var(--brand-ivory);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(16px,4%,28px)}
+.post .tagline{display:flex;justify-content:space-between;align-items:center}
+.post .tagline img{height:44px;width:auto}
+.post .pill{background:var(--brand-gold);color:var(--brand-deep);font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px}
+.post h4{font-family:var(--font-display);font-size:clamp(1.5rem,4.2vw,2.2rem);line-height:1.25;margin:0;font-weight:700;position:relative}
+.post h4 em{font-style:normal;color:var(--brand-gold-light)}
+.post .when{display:flex;gap:16px;font-size:13px;color:#CFD8CC;position:relative;flex-wrap:wrap}
+.post .when b{color:var(--brand-gold-light);font-weight:600}
+.post svg.bg{position:absolute;inset:0;width:100%;height:100%}
+
+.cert{background:#FFFDF8;color:#1F2620;border-radius:var(--radius);padding:clamp(16px,3vw,28px);aspect-ratio:1.414/1;max-width:100%;position:relative;display:grid;align-content:space-between;justify-items:center;text-align:center;box-shadow:inset 0 0 0 8px #FFFDF8,inset 0 0 0 9px #B8913F,inset 0 0 0 13px #FFFDF8,inset 0 0 0 14px #00603C}
+.cert img.em{height:56px;width:auto}
+.cert .t{font-family:var(--font-display);font-size:clamp(1.2rem,3vw,1.7rem);color:#00603C;font-weight:700}
+.cert .n{font-family:var(--font-display);font-size:clamp(1.05rem,2.4vw,1.4rem);color:#8C6B2A;border-bottom:1px solid #B8913F;padding-inline:24px}
+.cert .s{font-size:12px;color:#5D655C;max-width:40ch}
+.cert .sig{display:flex;justify-content:space-between;width:100%;padding-inline:8%;font-size:11px;color:#5D655C}
+.cert .sig img{height:22px;width:auto}
+
+.letter{background:#fff;color:#1F2620;border-radius:var(--radius);aspect-ratio:210/297;max-width:100%;display:flex;flex-direction:column;padding:7% 8%;gap:6%;box-shadow:0 1px 0 var(--line)}
+.letter .lh{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #B8913F;padding-bottom:4%}
+.letter .lh img.c{height:48px;width:auto}
+.letter .lh img.p{height:22px;width:auto}
+.letter .lines{display:grid;gap:8px}
+.letter .lines i{display:block;height:6px;border-radius:3px;background:#ECE6D8}
+.letter .lines i:nth-child(3n){width:70%}
+.letter .lf{margin-top:auto;display:flex;justify-content:space-between;font:500 9px var(--font-mono);color:#7A8278;border-top:4px solid #00603C;padding-top:8px}
+
+.voice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.voice .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--paper);display:grid;gap:8px}
+.voice .card .lbl{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.voice .yes .lbl{color:var(--ok)}
+.voice .no .lbl{color:var(--danger)}
+.voice q{quotes:"«" "»";font-family:var(--font-display);font-size:1.15rem;line-height:1.6}
+
+.files{width:100%;border-collapse:collapse;font-size:.95rem}
+.files th,.files td{text-align:right;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.files th{font-size:12px;color:var(--muted);font-weight:600}
+.files td.mono{text-align:left;font-size:12.5px}
+.table-wrap{overflow-x:auto}
+
+footer{padding-block:40px;color:var(--muted);font-size:var(--step--1);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
+footer img{height:30px;width:auto}
+
+@media (max-width:900px){
+  .g4,.swatches{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pairs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .cover-inner,.anatomy,.g2,.voice{grid-template-columns:minmax(0,1fr)}
+  .cover-logo{order:-1;width:min(70%,260px)}
+  .g3{grid-template-columns:minmax(0,1fr)}
+  .span2{grid-column:auto}
+  .scale-row{grid-template-columns:minmax(0,1fr);gap:2px}
+  .ch-head{grid-template-columns:minmax(0,1fr)}
+  .ch-head p{grid-column:1}
+  .clearspace{padding:24px}
+}
+@media (max-width:420px){
+  .swatches,.g4,.pairs{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .cover-logo{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+}
+</style>
+
+<!-- ============ COVER ============ -->
+<header class="cover">
+  <div class="wrap cover-inner">
+    <div>
+      <span class="eyebrow">دليل العلامة والهوية البصرية · الإصدار ١٫٠</span>
+      <h1>لجنة الأنشطة<br><span>روحٌ واحدة، فريقٌ واحد</span></h1>
+      <p class="lead">المرجع الرسمي لاستخدام شعار لجنة الأنشطة وألوانها وخطوطها وعناصرها البصرية في كل ما يصدر عنها: من قمصان الفرق إلى منشورات التواصل والشهادات.</p>
+      <div class="cover-meta">
+        <div><b>الجهة</b>شركة المدار الجديد</div>
+        <div><b>الإصدار</b><span class="mono">v1.0 · 2026</span></div>
+        <div><b>الألوان الأساسية</b>الأخضر والذهبي</div>
+      </div>
+    </div>
+    <img class="cover-logo" src="assets/committee-logo-on-dark.png" alt="شعار لجنة الأنشطة – شركة المدار الجديد" width="525" height="526">
+  </div>
+  <svg class="ribbons" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 40 C 300 0, 600 60, 1200 18 L1200 56 L0 56Z" fill="#00603C"/>
+    <path d="M0 48 C 320 18, 640 64, 1200 34" fill="none" stroke="#D8B460" stroke-width="2"/>
+  </svg>
+</header>
+
+<nav class="toc" aria-label="فهرس الدليل">
+  <div class="wrap">
+    <ol>
+      <li><a href="#about"><span class="n">01</span>عن اللجنة</a></li>
+      <li><a href="#logo"><span class="n">02</span>الشعار</a></li>
+      <li><a href="#versions"><span class="n">03</span>نسخ الشعار</a></li>
+      <li><a href="#space"><span class="n">04</span>المساحة والحجم</a></li>
+      <li><a href="#misuse"><span class="n">05</span>الاستخدام الخاطئ</a></li>
+      <li><a href="#parent"><span class="n">06</span>العلاقة بالمدار الجديد</a></li>
+      <li><a href="#color"><span class="n">07</span>الألوان</a></li>
+      <li><a href="#type"><span class="n">08</span>الخطوط</a></li>
+      <li><a href="#elements"><span class="n">09</span>العناصر الجرافيكية</a></li>
+      <li><a href="#apps"><span class="n">10</span>التطبيقات</a></li>
+      <li><a href="#voice"><span class="n">11</span>نبرة الخطاب</a></li>
+      <li><a href="#files"><span class="n">12</span>الملفات</a></li>
+    </ol>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ 01 ABOUT ============ -->
+<section class="chapter" id="about">
+  <div class="ch-head">
+    <span class="ch-num">01</span>
+    <h2>عن اللجنة</h2>
+    <p>لجنة الأنشطة هي الذراع الاجتماعي والرياضي لشركة المدار الجديد. تنظّم البطولات والرحلات والفعاليات التي تجمع الموظفين خارج إطار العمل اليومي.</p>
+  </div>
+  <div class="grid g2" style="align-items:start">
+    <div class="prose">
+      <p>تحمل هوية اللجنة شعلةً تتقدّم، وورقةً خضراء تنمو، وشريطين يلتفّان حولهما كمدارٍ واحد. تقول هذه العناصر معاً إن النشاط عند اللجنة طاقة مشتركة تنمو بمشاركة الجميع، وإنها جزء أصيل من المدار الجديد.</p>
+      <p>الأخضر لون الشركة وجذورها، والذهبي لون الإنجاز والتكريم. يعمل اللونان معاً في كل تطبيق، ولا يُستخدم أحدهما بديلاً عن الآخر في الشعار.</p>
+    </div>
+    <div class="grid g3 values">
+      <div class="value"><h3>الحماس</h3><p>الشعلة: طاقة تبدأ من الفرد وتشعل الفريق.</p></div>
+      <div class="value"><h3>النمو</h3><p>الورقة: أنشطة تبني المهارات والعلاقات.</p></div>
+      <div class="value"><h3>الانتماء</h3><p>المدار: الجميع في دائرة واحدة مع الشركة.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 LOGO ============ -->
+<section class="chapter" id="logo">
+  <div class="ch-head">
+    <span class="ch-num">02</span>
+    <h2>الشعار</h2>
+    <p>الشعار الرئيسي مكوّن من أربعة أجزاء ثابتة. لا تُعاد كتابة أي جزء منها بخط آخر، ولا يُغيَّر ترتيبها.</p>
+  </div>
+  <div class="anatomy">
+    <div class="anatomy-fig">
+      <img src="assets/committee-logo.png" alt="الشعار الرئيسي للجنة الأنشطة" width="525" height="526">
+      <span class="pin" style="top:4%;left:90%">1</span>
+      <span class="pin" style="top:38%;left:2%">2</span>
+      <span class="pin" style="top:62%;left:2%">3</span>
+      <span class="pin" style="top:88%;left:2%">4</span>
+    </div>
+    <ol class="parts">
+      <li><span class="pn">1</span><div><b>الرمز (الشعلة في المدار)</b><span>شعلة ذهبية بقاعدة خضراء، وورقتان، وشريطان متقاطعان داخل حلقة ذهبية. يمكن استخدامه منفرداً في المساحات الصغيرة.</span></div></li>
+      <li><span class="pn">2</span><div><b>«لجنة» بالأخضر</b><span>خط ثلث حديث بتدرّج أخضر، يمثّل جذور الشركة.</span></div></li>
+      <li><span class="pn">3</span><div><b>«الأنشطة» بالذهبي</b><span>تدرّج ذهبي يمثّل الطاقة والإنجاز. الكلمتان كتلة واحدة لا تنفصل.</span></div></li>
+      <li><span class="pn">4</span><div><b>سطر الانتماء</b><span>خط ذهبي فاصل ثم «شركة المدار الجديد» بالفحمي. يبقى ملازماً للشعار في كل استخدام رسمي خارجي.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 03 VERSIONS ============ -->
+<section class="chapter" id="versions">
+  <div class="ch-head">
+    <span class="ch-num">03</span>
+    <h2>نسخ الشعار</h2>
+    <p>اختر النسخة حسب الخلفية. القاعدة: الشعار الملوّن أولاً، ثم النسخة المعكوسة على الأخضر، ثم النسخ أحادية اللون عند الطباعة بلون واحد أو على الأقمشة.</p>
+  </div>
+  <div class="grid g3">
+    <figure><div class="plate light"><img src="assets/committee-logo.png" alt="الشعار الرئيسي على خلفية فاتحة" width="525" height="526"></div>
+      <figcaption class="caption"><b>الرئيسي</b><span>خلفيات بيضاء وعاجية</span></figcaption></figure>
+    <figure><div class="plate deep"><img src="assets/committee-logo-on-dark.png" alt="الشعار المعكوس على الأخضر الداكن" width="525" height="526"></div>
+      <figcaption class="caption"><b>المعكوس</b><span>الأخضر العميق والصور الداكنة</span></figcaption></figure>
+    <figure><div class="plate deep"><img src="assets/committee-logo-gold.png" alt="الشعار أحادي اللون بالذهبي" width="525" height="526"></div>
+      <figcaption class="caption"><b>ذهبي أحادي</b><span>التطريز، الطباعة الحرارية، الدروع</span></figcaption></figure>
+    <figure><div class="plate green"><img src="assets/committee-logo-white.png" alt="الشعار أحادي اللون بالأبيض" width="525" height="526"></div>
+      <figcaption class="caption"><b>أبيض أحادي</b><span>على الأخضر أو فوق الصور</span></figcaption></figure>
+    <figure><div class="plate ivory"><img src="assets/committee-emblem.png" alt="رمز الشعلة منفرداً" width="194" height="197" style="max-height:150px"></div>
+      <figcaption class="caption"><b>الرمز منفرداً</b><span>الأيقونات، صورة الحساب، الأختام</span></figcaption></figure>
+    <figure><div class="plate deep"><img src="assets/committee-emblem.png" alt="رمز الشعلة على الأخضر الداكن" width="194" height="197" style="max-height:150px"></div>
+      <figcaption class="caption"><b>الرمز على الداكن</b><span>صورة الحساب في وسائل التواصل</span></figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 04 CLEAR SPACE ============ -->
+<section class="chapter" id="space">
+  <div class="ch-head">
+    <span class="ch-num">04</span>
+    <h2>المساحة الآمنة والحد الأدنى للحجم</h2>
+    <p>وحدة القياس <b class="mono">X</b> هي ارتفاع سطر «شركة المدار الجديد». اترك مسافة لا تقل عن <b class="mono">X</b> من كل جهة، ولا يدخلها نص أو صورة أو حافة الورقة.</p>
+  </div>
+  <div class="grid g2">
+    <div class="clearspace">
+      <div class="cs-box">
+        <span class="cs-x t">X</span><span class="cs-x b">X</span><span class="cs-x l">X</span><span class="cs-x r">X</span>
+        <img src="assets/committee-logo.png" alt="الشعار داخل المساحة الآمنة" width="525" height="526">
+      </div>
+    </div>
+    <div style="display:grid;gap:20px;align-content:start">
+      <div class="sizes">
+        <figure><img src="assets/committee-logo.png" alt="" width="120" height="120" style="width:120px"><figcaption>120px · 30mm</figcaption></figure>
+        <figure><img src="assets/committee-logo.png" alt="" width="80" height="80" style="width:80px"><figcaption>80px · 20mm</figcaption></figure>
+        <figure><img src="assets/committee-emblem.png" alt="" width="32" height="32" style="width:32px"><figcaption>32px · 8mm</figcaption></figure>
+      </div>
+      <ul class="rule-list">
+        <li><span><b>الشعار الكامل:</b> لا يقل عرضه عن <span class="mono">120px</span> رقمياً أو <span class="mono">30mm</span> مطبوعاً، حتى يبقى سطر «شركة المدار الجديد» مقروءاً.</span></li>
+        <li><span><b>بدون سطر الانتماء:</b> مسموح حتى <span class="mono">80px / 20mm</span> في الاستخدام الداخلي فقط.</span></li>
+        <li><span><b>الرمز منفرداً:</b> لا يقل عن <span class="mono">32px / 8mm</span>. أصغر من ذلك تضيع تفاصيل الورقة والشريط.</span></li>
+        <li><span><b>التطريز:</b> استخدم النسخة الذهبية أحادية اللون بعرض لا يقل عن <span class="mono">60mm</span>.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 MISUSE ============ -->
+<section class="chapter" id="misuse">
+  <div class="ch-head">
+    <span class="ch-num">05</span>
+    <h2>الاستخدام الخاطئ</h2>
+    <p>هذه الأخطاء الأكثر تكراراً. أي تعديل على الشعار غير وارد في هذا الدليل يحتاج موافقة اللجنة.</p>
+  </div>
+  <div class="grid g4 dont">
+    <figure><div class="plate"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt="" style="transform:scaleX(1.45)"></div><p>لا تمطّ الشعار أو تضغطه.</p></figure>
+    <figure><div class="plate"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt="" style="filter:hue-rotate(160deg) saturate(1.4)"></div><p>لا تغيّر ألوانه.</p></figure>
+    <figure><div class="plate"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt="" style="transform:rotate(-18deg)"></div><p>لا تُدِره ولا تمِله.</p></figure>
+    <figure><div class="plate"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt="" style="filter:drop-shadow(6px 8px 4px rgba(0,0,0,.55))"></div><p>لا تضف ظلالاً أو توهجاً أو حدوداً.</p></figure>
+    <figure><div class="plate" style="background:#6A9C2E"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt=""></div><p>لا تضعه على خلفية تقلّ معها قراءة الأخضر أو الذهبي.</p></figure>
+    <figure><div class="plate" style="background:url('assets/team-kit.jpg') center/cover"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt=""></div><p>لا تضعه فوق صورة مزدحمة. استخدم النسخة البيضاء مع تعتيم.</p></figure>
+    <figure><div class="plate"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-logo.png" alt="" style="opacity:.35"></div><p>لا تخفّف شفافيته كعلامة مائية.</p></figure>
+    <figure><div class="plate" style="gap:8px;display:flex;align-items:center;justify-content:center"><span class="tag"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="2"/></svg></span><img src="assets/committee-emblem.png" alt="" style="max-height:60px"><span style="font-family:Tahoma,Arial,sans-serif;font-size:20px;color:#00603C;font-weight:700">لجنة الأنشطة</span></div><p>لا تكتب اسم اللجنة بخط آخر بجانب الرمز.</p></figure>
+  </div>
+</section>
+
+<!-- ============ 06 PARENT BRAND ============ -->
+<section class="chapter" id="parent">
+  <div class="ch-head">
+    <span class="ch-num">06</span>
+    <h2>العلاقة بعلامة المدار الجديد</h2>
+    <p>لجنة الأنشطة علامة فرعية تابعة لشركة المدار الجديد. في مواد الأنشطة تتقدّم علامة اللجنة، وتظهر علامة الشركة كتوقيع. في المراسلات الرسمية للشركة يحدث العكس.</p>
+  </div>
+  <div class="grid g2">
+    <figure>
+      <div class="plate light" style="display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,28px);flex-wrap:wrap">
+        <img src="assets/committee-logo.png" alt="شعار اللجنة" style="height:150px;width:auto">
+        <span style="width:1.5px;height:110px;background:#B8913F"></span>
+        <img src="assets/madar-logo.png" alt="شعار المدار الجديد" style="height:62px;width:auto">
+      </div>
+      <figcaption class="caption"><b>الشعار المزدوج</b><span>خط ذهبي فاصل · المدار بنحو ٤٠٪ من ارتفاع شعار اللجنة</span></figcaption>
+    </figure>
+    <div style="display:grid;gap:18px;align-content:start">
+      <figure>
+        <div class="plate light" style="min-height:150px"><img src="assets/madar-logo.png" alt="شعار شركة المدار الجديد" width="784" height="271" style="max-height:90px"></div>
+        <figcaption class="caption"><b>شعار الشركة الأم</b><span>بلونه الأصلي فقط، دون تعديل</span></figcaption>
+      </figure>
+      <ul class="rule-list">
+        <li><span>أخضر المدار <span class="mono">#6A9C2E</span> خاص بشعار الشركة. لا يُستخدم في عناصر اللجنة.</span></li>
+        <li><span>لا يُدمج الشعاران في رسمٍ واحد، ولا يوضع رمز اللجنة داخل مدار الشركة.</span></li>
+        <li><span>على الخلفيات الخضراء استخدم <img src="assets/madar-logo-white.png" alt="" style="display:inline;height:14px;width:auto;vertical-align:middle;background:#00603C;padding:2px 4px;border-radius:2px"> النسخة البيضاء من شعار الشركة.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 COLOUR ============ -->
+<section class="chapter" id="color">
+  <div class="ch-head">
+    <span class="ch-num">07</span>
+    <h2>الألوان</h2>
+    <p>القيم مأخوذة مباشرة من الشعار المعتمد. اضغط على أي قيمة لنسخها.</p>
+  </div>
+
+  <span class="kicker">الألوان الأساسية</span>
+  <div class="swatches" style="margin-bottom:28px">
+    <div class="swatch primary">
+      <div class="chip" style="background:#00603C;color:#F4EFE3"><span class="role">أساسي</span><span class="nm">أخضر اللجنة</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#00603C">#00603C</button></dd><dt>RGB</dt><dd class="mono">0 96 60</dd><dt>CMYK</dt><dd class="mono">100 0 37 62</dd><dt>Pantone</dt><dd class="mono">≈ 3425 C</dd></dl>
+    </div>
+    <div class="swatch primary">
+      <div class="chip" style="background:#B8913F;color:#1F2620"><span class="role">أساسي</span><span class="nm">ذهبي الشعلة</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#B8913F">#B8913F</button></dd><dt>RGB</dt><dd class="mono">184 145 63</dd><dt>CMYK</dt><dd class="mono">0 21 66 28</dd><dt>Pantone</dt><dd class="mono">≈ 7562 C</dd></dl>
+    </div>
+    <div class="swatch primary">
+      <div class="chip" style="background:#003C24;color:#D8B460"><span class="role">داعم</span><span class="nm">أخضر عميق</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#003C24">#003C24</button></dd><dt>RGB</dt><dd class="mono">0 60 36</dd><dt>CMYK</dt><dd class="mono">100 0 40 76</dd><dt>Pantone</dt><dd class="mono">≈ 3435 C</dd></dl>
+    </div>
+    <div class="swatch primary">
+      <div class="chip" style="background:#D8B460;color:#003C24"><span class="role">داعم</span><span class="nm">ذهبي فاتح</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#D8B460">#D8B460</button></dd><dt>RGB</dt><dd class="mono">216 180 96</dd><dt>CMYK</dt><dd class="mono">0 17 56 15</dd><dt>Pantone</dt><dd class="mono">≈ 7509 C</dd></dl>
+    </div>
+  </div>
+
+  <span class="kicker">الألوان المحايدة والنصوص</span>
+  <div class="swatches" style="margin-bottom:36px">
+    <div class="swatch">
+      <div class="chip" style="background:#F4EFE3;color:#2B2B29;box-shadow:inset 0 0 0 1px #E2DAC6"><span class="role">خلفية</span><span class="nm">عاجي</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#F4EFE3">#F4EFE3</button></dd><dt>RGB</dt><dd class="mono">244 239 227</dd><dt>CMYK</dt><dd class="mono">0 2 7 4</dd></dl>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#2B2B29;color:#F4EFE3"><span class="role">نصوص</span><span class="nm">فحمي</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#2B2B29">#2B2B29</button></dd><dt>RGB</dt><dd class="mono">43 43 41</dd><dt>CMYK</dt><dd class="mono">0 0 5 83</dd></dl>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#8C6B2A;color:#FFFDF8"><span class="role">نص ذهبي</span><span class="nm">ذهبي الحبر</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#8C6B2A">#8C6B2A</button></dd><dt>RGB</dt><dd class="mono">140 107 42</dd><dt>CMYK</dt><dd class="mono">0 24 70 45</dd></dl>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#6A9C2E;color:#FFFFFF"><span class="role">للشركة الأم فقط</span><span class="nm">أخضر المدار</span></div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-v="#6A9C2E">#6A9C2E</button></dd><dt>RGB</dt><dd class="mono">106 156 46</dd><dt>CMYK</dt><dd class="mono">32 0 71 39</dd></dl>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div>
+      <h3>نسبة الاستخدام</h3>
+      <p class="muted small">في أي تصميم: الأخضر يقود، والعاجي يمنح المساحة، والذهبي للتأكيد فقط.</p>
+      <div class="ratio" role="img" aria-label="أخضر ٦٠٪، عاجي ٣٠٪، ذهبي ١٠٪">
+        <div style="flex:60;background:#00603C;color:#F4EFE3">60%</div>
+        <div style="flex:30;background:#F4EFE3;color:#2B2B29;box-shadow:inset 0 0 0 1px #E2DAC6">30%</div>
+        <div style="flex:10;background:#B8913F;color:#1F2620">10%</div>
+      </div>
+    </div>
+    <div>
+      <h3>التباين وقابلية القراءة</h3>
+      <p class="muted small">الذهبي <span class="mono">#B8913F</span> لا يصلح لنص صغير على الأبيض (<span class="mono">2.9:1</span>). استخدم «ذهبي الحبر» للنصوص.</p>
+      <div class="pairs" style="margin-top:8px">
+        <div class="pair" style="background:#00603C;color:#FFFFFF"><b>نشاط</b><span>7.7:1 ✓</span></div>
+        <div class="pair" style="background:#003C24;color:#D8B460"><b>نشاط</b><span>6.4:1 ✓</span></div>
+        <div class="pair" style="background:#FFFDF8;color:#8C6B2A;box-shadow:inset 0 0 0 1px #E2DAC6"><b>نشاط</b><span>4.9:1 ✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 TYPE ============ -->
+<section class="chapter" id="type">
+  <div class="ch-head">
+    <span class="ch-num">08</span>
+    <h2>الخطوط</h2>
+    <p>خطّان فقط. «ريم كوفي» للعناوين بروحه الهندسية القريبة من شعار المدار، و«آي بي إم بلكس سانس عربي» للنصوص والجداول. كلاهما مجاني ومتاح على Google Fonts.</p>
+  </div>
+  <div class="grid g2" style="margin-bottom:28px">
+    <div class="type-specimen">
+      <span class="kicker">خط العناوين</span>
+      <div class="big" style="font-family:var(--font-display);font-weight:700">بطولة المدار</div>
+      <div class="alpha" style="font-family:var(--font-display)">أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن هـ و ي · ١٢٣٤٥٦٧٨٩٠</div>
+      <div class="small muted">Reem Kufi · <span class="mono">500 / 600 / 700</span></div>
+    </div>
+    <div class="type-specimen">
+      <span class="kicker">خط النصوص</span>
+      <div class="big" style="font-family:var(--font-body);font-weight:600;color:var(--fg)">يوم رياضي</div>
+      <div class="alpha" style="font-family:var(--font-body)">أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن هـ و ي · Aa 0123</div>
+      <div class="small muted">IBM Plex Sans Arabic · <span class="mono">300 / 400 / 600 / 700</span></div>
+    </div>
+  </div>
+  <div class="scale">
+    <div class="scale-row"><span class="meta">H1 · Reem Kufi 700 · 48/56</span><span style="font:700 clamp(1.8rem,5vw,3rem)/1.2 var(--font-display)">دوري المدار الرمضاني</span></div>
+    <div class="scale-row"><span class="meta">H2 · Reem Kufi 600 · 32/42</span><span style="font:600 clamp(1.4rem,3.6vw,2rem)/1.3 var(--font-display)">جدول المباريات</span></div>
+    <div class="scale-row"><span class="meta">H3 · Plex Arabic 600 · 20/30</span><span style="font:600 1.25rem/1.5 var(--font-body)">التسجيل مفتوح حتى نهاية الأسبوع</span></div>
+    <div class="scale-row"><span class="meta">Body · Plex Arabic 400 · 16/28</span><span style="font:400 1rem/1.8 var(--font-body)">تدعو لجنة الأنشطة جميع الموظفين للمشاركة في البطولة السنوية لكرة الطائرة. يتكوّن كل فريق من سبعة لاعبين.</span></div>
+    <div class="scale-row"><span class="meta">Caption · Plex Arabic 500 · 13/20</span><span style="font:500 .8125rem/1.6 var(--font-body);color:var(--muted)">الصالة الرياضية · الخميس ٧:٠٠ مساءً</span></div>
+  </div>
+  <p class="small muted" style="margin-top:16px">البديل عند عدم توفر الخطين: Tajawal للعناوين وTahoma للنصوص في المستندات المكتبية.</p>
+</section>
+
+<!-- ============ 09 GRAPHIC ELEMENTS ============ -->
+<section class="chapter" id="elements">
+  <div class="ch-head">
+    <span class="ch-num">09</span>
+    <h2>العناصر الجرافيكية</h2>
+    <p>عناصر مشتقة من الشعار نفسه، تمنح المواد طابعاً واحداً دون تكرار الشعار في كل زاوية.</p>
+  </div>
+  <div class="grid g3">
+    <figure>
+      <div class="pattern-plate" style="background:#003C24">
+        <svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <path d="M-20 150 C 80 60, 180 220, 320 90" fill="none" stroke="#00603C" stroke-width="26" stroke-linecap="round"/>
+          <path d="M-20 175 C 90 90, 190 240, 320 120" fill="none" stroke="#B8913F" stroke-width="6" stroke-linecap="round"/>
+          <path d="M-20 120 C 70 40, 170 190, 320 60" fill="none" stroke="#D8B460" stroke-width="1.5" opacity=".6"/>
+        </svg>
+      </div>
+      <figcaption class="caption"><b>شريط المدار</b><span>من الشريطين حول الشعلة</span></figcaption>
+    </figure>
+    <figure>
+      <div class="pattern-plate" style="background:#F4EFE3;box-shadow:inset 0 0 0 1px #E2DAC6;display:grid;place-items:center">
+        <svg viewBox="0 0 300 200" aria-hidden="true">
+          <line x1="40" y1="100" x2="260" y2="100" stroke="#B8913F" stroke-width="2"/>
+          <rect x="144" y="94" width="12" height="12" transform="rotate(45 150 100)" fill="#00603C"/>
+          <text x="150" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#8C6B2A">2px · #B8913F</text>
+        </svg>
+      </div>
+      <figcaption class="caption"><b>الخط الذهبي الفاصل</b><span>من سطر الانتماء في الشعار</span></figcaption>
+    </figure>
+    <figure>
+      <div class="pattern-plate" style="background:#00603C">
+        <svg viewBox="0 0 300 200" aria-hidden="true">
+          <g fill="#D8B460">
+            <path id="st" d="M0,-12 L3.5,-3.8 12.4,-3.7 5.6,2 8,10.6 0,5.6 -8,10.6 -5.6,2 -12.4,-3.7 -3.5,-3.8Z" transform="translate(150 70)"/>
+            <use href="#st" transform="translate(-40 14)"/><use href="#st" transform="translate(40 14)"/>
+            <use href="#st" transform="translate(-76 40)"/><use href="#st" transform="translate(76 40)"/>
+          </g>
+          <text x="150" y="160" text-anchor="middle" font-family="Reem Kufi, sans-serif" font-size="34" font-weight="700" fill="#F4EFE3">البطل</text>
+        </svg>
+      </div>
+      <figcaption class="caption"><b>نجوم الإنجاز</b><span>للتكريم والبطولات فقط</span></figcaption>
+    </figure>
+  </div>
+  <ul class="rule-list" style="margin-top:24px;max-width:70ch">
+    <li><span>شريط المدار يدخل من حافة التصميم ولا يلتف حول نص أو صورة شخص.</span></li>
+    <li><span>صور اللجنة تُعرض كما هي، أو بطبقة أخضر عميق بشفافية <span class="mono">60–80%</span> عند كتابة نص فوقها.</span></li>
+    <li><span>الأيقونات خطية بسماكة <span class="mono">1.5–2px</span> ولون واحد (أخضر أو ذهبي)، بلا رموز تعبيرية.</span></li>
+  </ul>
+</section>
+
+<!-- ============ 10 APPLICATIONS ============ -->
+<section class="chapter" id="apps">
+  <div class="ch-head">
+    <span class="ch-num">10</span>
+    <h2>التطبيقات</h2>
+    <p>أمثلة لتطبيق الهوية على أكثر المواد استخداماً. تُبنى المواد الجديدة على هذه النماذج.</p>
+  </div>
+
+  <figure style="margin-bottom:28px">
+    <div class="app-photo"><img src="assets/team-kit.jpg" alt="فريق من سبعة لاعبين بزي أخضر بحواف ذهبية وسراويل ذهبية في صالة رياضية" width="1376" height="768"></div>
+    <figcaption class="caption"><b>زي الفرق الرياضية</b><span>قميص أخضر بحواف ذهبية · سروال ذهبي · الشعار مطرّز على الصدر</span></figcaption>
+  </figure>
+
+  <div class="grid g3" style="align-items:start">
+    <figure>
+      <div class="post">
+        <svg class="bg" viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M-10 250 C 90 170, 190 320, 320 200" fill="none" stroke="#00603C" stroke-width="40"/>
+          <path d="M-10 275 C 100 200, 200 330, 320 230" fill="none" stroke="#B8913F" stroke-width="5"/>
+        </svg>
+        <div class="tagline"><span class="pill">بطولة</span><img src="assets/committee-emblem.png" alt=""></div>
+        <h4>بطولة المدار<br>لكرة <em>الطائرة</em></h4>
+        <div class="when"><span><b>الخميس</b> ٢٣ أكتوبر</span><span><b>٧:٠٠</b> مساءً</span></div>
+      </div>
+      <figcaption class="caption"><b>منشور تواصل اجتماعي</b><span class="mono">1080 × 1080</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="badge">
+        <div class="top"><img src="assets/committee-logo-white.png" alt=""></div>
+        <div class="body">
+          <div class="avatar"></div>
+          <div class="name">اسم العضو</div>
+          <div class="role">منسّق الأنشطة الرياضية</div>
+        </div>
+        <div class="foot"><span>ID 0427</span><img src="assets/madar-logo.png" alt=""></div>
+      </div>
+      <figcaption class="caption"><b>بطاقة عضوية</b><span class="mono">54 × 86 mm</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="letter">
+        <div class="lh"><img class="c" src="assets/committee-logo.png" alt=""><img class="p" src="assets/madar-logo.png" alt=""></div>
+        <div class="lines"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="lines"><i></i><i></i><i></i><i></i></div>
+        <div class="lf"><span>Activities Committee</span><span>New Madar Co.</span></div>
+      </div>
+      <figcaption class="caption"><b>الورق الرسمي</b><span class="mono">A4</span></figcaption>
+    </figure>
+  </div>
+
+  <figure style="margin-top:28px">
+    <div class="cert">
+      <img class="em" src="assets/committee-emblem.png" alt="">
+      <div class="t">شهادة تقدير</div>
+      <div class="s">تتقدّم لجنة الأنشطة في شركة المدار الجديد بالشكر والتقدير إلى</div>
+      <div class="n">اسم المكرَّم</div>
+      <div class="s">لمشاركته المتميزة وإسهامه في إنجاح البطولة السنوية</div>
+      <div class="sig"><span>رئيس لجنة الأنشطة</span><img src="assets/madar-logo.png" alt=""><span>التاريخ</span></div>
+    </div>
+    <figcaption class="caption"><b>شهادة تقدير</b><span>A4 أفقي · إطار مزدوج أخضر وذهبي</span></figcaption>
+  </figure>
+</section>
+
+<!-- ============ 11 VOICE ============ -->
+<section class="chapter" id="voice">
+  <div class="ch-head">
+    <span class="ch-num">11</span>
+    <h2>نبرة الخطاب</h2>
+    <p>تكتب اللجنة كزميل متحمّس: عربية فصحى بسيطة، جمل قصيرة، ودعوة واضحة للمشاركة مع الموعد والمكان دائماً.</p>
+  </div>
+  <div class="voice">
+    <div class="card yes"><span class="lbl">✓ هكذا</span><q>جهّز فريقك! التسجيل في بطولة كرة الطائرة مفتوح حتى الأحد. سبعة لاعبين لكل فريق.</q></div>
+    <div class="card no"><span class="lbl">✕ لا هكذا</span><q>يسرّ إدارة لجنة الأنشطة أن تحيطكم علماً بأنه قد تقرر بمشيئة الله إقامة فعالية رياضية…</q></div>
+    <div class="card yes"><span class="lbl">✓ هكذا</span><q>شكراً لكل من شارك. نلتقي في الرحلة القادمة.</q></div>
+    <div class="card no"><span class="lbl">✕ لا هكذا</span><q>🔥🔥 أقوى فعالية في التاريخ!!! لا تفوتوها 🏆🏆</q></div>
+  </div>
+</section>
+
+<!-- ============ 12 FILES ============ -->
+<section class="chapter" id="files" style="border-bottom:0">
+  <div class="ch-head">
+    <span class="ch-num">12</span>
+    <h2>ملفات الشعار</h2>
+    <p>الملفات المعتمدة المرفقة مع هذا الدليل في مجلد <span class="mono">brand/assets</span>. جميعها PNG بخلفية شفافة.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="files">
+      <thead><tr><th>الملف</th><th>الاستخدام</th><th>الخلفية المناسبة</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">committee-logo.png</td><td>الشعار الرئيسي الملوّن</td><td>أبيض، عاجي</td></tr>
+        <tr><td class="mono">committee-logo-on-dark.png</td><td>الشعار المعكوس (سطر الانتماء بالعاجي)</td><td>أخضر عميق، صور داكنة</td></tr>
+        <tr><td class="mono">committee-logo-gold.png</td><td>أحادي ذهبي</td><td>أخضر، تطريز، دروع</td></tr>
+        <tr><td class="mono">committee-logo-white.png</td><td>أحادي أبيض</td><td>أخضر، صور معتّمة</td></tr>
+        <tr><td class="mono">committee-emblem.png</td><td>الرمز منفرداً</td><td>صورة الحساب، الأيقونات</td></tr>
+        <tr><td class="mono">madar-logo.png</td><td>شعار شركة المدار الجديد</td><td>أبيض، عاجي</td></tr>
+        <tr><td class="mono">madar-logo-white.png</td><td>شعار الشركة بالأبيض</td><td>أخضر</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted" style="margin-top:14px">للطباعة الاحترافية بأحجام كبيرة (لوحات، أقمشة) اطلب من المصمم نسخة متجهة (SVG / AI) معاد رسمها من الشعار المعتمد.</p>
+</section>
+
+</main>
+
+<footer class="wrap" style="border-top:1px solid var(--line)">
+  <span>دليل هوية لجنة الأنشطة · شركة المدار الجديد · <span class="mono">v1.0 · 2026</span></span>
+  <img src="assets/committee-emblem.png" alt="">
+</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(b){
+  b.addEventListener('click',function(){
+    var v=b.dataset.v;
+    function ok(){b.classList.add('done');setTimeout(function(){b.classList.remove('done')},1400)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(b);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+    try{navigator.clipboard.writeText(v).then(ok,fallback)}catch(e){fallback()}
+  });
+});
+</script>
