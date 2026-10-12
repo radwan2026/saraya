@@ -1,0 +1,571 @@
+<title>هوية لجنة الأنشطة</title>
+<meta name="description" content="دليل الهوية البصرية لشعار لجنة الأنشطة">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: a chaptered guide; green cover band, then a sticky chapter index beside the content on wide screens, stacked on phones. */
+:root {
+  /* brand colours — fixed in both themes */
+  --b-light: #64B846;
+  --b-mid: #419444;
+  --b-deep: #1E7A3C;
+  --b-shadow: #266632;
+  --b-gold: #CEA249;
+  --b-gold-text: #C2A058;
+  --b-orbit: #949599;
+  --b-ink: #231F20;
+  --b-white: #FFFFFF;
+
+  /* page neutrals */
+  --bg: #F7F9F5;
+  --surface: #FFFFFF;
+  --fg: #1B2A1F;
+  --muted: #5B6B5F;
+  --line: #DCE5DA;
+  --accent: #1E7A3C;
+  --gold-ink: #8A6A1F;
+  --danger: #C0392B;
+  --tile: #EEF3EC;
+
+  --f-display: "Alexandria", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
+  --f-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: 2.2rem;
+  --step-4: clamp(2.4rem, 6vw, 3.6rem);
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1712; --surface: #16211A; --fg: #E7EFE8; --muted: #9DB0A2;
+    --line: #2A3A2F; --accent: #7BC96A; --gold-ink: #DDB664; --danger: #F07A6B; --tile: #1C2A21;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1712; --surface: #16211A; --fg: #E7EFE8; --muted: #9DB0A2;
+  --line: #2A3A2F; --accent: #7BC96A; --gold-ink: #DDB664; --danger: #F07A6B; --tile: #1C2A21;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--f-body); font-size: var(--step-0); line-height: 1.8;
+}
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; line-height: 1.3; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.wrap { max-width: 1180px; margin-inline: auto; padding-inline: 20px; }
+
+/* ---------- cover ---------- */
+.cover {
+  background: radial-gradient(120% 140% at 85% 0%, var(--b-light) 0%, var(--b-mid) 42%, var(--b-deep) 78%, var(--b-shadow) 100%);
+  color: var(--b-white);
+  position: relative; overflow: hidden;
+}
+.cover-orbit { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.cover .wrap {
+  position: relative; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center;
+  padding-block: 64px 72px;
+}
+.cover .eyebrow { font-size: .9rem; letter-spacing: .04em; opacity: .85; }
+.cover h1 { font-size: var(--step-4); margin-block: 10px 16px; }
+.cover p.lead { font-size: var(--step-1); max-width: 34ch; opacity: .95; }
+.cover .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 26px; font-size: .9rem; opacity: .85; }
+.cover .meta b { font-weight: 600; }
+.cover-logo { justify-self: center; width: min(100%, 420px); filter: drop-shadow(0 18px 30px rgba(0,0,0,.18)); }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; padding-block: 48px 80px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: ch; }
+.toc li { counter-increment: ch; }
+.toc a {
+  display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 8px;
+  color: var(--muted); text-decoration: none; font-size: .95rem;
+}
+.toc a::before { content: counter(ch, arabic-indic); font-family: var(--f-display); color: var(--accent); min-width: 1.2em; }
+.toc a:hover, .toc a:focus-visible { background: var(--tile); color: var(--fg); outline: none; }
+
+main { display: grid; gap: 72px; min-width: 0; }
+section { display: grid; gap: 22px; min-width: 0; scroll-margin-top: 24px; }
+.chapter { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.chapter .num { font-family: var(--f-display); font-size: var(--step-2); color: var(--b-gold); }
+.chapter h2 { font-size: var(--step-3); }
+.intro { color: var(--muted); max-width: 68ch; font-size: 1.05rem; }
+h3 { font-size: var(--step-1); }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; min-width: 0; }
+
+/* ---------- concept ---------- */
+.concept { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 36px; align-items: start; }
+.anatomy { position: relative; background: var(--b-white); border-radius: var(--radius); padding: 28px; border: 1px solid var(--line); }
+.anatomy .stage { position: relative; }
+.anatomy img { display: block; width: 100%; }
+.pin {
+  position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+  background: var(--b-ink); color: var(--b-white); font: 600 .85rem/28px var(--f-body); text-align: center;
+  box-shadow: 0 0 0 3px var(--b-white);
+}
+.parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.parts li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; }
+.parts .n { width: 28px; height: 28px; border-radius: 50%; background: var(--fg); color: var(--bg); text-align: center; font-weight: 600; font-size: .85rem; line-height: 28px; margin-top: 3px; }
+.parts h3 { font-size: 1.1rem; }
+.parts p { color: var(--muted); }
+
+.story {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+}
+.story > div { padding: 22px; display: grid; gap: 6px; align-content: start; }
+.story > div + div { border-inline-start: 1px solid var(--line); }
+.story .k { font-family: var(--f-display); font-size: 1.15rem; color: var(--accent); }
+.story .arrow { color: var(--b-gold); font-size: .85rem; letter-spacing: .03em; }
+.quote {
+  font-family: var(--f-display); font-size: var(--step-2); line-height: 1.5; max-width: 30ch; color: var(--fg);
+}
+.quote em { font-style: normal; color: var(--b-gold); }
+
+/* ---------- colour ---------- */
+.swatches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.sw { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); display: grid; grid-template-rows: 130px auto; }
+.sw .chip { padding: 14px; display: flex; align-items: flex-end; justify-content: space-between; font-weight: 600; font-size: .85rem; }
+.sw .info { padding: 14px; display: grid; gap: 4px; font-size: .85rem; }
+.sw .info b { font-size: 1rem; font-family: var(--f-display); font-weight: 500; }
+.sw .codes { font-family: var(--f-mono); color: var(--muted); direction: ltr; text-align: right; font-size: .78rem; line-height: 1.6; }
+.copy {
+  border: 0; background: rgba(255,255,255,.22); color: inherit; font: 600 .75rem var(--f-mono);
+  padding: 4px 8px; border-radius: 6px; cursor: pointer; direction: ltr;
+}
+.copy:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.gradient-bar {
+  height: 84px; border-radius: var(--radius);
+  background: linear-gradient(to left, var(--b-light), var(--b-mid) 45%, var(--b-deep) 80%, var(--b-shadow));
+  display: flex; align-items: center; justify-content: space-between; padding-inline: 20px; color: var(--b-white);
+  font-family: var(--f-mono); font-size: .8rem; direction: ltr;
+}
+.ratio { display: flex; height: 46px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.ratio span { display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 600; }
+.ratio-legend { display: flex; flex-wrap: wrap; gap: 6px 22px; color: var(--muted); font-size: .9rem; }
+.note { border-inline-start: 3px solid var(--b-gold); padding: 4px 16px; color: var(--muted); max-width: 70ch; }
+.note b { color: var(--fg); }
+
+/* ---------- type ---------- */
+.type-card { display: grid; gap: 14px; }
+.type-card .specimen { font-size: 3.4rem; line-height: 1.2; }
+.type-card .meta { color: var(--muted); font-size: .9rem; }
+.type-card .chars { color: var(--muted); font-size: 1.1rem; letter-spacing: .02em; }
+.scale { display: grid; gap: 0; }
+.scale .row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: baseline; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.scale .row:last-child { border-bottom: 0; }
+.scale .lbl { font-family: var(--f-mono); font-size: .78rem; color: var(--muted); direction: ltr; text-align: right; }
+
+/* ---------- logo versions ---------- */
+.versions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ver { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.ver .stage { aspect-ratio: 4 / 3; display: grid; place-items: center; padding: 28px; }
+.ver .stage img { max-height: 100%; width: auto; max-width: 78%; }
+.ver .cap { padding: 14px 16px; display: grid; gap: 2px; }
+.ver .cap b { font-family: var(--f-display); font-weight: 500; }
+.ver .cap span { color: var(--muted); font-size: .88rem; }
+.lockup { display: flex; align-items: center; gap: 6%; width: 92%; justify-content: center; }
+.lockup img:first-child { width: 36%; max-width: none; }
+.lockup img:last-child { width: 50%; max-width: none; }
+
+/* ---------- clear space ---------- */
+.space { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.clear-box { background: var(--b-white); border-radius: var(--radius); padding: 28px; border: 1px solid var(--line); display: grid; place-items: center; }
+.clear-zone { position: relative; padding: 13%; outline: 1.5px dashed var(--b-mid); outline-offset: 0; background: repeating-linear-gradient(45deg, rgba(100,184,70,.08) 0 8px, transparent 8px 16px); }
+.clear-zone img { display: block; width: 260px; max-width: 100%; position: relative; background: var(--b-white); }
+.clear-zone .x { position: absolute; font: 600 .85rem var(--f-display); color: var(--b-deep); }
+.clear-zone .x.t { top: 2%; left: 50%; transform: translateX(-50%); }
+.clear-zone .x.b { bottom: 2%; left: 50%; transform: translateX(-50%); }
+.clear-zone .x.r { right: 3%; top: 50%; transform: translateY(-50%); }
+.clear-zone .x.l { left: 3%; top: 50%; transform: translateY(-50%); }
+.sizes { display: grid; gap: 14px; }
+.size-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 16px; align-items: center; }
+.size-row .demo { display: grid; place-items: center; background: var(--b-white); border-radius: 10px; border: 1px solid var(--line); height: 92px; }
+.size-row b { font-family: var(--f-display); font-weight: 500; }
+.size-row p { color: var(--muted); font-size: .92rem; }
+
+/* ---------- misuse ---------- */
+.donts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.dont { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.dont .stage { aspect-ratio: 4 / 3; display: grid; place-items: center; background: var(--b-white); position: relative; overflow: hidden; }
+.dont .stage img { width: 52%; }
+.dont .stage::after {
+  content: "✕"; position: absolute; top: 10px; inset-inline-start: 10px; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--danger); color: var(--b-white); font-size: .85rem; display: grid; place-items: center;
+}
+.dont .cap { padding: 12px 16px; font-size: .92rem; }
+.d-stretch img { transform: scaleX(1.45); }
+.d-rotate img { transform: rotate(-18deg); }
+.d-recolor img { filter: hue-rotate(150deg) saturate(1.4); }
+.d-shadow img { filter: drop-shadow(8px 10px 0 rgba(0,0,0,.35)); }
+.d-busy .stage { background: url("assets/pattern.jpg") center / cover; }
+.d-lowcontrast .stage { background: var(--b-light); }
+
+/* ---------- elements ---------- */
+.motif { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; }
+.motif-canvas { border-radius: var(--radius); overflow: hidden; background: var(--b-deep); min-height: 260px; }
+.motif-canvas svg { display: block; width: 100%; height: 100%; }
+.elements { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.elements li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start; }
+.elements svg { width: 44px; height: 44px; }
+.elements b { font-family: var(--f-display); font-weight: 500; display: block; }
+.elements span { color: var(--muted); font-size: .92rem; }
+
+/* ---------- applications ---------- */
+.apps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.apps figure { margin: 0; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
+.apps figure img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.apps figcaption { padding: 12px 16px; font-size: .92rem; color: var(--muted); }
+.apps figcaption b { color: var(--fg); font-family: var(--f-display); font-weight: 500; display: block; }
+.apps .wide { grid-column: span 3; }
+.apps .third { grid-column: span 2; }
+.app-list { columns: 2; column-gap: 32px; padding: 0; margin: 0; list-style: none; }
+.app-list li { break-inside: avoid; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.app-list li b { font-weight: 600; }
+.app-list li span { color: var(--muted); }
+
+/* ---------- voice ---------- */
+.voice { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.voice .panel { display: grid; gap: 8px; align-content: start; }
+.voice .panel b { font-family: var(--f-display); font-weight: 500; font-size: 1.15rem; color: var(--accent); }
+.voice .ex { font-family: var(--f-display); color: var(--fg); }
+.voice .panel span { color: var(--muted); font-size: .92rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: .9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+footer img { height: 44px; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 980px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .toc { position: static; }
+  .toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .versions, .donts, .voice, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .cover .wrap, .concept, .space, .motif, .grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .cover-logo { width: min(80%, 320px); order: -1; }
+  .story { grid-template-columns: minmax(0, 1fr); }
+  .story > div + div { border-inline-start: 0; border-top: 1px solid var(--line); }
+  .apps .wide, .apps .third { grid-column: span 6; }
+  .app-list { columns: 1; }
+}
+@media (max-width: 520px) {
+  .versions, .donts, .voice, .grid-3 { grid-template-columns: minmax(0, 1fr); }
+  .scale .row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .type-card .specimen { font-size: 2.6rem; }
+  .chapter h2 { font-size: var(--step-2); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cover-orbit ellipse { stroke-dasharray: 6 10; animation: drift 40s linear infinite; }
+  @keyframes drift { to { stroke-dashoffset: -320; } }
+}
+</style>
+
+<div dir="rtl" lang="ar">
+
+<header class="cover">
+  <svg class="cover-orbit" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#FFFFFF" stroke-opacity=".14">
+      <ellipse cx="600" cy="300" rx="760" ry="150" transform="rotate(-14 600 300)" stroke-width="1.5"/>
+      <ellipse cx="600" cy="300" rx="700" ry="128" transform="rotate(-14 600 300)" stroke-width="1"/>
+      <ellipse cx="600" cy="300" rx="640" ry="106" transform="rotate(-14 600 300)" stroke-width="1"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">دليل الهوية البصرية · الإصدار ١٫٠</div>
+      <h1>لجنة الأنشطة</h1>
+      <p class="lead">من المدار ننطلق، وبالنشاط نصعد نحو النجمة. هذا الدليل يشرح فكرة الشعار وقواعد استخدامه وألوانه وخطوطه وعناصره.</p>
+      <div class="meta">
+        <span><b>الجهة:</b> شركة المدار</span>
+        <span><b>التاريخ:</b> أكتوبر ٢٠٢٦</span>
+        <span><b>الاستخدام:</b> داخلي وللمورّدين</span>
+      </div>
+    </div>
+    <img class="cover-logo" src="assets/logo-white.png" alt="شعار لجنة الأنشطة باللون الأبيض">
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="toc" aria-label="فصول الدليل">
+    <ol>
+      <li><a href="#concept">فكرة الشعار</a></li>
+      <li><a href="#colors">الألوان</a></li>
+      <li><a href="#type">الخطوط</a></li>
+      <li><a href="#versions">نسخ الشعار</a></li>
+      <li><a href="#space">المساحة والحجم</a></li>
+      <li><a href="#misuse">الاستخدام الخاطئ</a></li>
+      <li><a href="#elements">العناصر الجرافيكية</a></li>
+      <li><a href="#apps">التطبيقات</a></li>
+      <li><a href="#voice">نبرة الخطاب</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- 1. concept -->
+    <section id="concept">
+      <div class="chapter"><span class="num">١</span><h2>فكرة الشعار</h2></div>
+      <p class="intro">الشعار مبني على شعار شركة المدار: الكرة الأرضية وحلقة المدار التي تدور حولها. داخل هذا المدار يقف عدّاء ينطلق مع سهم صاعد، والسهم يقود العين إلى النجمة الذهبية في القمة. الرسالة أن أنشطة اللجنة جزء من منظومة المدار، وأن كل نشاط خطوة في مسار نمو يصل بالموظف والفريق إلى «نجم المدار».</p>
+
+      <div class="concept">
+        <div class="anatomy">
+          <div class="stage">
+            <img src="assets/logo-color.png" alt="شعار لجنة الأنشطة الملوّن مع أرقام تشير إلى عناصره">
+            <span class="pin" style="left:3.5%;top:46%">١</span>
+            <span class="pin" style="left:84%;top:22%">٢</span>
+            <span class="pin" style="left:73%;top:36%">٣</span>
+            <span class="pin" style="left:33%;top:38%">٤</span>
+            <span class="pin" style="left:36%;top:4%">٥</span>
+            <span class="pin" style="left:52%;top:12%">٦</span>
+            <span class="pin" style="left:49%;top:88%">٧</span>
+          </div>
+        </div>
+        <ol class="parts">
+          <li><span class="n">١</span><div><h3>الدائرة الحاضنة</h3><p>قوس يحيط بالعدّاء من اليسار. يمثّل اللجنة التي تحتضن الموظفين وتجمعهم في بيئة واحدة.</p></div></li>
+          <li><span class="n">٢</span><div><h3>كرة المدار</h3><p>مقاطع الكرة الأرضية مأخوذة من شعار شركة المدار. تربط هوية اللجنة بالشركة الأم وتجعلها امتدادًا لها.</p></div></li>
+          <li><span class="n">٣</span><div><h3>حلقة المدار (المضمار)</h3><p>خطوط رمادية متوازية تلتف حول الكرة، تجمع بين فكرة المدار ومسارات مضمار الجري. هي الطريق الذي يتحرك عليه النشاط.</p></div></li>
+          <li><span class="n">٤</span><div><h3>العدّاء</h3><p>شخص في لحظة انطلاق ويده ممدودة نحو الأعلى. يمثّل الموظف المشارك وطاقة الأنشطة الرياضية والاجتماعية والثقافية.</p></div></li>
+          <li><span class="n">٥</span><div><h3>السهم الصاعد</h3><p>يبدأ من أسفل الدائرة ويرتفع منحنيًا إلى القمة. يرمز إلى النمو والتصاعد المستمر الذي تصنعه الأنشطة في الأداء والروح الجماعية.</p></div></li>
+          <li><span class="n">٦</span><div><h3>نجم المدار</h3><p>النجمة الذهبية هي الهدف الذي يتجه إليه السهم وتمتد إليه يد العدّاء: التميّز والتكريم والوصول إلى القمة.</p></div></li>
+          <li><span class="n">٧</span><div><h3>اسم اللجنة</h3><p>كتابة عربية هندسية بالذهبي، بنقاط دائرية تتناغم مع استدارة الكرة والنجمة. الاسم ثابت ولا يُعاد كتابته بخط آخر.</p></div></li>
+        </ol>
+      </div>
+
+      <div class="story" aria-label="مسار الفكرة">
+        <div><span class="arrow">نقطة البداية</span><span class="k">المدار</span><p>الشركة والمنظومة التي ينتمي إليها الجميع.</p></div>
+        <div><span class="arrow">المسار</span><span class="k">النشاط والنمو</span><p>العدّاء والسهم: مشاركة وحركة وتصاعد خطوة بعد خطوة.</p></div>
+        <div><span class="arrow">الوجهة</span><span class="k">نجم المدار</span><p>التميّز والتقدير، النجمة التي يسعى إليها كل مشارك.</p></div>
+      </div>
+
+      <p class="quote">من <em>المدار</em> ننطلق، وبالأنشطة نصعد، وإلى <em>النجمة</em> نصل.</p>
+    </section>
+
+    <!-- 2. colours -->
+    <section id="colors">
+      <div class="chapter"><span class="num">٢</span><h2>الألوان</h2></div>
+      <p class="intro">الأخضر هو لون الحياة والنمو والملاعب، ويأتي في الشعار بتدرّج من الأخضر المضيء إلى الأخضر العميق ليعطي الكرة إحساسًا بالحجم. الذهبي مخصص للنجمة والاسم لأنه لون الإنجاز والميداليات. الرمادي والفحمي لحلقة المدار فقط.</p>
+
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#64B846;color:#0E2A14"><span>أساسي</span><button class="copy" type="button" data-hex="#64B846">#64B846</button></div>
+          <div class="info"><b>أخضر الانطلاق</b><div class="codes">RGB 100 184 70<br>CMYK 60 0 90 0<br>Pantone ≈ 361 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#419444;color:#FFFFFF"><span>أساسي</span><button class="copy" type="button" data-hex="#419444">#419444</button></div>
+          <div class="info"><b>أخضر النمو</b><div class="codes">RGB 65 148 68<br>CMYK 75 15 95 2<br>Pantone ≈ 362 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#1E7A3C;color:#FFFFFF"><span>أساسي</span><button class="copy" type="button" data-hex="#1E7A3C">#1E7A3C</button></div>
+          <div class="info"><b>أخضر المدار</b><div class="codes">RGB 30 122 60<br>CMYK 85 25 95 10<br>Pantone ≈ 356 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#266632;color:#FFFFFF"><span>أساسي</span><button class="copy" type="button" data-hex="#266632">#266632</button></div>
+          <div class="info"><b>أخضر الظل</b><div class="codes">RGB 38 102 50<br>CMYK 80 35 95 30<br>Pantone ≈ 357 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#CEA249;color:#2A1E05"><span>مميِّز</span><button class="copy" type="button" data-hex="#CEA249">#CEA249</button></div>
+          <div class="info"><b>ذهبي النجمة</b><div class="codes">RGB 206 162 73<br>CMYK 18 35 85 2<br>Pantone ≈ 7563 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#C2A058;color:#2A1E05"><span>مميِّز</span><button class="copy" type="button" data-hex="#C2A058">#C2A058</button></div>
+          <div class="info"><b>ذهبي الاسم</b><div class="codes">RGB 194 160 88<br>CMYK 25 35 75 3<br>Pantone ≈ 7562 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#949599;color:#111111"><span>مساند</span><button class="copy" type="button" data-hex="#949599">#949599</button></div>
+          <div class="info"><b>رمادي المضمار</b><div class="codes">RGB 148 149 153<br>CMYK 45 35 32 1<br>Pantone ≈ Cool Gray 7 C</div></div></div>
+        <div class="sw"><div class="chip" style="background:#231F20;color:#FFFFFF"><span>مساند</span><button class="copy" type="button" data-hex="#231F20">#231F20</button></div>
+          <div class="info"><b>فحمي الحلقة</b><div class="codes">RGB 35 31 32<br>CMYK 0 0 0 100<br>Pantone ≈ Black 6 C</div></div></div>
+      </div>
+
+      <h3>تدرّج الكرة</h3>
+      <div class="gradient-bar" aria-label="تدرّج الأخضر من الفاتح إلى الداكن"><span>#266632</span><span>#1E7A3C</span><span>#419444</span><span>#64B846</span></div>
+
+      <h3>نسب استخدام الألوان</h3>
+      <div class="ratio" role="img" aria-label="أبيض ٦٠٪، أخضر ٢٥٪، ذهبي ١٠٪، رمادي وفحمي ٥٪">
+        <span style="flex:60;background:#FFFFFF;color:#5B6B5F">٦٠٪</span>
+        <span style="flex:25;background:#1E7A3C;color:#FFFFFF">٢٥٪</span>
+        <span style="flex:10;background:#CEA249;color:#2A1E05">١٠٪</span>
+        <span style="flex:5;background:#949599;color:#111111">٥</span>
+      </div>
+      <div class="ratio-legend"><span>أبيض: مساحات وخلفيات</span><span>أخضر: مساحات العلامة والعناوين</span><span>ذهبي: لمسات التميّز</span><span>رمادي وفحمي: تفاصيل</span></div>
+      <p class="note"><b>تنبيه وضوح:</b> الذهبي على الأبيض تباينه قرابة ٢٫٣ إلى ١، فلا يُستخدم للنصوص الصغيرة. يُستعمل للشعار والأرقام الكبيرة والزخارف، أو على خلفية أخضر المدار حيث يكون أوضح.</p>
+    </section>
+
+    <!-- 3. type -->
+    <section id="type">
+      <div class="chapter"><span class="num">٣</span><h2>الخطوط</h2></div>
+      <p class="intro">اسم «لجنة الأنشطة» في الشعار مرسوم كقطعة واحدة ولا يُكتب بخط. لبقية المواد نستخدم خطين متوفرين مجانًا من Google Fonts ويدعمان العربية واللاتينية.</p>
+      <div class="grid-2">
+        <div class="panel type-card">
+          <span class="meta">العناوين · Alexandria · Medium / Bold</span>
+          <div class="specimen" style="font-family:var(--f-display);font-weight:700">بطولة المدار</div>
+          <div class="chars" style="font-family:var(--f-display)">أ ب ت ث ج ح خ · ١٢٣٤٥ · Aa Bb 123</div>
+          <p class="meta">خط هندسي بنقاط دائرية قريب من روح كتابة الاسم في الشعار. للعناوين والملصقات وأرقام الفرق.</p>
+        </div>
+        <div class="panel type-card">
+          <span class="meta">النصوص · IBM Plex Sans Arabic · Regular / SemiBold</span>
+          <div class="specimen" style="font-family:var(--f-body);font-weight:600">التسجيل مفتوح</div>
+          <div class="chars">أ ب ت ث ج ح خ · ١٢٣٤٥ · Aa Bb 123</div>
+          <p class="meta">واضح في الأحجام الصغيرة. للفقرات والجداول والتعاميم والشهادات.</p>
+        </div>
+      </div>
+      <div class="panel scale">
+        <div class="row"><span class="lbl">H1 · 48px · Alexandria 700</span><span style="font-family:var(--f-display);font-weight:700;font-size:clamp(1.9rem,5vw,3rem);line-height:1.3">دوري الأنشطة السنوي</span></div>
+        <div class="row"><span class="lbl">H2 · 32px · Alexandria 700</span><span style="font-family:var(--f-display);font-weight:700;font-size:2rem;line-height:1.3">جدول المباريات</span></div>
+        <div class="row"><span class="lbl">H3 · 22px · Alexandria 500</span><span style="font-family:var(--f-display);font-weight:500;font-size:1.4rem">الفرق المتأهلة</span></div>
+        <div class="row"><span class="lbl">Body · 16px · Plex 400</span><span>يسرّ لجنة الأنشطة دعوتكم للمشاركة في بطولة كرة القدم بين الإدارات، يوم الخميس الساعة الرابعة عصرًا.</span></div>
+        <div class="row"><span class="lbl">Caption · 13px · Plex 500</span><span style="font-size:.82rem;font-weight:500;color:var(--muted)">آخر موعد للتسجيل: ٢٠ أكتوبر</span></div>
+      </div>
+    </section>
+
+    <!-- 4. versions -->
+    <section id="versions">
+      <div class="chapter"><span class="num">٤</span><h2>نسخ الشعار</h2></div>
+      <p class="intro">النسخة الملوّنة على الأبيض هي الأساس. تُستخدم النسخ الأخرى حسب الخلفية ووسيلة الطباعة، دون أي تعديل في نسب العناصر.</p>
+      <div class="versions">
+        <div class="ver"><div class="stage" style="background:#FFFFFF"><img src="assets/logo-color.png" alt="النسخة الأساسية الملوّنة"></div>
+          <div class="cap"><b>الأساسية</b><span>ملوّنة على أبيض أو خلفية فاتحة جدًا.</span></div></div>
+        <div class="ver"><div class="stage" style="background:#1E7A3C"><img src="assets/logo-white.png" alt="النسخة البيضاء على الأخضر"></div>
+          <div class="cap"><b>المعكوسة</b><span>بيضاء على أخضر المدار أو الصور الداكنة، كما في الأكواب والبطاقات.</span></div></div>
+        <div class="ver"><div class="stage" style="background:#F1F4EF"><img src="assets/logo-dark.png" alt="النسخة أحادية اللون الداكنة"></div>
+          <div class="cap"><b>أحادية اللون</b><span>للفاكس والختم والحفر والطباعة بلون واحد.</span></div></div>
+        <div class="ver"><div class="stage" style="background:#FFFFFF"><img src="assets/logo-symbol.png" alt="الرمز وحده دون الاسم"></div>
+          <div class="cap"><b>الرمز وحده</b><span>لصور الحسابات وأيقونة التطبيق والميداليات، حين يكون الاسم ظاهرًا بجانبه.</span></div></div>
+        <div class="ver"><div class="stage" style="background:#FFFFFF"><div class="lockup"><img src="assets/logo-symbol.png" alt=""><img src="assets/logo-wordmark.png" alt="النسخة الأفقية"></div></div>
+          <div class="cap"><b>الأفقية</b><span>الرمز يمين الاسم، للافتات العريضة وترويسة البريد والمواقع.</span></div></div>
+        <div class="ver"><div class="stage" style="background:#231F20"><img src="assets/logo-white.png" alt="النسخة البيضاء على الفحمي"></div>
+          <div class="cap"><b>على خلفية داكنة</b><span>بيضاء على الفحمي أو الصور الليلية.</span></div></div>
+      </div>
+    </section>
+
+    <!-- 5. clear space -->
+    <section id="space">
+      <div class="chapter"><span class="num">٥</span><h2>المساحة الآمنة والحد الأدنى للحجم</h2></div>
+      <div class="space">
+        <div class="clear-box">
+          <div class="clear-zone">
+            <span class="x t">س</span><span class="x b">س</span><span class="x r">س</span><span class="x l">س</span>
+            <img src="assets/logo-color.png" alt="الشعار داخل مساحته الآمنة">
+          </div>
+        </div>
+        <div style="display:grid;gap:14px">
+          <p><b>الوحدة «س» = ارتفاع النجمة الذهبية</b>، أي قرابة سُدس ارتفاع الشعار الكامل.</p>
+          <p style="color:var(--muted)">تُترك مسافة «س» خالية من كل الجهات. لا يدخلها نص ولا صورة ولا حافة صفحة ولا شعار آخر. عند وضع الشعار بجوار شعار شركة المدار تكون المسافة بينهما «٢س» مع خط فاصل رفيع اختياري.</p>
+          <div class="sizes">
+            <div class="size-row"><div class="demo"><img src="assets/logo-color.png" alt="" style="width:60px"></div><div><b>الشعار الكامل</b><p>طباعة: ٢٥ ملم عرضًا كحد أدنى. شاشات: ١٢٠ بكسل.</p></div></div>
+            <div class="size-row"><div class="demo"><img src="assets/logo-symbol.png" alt="" style="width:34px"></div><div><b>الرمز وحده</b><p>طباعة: ١٢ ملم. شاشات: ٣٢ بكسل. أصغر من ذلك تختفي خطوط المضمار.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. misuse -->
+    <section id="misuse">
+      <div class="chapter"><span class="num">٦</span><h2>الاستخدام الخاطئ</h2></div>
+      <p class="intro">أي تعديل على الشعار يضعف التعرّف عليه. هذه أكثر الأخطاء شيوعًا:</p>
+      <div class="donts">
+        <div class="dont d-stretch"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تمطّ الشعار أو تضغطه. غيّر الحجم بالتناسب دائمًا.</div></div>
+        <div class="dont d-rotate"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تُدر الشعار. السهم يصعد بزاوية محسوبة.</div></div>
+        <div class="dont d-recolor"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تغيّر الألوان خارج لوحة الهوية.</div></div>
+        <div class="dont d-shadow"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تضف ظلالًا أو حدودًا أو تأثيرات ثلاثية الأبعاد.</div></div>
+        <div class="dont d-busy"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تضعه فوق صورة مزدحمة. استخدم النسخة البيضاء على مساحة هادئة.</div></div>
+        <div class="dont d-lowcontrast"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تضع النسخة الملوّنة على أخضر قريب من ألوانها.</div></div>
+      </div>
+    </section>
+
+    <!-- 7. elements -->
+    <section id="elements">
+      <div class="chapter"><span class="num">٧</span><h2>العناصر الجرافيكية</h2></div>
+      <p class="intro">ثلاثة عناصر من الشعار يمكن استخدامها منفصلة في التصاميم لتوحيد المواد دون تكرار الشعار في كل مكان.</p>
+      <div class="motif">
+        <div class="motif-canvas" role="img" aria-label="نمط خلفية من خطوط المدار ونجوم ذهبية على الأخضر">
+          <svg viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
+            <rect width="600" height="300" fill="#1E7A3C"/>
+            <circle cx="470" cy="70" r="210" fill="#419444" opacity=".35"/>
+            <g fill="none" stroke="#FFFFFF" stroke-linecap="round">
+              <path d="M-20 270 C 180 220, 380 140, 640 40" stroke-opacity=".55" stroke-width="2"/>
+              <path d="M-20 284 C 190 232, 390 152, 640 54" stroke-opacity=".35" stroke-width="1.5"/>
+              <path d="M-20 298 C 200 244, 400 164, 640 68" stroke-opacity=".2" stroke-width="1"/>
+            </g>
+            <path d="M80 250 C 140 190, 190 120, 230 60" fill="none" stroke="#64B846" stroke-width="10" stroke-linecap="round"/>
+            <path d="M212 54 L250 40 L244 80 Z" fill="#64B846"/>
+            <g fill="#CEA249">
+              <path d="M300 30 l7 15 16 2 -12 11 3 16 -14 -8 -14 8 3 -16 -12 -11 16 -2z"/>
+              <path d="M520 220 l4 9 10 1 -7 7 2 10 -9 -5 -9 5 2 -10 -7 -7 10 -1z" opacity=".8"/>
+              <path d="M420 250 l3 6 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z" opacity=".6"/>
+            </g>
+            <text x="560" y="150" fill="#FFFFFF" font-family="Alexandria, sans-serif" font-size="34" font-weight="700" text-anchor="end">نحو نجم المدار</text>
+            <text x="560" y="186" fill="#FFFFFF" fill-opacity=".8" font-family="IBM Plex Sans Arabic, sans-serif" font-size="16" text-anchor="end">مثال على غلاف منشور باستخدام عناصر الهوية</text>
+          </svg>
+        </div>
+        <ul class="elements">
+          <li><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M2 34 C 14 30, 28 22, 42 10" fill="none" stroke="#949599" stroke-width="2"/><path d="M2 38 C 14 34, 28 26, 42 14" fill="none" stroke="#949599" stroke-width="1.2"/></svg>
+            <div><b>خطوط المدار</b><span>منحنيات متوازية رفيعة تعبر الصفحة بزاوية صاعدة نحو اليمين. للفواصل وخلفيات العروض والقمصان.</span></div></li>
+          <li><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 38 C 16 28, 24 18, 30 10" fill="none" stroke="#419444" stroke-width="4" stroke-linecap="round"/><path d="M26 8 L36 4 L34 15 Z" fill="#419444"/></svg>
+            <div><b>السهم الصاعد</b><span>للدلالة على التقدم: لوحات النتائج والإحصاءات ومراحل البطولات. يتجه دائمًا إلى الأعلى.</span></div></li>
+          <li><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 6 l4.7 10 11 1.3 -8 7.6 2.1 10.8 -9.8 -5.4 -9.8 5.4 2.1 -10.8 -8 -7.6 11 -1.3z" fill="#CEA249"/></svg>
+            <div><b>نجمة المدار</b><span>للفائزين والمكرّمين والمراكز الأولى فقط، حتى تبقى لها قيمتها. لا تُستخدم كزخرفة متكررة.</span></div></li>
+        </ul>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><h3>أسلوب الصور</h3><p style="color:var(--muted);margin-top:8px">صور مسطّحة من الأعلى بإضاءة نهارية ساطعة، على أبيض أو أخضر صريح. أدوات رياضية واحتفالية (كرات، صفّارات، كؤوس، رايات) موزّعة بإيقاع منتظم. الأخضر هو اللون الغالب مع لمسات ذهبية أو صفراء قليلة.</p></div>
+        <div class="panel"><h3>الأيقونات</h3><p style="color:var(--muted);margin-top:8px">أيقونات خطية بسماكة ٢ بكسل وزوايا مستديرة، بلون أخضر المدار أو بالأبيض على الأخضر. يُستعمل الذهبي فقط لأيقونة الكأس أو الميدالية.</p></div>
+      </div>
+    </section>
+
+    <!-- 8. applications -->
+    <section id="apps">
+      <div class="chapter"><span class="num">٨</span><h2>التطبيقات</h2></div>
+      <div class="apps">
+        <figure class="wide"><img src="assets/mockup-cards.jpg" alt="بطاقات خضراء عليها الشعار باللون الأبيض بين أدوات حفلة كرة القدم"><figcaption><b>بطاقات الدعوة</b>النسخة البيضاء على أخضر المدار، مع رسوم الملعب والكرة على البطاقات المرافقة.</figcaption></figure>
+        <figure class="wide"><img src="assets/mockup-cup.jpg" alt="كوب ورقي أخضر عليه الشعار الأبيض"><figcaption><b>الأكواب والضيافة</b>تدرّج أخضر على الكوب والشعار الأبيض في المنتصف، مع رايات بالأخضر والأبيض والأسود.</figcaption></figure>
+        <figure class="third"><img src="assets/pattern.jpg" alt="كرات قدم وصفّارات خضراء على خلفية خضراء"><figcaption><b>صورة الخلفية</b>نموذج لأسلوب الصور: نمط منتظم على أخضر صريح.</figcaption></figure>
+        <div class="panel" style="grid-column: span 4; min-width:0">
+          <h3 style="margin-bottom:10px">مواد أخرى مقترحة</h3>
+          <ul class="app-list">
+            <li><b>قمصان الفرق:</b> <span>أخضر المدار مع الرمز أبيض على الصدر.</span></li>
+            <li><b>الميداليات والدروع:</b> <span>الرمز محفور مع النجمة بالذهبي.</span></li>
+            <li><b>شهادات التكريم:</b> <span>أبيض مع إطار من خطوط المدار.</span></li>
+            <li><b>منشورات التواصل:</b> <span>غلاف أخضر وعنوان بخط Alexandria.</span></li>
+            <li><b>اللوحات والرول أب:</b> <span>النسخة الأفقية أعلى التصميم.</span></li>
+            <li><b>بطاقات المشاركين:</b> <span>شريط أخضر واسم بالأبيض.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. voice -->
+    <section id="voice">
+      <div class="chapter"><span class="num">٩</span><h2>نبرة الخطاب</h2></div>
+      <p class="intro">الكتابة باسم اللجنة قصيرة وحماسية وتخاطب الجميع، وتربط كل نشاط بفكرة الصعود نحو النجمة.</p>
+      <div class="voice">
+        <div class="panel"><b>محفّزة</b><span class="ex">«خطوتك الأولى تبدأ اليوم، سجّل في البطولة.»</span><span>أفعال واضحة ودعوة مباشرة.</span></div>
+        <div class="panel"><b>جامعة</b><span class="ex">«فريق واحد في مدار واحد.»</span><span>نتحدث بصيغة «نحن» ونبرز روح الفريق.</span></div>
+        <div class="panel"><b>محتفية</b><span class="ex">«مبروك لنجوم المدار هذا الشهر.»</span><span>نكرّم الفائزين والمشاركين بالاسم.</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>دليل هوية لجنة الأنشطة · شركة المدار · الإصدار ١٫٠ · ٢٠٢٦</span>
+    <img src="assets/logo-color.png" alt="شعار لجنة الأنشطة">
+  </div>
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var hex = btn.dataset.hex;
+    var done = function () { btn.textContent = 'نُسخ'; setTimeout(function () { btn.textContent = hex; }, 1200); };
+    try {
+      navigator.clipboard.writeText(hex).then(done, function () { selectText(btn); });
+    } catch (e) { selectText(btn); }
+  });
+});
+function selectText(el) {
+  var r = document.createRange(); r.selectNodeContents(el);
+  var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+</script>
