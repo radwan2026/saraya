@@ -77,7 +77,7 @@ p { margin: 0; }
 .cover p.lead { font-size: var(--step-1); max-width: 34ch; opacity: .95; }
 .cover .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 26px; font-size: .9rem; opacity: .85; }
 .cover .meta b { font-weight: 600; }
-.cover-logo { justify-self: center; width: min(100%, 420px); filter: drop-shadow(0 18px 30px rgba(0,0,0,.18)); }
+.cover-logo { justify-self: center; width: min(100%, 260px); filter: drop-shadow(0 18px 30px rgba(0,0,0,.18)); }
 
 /* ---------- layout ---------- */
 .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; padding-block: 48px 80px; }
@@ -88,7 +88,7 @@ p { margin: 0; }
   display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 8px;
   color: var(--muted); text-decoration: none; font-size: .95rem;
 }
-.toc a::before { content: counter(ch, arabic-indic); font-family: var(--f-display); color: var(--accent); min-width: 1.2em; }
+.toc a::before { content: counter(ch, decimal); font-family: var(--f-display); color: var(--accent); min-width: 1.2em; }
 .toc a:hover, .toc a:focus-visible { background: var(--tile); color: var(--fg); outline: none; }
 
 main { display: grid; gap: 72px; min-width: 0; }
@@ -255,7 +255,7 @@ footer img { height: 44px; }
 }
 @media (max-width: 760px) {
   .cover .wrap, .concept, .space, .motif, .grid-2 { grid-template-columns: minmax(0, 1fr); }
-  .cover-logo { width: min(80%, 320px); order: -1; }
+  .cover-logo { width: min(60%, 200px); order: -1; }
   .story { grid-template-columns: minmax(0, 1fr); }
   .story > div + div { border-inline-start: 0; border-top: 1px solid var(--line); }
   .apps .wide, .apps .third { grid-column: span 6; }
@@ -285,12 +285,12 @@ footer img { height: 44px; }
   </svg>
   <div class="wrap">
     <div>
-      <div class="eyebrow">دليل الهوية البصرية · الإصدار ١٫٠</div>
+      <div class="eyebrow">دليل الهوية البصرية · الإصدار 1.0</div>
       <h1>لجنة الأنشطة</h1>
       <p class="lead">من المدار ننطلق، وبالنشاط نصعد نحو النجمة. هذا الدليل يشرح فكرة الشعار وقواعد استخدامه وألوانه وخطوطه وعناصره.</p>
       <div class="meta">
         <span><b>الجهة:</b> شركة المدار</span>
-        <span><b>التاريخ:</b> أكتوبر ٢٠٢٦</span>
+        <span><b>التاريخ:</b> أكتوبر 2026</span>
         <span><b>الاستخدام:</b> داخلي وللمورّدين</span>
       </div>
     </div>
@@ -316,30 +316,30 @@ footer img { height: 44px; }
   <main>
     <!-- 1. concept -->
     <section id="concept">
-      <div class="chapter"><span class="num">١</span><h2>فكرة الشعار</h2></div>
+      <div class="chapter"><span class="num">1</span><h2>فكرة الشعار</h2></div>
       <p class="intro">الشعار مبني على شعار شركة المدار: الكرة الأرضية وحلقة المدار التي تدور حولها. داخل هذا المدار يقف عدّاء ينطلق مع سهم صاعد، والسهم يقود العين إلى النجمة الذهبية في القمة. الرسالة أن أنشطة اللجنة جزء من منظومة المدار، وأن كل نشاط خطوة في مسار نمو يصل بالموظف والفريق إلى «نجم المدار».</p>
 
       <div class="concept">
         <div class="anatomy">
           <div class="stage">
             <img src="assets/logo-color.png" alt="شعار لجنة الأنشطة الملوّن مع أرقام تشير إلى عناصره">
-            <span class="pin" style="left:3.5%;top:46%">١</span>
-            <span class="pin" style="left:84%;top:22%">٢</span>
-            <span class="pin" style="left:73%;top:36%">٣</span>
-            <span class="pin" style="left:33%;top:38%">٤</span>
-            <span class="pin" style="left:36%;top:4%">٥</span>
-            <span class="pin" style="left:52%;top:12%">٦</span>
-            <span class="pin" style="left:49%;top:88%">٧</span>
+            <span class="pin" style="left:3.5%;top:46%">1</span>
+            <span class="pin" style="left:84%;top:22%">2</span>
+            <span class="pin" style="left:73%;top:36%">3</span>
+            <span class="pin" style="left:33%;top:38%">4</span>
+            <span class="pin" style="left:36%;top:4%">5</span>
+            <span class="pin" style="left:52%;top:12%">6</span>
+            <span class="pin" style="left:49%;top:88%">7</span>
           </div>
         </div>
         <ol class="parts">
-          <li><span class="n">١</span><div><h3>الدائرة الحاضنة</h3><p>قوس يحيط بالعدّاء من اليسار. يمثّل اللجنة التي تحتضن الموظفين وتجمعهم في بيئة واحدة.</p></div></li>
-          <li><span class="n">٢</span><div><h3>كرة المدار</h3><p>مقاطع الكرة الأرضية مأخوذة من شعار شركة المدار. تربط هوية اللجنة بالشركة الأم وتجعلها امتدادًا لها.</p></div></li>
-          <li><span class="n">٣</span><div><h3>حلقة المدار (المضمار)</h3><p>خطوط رمادية متوازية تلتف حول الكرة، تجمع بين فكرة المدار ومسارات مضمار الجري. هي الطريق الذي يتحرك عليه النشاط.</p></div></li>
-          <li><span class="n">٤</span><div><h3>العدّاء</h3><p>شخص في لحظة انطلاق ويده ممدودة نحو الأعلى. يمثّل الموظف المشارك وطاقة الأنشطة الرياضية والاجتماعية والثقافية.</p></div></li>
-          <li><span class="n">٥</span><div><h3>السهم الصاعد</h3><p>يبدأ من أسفل الدائرة ويرتفع منحنيًا إلى القمة. يرمز إلى النمو والتصاعد المستمر الذي تصنعه الأنشطة في الأداء والروح الجماعية.</p></div></li>
-          <li><span class="n">٦</span><div><h3>نجم المدار</h3><p>النجمة الذهبية هي الهدف الذي يتجه إليه السهم وتمتد إليه يد العدّاء: التميّز والتكريم والوصول إلى القمة.</p></div></li>
-          <li><span class="n">٧</span><div><h3>اسم اللجنة</h3><p>كتابة عربية هندسية بالذهبي، بنقاط دائرية تتناغم مع استدارة الكرة والنجمة. الاسم ثابت ولا يُعاد كتابته بخط آخر.</p></div></li>
+          <li><span class="n">1</span><div><h3>الدائرة الحاضنة</h3><p>قوس يحيط بالعدّاء من اليسار. يمثّل اللجنة التي تحتضن الموظفين وتجمعهم في بيئة واحدة.</p></div></li>
+          <li><span class="n">2</span><div><h3>كرة المدار</h3><p>مقاطع الكرة الأرضية مأخوذة من شعار شركة المدار. تربط هوية اللجنة بالشركة الأم وتجعلها امتدادًا لها.</p></div></li>
+          <li><span class="n">3</span><div><h3>حلقة المدار (المضمار)</h3><p>خطوط رمادية متوازية تلتف حول الكرة، تجمع بين فكرة المدار ومسارات مضمار الجري. هي الطريق الذي يتحرك عليه النشاط.</p></div></li>
+          <li><span class="n">4</span><div><h3>العدّاء</h3><p>شخص في لحظة انطلاق ويده ممدودة نحو الأعلى. يمثّل الموظف المشارك وطاقة الأنشطة الرياضية والاجتماعية والثقافية.</p></div></li>
+          <li><span class="n">5</span><div><h3>السهم الصاعد</h3><p>يبدأ من أسفل الدائرة ويرتفع منحنيًا إلى القمة. يرمز إلى النمو والتصاعد المستمر الذي تصنعه الأنشطة في الأداء والروح الجماعية.</p></div></li>
+          <li><span class="n">6</span><div><h3>نجم المدار</h3><p>النجمة الذهبية هي الهدف الذي يتجه إليه السهم وتمتد إليه يد العدّاء: التميّز والتكريم والوصول إلى القمة.</p></div></li>
+          <li><span class="n">7</span><div><h3>اسم اللجنة</h3><p>كتابة عربية هندسية بالذهبي، بنقاط دائرية تتناغم مع استدارة الكرة والنجمة. الاسم ثابت ولا يُعاد كتابته بخط آخر.</p></div></li>
         </ol>
       </div>
 
@@ -354,7 +354,7 @@ footer img { height: 44px; }
 
     <!-- 2. colours -->
     <section id="colors">
-      <div class="chapter"><span class="num">٢</span><h2>الألوان</h2></div>
+      <div class="chapter"><span class="num">2</span><h2>الألوان</h2></div>
       <p class="intro">الأخضر هو لون الحياة والنمو والملاعب، ويأتي في الشعار بتدرّج من الأخضر المضيء إلى الأخضر العميق ليعطي الكرة إحساسًا بالحجم. الذهبي مخصص للنجمة والاسم لأنه لون الإنجاز والميداليات. الرمادي والفحمي لحلقة المدار فقط.</p>
 
       <div class="swatches">
@@ -380,31 +380,31 @@ footer img { height: 44px; }
       <div class="gradient-bar" aria-label="تدرّج الأخضر من الفاتح إلى الداكن"><span>#266632</span><span>#1E7A3C</span><span>#419444</span><span>#64B846</span></div>
 
       <h3>نسب استخدام الألوان</h3>
-      <div class="ratio" role="img" aria-label="أبيض ٦٠٪، أخضر ٢٥٪، ذهبي ١٠٪، رمادي وفحمي ٥٪">
-        <span style="flex:60;background:#FFFFFF;color:#5B6B5F">٦٠٪</span>
-        <span style="flex:25;background:#1E7A3C;color:#FFFFFF">٢٥٪</span>
-        <span style="flex:10;background:#CEA249;color:#2A1E05">١٠٪</span>
-        <span style="flex:5;background:#949599;color:#111111">٥</span>
+      <div class="ratio" role="img" aria-label="أبيض 60٪، أخضر 25٪، ذهبي 10٪، رمادي وفحمي 5٪">
+        <span style="flex:60;background:#FFFFFF;color:#5B6B5F">60٪</span>
+        <span style="flex:25;background:#1E7A3C;color:#FFFFFF">25٪</span>
+        <span style="flex:10;background:#CEA249;color:#2A1E05">10٪</span>
+        <span style="flex:5;background:#949599;color:#111111">5</span>
       </div>
       <div class="ratio-legend"><span>أبيض: مساحات وخلفيات</span><span>أخضر: مساحات العلامة والعناوين</span><span>ذهبي: لمسات التميّز</span><span>رمادي وفحمي: تفاصيل</span></div>
-      <p class="note"><b>تنبيه وضوح:</b> الذهبي على الأبيض تباينه قرابة ٢٫٣ إلى ١، فلا يُستخدم للنصوص الصغيرة. يُستعمل للشعار والأرقام الكبيرة والزخارف، أو على خلفية أخضر المدار حيث يكون أوضح.</p>
+      <p class="note"><b>تنبيه وضوح:</b> الذهبي على الأبيض تباينه قرابة 2.3 إلى 1، فلا يُستخدم للنصوص الصغيرة. يُستعمل للشعار والأرقام الكبيرة والزخارف، أو على خلفية أخضر المدار حيث يكون أوضح.</p>
     </section>
 
     <!-- 3. type -->
     <section id="type">
-      <div class="chapter"><span class="num">٣</span><h2>الخطوط</h2></div>
+      <div class="chapter"><span class="num">3</span><h2>الخطوط</h2></div>
       <p class="intro">اسم «لجنة الأنشطة» في الشعار مرسوم كقطعة واحدة ولا يُكتب بخط. لبقية المواد نستخدم خطين متوفرين مجانًا من Google Fonts ويدعمان العربية واللاتينية.</p>
       <div class="grid-2">
         <div class="panel type-card">
           <span class="meta">العناوين · Alexandria · Medium / Bold</span>
           <div class="specimen" style="font-family:var(--f-display);font-weight:700">بطولة المدار</div>
-          <div class="chars" style="font-family:var(--f-display)">أ ب ت ث ج ح خ · ١٢٣٤٥ · Aa Bb 123</div>
+          <div class="chars" style="font-family:var(--f-display)">أ ب ت ث ج ح خ · 12345 · Aa Bb 123</div>
           <p class="meta">خط هندسي بنقاط دائرية قريب من روح كتابة الاسم في الشعار. للعناوين والملصقات وأرقام الفرق.</p>
         </div>
         <div class="panel type-card">
           <span class="meta">النصوص · IBM Plex Sans Arabic · Regular / SemiBold</span>
           <div class="specimen" style="font-family:var(--f-body);font-weight:600">التسجيل مفتوح</div>
-          <div class="chars">أ ب ت ث ج ح خ · ١٢٣٤٥ · Aa Bb 123</div>
+          <div class="chars">أ ب ت ث ج ح خ · 12345 · Aa Bb 123</div>
           <p class="meta">واضح في الأحجام الصغيرة. للفقرات والجداول والتعاميم والشهادات.</p>
         </div>
       </div>
@@ -413,13 +413,13 @@ footer img { height: 44px; }
         <div class="row"><span class="lbl">H2 · 32px · Alexandria 700</span><span style="font-family:var(--f-display);font-weight:700;font-size:2rem;line-height:1.3">جدول المباريات</span></div>
         <div class="row"><span class="lbl">H3 · 22px · Alexandria 500</span><span style="font-family:var(--f-display);font-weight:500;font-size:1.4rem">الفرق المتأهلة</span></div>
         <div class="row"><span class="lbl">Body · 16px · Plex 400</span><span>يسرّ لجنة الأنشطة دعوتكم للمشاركة في بطولة كرة القدم بين الإدارات، يوم الخميس الساعة الرابعة عصرًا.</span></div>
-        <div class="row"><span class="lbl">Caption · 13px · Plex 500</span><span style="font-size:.82rem;font-weight:500;color:var(--muted)">آخر موعد للتسجيل: ٢٠ أكتوبر</span></div>
+        <div class="row"><span class="lbl">Caption · 13px · Plex 500</span><span style="font-size:.82rem;font-weight:500;color:var(--muted)">آخر موعد للتسجيل: 20 أكتوبر</span></div>
       </div>
     </section>
 
     <!-- 4. versions -->
     <section id="versions">
-      <div class="chapter"><span class="num">٤</span><h2>نسخ الشعار</h2></div>
+      <div class="chapter"><span class="num">4</span><h2>نسخ الشعار</h2></div>
       <p class="intro">النسخة الملوّنة على الأبيض هي الأساس. تُستخدم النسخ الأخرى حسب الخلفية ووسيلة الطباعة، دون أي تعديل في نسب العناصر.</p>
       <div class="versions">
         <div class="ver"><div class="stage" style="background:#FFFFFF"><img src="assets/logo-color.png" alt="النسخة الأساسية الملوّنة"></div>
@@ -439,7 +439,7 @@ footer img { height: 44px; }
 
     <!-- 5. clear space -->
     <section id="space">
-      <div class="chapter"><span class="num">٥</span><h2>المساحة الآمنة والحد الأدنى للحجم</h2></div>
+      <div class="chapter"><span class="num">5</span><h2>المساحة الآمنة والحد الأدنى للحجم</h2></div>
       <div class="space">
         <div class="clear-box">
           <div class="clear-zone">
@@ -449,10 +449,10 @@ footer img { height: 44px; }
         </div>
         <div style="display:grid;gap:14px">
           <p><b>الوحدة «س» = ارتفاع النجمة الذهبية</b>، أي قرابة سُدس ارتفاع الشعار الكامل.</p>
-          <p style="color:var(--muted)">تُترك مسافة «س» خالية من كل الجهات. لا يدخلها نص ولا صورة ولا حافة صفحة ولا شعار آخر. عند وضع الشعار بجوار شعار شركة المدار تكون المسافة بينهما «٢س» مع خط فاصل رفيع اختياري.</p>
+          <p style="color:var(--muted)">تُترك مسافة «س» خالية من كل الجهات. لا يدخلها نص ولا صورة ولا حافة صفحة ولا شعار آخر. عند وضع الشعار بجوار شعار شركة المدار تكون المسافة بينهما «2س» مع خط فاصل رفيع اختياري.</p>
           <div class="sizes">
-            <div class="size-row"><div class="demo"><img src="assets/logo-color.png" alt="" style="width:60px"></div><div><b>الشعار الكامل</b><p>طباعة: ٢٥ ملم عرضًا كحد أدنى. شاشات: ١٢٠ بكسل.</p></div></div>
-            <div class="size-row"><div class="demo"><img src="assets/logo-symbol.png" alt="" style="width:34px"></div><div><b>الرمز وحده</b><p>طباعة: ١٢ ملم. شاشات: ٣٢ بكسل. أصغر من ذلك تختفي خطوط المضمار.</p></div></div>
+            <div class="size-row"><div class="demo"><img src="assets/logo-color.png" alt="" style="width:60px"></div><div><b>الشعار الكامل</b><p>طباعة: 25 ملم عرضًا كحد أدنى. شاشات: 120 بكسل.</p></div></div>
+            <div class="size-row"><div class="demo"><img src="assets/logo-symbol.png" alt="" style="width:34px"></div><div><b>الرمز وحده</b><p>طباعة: 12 ملم. شاشات: 32 بكسل. أصغر من ذلك تختفي خطوط المضمار.</p></div></div>
           </div>
         </div>
       </div>
@@ -460,7 +460,7 @@ footer img { height: 44px; }
 
     <!-- 6. misuse -->
     <section id="misuse">
-      <div class="chapter"><span class="num">٦</span><h2>الاستخدام الخاطئ</h2></div>
+      <div class="chapter"><span class="num">6</span><h2>الاستخدام الخاطئ</h2></div>
       <p class="intro">أي تعديل على الشعار يضعف التعرّف عليه. هذه أكثر الأخطاء شيوعًا:</p>
       <div class="donts">
         <div class="dont d-stretch"><div class="stage"><img src="assets/logo-color.png" alt=""></div><div class="cap">لا تمطّ الشعار أو تضغطه. غيّر الحجم بالتناسب دائمًا.</div></div>
@@ -474,7 +474,7 @@ footer img { height: 44px; }
 
     <!-- 7. elements -->
     <section id="elements">
-      <div class="chapter"><span class="num">٧</span><h2>العناصر الجرافيكية</h2></div>
+      <div class="chapter"><span class="num">7</span><h2>العناصر الجرافيكية</h2></div>
       <p class="intro">ثلاثة عناصر من الشعار يمكن استخدامها منفصلة في التصاميم لتوحيد المواد دون تكرار الشعار في كل مكان.</p>
       <div class="motif">
         <div class="motif-canvas" role="img" aria-label="نمط خلفية من خطوط المدار ونجوم ذهبية على الأخضر">
@@ -508,13 +508,13 @@ footer img { height: 44px; }
       </div>
       <div class="grid-2">
         <div class="panel"><h3>أسلوب الصور</h3><p style="color:var(--muted);margin-top:8px">صور مسطّحة من الأعلى بإضاءة نهارية ساطعة، على أبيض أو أخضر صريح. أدوات رياضية واحتفالية (كرات، صفّارات، كؤوس، رايات) موزّعة بإيقاع منتظم. الأخضر هو اللون الغالب مع لمسات ذهبية أو صفراء قليلة.</p></div>
-        <div class="panel"><h3>الأيقونات</h3><p style="color:var(--muted);margin-top:8px">أيقونات خطية بسماكة ٢ بكسل وزوايا مستديرة، بلون أخضر المدار أو بالأبيض على الأخضر. يُستعمل الذهبي فقط لأيقونة الكأس أو الميدالية.</p></div>
+        <div class="panel"><h3>الأيقونات</h3><p style="color:var(--muted);margin-top:8px">أيقونات خطية بسماكة 2 بكسل وزوايا مستديرة، بلون أخضر المدار أو بالأبيض على الأخضر. يُستعمل الذهبي فقط لأيقونة الكأس أو الميدالية.</p></div>
       </div>
     </section>
 
     <!-- 8. applications -->
     <section id="apps">
-      <div class="chapter"><span class="num">٨</span><h2>التطبيقات</h2></div>
+      <div class="chapter"><span class="num">8</span><h2>التطبيقات</h2></div>
       <div class="apps">
         <figure class="wide"><img src="assets/mockup-cards.jpg" alt="بطاقات خضراء عليها الشعار باللون الأبيض بين أدوات حفلة كرة القدم"><figcaption><b>بطاقات الدعوة</b>النسخة البيضاء على أخضر المدار، مع رسوم الملعب والكرة على البطاقات المرافقة.</figcaption></figure>
         <figure class="wide"><img src="assets/mockup-cup.jpg" alt="كوب ورقي أخضر عليه الشعار الأبيض"><figcaption><b>الأكواب والضيافة</b>تدرّج أخضر على الكوب والشعار الأبيض في المنتصف، مع رايات بالأخضر والأبيض والأسود.</figcaption></figure>
@@ -535,7 +535,7 @@ footer img { height: 44px; }
 
     <!-- 9. voice -->
     <section id="voice">
-      <div class="chapter"><span class="num">٩</span><h2>نبرة الخطاب</h2></div>
+      <div class="chapter"><span class="num">9</span><h2>نبرة الخطاب</h2></div>
       <p class="intro">الكتابة باسم اللجنة قصيرة وحماسية وتخاطب الجميع، وتربط كل نشاط بفكرة الصعود نحو النجمة.</p>
       <div class="voice">
         <div class="panel"><b>محفّزة</b><span class="ex">«خطوتك الأولى تبدأ اليوم، سجّل في البطولة.»</span><span>أفعال واضحة ودعوة مباشرة.</span></div>
@@ -548,7 +548,7 @@ footer img { height: 44px; }
 
 <footer>
   <div class="wrap">
-    <span>دليل هوية لجنة الأنشطة · شركة المدار · الإصدار ١٫٠ · ٢٠٢٦</span>
+    <span>دليل هوية لجنة الأنشطة · شركة المدار · الإصدار 1.0 · 2026</span>
     <img src="assets/logo-color.png" alt="شعار لجنة الأنشطة">
   </div>
 </footer>
