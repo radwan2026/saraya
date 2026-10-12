@@ -29,3 +29,7 @@
 | فحمي الحلقة | `#231F20` |
 
 الخطوط: Alexandria للعناوين، IBM Plex Sans Arabic للنصوص.
+
+## PDF
+
+`activities-committee-brand-guide.pdf` (A4 أفقي، 10 صفحات). لإعادة توليده بعد تعديل الصفحة: `node build-pdf.js` (يتطلب Playwright).
