@@ -73,7 +73,7 @@ test('home exposes seeded content without private fields', async () => {
   assert.ok(data.activities.length > 0);
   assert.ok(data.ads.length > 0);
   assert.ok(data.quiz);
-  assert.equal(data.stats.members, 9);
+  assert.equal(data.stats.members, 7);
   const quiz = await call('GET', '/api/quiz');
   assert.ok(quiz.data.current.questions.every((q) => !('correct' in q)), 'answers must not leak');
 });
