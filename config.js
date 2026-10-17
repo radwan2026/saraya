@@ -6,7 +6,7 @@
 
 export default {
   // اسم حساب تيك توك الذي يبث مباشرة (بدون @). يمكن تركه فارغاً وإدخاله من لوحة التحكم.
-  tiktokUsername: '',
+  tiktokUsername: 'radwanzenati0',
 
   // مفتاح Euler Stream (اختياري). تحتاجه المكتبة أحياناً إذا ظهر خطأ في التوقيع (sign error).
   // احصل عليه مجاناً من https://www.eulerstream.com
@@ -20,7 +20,7 @@ export default {
 
   // اللعبة التي تعمل: 'redlight' (الضوء الأحمر/الأخضر) أو 'brain' (خارج الصندوق | تحدّي العقل)
   // يمكن تغييرها من سطر الأوامر: --game=brain
-  gameMode: 'redlight',
+  gameMode: 'brain',
 
   game: {
     // عدد الخطوات حتى خط النهاية

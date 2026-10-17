@@ -205,7 +205,7 @@
     const box = $('lobbyAvatars');
     const a = el('div', 'la', undefined, box);
     a.append(avatar(p), el('span', '', p.nickname));
-    while (box.children.length > 18) box.firstChild.remove();
+    while (box.children.length > 12) box.firstChild.remove();
   }
 
   // ------------------------------------------------------------------
@@ -541,6 +541,10 @@
   function apply(s, prev) {
     const phaseChanged = !prev || prev.phase !== s.phase || prev.roundIndex !== s.roundIndex || prev.gameNumber !== s.gameNumber;
     renderProgress(s);
+    if (s.channel) {
+      for (const h of document.querySelectorAll('.handle')) { h.textContent = `@${s.channel}`; h.classList.remove('hidden'); }
+      document.querySelector('.follow-line').classList.remove('hidden');
+    }
     for (const ph of Object.keys(SCREENS)) stage.classList.toggle(`phase-${ph}`, s.phase === ph);
     $('answeredCount').textContent = String(s.answeredCount);
     if (s.phase === 'lobby') renderLobby(s);

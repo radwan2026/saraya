@@ -41,7 +41,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 const server = http.createServer(app);
 const io = new Server(server);
 
-const game = MODE === 'brain' ? new BrainGame(config.brain) : new Game(config.game);
+// اسم الحساب يظهر على شاشة «خارج الصندوق» (دعوة للمتابعة)
+const game = MODE === 'brain' ? new BrainGame({ ...config.brain, channel: USERNAME }) : new Game(config.game);
 const tiktok = new TikTokSource({ signApiKey: SIGN_KEY });
 const commentLog = [];
 

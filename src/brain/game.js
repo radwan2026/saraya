@@ -114,6 +114,7 @@ export class BrainGame extends EventEmitter {
       roundsInfo: this.order.map((id) => ({ id, icon: this.puzzles[id].icon, title: this.puzzles[id].title })),
       autoStart: this.opt.autoStart,
       minPlayers: this.opt.minPlayers,
+      channel: this.opt.channel || '',
       puzzle: showPuzzle ? this.publicCurrent : null,
       answeredCount: this.answers.size,
       reveal: this.phase === Phase.REVEAL ? this.lastReveal : null,
