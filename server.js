@@ -10,6 +10,7 @@ import { TikTokSource } from './src/tiktok.js';
 import { DemoBots } from './src/demo.js';
 import { BrainGame } from './src/brain/game.js';
 import { BrainDemoBots } from './src/brain/demo.js';
+import { voiceLines, prepareVoices, voiceFile } from './src/brain/voice.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -36,6 +37,22 @@ const pages = MODE === 'brain'
   : { game: path.join(__dirname, 'public', 'index.html'), admin: path.join(__dirname, 'public', 'admin.html') };
 app.get(['/', '/index.html'], (_req, res) => res.sendFile(pages.game));
 app.get('/admin', (_req, res) => res.sendFile(pages.admin));
+
+// التعليق الصوتي: قائمة المقاطع + ملفاتها (المولّدة بصوت طبيعي أولاً، ثم المرفقة)
+const voiceCfg = { ...config.voice };
+const VOICE_DIRS = { cacheDir: path.join(__dirname, '.voice-cache'), bundledDir: path.join(__dirname, 'public', 'brain', 'voice') };
+const lines = voiceLines(USERNAME, voiceCfg.spokenName);
+app.get('/voice/manifest.json', (_req, res) => res.json({
+  enabled: voiceCfg.enabled !== false,
+  welcomeEveryMinutes: voiceCfg.welcomeEveryMinutes || 0,
+  lines: lines.map(({ id, group, caption }) => ({ id, group, caption })),
+}));
+app.get('/voice/:id.mp3', (req, res) => {
+  const file = voiceFile(req.params.id, VOICE_DIRS);
+  if (!file) return res.sendStatus(404);
+  res.set('Cache-Control', 'no-cache');
+  return res.sendFile(file);
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 const server = http.createServer(app);
@@ -101,6 +118,10 @@ io.on('connection', (socket) => {
     };
     io.emit('audio', audio);
   });
+  socket.on('admin:voice', (cmd) => {
+    const groups = new Set(['on', 'off', 'stop', ...lines.map((l) => l.group)]);
+    if (groups.has(cmd)) io.emit('voice', cmd);
+  });
   socket.on('admin:demo', (on) => {
     if (on) bots.start(); else bots.stop();
     io.emit('demoStatus', demoStatus());
@@ -116,6 +137,8 @@ io.on('connection', (socket) => {
     handleComment({ id: `manual-${nickname}`, uniqueId: nickname, nickname, avatar: '' }, String(text || ''), 'manual');
   });
 });
+
+if (MODE === 'brain') prepareVoices({ ...VOICE_DIRS, lines, voice: voiceCfg }).catch(() => {});
 
 server.listen(PORT, () => {
   const base = `http://localhost:${PORT}`;

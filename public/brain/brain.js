@@ -7,6 +7,7 @@
   const SOUND = params.get('sound') !== '0';
   const MUSIC = params.get('music') !== '0';
   const Music = window.BrainMusic;
+  const Voice = window.BrainVoice;
 
   const $ = (id) => document.getElementById(id);
   const stage = $('stage');
@@ -132,6 +133,7 @@
   window.BrainFX = { sfx: (name) => sfx[name]?.() };
   // OBS / LIVE Studio يشغّلان الصوت تلقائياً؛ المتصفح العادي يحتاج نقرة — نُظهر زراً لذلك
   ctx();
+  const voiceReady = Voice.init().then(() => Voice.preload());
   const soundBtn = $('soundBtn');
   const checkAudio = () => soundBtn.classList.toggle('hidden', !SOUND || !actx || actx.state === 'running');
   window.addEventListener('pointerdown', () => { ctx(); setTimeout(checkAudio, 200); });
@@ -174,6 +176,8 @@
   let finaleTimers = [];
   let prevRanks = new Map();
   let introTimers = [];
+  let voiceTimer = null;
+  let welcomeLoop = null;
   let hypeShown = new Set();
 
   // مزاج الموسيقى لكل مرحلة (بطاقة العنوان صامتة لتبرز الضربات، والتتويج يبدأ بقرع طبول)
@@ -345,6 +349,7 @@
     if (view && view.tick) view.tick((now - state.phaseStartedAt) / 1000);
     if (left !== lastSecond) {
       lastSecond = left;
+      if (left === 10) Voice.say('hurry');
       if (left <= 5 && left > 0) { sfx.heart(); restart($('timerNum'), 'beat'); } else if (left <= 10 && left > 0) { (left % 2 ? sfx.tick : sfx.tock)(); restart($('timerNum'), 'beat'); }
     }
   }
@@ -475,7 +480,10 @@
     Music.setMood('silent');
     at(0, (late) => { if (!late) sfx.drum(5.2); });
     if (!podium.length) {
-      at(2.8, () => { $('noWinner').classList.remove('hidden'); fin.classList.add('stage2'); sfx.wrong(); });
+      at(2.8, (late) => {
+        $('noWinner').classList.remove('hidden'); fin.classList.add('stage2'); sfx.wrong();
+        if (!late) Voice.say('follow');
+      });
       return;
     }
     // منصة التتويج: الثاني يميناً، الأول في الوسط، الثالث يساراً
@@ -505,6 +513,7 @@
       fin.classList.add('stage2');
       startFireworks();
       Music.setMood('finale');
+      if (!late) finaleTimers.push(setTimeout(() => Voice.say('finale'), 3200));
       if (!late) {
         sfx.drop(); sfx.fanfare(); sfx.applause(); burstConfetti(320); quake();
         // وميض كاميرات الصحافة
@@ -611,6 +620,16 @@
       if (s.phase !== 'question') Music.setIntensity(0);
       if (s.phase === 'question') hypeShown = new Set();
       $('followBanner').classList.toggle('show', s.phase === 'leaderboard' && Boolean(s.channel));
+      // التعليق الصوتي: شرح البرنامج في الاستوديو، وجملة قصيرة مع كل لغز
+      clearTimeout(voiceTimer); clearInterval(welcomeLoop);
+      if (prev && prev.phase === 'lobby' && s.phase !== 'lobby') Voice.stop();
+      if (s.phase === 'lobby') {
+        voiceTimer = setTimeout(() => voiceReady.then(() => Voice.say('welcome')), 1800);
+        if (Voice.welcomeEvery > 0) {
+          welcomeLoop = setInterval(() => Voice.say('welcome', { interrupt: false }), Voice.welcomeEvery * 60_000);
+        }
+      }
+      if (s.phase === 'question' && s.puzzle) voiceTimer = setTimeout(() => Voice.say(`round-${s.puzzle.id}`), 700);
       switch (s.phase) {
         case 'lobby': renderLobby(s); break;
         case 'intro': renderIntro(s); break;
@@ -653,6 +672,12 @@
       restart(h, 'go');
       sfx.hype(); flash(0.25);
     }
+  });
+  // أوامر التعليق الصوتي من لوحة التحكم
+  socket.on('voice', (cmd) => {
+    if (cmd === 'stop') Voice.stop();
+    else if (cmd === 'off') { Voice.stop(); Voice.enabled = false; } else if (cmd === 'on') Voice.enabled = true;
+    else if (typeof cmd === 'string') { ctx(); Voice.say(cmd); }
   });
   // التحكم في الصوت من لوحة التحكم
   socket.on('audio', (a) => {

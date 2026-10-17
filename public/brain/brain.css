@@ -538,3 +538,14 @@ body.transparent .bg { display: none; }
 .sound-btn { position: absolute; top: 170px; left: 50%; transform: translateX(-50%); z-index: 70; cursor: pointer;
   font: 900 34px "Cairo", sans-serif; color: #111; background: var(--gold); border: 0; border-radius: 99px; padding: 16px 40px;
   box-shadow: 0 0 40px var(--gold); animation: breathe 1.4s infinite; }
+
+/* ترجمة التعليق الصوتي — يقرأها من يشاهد بدون صوت */
+.caption { position: absolute; left: 0; right: 0; bottom: 34px; margin: 0 auto; width: fit-content; max-width: 1000px; z-index: 36;
+  display: flex; align-items: center; gap: 16px; padding: 16px 30px 16px 22px; border-radius: 28px; pointer-events: none;
+  background: rgba(8, 6, 22, .88); border: 3px solid rgba(251, 191, 36, .75); box-shadow: 0 10px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(251, 191, 36, .25);
+  opacity: 0; transform: translateY(40px); transition: opacity .35s, transform .35s cubic-bezier(.2, 1.4, .4, 1); }
+.caption.show { opacity: 1; transform: none; }
+.caption i { font-style: normal; font-size: 64px; line-height: 1; flex: none; animation: talk .35s ease-in-out infinite alternate; }
+@keyframes talk { to { transform: rotate(-6deg) translateY(-3px); } }
+.caption span { font-size: 38px; font-weight: 900; line-height: 1.35; color: #fff; }
+#stage.phase-lobby .caption { bottom: 96px; }
