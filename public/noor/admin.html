@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة تحكم واحة النور</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070914; --card: #10142a; --card2: #151a36; --line: #262d55; --ink: #f6f1e3; --muted: #a4a9c9;
+      --gold: #ffd27a; --gold2: #f5b84a; --green: #46e6a8; --red: #ff5d6c; --violet: #c98bff; --rose: #ff6f9a;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body { margin: 0; background: radial-gradient(ellipse at top, #141a3d, var(--bg) 60%); background-attachment: fixed; color: var(--ink); font-family: "Cairo", "Segoe UI", Tahoma, sans-serif; }
+    header { max-width: 1320px; margin: 0 auto; padding: 18px 16px 4px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    header h1 { margin: 0; font-family: "Amiri", serif; font-size: 34px; color: var(--gold); }
+    header .sub { color: var(--muted); font-size: 14px; }
+    header .live { margin-inline-start: auto; display: flex; gap: 8px; align-items: center; }
+    main { max-width: 1320px; margin: 0 auto; padding: 12px 16px 40px; display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 1100px) { main { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 720px) { main { grid-template-columns: minmax(0, 1fr); } }
+    section { background: linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: 18px; padding: 16px; min-width: 0; }
+    section.wide { grid-column: span 2; }
+    @media (max-width: 720px) { section.wide { grid-column: auto; } }
+    h2 { margin: 0 0 12px; font-size: 17px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    h2 .ico { width: 26px; height: 26px; }
+    .ico svg { width: 100%; height: 100%; display: block; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    label.f { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); flex: 1; min-width: 110px; }
+    input, select { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: #080b1a; color: var(--ink); font: inherit; font-size: 15px; }
+    input[type=range] { padding: 0; accent-color: var(--gold); }
+    input[type=checkbox] { width: auto; accent-color: var(--gold); }
+    button { padding: 9px 14px; border-radius: 10px; border: 1px solid transparent; background: var(--line); color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter .15s, transform .1s; }
+    button:hover { filter: brightness(1.2); }
+    button:active { transform: scale(.97); }
+    .gold { background: linear-gradient(180deg, var(--gold), var(--gold2)); color: #2b1606; }
+    .green { background: var(--green); color: #032; }
+    .red { background: var(--red); }
+    .ghost { background: transparent; border-color: var(--line); }
+    .pill { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 13px; font-weight: 700; background: var(--line); }
+    .pill.connected, .pill.on { background: var(--green); color: #032; }
+    .pill.connecting { background: var(--gold); color: #321; }
+    .pill.error { background: var(--red); }
+    .muted { color: var(--muted); font-size: 13px; }
+    code { background: #080b1a; padding: 2px 8px; border-radius: 6px; direction: ltr; display: inline-block; font-size: 13px; }
+    a { color: var(--gold); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .stat { background: #0a0d20; border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; gap: 10px; align-items: center; min-width: 0; }
+    .stat .ico { width: 34px; height: 34px; flex: none; }
+    .stat b { display: block; font-size: 20px; color: var(--gold); line-height: 1.1; }
+    .stat span { font-size: 12px; color: var(--muted); }
+    .stat.money b { color: var(--green); }
+    .goalbar { height: 18px; border-radius: 18px; background: #0a0d20; border: 1px solid var(--line); overflow: hidden; margin: 8px 0; }
+    .goalbar div { height: 100%; width: 0; background: linear-gradient(90deg, #ffefb8, var(--gold), #f59e2b); transition: width .5s; }
+
+    .gifts { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+    .gbtn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; background: #0a0d20; border: 1px solid var(--line); border-radius: 14px; }
+    .gbtn .ico { width: 44px; height: 44px; }
+    .gbtn small { color: var(--muted); font-size: 11px; font-weight: 500; }
+    .gbtn:hover { border-color: var(--gold); }
+
+    .map { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .map td { padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    .map .ico { width: 30px; height: 30px; display: inline-block; vertical-align: middle; }
+
+    .quiz-now { background: #0a0d20; border: 1px solid var(--line); border-radius: 12px; padding: 10px; font-size: 14px; margin-bottom: 10px; min-height: 56px; }
+    .quiz-now b { color: var(--gold); }
+    .cats { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 14px; margin-bottom: 10px; }
+    .cats label { display: flex; align-items: center; gap: 4px; }
+
+    table.lb { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table.lb td { padding: 6px; border-bottom: 1px solid var(--line); }
+    table.lb td:last-child { color: var(--gold); text-align: left; font-weight: 700; }
+    .scroll { max-height: 330px; overflow: auto; }
+    .log div { padding: 5px 0; border-bottom: 1px dashed var(--line); font-size: 13px; overflow-wrap: anywhere; }
+    .log .t { font-size: 11px; padding: 1px 7px; border-radius: 6px; background: var(--line); margin-inline-end: 6px; }
+    .log .t.gift { background: var(--rose); }
+    .log .t.dhikr { background: var(--green); color: #032; }
+    .log .t.answer { background: var(--gold); color: #321; }
+    .log .t.follow, .log .t.share { background: var(--violet); color: #210; }
+    .src { color: var(--muted); font-size: 11px; }
+    .toast-msg { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #2b1606; padding: 10px 18px; border-radius: 12px; font-weight: 900; opacity: 0; transition: opacity .3s; pointer-events: none; }
+    .toast-msg.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="ico" data-icon="lantern" style="width:46px;height:46px"></span>
+    <div>
+      <h1>لوحة تحكم واحة النور</h1>
+      <div class="sub">افتح هذه الصفحة في متصفحك فقط — لا تضفها إلى البث</div>
+    </div>
+    <div class="live"><span>تيك توك:</span><span id="ttPill" class="pill">غير متصل</span></div>
+  </header>
+
+  <main>
+    <!-- ================= الاتصال ================= -->
+    <section>
+      <h2><span class="ico" data-icon="moon"></span>اتصال تيك توك لايف</h2>
+      <div class="row">
+        <input id="username" placeholder="اسم الحساب بدون @" dir="ltr">
+      </div>
+      <div class="row">
+        <button class="gold" id="connect">اتصال</button>
+        <button id="disconnect">قطع</button>
+      </div>
+      <p class="muted" id="ttMsg">ابدأ البث على تيك توك أولاً ثم اضغط اتصال.</p>
+      <p class="muted">شاشة اللعبة لإضافتها في LIVE Studio / OBS (1080×1920):<br><code id="overlayUrl"></code><br>
+        بدون خلفية المشهد (فوق الكاميرا): <code>?scene=0</code> · بدون صوت: <code>?sound=0</code></p>
+    </section>
+
+    <!-- ================= الإحصائيات ================= -->
+    <section class="wide">
+      <h2><span class="ico" data-icon="star"></span>إحصائيات البث المباشر</h2>
+      <div class="row" style="justify-content:space-between">
+        <span>الليلة <b id="level" style="color:var(--gold)">1</b> — <span id="goalText">0 / 0</span></span>
+        <span class="muted" id="multi"></span>
+      </div>
+      <div class="goalbar"><div id="goalFill"></div></div>
+      <div class="stats" id="stats"></div>
+      <p class="muted" style="margin:8px 0 0">💡 تقدير الأرباح تقريبي: صانع المحتوى يحصل على «ماسات» من هدايا المتابعين ويحوّلها إلى أموال من تيك توك، والقيمة الفعلية تختلف حسب الدولة وسياسة تيك توك.</p>
+    </section>
+
+    <!-- ================= المسابقة ================= -->
+    <section>
+      <h2><span class="ico" data-icon="book"></span>المسابقة الدينية</h2>
+      <div class="quiz-now" id="quizNow">—</div>
+      <div class="row">
+        <button class="gold" id="quizSkip">⏭ السؤال/المرحلة التالية</button>
+        <button id="quizStop">⏹ إيقاف</button>
+      </div>
+      <div class="row">
+        <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="quizAuto"> تشغيل الأسئلة تلقائياً</label>
+      </div>
+      <div class="cats" id="cats"></div>
+      <div class="row">
+        <label class="f">مدة السؤال (ث)<input type="number" id="qSec" min="5" max="120"></label>
+        <label class="f">عرض النتيجة (ث)<input type="number" id="rSec" min="3" max="60"></label>
+        <label class="f">الاستراحة (ث)<input type="number" id="pSec" min="3" max="600"></label>
+      </div>
+      <button class="ghost" id="quizSave">حفظ إعدادات المسابقة</button>
+      <p class="muted" id="qCount"></p>
+    </section>
+
+    <!-- ================= محاكاة الهدايا ================= -->
+    <section>
+      <h2><span class="ico" data-icon="gift"></span>تجربة الهدايا (محاكاة)</h2>
+      <div class="row">
+        <label class="f">اسم المرسل<input id="simName" value="ضيف الواحة"></label>
+        <label class="f" style="max-width:100px">العدد<input type="number" id="simCount" value="1" min="1" max="999"></label>
+      </div>
+      <div class="gifts" id="giftBtns"></div>
+      <p class="muted">الهدايا الحقيقية تُقرأ تلقائياً من البث. هذه الأزرار لتجربة التأثيرات فقط ولا تُحتسب أرباحاً.</p>
+    </section>
+
+    <!-- ================= محاكاة التفاعل ================= -->
+    <section>
+      <h2><span class="ico" data-icon="dove"></span>تجربة التعليقات والتفاعل</h2>
+      <div class="row">
+        <input id="simText" placeholder="تعليق: سبحان الله / 1 / 2 ...">
+        <button class="gold" id="simComment">إرسال</button>
+      </div>
+      <div class="row">
+        <button id="sDhikr">📿 سبحان الله</button>
+        <button id="sA1">إجابة 1</button><button id="sA2">إجابة 2</button><button id="sA3">إجابة 3</button><button id="sA4">إجابة 4</button>
+      </div>
+      <div class="row">
+        <button id="sLike">⭐ 100 إعجاب</button>
+        <button id="sFollow">🕊️ متابعة</button>
+        <button id="sShare">✨ مشاركة</button>
+        <button id="sMember">👋 دخول</button>
+      </div>
+      <hr style="border-color:var(--line)">
+      <h2 style="margin-top:6px">وضع التجربة (متابعون وهميون)</h2>
+      <div class="row"><span id="demoPill" class="pill">متوقف</span>
+        <button class="green" id="demoOn">تشغيل</button><button id="demoOff">إيقاف</button></div>
+    </section>
+
+    <!-- ================= الأحداث ================= -->
+    <section>
+      <h2><span class="ico" data-icon="tasbih"></span>التحديات والأحداث</h2>
+      <div class="row">
+        <label class="f">هدف التسبيح<input type="number" id="chTarget" value="200"></label>
+        <label class="f">المدة (ث)<input type="number" id="chSec" value="90"></label>
+      </div>
+      <div class="row">
+        <button class="green" id="chStart">📿 ابدأ تحدّي التسبيح</button>
+        <button id="chStop">إنهاء</button>
+      </div>
+      <div class="row">
+        <input id="sayText" placeholder="رسالة يقولها نوري على الشاشة">
+        <button class="gold" id="say">💬 قل</button>
+      </div>
+      <div class="row">
+        <input id="bannerText" placeholder="لافتة كبيرة: مثلاً «رمضان كريم»">
+        <button class="gold" id="banner">🪧 اعرض</button>
+      </div>
+      <div class="row">
+        <button class="gold" id="celebrate">✨ أنِر المسجد الآن (احتفال)</button>
+      </div>
+    </section>
+
+    <!-- ================= الصوت والإعدادات ================= -->
+    <section>
+      <h2><span class="ico" data-icon="moon"></span>الصوت والعرض</h2>
+      <div class="row">
+        <label class="f">نوع الخلفية الصوتية
+          <select id="aMode">
+            <option value="ambient">موسيقى هادئة + أصوات طبيعة</option>
+            <option value="nature">أصوات طبيعة فقط (بدون موسيقى)</option>
+            <option value="off">صامت</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label class="f">الموسيقى<input type="range" id="aMusic" min="0" max="1" step="0.05"></label>
+        <label class="f">الطبيعة<input type="range" id="aNature" min="0" max="1" step="0.05"></label>
+        <label class="f">المؤثرات<input type="range" id="aSfx" min="0" max="1" step="0.05"></label>
+      </div>
+      <div class="row">
+        <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="showQuiz"> إظهار بطاقة المسابقة</label>
+        <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="showTicker"> إظهار شريط التعليمات</label>
+      </div>
+      <hr style="border-color:var(--line)">
+      <div class="row">
+        <label class="f">هدف الليلة الحالية (نقاط نور)<input type="number" id="goalInput"></label>
+        <button class="ghost" id="goalSet" style="align-self:flex-end">تعيين</button>
+      </div>
+      <div class="row">
+        <button class="red" id="resetLevel">⟲ إعادة إلى الليلة 1</button>
+        <button class="red" id="resetBoard">🗑 مسح لوحة الشرف</button>
+      </div>
+    </section>
+
+    <!-- ================= ماذا تفعل كل هدية ================= -->
+    <section>
+      <h2><span class="ico" data-icon="rose"></span>ماذا تفعل كل هدية؟</h2>
+      <table class="map" id="map"></table>
+      <p class="muted">أي هدية قيمتها ≥ 99 ماسة تُطلق «موكب النور» الذهبي. كل ماسة = 10 نقاط نور (تتضاعف مع العطر).</p>
+    </section>
+
+    <!-- ================= لوحة الشرف ================= -->
+    <section>
+      <h2><span class="ico" data-icon="crown"></span>لوحة الشرف</h2>
+      <div class="muted" style="margin-bottom:6px">الداعمون</div>
+      <table class="lb" id="lbSup"></table>
+      <div class="muted" style="margin:12px 0 6px">أبطال المسابقة</div>
+      <table class="lb" id="lbSch"></table>
+    </section>
+
+    <!-- ================= السجل ================= -->
+    <section class="wide">
+      <h2><span class="ico" data-icon="star"></span>سجل الأحداث المباشر</h2>
+      <div class="scroll log" id="log"></div>
+    </section>
+  </main>
+  <div class="toast-msg" id="msg"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module">
+    import { ICONS } from './icons.js';
+
+    const $ = (s) => document.querySelector(s);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const fmt = (n) => Number(n || 0).toLocaleString('ar-EG');
+    for (const el of document.querySelectorAll('[data-icon]')) el.innerHTML = ICONS[el.dataset.icon] || '';
+
+    const socket = io();
+    socket.on('connect', () => socket.emit('admin:hello'));
+    const send = (ev, data) => socket.emit(ev, data);
+    function note(text) { const m = $('#msg'); m.textContent = text; m.classList.add('show'); clearTimeout(note.t); note.t = setTimeout(() => m.classList.remove('show'), 1800); }
+
+    $('#overlayUrl').textContent = `${location.origin}/noor/`;
+    try { $('#username').value = localStorage.getItem('noor:user') || ''; } catch {}
+
+    // ---------------- الاتصال ----------------
+    $('#connect').onclick = () => {
+      const u = $('#username').value.trim().replace(/^@/, '');
+      try { localStorage.setItem('noor:user', u); } catch {}
+      send('admin:connect', u);
+    };
+    $('#disconnect').onclick = () => send('admin:disconnect');
+    socket.on('tiktokStatus', (s) => {
+      const p = $('#ttPill');
+      p.className = `pill ${s.state}`;
+      p.textContent = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل ✓', error: 'خطأ' }[s.state] || s.state;
+      $('#ttMsg').textContent = s.message || '';
+      if (s.username && !$('#username').value) $('#username').value = s.username;
+    });
+
+    // ---------------- البيانات الوصفية ----------------
+    let meta = null;
+    const KIND_ICON = { rose: 'rose', heart: 'heart', donut: 'donut', perfume: 'perfume', other: 'gift' };
+    socket.on('meta', (m) => {
+      meta = m;
+      $('#giftBtns').innerHTML = m.sampleGifts.map((g) => `<button class="gbtn" data-id="${g.id}"><span class="ico">${ICONS[KIND_ICON[g.kind]]}</span>${esc(g.label)}<small>${fmt(g.diamonds)} 💎</small></button>`).join('');
+      for (const b of document.querySelectorAll('.gbtn')) {
+        b.onclick = () => send('admin:gift', { id: b.dataset.id, count: $('#simCount').value, name: $('#simName').value });
+      }
+      const rows = [
+        ['rose', 'وردة Rose', m.effects.rose.action],
+        ['heart', 'قلب Heart', m.effects.heart.action],
+        ['donut', 'دونات Doughnut', m.effects.donut.action],
+        ['perfume', 'عطر Perfume', m.effects.perfume.action],
+        ['gift', 'أي هدية أخرى', m.effects.other.action],
+        ['crown', 'هدية كبرى (أسد، مجرّة…)', 'موكب النور الذهبي + لافتة شكر باسم المرسل'],
+        ['tasbih', 'تعليق: سبحان الله…', 'يعدّ في المسبحة ويطير الذكر على الشاشة'],
+        ['book', 'تعليق: 1 / 2 / 3 / 4', 'إجابة السؤال الحالي'],
+        ['star', 'إعجاب', 'نجوم جديدة في السماء'],
+        ['dove', 'متابعة', 'حمامة تطير باسم المتابع'],
+      ];
+      $('#map').innerHTML = rows.map(([i, a, b]) => `<tr><td><span class="ico">${ICONS[i]}</span></td><td><b>${a}</b></td><td class="muted">${esc(b)}</td></tr>`).join('');
+      const q = m.options.quiz;
+      $('#cats').innerHTML = Object.entries(m.categories).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${!q.categories.length || q.categories.includes(k) ? 'checked' : ''}> ${v}</label>`).join('');
+      $('#qSec').value = q.questionSeconds; $('#rSec').value = q.revealSeconds; $('#pSec').value = q.pauseSeconds;
+      $('#qCount').textContent = `بنك الأسئلة: ${fmt(m.questionCount)} سؤالاً`;
+      $('#chTarget').value = m.options.dhikrChallenge.target;
+      $('#chSec').value = m.options.dhikrChallenge.seconds;
+    });
+
+    // ---------------- الحالة ----------------
+    socket.on('state', (s) => {
+      $('#level').textContent = fmt(s.level);
+      $('#goalText').textContent = `${fmt(s.points)} / ${fmt(s.goal)} نقطة نور`;
+      $('#goalFill').style.width = `${(s.progress * 100).toFixed(1)}%`;
+      if (document.activeElement !== $('#goalInput')) $('#goalInput').value = s.goal;
+      $('#multi').textContent = s.muskIn > 0 ? `🧴 المضاعف ×${s.multiplier} — ${Math.ceil(s.muskIn / 1000)}ث` : '';
+      $('#quizAuto').checked = s.quizAuto;
+      const t = s.totals;
+      const usd = meta ? t.diamonds * meta.usdPerDiamond : 0;
+      const stats = [
+        ['gift', 'هدايا', t.gifts], ['star', 'ماسات 💎', t.diamonds],
+        ['rose', 'زهور', t.flowers], ['lantern', 'فوانيس', t.lanterns],
+        ['donut', 'مسافرون أُطعموا', t.fed], ['perfume', 'نفحات مسك', t.musk],
+        ['tasbih', 'تسبيحات', t.dhikr], ['book', 'إجابات صحيحة', t.correct],
+        ['heartLike', 'إعجابات', t.likes], ['dove', 'متابعات', t.follows],
+        ['moon', 'نقاط النور', t.points],
+      ];
+      $('#stats').innerHTML = stats.map(([i, l, v]) => `<div class="stat"><span class="ico">${ICONS[i]}</span><div><b>${fmt(v)}</b><span>${l}</span></div></div>`).join('')
+        + `<div class="stat money"><span class="ico">${ICONS.crown}</span><div><b>≈ $${usd.toFixed(2)}</b><span>أرباح تقديرية</span></div></div>`;
+      const lb = (list, key) => list.length ? list.map((u, i) => `<tr><td>${i + 1}. ${esc(u.nickname)}</td><td>${fmt(u[key])}</td></tr>`).join('') : '<tr><td class="muted">لا يوجد بعد</td></tr>';
+      $('#lbSup').innerHTML = lb(s.topSupporters, 'points');
+      $('#lbSch').innerHTML = lb(s.topScholars, 'score');
+      renderQuiz(s.quiz);
+    });
+
+    function renderQuiz(q) {
+      if (!q) return;
+      const sec = Math.ceil((q.endsIn || 0) / 1000);
+      if (q.phase === 'question') $('#quizNow').innerHTML = `❓ <b>${esc(q.question)}</b><br>أجاب ${fmt(q.answered)} · متبقٍ ${fmt(sec)}ث`;
+      else if (q.phase === 'reveal') $('#quizNow').innerHTML = `✅ الإجابة: <b>${esc(q.options[q.correctIndex])}</b> — أصاب ${fmt(q.correctCount)} من ${fmt(q.answered)}`;
+      else $('#quizNow').innerHTML = q.endsIn ? `⏳ استراحة — السؤال القادم بعد ${fmt(sec)}ث` : '⏸ المسابقة متوقفة — اضغط «التالي» لطرح سؤال';
+    }
+    socket.on('quiz', renderQuiz);
+
+    // ---------------- المسابقة ----------------
+    $('#quizSkip').onclick = () => send('admin:quizSkip');
+    $('#quizStop').onclick = () => send('admin:quizStop');
+    $('#quizAuto').onchange = (e) => send('admin:quizAuto', e.target.checked);
+    $('#quizSave').onclick = () => {
+      const all = [...document.querySelectorAll('#cats input')];
+      const checked = all.filter((c) => c.checked).map((c) => c.value);
+      send('admin:quizOptions', {
+        questionSeconds: $('#qSec').value, revealSeconds: $('#rSec').value, pauseSeconds: $('#pSec').value,
+        categories: checked.length === all.length ? [] : checked,
+      });
+      note('تم حفظ إعدادات المسابقة');
+    };
+
+    // ---------------- المحاكاة ----------------
+    const name = () => $('#simName').value || 'ضيف الواحة';
+    const comment = (text) => send('admin:comment', { name: name(), text });
+    $('#simComment').onclick = () => { comment($('#simText').value); $('#simText').value = ''; };
+    $('#simText').onkeydown = (e) => { if (e.key === 'Enter') $('#simComment').click(); };
+    $('#sDhikr').onclick = () => comment('سبحان الله');
+    for (const n of [1, 2, 3, 4]) $(`#sA${n}`).onclick = () => send('admin:comment', { name: `${name()} ${Math.floor(Math.random() * 999)}`, text: String(n) });
+    $('#sLike').onclick = () => send('admin:like', { name: name(), count: 100 });
+    $('#sFollow').onclick = () => send('admin:follow', { name: name() });
+    $('#sShare').onclick = () => send('admin:share', { name: name() });
+    $('#sMember').onclick = () => send('admin:member', { name: name() });
+    $('#demoOn').onclick = () => send('admin:demo', true);
+    $('#demoOff').onclick = () => send('admin:demo', false);
+    socket.on('demoStatus', ({ running }) => {
+      $('#demoPill').className = `pill ${running ? 'on' : ''}`;
+      $('#demoPill').textContent = running ? 'يعمل' : 'متوقف';
+    });
+
+    // ---------------- الأحداث ----------------
+    $('#chStart').onclick = () => send('admin:challenge', { target: $('#chTarget').value, seconds: $('#chSec').value });
+    $('#chStop').onclick = () => send('admin:challengeStop');
+    $('#say').onclick = () => { send('admin:say', $('#sayText').value); note('أرسلت الرسالة'); };
+    $('#banner').onclick = () => send('admin:banner', $('#bannerText').value);
+    $('#celebrate').onclick = () => send('admin:celebrate');
+    $('#goalSet').onclick = () => { send('admin:goal', $('#goalInput').value); note('تم تعيين الهدف'); };
+    $('#resetLevel').onclick = () => { if (confirm('إعادة اللعبة إلى الليلة الأولى؟')) send('admin:resetLevel'); };
+    $('#resetBoard').onclick = () => { if (confirm('مسح لوحة الشرف بالكامل؟')) send('admin:resetBoard'); };
+
+    // ---------------- الصوت والعرض ----------------
+    socket.on('settings', (s) => {
+      $('#aMode').value = s.audio.mode;
+      $('#aMusic').value = s.audio.music;
+      $('#aNature').value = s.audio.nature;
+      $('#aSfx').value = s.audio.sfx;
+      $('#showQuiz').checked = s.showQuiz;
+      $('#showTicker').checked = s.showTicker;
+    });
+    const sendAudio = () => send('admin:settings', { audio: { mode: $('#aMode').value, music: $('#aMusic').value, nature: $('#aNature').value, sfx: $('#aSfx').value } });
+    for (const id of ['#aMode', '#aMusic', '#aNature', '#aSfx']) $(id).onchange = sendAudio;
+    $('#showQuiz').onchange = (e) => send('admin:settings', { showQuiz: e.target.checked });
+    $('#showTicker').onchange = (e) => send('admin:settings', { showTicker: e.target.checked });
+
+    // ---------------- السجل ----------------
+    const SRC = { tiktok: 'تيك توك', manual: 'يدوي', demo: 'تجربة' };
+    function logLine(e) {
+      const time = new Date(e.at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      let tag = e.kind; let text = '';
+      if (e.kind === 'gift') { tag = 'gift'; text = `🎁 <b>${esc(e.nickname)}</b> أرسل ${esc(e.gift)} ×${fmt(e.count)} (${fmt(e.diamonds)} 💎 · +${fmt(e.points)} نور)`; }
+      else if (e.kind === 'comment') { tag = e.result === 'dhikr' ? 'dhikr' : e.result === 'answer' ? 'answer' : 'comment'; text = `💬 <b>${esc(e.nickname)}</b>: ${esc(e.text)}`; }
+      else if (e.kind === 'follow') text = `🕊️ <b>${esc(e.nickname)}</b> تابع الحساب`;
+      else if (e.kind === 'share') text = `✨ <b>${esc(e.nickname)}</b> شارك البث`;
+      return `<div><span class="t ${tag}">${time}</span>${text} <span class="src">${SRC[e.source] || ''}</span></div>`;
+    }
+    socket.on('logAll', (list) => { $('#log').innerHTML = list.map(logLine).join(''); });
+    socket.on('log', (e) => {
+      const box = $('#log');
+      box.insertAdjacentHTML('afterbegin', logLine(e));
+      while (box.children.length > 80) box.lastChild.remove();
+    });
+  </script>
+</body>
+</html>

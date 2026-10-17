@@ -17,6 +17,23 @@ export function commentText(data = {}) {
   return String(data.content ?? data.comment ?? '');
 }
 
+/** يحوّل حدث الهدية من المكتبة إلى شكل موحّد */
+export function normalizeGift(data = {}) {
+  const d = data.giftDetails || {};
+  const ext = data.extendedGiftInfo || {};
+  const img = d.giftImage?.urlList?.[0] || d.icon?.urlList?.[0] || ext.image?.url_list?.[0] || ext.icon?.url_list?.[0] || '';
+  return {
+    id: String(data.giftId ?? d.id ?? ''),
+    name: d.giftName || ext.name || data.giftName || '',
+    diamonds: Number(d.diamondCount ?? ext.diamond_count ?? data.diamondCount ?? 0) || 0,
+    image: img,
+    streakable: Number(d.giftType ?? ext.type ?? data.giftType) === 1,
+    repeatCount: Number(data.repeatCount) || 1,
+    repeatEnd: Boolean(data.repeatEnd),
+    groupId: String(data.groupId ?? ''),
+  };
+}
+
 export function normalizeUser(u = {}) {
   const uniqueId = u.uniqueId || u.displayId || '';
   const id = String(u.userId || u.id || uniqueId || '');
@@ -30,7 +47,8 @@ export function normalizeUser(u = {}) {
 
 /**
  * غلاف بسيط حول tiktok-live-connector يعيد الاتصال تلقائياً عند الانقطاع.
- * الأحداث: 'comment' ({user, text}), 'status' ({state, message, roomId?})
+ * الأحداث: 'comment' ({user, text}), 'gift' ({user, gift}), 'like' ({user, count}),
+ * 'follow' / 'share' / 'member' ({user}), 'status' ({state, message, roomId?})
  */
 export class TikTokSource extends EventEmitter {
   constructor({ signApiKey } = {}) {
@@ -85,6 +103,21 @@ export class TikTokSource extends EventEmitter {
       }
       this.emit('comment', { user, text });
     });
+
+    conn.on(WebcastEvent.GIFT, (data) => {
+      const user = normalizeUser(data.user || {});
+      if (user.id) this.emit('gift', { user, gift: normalizeGift(data) });
+    });
+    conn.on(WebcastEvent.LIKE, (data) => {
+      const user = normalizeUser(data.user || {});
+      if (user.id) this.emit('like', { user, count: Number(data.likeCount) || 1 });
+    });
+    for (const [ev, name] of [[WebcastEvent.FOLLOW, 'follow'], [WebcastEvent.SHARE, 'share'], [WebcastEvent.MEMBER, 'member']]) {
+      conn.on(ev, (data) => {
+        const user = normalizeUser(data.user || {});
+        if (user.id) this.emit(name, { user });
+      });
+    }
 
     conn.on(ControlEvent.DISCONNECTED, () => {
       if (this.connection !== conn) return;
