@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>خارج الصندوق | تحدّي العقل</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap">
+  <link rel="stylesheet" href="/brain/brain.css">
+</head>
+<body>
+  <!-- المسرح بحجم ثابت 1080×1920 ويُكبَّر/يُصغَّر ليناسب النافذة -->
+  <div id="stage" class="phase-lobby">
+    <div class="bg"><div class="bg-grid"></div><div class="bg-orb a"></div><div class="bg-orb b"></div><div id="particles"></div></div>
+
+    <!-- الشريط العلوي -->
+    <header class="top">
+      <div class="logo">
+        <div class="logo-box"><span>?</span></div>
+        <div class="logo-text"><b>خارج الصندوق</b><small>تحدّي العقل</small></div>
+      </div>
+      <div id="progress" class="progress"></div>
+      <div class="players-pill"><span>👥</span><b id="playerCount">0</b></div>
+    </header>
+
+    <!-- ===== الاستوديو (الانتظار) ===== -->
+    <section id="lobby" class="screen">
+      <div class="cube-wrap">
+        <div class="cube">
+          <i class="f1">؟</i><i class="f2">⚙️</i><i class="f3">💡</i><i class="f4">🧪</i><i class="f5">👁️</i><i class="f6">🕵️</i>
+        </div>
+        <div class="cube-glow"></div>
+      </div>
+      <h1 class="hero-title"><span>خارج</span> <span>الصندوق</span></h1>
+      <div class="hero-sub">برنامج تحدّي العقل المباشر</div>
+      <div class="join-cta"><span class="pulse-dot"></span> اكتب أي تعليق الآن لتنضم إلى المسابقة</div>
+      <div id="lobbyCountdown" class="lobby-count hidden">يبدأ البرنامج خلال <b>0</b></div>
+      <div id="lobbyAvatars" class="lobby-avatars"></div>
+      <div id="roundsPreview" class="rounds-preview"></div>
+      <div class="rules">
+        <div>⚡ <b>الأسرع</b> يحصل على نقاط أكثر</div>
+        <div>🔒 إجابتك <b>الأولى</b> هي النهائية</div>
+        <div>🧠 الجولة الأخيرة <b>مضاعفة</b></div>
+      </div>
+    </section>
+
+    <!-- ===== بطاقة عنوان الجولة ===== -->
+    <section id="intro" class="screen">
+      <div class="letterbox top-bar"></div>
+      <div class="letterbox bottom-bar"></div>
+      <div class="intro-rays"></div>
+      <div class="intro-content">
+        <div id="introRound" class="intro-round">الجولة 1 من 6</div>
+        <div id="introIcon" class="intro-icon">🕵️</div>
+        <div id="introTitle" class="intro-title glitch" data-text="">—</div>
+        <div id="introTag" class="intro-tag"></div>
+        <div id="introMult" class="intro-mult hidden">× 2 نقاط مضاعفة</div>
+      </div>
+    </section>
+
+    <!-- ===== السؤال وكشف الحل ===== -->
+    <section id="play" class="screen">
+      <div class="q-head">
+        <div class="q-title"><span id="qIcon">🕵️</span> <b id="qTitle">—</b></div>
+        <div id="qPrompt" class="q-prompt"></div>
+      </div>
+      <div class="board-frame">
+        <div id="board" class="board"></div>
+        <div id="timeUp" class="time-up hidden">انتهى الوقت!</div>
+        <div id="answerStamp" class="answer-stamp hidden"><small>الإجابة الصحيحة</small><b>—</b></div>
+      </div>
+
+      <div class="q-foot">
+        <div class="timer-wrap">
+          <svg class="ring" viewBox="0 0 200 200">
+            <circle class="ring-bg" cx="100" cy="100" r="88"/>
+            <circle id="ringFg" class="ring-fg" cx="100" cy="100" r="88"/>
+          </svg>
+          <div class="timer-num"><b id="timerNum">0</b><small>ثانية</small></div>
+        </div>
+        <div class="answer-zone">
+          <div id="howTo" class="how-to"></div>
+          <div class="answered"><b id="answeredCount">0</b> أجابوا <span class="lock">🔒</span></div>
+          <div id="stream" class="stream"></div>
+        </div>
+      </div>
+
+      <!-- لوحة الحل التدريجي -->
+      <div id="solution" class="solution hidden">
+        <div class="sol-title">🔍 الحل خطوة بخطوة</div>
+        <ol id="steps" class="steps"></ol>
+        <div id="stats" class="stats hidden">
+          <div class="stat-big"><b id="correctPct">0%</b><small>أجابوا صح</small></div>
+          <div id="dist" class="dist"></div>
+          <div id="fastest" class="fastest"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== الترتيب ===== -->
+    <section id="board-screen" class="screen">
+      <div class="lb-title"><span>🏆</span> ترتيب المتسابقين</div>
+      <div id="lbSub" class="lb-sub"></div>
+      <ol id="lbList" class="lb-list"></ol>
+      <div id="lbNext" class="lb-next"></div>
+    </section>
+
+    <!-- ===== إعلان الفائز ===== -->
+    <section id="finale" class="screen">
+      <canvas id="fireworks" width="1080" height="1920"></canvas>
+      <div class="spotlights"><i></i><i></i><i></i></div>
+      <div id="finaleIntro" class="finale-intro">ومن هو بطل<br><b>تحدّي العقل</b>؟</div>
+      <div id="champion" class="champion hidden">
+        <div class="crown">👑</div>
+        <div class="champ-avatar"><img id="champImg" alt=""></div>
+        <div class="champ-label">بطل تحدّي العقل</div>
+        <div id="champName" class="champ-name"></div>
+        <div id="champUser" class="champ-user"></div>
+        <div id="champScore" class="champ-score"></div>
+      </div>
+      <div id="podium" class="podium"></div>
+      <div id="noWinner" class="no-winner hidden">🤯 لم يحلّ أحد الألغاز هذه المرة!<br><small>هل أنت مستعد للتحدّي القادم؟</small></div>
+      <div class="finale-cta">تابع الحساب ليصلك التحدّي القادم 🔔</div>
+    </section>
+
+    <!-- طبقات المؤثرات -->
+    <div id="vignette" class="vignette"></div>
+    <div id="shutter" class="shutter"><i></i><i></i></div>
+    <canvas id="confetti" width="1080" height="1920"></canvas>
+    <div id="toast" class="toast"></div>
+    <div id="conn" class="conn hidden">جارٍ الاتصال بالخادم...</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/brain/views.js"></script>
+  <script src="/brain/brain.js"></script>
+</body>
+</html>

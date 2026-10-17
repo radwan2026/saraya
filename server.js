@@ -8,6 +8,8 @@ import config from './config.js';
 import { Game } from './src/game.js';
 import { TikTokSource } from './src/tiktok.js';
 import { DemoBots } from './src/demo.js';
+import { BrainGame } from './src/brain/game.js';
+import { BrainDemoBots } from './src/brain/demo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -23,18 +25,23 @@ const PORT = Number(args.port || process.env.PORT || config.port || 3000);
 const USERNAME = String(args.user || process.env.TIKTOK_USERNAME || config.tiktokUsername || '').replace(/^@/, '');
 const SIGN_KEY = String(args.key || process.env.SIGN_API_KEY || config.signApiKey || '');
 const DEMO = Boolean(args.demo || process.env.DEMO === '1' || config.demo);
+const MODE = String(args.game || process.env.GAME || config.gameMode || 'redlight') === 'brain' ? 'brain' : 'redlight';
 
 // ------------------------------------------------------------------
 // الخادم
 // ------------------------------------------------------------------
 const app = express();
+const pages = MODE === 'brain'
+  ? { game: path.join(__dirname, 'public', 'brain', 'index.html'), admin: path.join(__dirname, 'public', 'brain', 'admin.html') }
+  : { game: path.join(__dirname, 'public', 'index.html'), admin: path.join(__dirname, 'public', 'admin.html') };
+app.get(['/', '/index.html'], (_req, res) => res.sendFile(pages.game));
+app.get('/admin', (_req, res) => res.sendFile(pages.admin));
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('/admin', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
 const server = http.createServer(app);
 const io = new Server(server);
 
-const game = new Game(config.game);
+const game = MODE === 'brain' ? new BrainGame(config.brain) : new Game(config.game);
 const tiktok = new TikTokSource({ signApiKey: SIGN_KEY });
 const commentLog = [];
 
@@ -47,12 +54,21 @@ function handleComment(user, text, source) {
   return result;
 }
 
-const bots = new DemoBots(game, (user, text) => handleComment(user, text, 'demo'), config.demoBots);
+const onBotComment = (user, text) => handleComment(user, text, 'demo');
+const bots = MODE === 'brain'
+  ? new BrainDemoBots(game, onBotComment, config.brainDemoBots)
+  : new DemoBots(game, onBotComment, config.demoBots);
 
 // بث أحداث اللعبة لكل الصفحات المتصلة
-for (const ev of ['state', 'join', 'numberChanged', 'roundResult', 'winner']) {
+const EVENTS = MODE === 'brain'
+  ? ['state', 'join', 'answer', 'reveal', 'winner']
+  : ['state', 'join', 'numberChanged', 'roundResult', 'winner'];
+for (const ev of EVENTS) {
   game.on(ev, (payload) => io.emit(ev, payload));
 }
+// معلومات للمضيف فقط (مثل الإجابة الصحيحة) تُرسل لصفحات لوحة التحكم وحدها
+const hostInfo = () => (typeof game.hostInfo === 'function' ? game.hostInfo() : null);
+game.on('state', () => io.to('admin').emit('hostInfo', hostInfo()));
 tiktok.on('status', (s) => {
   console.log(`[TikTok] ${s.message}`);
   io.emit('tiktokStatus', s);
@@ -68,6 +84,7 @@ io.on('connection', (socket) => {
   socket.emit('commentLog', commentLog);
 
   // ---- أوامر لوحة التحكم ----
+  socket.on('admin:hello', () => { socket.join('admin'); socket.emit('hostInfo', hostInfo()); });
   socket.on('admin:start', () => game.start());
   socket.on('admin:skip', () => game.skip());
   socket.on('admin:reset', () => game.resetToLobby());
@@ -90,7 +107,7 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   const base = `http://localhost:${PORT}`;
   console.log('==============================================');
-  console.log(' لعبة الضوء الأحمر / الضوء الأخضر — تيك توك لايف');
+  console.log(MODE === 'brain' ? ' خارج الصندوق | تحدّي العقل — تيك توك لايف' : ' لعبة الضوء الأحمر / الضوء الأخضر — تيك توك لايف');
   console.log('==============================================');
   console.log(` شاشة اللعبة (للـ OBS / LIVE Studio): ${base}/`);
   console.log(` لوحة التحكم:                        ${base}/admin`);
