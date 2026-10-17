@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>لوحة تحكم لجنة الأنشطة</title>
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body class="admin">
+  <div id="login" class="login-wrap" hidden>
+    <form class="panel login" id="loginForm">
+      <img src="/assets/logo-full.png" alt="" style="width:130px;margin:0 auto 8px">
+      <h2 class="center">لوحة تحكم لجنة الأنشطة</h2>
+      <p class="muted center" style="margin-top:-6px">الدخول مخصص لأعضاء اللجنة المنظمة</p>
+      <div class="field"><label>اسم المستخدم</label><input class="input" name="username" autocomplete="username" required dir="ltr"></div>
+      <div class="field"><label>كلمة المرور</label><input class="input" type="password" name="password" autocomplete="current-password" required dir="ltr"></div>
+      <div class="form-msg"></div>
+      <button class="btn" type="submit">دخول</button>
+      <a href="/" class="center" style="font-size:14px">← العودة إلى المنصة</a>
+    </form>
+  </div>
+
+  <div id="shell" class="shell" hidden>
+    <aside class="side" id="side">
+      <a class="brand" href="/" target="_blank"><img src="/assets/logo-full.png" alt=""><div><span>لوحة التحكم</span><small>لجنة الأنشطة</small></div></a>
+      <nav id="sideNav"></nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="sideBtn" aria-label="القائمة">☰</button>
+        <h1 id="pageTitle">الرئيسية</h1>
+        <span class="spacer"></span>
+        <span class="who" id="who"></span>
+        <button class="btn small ghost" id="pwBtn">🔑 كلمة المرور</button>
+        <button class="btn small danger" id="logoutBtn">خروج</button>
+      </header>
+      <section id="view" class="view"></section>
+    </div>
+  </div>
+
+  <dialog id="modal" class="modal">
+    <form class="modal-inner" id="modalForm">
+      <header><h3 id="modalTitle"></h3><button type="button" class="x" id="modalClose" aria-label="إغلاق">✕</button></header>
+      <div id="modalBody" class="modal-body"></div>
+      <footer><div class="form-msg" id="modalMsg"></div><span class="spacer"></span><button type="button" class="btn ghost" id="modalCancel">إلغاء</button><button type="submit" class="btn" id="modalSave">حفظ</button></footer>
+    </form>
+  </dialog>
+
+  <script src="/common.js"></script>
+  <script src="/admin.js"></script>
+</body>
+</html>
