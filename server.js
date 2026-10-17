@@ -77,11 +77,14 @@ tiktok.on('status', (s) => {
 tiktok.on('comment', ({ user, text }) => handleComment(user, text, 'tiktok'));
 
 const demoStatus = () => ({ running: bots.running });
+// إعدادات الصوت تُرسل لكل شاشات البث (موسيقى الخلفية ومستوى المؤثرات)
+let audio = { music: true, musicVolume: 0.55, sfxVolume: 1 };
 
 io.on('connection', (socket) => {
   socket.emit('state', game.snapshot());
   socket.emit('tiktokStatus', tiktok.status());
   socket.emit('demoStatus', demoStatus());
+  socket.emit('audio', audio);
   socket.emit('commentLog', commentLog);
 
   // ---- أوامر لوحة التحكم ----
@@ -89,6 +92,15 @@ io.on('connection', (socket) => {
   socket.on('admin:start', () => game.start());
   socket.on('admin:skip', () => game.skip());
   socket.on('admin:reset', () => game.resetToLobby());
+  socket.on('admin:audio', (a = {}) => {
+    const num = (v, max, d) => (Number.isFinite(Number(v)) ? Math.max(0, Math.min(max, Number(v))) : d);
+    audio = {
+      music: typeof a.music === 'boolean' ? a.music : audio.music,
+      musicVolume: num(a.musicVolume ?? audio.musicVolume, 1, audio.musicVolume),
+      sfxVolume: num(a.sfxVolume ?? audio.sfxVolume, 1.5, audio.sfxVolume),
+    };
+    io.emit('audio', audio);
+  });
   socket.on('admin:demo', (on) => {
     if (on) bots.start(); else bots.stop();
     io.emit('demoStatus', demoStatus());

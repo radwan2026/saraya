@@ -5,6 +5,8 @@
   const params = new URLSearchParams(location.search);
   if (params.get('transparent') === '1') document.body.classList.add('transparent');
   const SOUND = params.get('sound') !== '0';
+  const MUSIC = params.get('music') !== '0';
+  const Music = window.BrainMusic;
 
   const $ = (id) => document.getElementById(id);
   const stage = $('stage');
@@ -57,10 +59,19 @@
   let actx = null;
   function ctx() {
     if (!SOUND) return null;
-    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; }
+    try {
+      if (!actx) {
+        actx = new (window.AudioContext || window.webkitAudioContext)();
+        Music.attach(actx);
+        Music.setEnabled(MUSIC);
+        const vol = Number(params.get('vol'));
+        if (params.has('vol') && Number.isFinite(vol)) Music.setVolume(vol);
+      }
+    } catch { return null; }
     if (actx.state === 'suspended') actx.resume().catch(() => {});
     return actx;
   }
+  const out = (a) => Music.sfxOut() || a.destination;
   function tone(freq, dur = 0.15, type = 'sine', vol = 0.15, delay = 0, slideTo) {
     const a = ctx(); if (!a) return;
     const t = a.currentTime + delay;
@@ -70,7 +81,7 @@
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(a.destination);
+    o.connect(g).connect(out(a));
     o.start(t); o.stop(t + dur + 0.05);
   }
   function noise(dur = 0.4, vol = 0.12, delay = 0, from = 400, to = 4000, q = 1) {
@@ -84,7 +95,7 @@
     f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur);
     const g = a.createGain();
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.3); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.connect(f).connect(g).connect(a.destination);
+    src.connect(f).connect(g).connect(out(a));
     src.start(t); src.stop(t + dur);
   }
   const sfx = {
@@ -110,10 +121,33 @@
       tone(1319, 1.2, 'triangle', 0.12, 0.95);
     },
     pop: () => { noise(0.12, 0.1, 0, 800, 6000, 2); tone(300, 0.1, 'sine', 0.1, 0, 900); },
+    // مؤثرات قوية
+    hit: () => { Music.duck(0.25, 0.4); tone(60, 0.7, 'sine', 0.5, 0, 30); noise(0.9, 0.16, 0, 9000, 3000, 0.4); },
+    crash: () => noise(1.6, 0.14, 0, 12000, 4000, 0.3),
+    drop: () => { Music.duck(0.15, 1.2); tone(160, 1.4, 'sine', 0.55, 0, 28); tone(80, 1.4, 'square', 0.08, 0, 20); noise(1.8, 0.16, 0.05, 10000, 2500, 0.3); },
+    hype: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.22, 'square', 0.06, i * 0.06)),
+    shutter: () => { noise(0.05, 0.2, 0, 6000, 6000, 1); noise(0.08, 0.15, 0.08, 3000, 3000, 1); },
+    applause: () => { for (let t = 0; t < 2.6; t += 0.035) noise(0.05, 0.03 + Math.random() * 0.05 * (1 - t / 3), t, 1500 + Math.random() * 2500, 2500, 1.5); },
   };
   window.BrainFX = { sfx: (name) => sfx[name]?.() };
-  // المتصفح يحتاج تفاعلاً لتشغيل الصوت أحياناً — أول نقرة تفعّله
-  window.addEventListener('pointerdown', () => ctx(), { once: true });
+  // OBS / LIVE Studio يشغّلان الصوت تلقائياً؛ المتصفح العادي يحتاج نقرة — نُظهر زراً لذلك
+  ctx();
+  const soundBtn = $('soundBtn');
+  const checkAudio = () => soundBtn.classList.toggle('hidden', !SOUND || !actx || actx.state === 'running');
+  window.addEventListener('pointerdown', () => { ctx(); setTimeout(checkAudio, 200); });
+  setInterval(checkAudio, 1000);
+
+  // نبض مع إيقاع الموسيقى
+  window.addEventListener('brain:beat', () => restart(stage, 'kick'));
+
+  /** وميض شاشة كامل (كاميرا/انفجار ضوئي) */
+  function flash(strength = 1) {
+    const f = $('flash');
+    f.style.setProperty('--f', String(strength));
+    restart(f, 'go');
+  }
+  /** اهتزاز الشاشة كلها لحظة الضربة */
+  function quake() { restart(stage, 'quake'); }
 
   // ------------------------------------------------------------------
   // جزيئات الخلفية
@@ -139,7 +173,11 @@
   let revealTimers = [];
   let finaleTimers = [];
   let prevRanks = new Map();
+  let introTimers = [];
+  let hypeShown = new Set();
 
+  // مزاج الموسيقى لكل مرحلة (بطاقة العنوان صامتة لتبرز الضربات، والتتويج يبدأ بقرع طبول)
+  const MOODS = { lobby: 'lobby', intro: 'silent', question: 'question', reveal: 'reveal', leaderboard: 'board', finale: 'silent' };
   const SCREENS = { lobby: 'lobby', intro: 'intro', question: 'play', reveal: 'play', leaderboard: 'board-screen', finale: 'finale' };
   const ACCENTS = { detective: '#f59e0b', machine: '#38bdf8', circuit: '#22d3ee', illusion: '#a78bfa', science: '#34d399', final: '#f472b6' };
 
@@ -152,6 +190,7 @@
     const sh = $('shutter');
     restart(sh, 'go');
     sfx.whoosh();
+    setTimeout(() => flash(0.35), 300);
     setTimeout(cb, 330);
   }
 
@@ -223,6 +262,12 @@
     $('introMult').classList.toggle('hidden', pz.multiplier <= 1);
     restart($('intro'), 'play-in');
     sfx.boom();
+    introTimers.forEach(clearTimeout);
+    introTimers = [
+      setTimeout(() => { sfx.hit(); flash(0.9); quake(); }, 600),   // هبوط الأيقونة
+      setTimeout(() => { sfx.crash(); flash(0.5); }, 1050),          // العنوان
+      setTimeout(() => sfx.rise(), 2600),
+    ];
   }
 
   // ------------------------------------------------------------------
@@ -296,6 +341,7 @@
     $('timerNum').textContent = String(left);
     stage.classList.toggle('urgent', left <= 10 && left > 0);
     stage.classList.toggle('critical', left <= 5 && left > 0);
+    Music.setIntensity(left <= 5 ? 2 : left <= 10 ? 1 : 0);
     if (view && view.tick) view.tick((now - state.phaseStartedAt) / 1000);
     if (left !== lastSecond) {
       lastSecond = left;
@@ -327,7 +373,7 @@
       if (ms <= 0) fn(true); else revealTimers.push(setTimeout(() => fn(false), ms));
     };
 
-    at(0, (late) => { if (!late) { $('timeUp').classList.remove('hidden'); restart($('timeUp'), 'slam'); sfx.timeup(); } });
+    at(0, (late) => { if (!late) { $('timeUp').classList.remove('hidden'); restart($('timeUp'), 'slam'); sfx.timeup(); sfx.hit(); flash(0.6); quake(); } });
     at(t0 - 0.2, () => $('timeUp').classList.add('hidden'));
     r.steps.forEach((text, i) => {
       at(t0 + i * gap, (late) => {
@@ -340,7 +386,7 @@
       const stamp = $('answerStamp');
       stamp.querySelector('b').textContent = r.answer;
       stamp.classList.remove('hidden', 'docked');
-      if (!late) { restart(stamp, 'slam'); sfx.stamp(); setTimeout(sfx.ding, 250); }
+      if (!late) { restart(stamp, 'slam'); sfx.stamp(); sfx.crash(); Music.duck(0.2, 1.4); flash(1); quake(); setTimeout(sfx.ding, 250); if (r.correctCount > 0) setTimeout(sfx.applause, 300); }
       // بعد لحظة الإعلان يصغر الختم وينتقل للزاوية ليظهر المشهد المحلول كاملاً
       revealTimers.push(setTimeout(() => stamp.classList.add('docked'), late ? 0 : 2200));
       renderStats(s, r);
@@ -389,10 +435,10 @@
     $('lbNext').textContent = next ? `التالي: ${next.icon} ${next.title}` : '';
     if (!s.leaderboard.length) { el('li', 'empty', 'لا يوجد متسابقون بعد — اكتب تعليقاً للانضمام!', list); return; }
     const ranks = new Map();
-    s.leaderboard.forEach((p, i) => {
+    s.leaderboard.slice(0, 8).forEach((p, i) => {
       ranks.set(p.id, i);
       const li = el('li', i < 3 ? `lead t${i + 1}` : '', undefined, list);
-      li.style.animationDelay = `${0.08 * (s.leaderboard.length - i)}s`;
+      li.style.animationDelay = `${0.08 * (Math.min(8, s.leaderboard.length) - i)}s`;
       const before = prevRanks.get(p.id);
       const move = before === undefined ? '' : before > i ? `▲${before - i}` : before < i ? `▼${i - before}` : '';
       li.append(
@@ -426,7 +472,8 @@
     $('noWinner').classList.add('hidden');
     const pod = $('podium');
     pod.textContent = '';
-    at(0, (late) => { if (!late) sfx.drum(2.8); });
+    Music.setMood('silent');
+    at(0, (late) => { if (!late) sfx.drum(5.2); });
     if (!podium.length) {
       at(2.8, () => { $('noWinner').classList.remove('hidden'); fin.classList.add('stage2'); sfx.wrong(); });
       return;
@@ -441,7 +488,7 @@
     const showPod = (i, t) => at(t, (late) => {
       const node = pod.querySelector(`.p${i + 1}`);
       if (node) node.classList.add('up');
-      if (!late) sfx.pop();
+      if (!late) { sfx.pop(); sfx.shutter(); flash(0.5); }
     });
     showPod(2, 3); showPod(1, 4.2);
     at(5.4, (late) => {
@@ -457,7 +504,12 @@
       pod.querySelector('.p1')?.classList.add('up');
       fin.classList.add('stage2');
       startFireworks();
-      if (!late) { sfx.fanfare(); burstConfetti(320); }
+      Music.setMood('finale');
+      if (!late) {
+        sfx.drop(); sfx.fanfare(); sfx.applause(); burstConfetti(320); quake();
+        // وميض كاميرات الصحافة
+        [0, 180, 420, 650, 1000, 1300].forEach((d, k) => setTimeout(() => { flash(k === 0 ? 1 : 0.55); sfx.shutter(); }, d));
+      }
     });
     at(9, () => fin.classList.add('stage3'));
   }
@@ -555,6 +607,10 @@
       if (s.phase !== 'finale') clearFinale();
       if (s.gameNumber !== prev?.gameNumber) { prevRanks = new Map(); lobbyAv.clear(); $('lobbyAvatars').textContent = ''; }
       showScreen(SCREENS[s.phase]);
+      Music.setMood(MOODS[s.phase] || 'silent');
+      if (s.phase !== 'question') Music.setIntensity(0);
+      if (s.phase === 'question') hypeShown = new Set();
+      $('followBanner').classList.toggle('show', s.phase === 'leaderboard' && Boolean(s.channel));
       switch (s.phase) {
         case 'lobby': renderLobby(s); break;
         case 'intro': renderIntro(s); break;
@@ -586,5 +642,22 @@
   socket.on('join', (p) => {
     if (state && state.phase === 'lobby') { addLobbyAvatar(p); sfx.join(); } else toast(`👋 انضم ${p.nickname}`);
   });
-  socket.on('answer', ({ player }) => { addStream(player); sfx.lock(); restart($('answeredCount'), 'bump'); });
+  // لحظات «الحماس»: كلما وصل عدد الإجابات لرقم مميز يظهر إعلان كبير — يحفّز المشاهدين على المشاركة
+  const HYPE = [5, 10, 20, 30, 50, 75, 100, 150, 200, 300, 500];
+  socket.on('answer', ({ player, count }) => {
+    addStream(player); sfx.lock(); restart($('answeredCount'), 'bump');
+    if (HYPE.includes(count) && !hypeShown.has(count)) {
+      hypeShown.add(count);
+      const h = $('hype');
+      h.querySelector('b').textContent = String(count);
+      restart(h, 'go');
+      sfx.hype(); flash(0.25);
+    }
+  });
+  // التحكم في الصوت من لوحة التحكم
+  socket.on('audio', (a) => {
+    if (!a) return;
+    if (typeof a.music === 'boolean') Music.setEnabled(a.music && MUSIC);
+    Music.setVolume(Number(a.musicVolume), Number(a.sfxVolume));
+  });
 })();

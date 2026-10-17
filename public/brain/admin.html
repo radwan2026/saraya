@@ -81,6 +81,18 @@
     </section>
 
     <section>
+      <h2>🎵 الموسيقى والمؤثرات</h2>
+      <div class="row">
+        <button class="teal" id="musicOn">تشغيل الموسيقى</button>
+        <button id="musicOff">إيقاف الموسيقى</button>
+        <span id="musicPill" class="pill">-</span>
+      </div>
+      <div class="row"><span style="min-width:120px">صوت الموسيقى</span><input id="musicVol" type="range" min="0" max="1" step="0.05" style="padding:0"></div>
+      <div class="row"><span style="min-width:120px">صوت المؤثرات</span><input id="sfxVol" type="range" min="0" max="1.5" step="0.05" style="padding:0"></div>
+      <p class="muted">الموسيقى مولّدة داخل اللعبة (ألحان أصلية بلا حقوق نشر)، فلا يكتمها تيك توك. في OBS فعّل «Control audio via OBS» لتظهر في الخلاط.</p>
+    </section>
+
+    <section>
       <h2>وضع التجربة (Demo)</h2>
       <div class="row"><span>الحالة:</span> <span id="demoPill" class="pill">متوقف</span></div>
       <div class="row">
@@ -160,6 +172,16 @@
       return d;
     }
     socket.on('connect', () => socket.emit('admin:hello'));
+    $('musicOn').onclick = () => socket.emit('admin:audio', { music: true });
+    $('musicOff').onclick = () => socket.emit('admin:audio', { music: false });
+    $('musicVol').oninput = (e) => socket.emit('admin:audio', { musicVolume: Number(e.target.value) });
+    $('sfxVol').oninput = (e) => socket.emit('admin:audio', { sfxVolume: Number(e.target.value) });
+    socket.on('audio', (a) => {
+      $('musicPill').textContent = a.music ? 'تعمل' : 'متوقفة';
+      $('musicPill').className = `pill ${a.music ? 'on' : ''}`;
+      if (document.activeElement !== $('musicVol')) $('musicVol').value = a.musicVolume;
+      if (document.activeElement !== $('sfxVol')) $('sfxVol').value = a.sfxVolume;
+    });
     socket.on('hostInfo', (h) => { $('answer').textContent = (h && h.answer) || '-'; });
     socket.on('commentLog', (list) => { $('log').replaceChildren(...list.map(logLine)); });
     socket.on('comment', (c) => {
