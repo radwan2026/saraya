@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة تحكم منارة النور</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🕌%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #070d24; --card: #0e1838; --line: #24315f; --gold: #f7d58b; --text: #f3efe2; --muted: #9aa3c7; --ok: #3fd8a8; --bad: #ff7a7a; --warn: #ffc24d; }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    .ltr { direction: ltr; unicode-bidi: isolate; }
+    body { margin: 0; min-height: 100vh; font-family: 'Cairo', system-ui, sans-serif; background: radial-gradient(circle at 80% -10%, #1d2a66, var(--bg) 55%) fixed; color: var(--text); font-size: 15px; }
+    header { display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-bottom: 1px solid var(--line); background: rgba(7,13,36,.85); position: sticky; top: 0; z-index: 5; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    header h1 { margin: 0; font-family: 'Amiri', serif; font-size: 30px; color: var(--gold); }
+    header .sp { flex: 1; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted); display: inline-block; vertical-align: middle; }
+    .dot.connected { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+    .dot.connecting { background: var(--warn); }
+    .dot.error { background: var(--bad); }
+    a { color: var(--gold); }
+    main { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; padding: 18px; max-width: 1500px; margin: 0 auto; }
+    .card { background: linear-gradient(180deg, var(--card), #0a1230); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; }
+    .card h2 { margin: 0 0 12px; font-size: 18px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+    input, select { font: inherit; background: #070d24; color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+    input[type=number] { width: 90px; }
+    input[type=range] { padding: 0; }
+    button { font: inherit; font-weight: 800; cursor: pointer; border: 1px solid var(--line); background: #17224a; color: var(--text); border-radius: 10px; padding: 8px 12px; transition: transform .1s, background .2s; }
+    button:hover { background: #22306a; } button:active { transform: scale(.96); }
+    button.gold { background: linear-gradient(180deg, #ffe39a, #d7a849); color: #2a1a05; border: 0; }
+    button.green { background: #136a52; border-color: #1f9b78; }
+    button.red { background: #5c1b2a; border-color: #8f2a40; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat div { background: #070d24; border: 1px solid var(--line); border-radius: 12px; padding: 8px; text-align: center; }
+    .stat b { display: block; font-size: 22px; color: var(--gold); }
+    .phase { display: inline-block; padding: 2px 12px; border-radius: 20px; background: #17224a; font-weight: 800; }
+    .teambar { margin-bottom: 10px; }
+    .teambar .lbl { display: flex; justify-content: space-between; font-weight: 800; }
+    .teambar .bar { height: 14px; border-radius: 8px; background: #070d24; overflow: hidden; border: 1px solid var(--line); }
+    .teambar .bar i { display: block; height: 100%; transition: width .4s; }
+    .gifts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0; }
+    .gifts button { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; font-size: 13px; line-height: 1.2; }
+    .gifts button span { font-size: 24px; }
+    .gifts button small { color: var(--muted); font-weight: 400; }
+    .list { max-height: 300px; overflow: auto; font-size: 14px; }
+    .list div { padding: 5px 0; border-bottom: 1px dashed var(--line); }
+    .list time { color: var(--muted); font-size: 12px; margin-left: 8px; }
+    .sup { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    .sup img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #223; }
+    .sup .n { flex: 1; } .sup b { color: var(--gold); }
+    form.settings { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center; }
+    form.settings h3 { grid-column: 1 / -1; margin: 10px 0 2px; font-size: 15px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+    form.settings label { font-size: 14px; }
+    form.settings .full { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .switch { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .tip { background: #0a1a2a; border: 1px solid #1f4b5f; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #bfe6f3; line-height: 1.7; }
+    .quizbox { background: #070d24; border: 1px solid #1f9b78; border-radius: 12px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🕌 لوحة تحكم «منارة النور»</h1>
+    <span><span class="dot" id="ttDot"></span> <span id="ttMsg">غير متصل</span></span>
+    <span class="sp"></span>
+    <a href="/" target="_blank">🖥️ فتح شاشة اللعبة</a>
+  </header>
+
+  <main>
+    <!-- الاتصال -->
+    <section class="card">
+      <h2>📡 الاتصال ببث تيك توك</h2>
+      <div class="row">
+        <input id="username" placeholder="اسم الحساب بدون @" style="flex:1">
+        <button class="green" id="connect">اتصال</button>
+        <button class="red" id="disconnect">قطع</button>
+      </div>
+      <div class="tip">ابدأ البث المباشر أولاً، ثم اكتب اسم حسابك واضغط «اتصال».<br>
+        أضف شاشة اللعبة في TikTok LIVE Studio أو OBS كمصدر رابط/متصفح: <b>http://localhost:3100</b> بمقاس <b>1080×1920</b>.</div>
+    </section>
+
+    <!-- الجولة -->
+    <section class="card">
+      <h2>🎮 التحكم بالجولة</h2>
+      <div class="row">الحالة: <span class="phase" id="phase">-</span> · الجولة <b id="round">-</b> · الوقت <b id="clock">-</b></div>
+      <div class="row">
+        <button class="gold" id="newRound">🌙 جولة جديدة</button>
+        <button id="finish">🏆 إنهاء الجولة وإعلان الفائز</button>
+      </div>
+      <div class="row">
+        <button id="pause">⏸ إيقاف مؤقت</button>
+        <button id="resume">▶ استئناف</button>
+        <button id="quizNow">📜 سؤال الآن</button>
+        <button id="quizEnd">✅ كشف الإجابة</button>
+      </div>
+      <div class="row"><button class="red" id="resetSession">🧹 تصفير الجلسة بالكامل</button></div>
+      <div id="quizInfo"></div>
+    </section>
+
+    <!-- الفرق -->
+    <section class="card">
+      <h2>🕌 المنارات الآن</h2>
+      <div id="teamBars"></div>
+      <div class="stat" id="stats"></div>
+    </section>
+
+    <!-- المحاكاة -->
+    <section class="card">
+      <h2>🧪 محاكاة البث (للتجربة)</h2>
+      <div class="row">
+        <input id="simName" value="مختبر" placeholder="اسم المتابع" style="flex:1">
+        <input id="simCount" type="number" value="1" min="1" max="99" title="العدد">
+      </div>
+      <div class="row" id="simTeams"></div>
+      <div class="gifts" id="simGifts"></div>
+      <div class="row">
+        <input id="simText" placeholder="تعليق… مثال: سبحان الله" style="flex:1">
+        <button id="simSend">إرسال</button>
+      </div>
+      <div class="row" id="simDhikr"></div>
+      <div class="row">
+        <button id="simLike">❤️ +50 إعجاب</button>
+        <button id="simFollow">➕ متابعة</button>
+        <button id="simShare">📣 مشاركة</button>
+        <span class="muted">إجابة:</span>
+        <button data-ans="أ">أ</button><button data-ans="ب">ب</button><button data-ans="ج">ج</button><button data-ans="د">د</button>
+      </div>
+      <hr style="border-color:var(--line)">
+      <div class="row">
+        <label class="switch"><input type="checkbox" id="demo"> وضع التجربة (متابعون وهميون)</label>
+        <button id="burst">⚡ دفعة نشاط</button>
+      </div>
+    </section>
+
+    <!-- الإعدادات -->
+    <section class="card">
+      <h2>⚙️ الإعدادات</h2>
+      <form class="settings" id="settings">
+        <h3>الجولة</h3>
+        <label>مدة الجولة (ثانية)</label><input type="number" name="roundSeconds">
+        <label>النور اللازم لإضاءة المنارة</label><input type="number" name="target">
+        <label>مدة شاشة الفوز (ثانية)</label><input type="number" name="victorySeconds">
+        <label>بدء جولة جديدة تلقائياً</label><input type="checkbox" name="autoStart">
+        <h3>النور (النقاط)</h3>
+        <label>نور لكل عملة هدية</label><input type="number" name="lightPerCoin">
+        <label>أقل نور لأي هدية</label><input type="number" name="minGiftLight">
+        <label>نور لكل ذكر</label><input type="number" name="dhikrLight">
+        <label>الفاصل بين أذكار الشخص (ms)</label><input type="number" name="dhikrCooldownMs">
+        <label>نور لكل إعجاب</label><input type="number" step="0.05" name="lightPerLike">
+        <label>إعجابات لكل شهاب</label><input type="number" name="likesPerStar">
+        <label>نور لكل مشاركة</label><input type="number" name="shareLight">
+        <label>مدة نفحة المسك (ثانية)</label><input type="number" name="boostSeconds">
+        <label>مضاعف نفحة المسك</label><input type="number" step="0.5" name="boostMultiplier">
+        <h3>سؤال النور</h3>
+        <label>تفعيل الأسئلة</label><input type="checkbox" name="quizEnabled">
+        <label>سؤال كل (ثانية)</label><input type="number" name="quizEverySeconds">
+        <label>وقت الإجابة (ثانية)</label><input type="number" name="quizSeconds">
+        <label>نور الإجابة الصحيحة</label><input type="number" name="quizLight">
+        <h3>أسماء الفرق</h3>
+        <div class="full" id="teamNames"></div>
+        <h3>الصوت</h3>
+        <label>الخلفية الصوتية</label>
+        <select name="musicMode">
+          <option value="ambient">نغمات هادئة (مقام البياتي)</option>
+          <option value="nature">طبيعة فقط — بلا آلات موسيقية</option>
+          <option value="file">ملفي الخاص (نشيد بدون موسيقى)</option>
+          <option value="off">بدون خلفية</option>
+        </select>
+        <label>مستوى الخلفية</label><input type="range" min="0" max="1" step="0.05" name="musicVolume">
+        <label>مستوى المؤثرات</label><input type="range" min="0" max="1" step="0.05" name="sfxVolume">
+        <h3></h3>
+        <button class="gold" type="submit">💾 حفظ وتطبيق</button>
+        <button type="button" id="resetSettings">↺ الافتراضي</button>
+      </form>
+      <p class="muted">لاستخدام نشيدك الخاص: ضع ملفاً باسم <b>background.mp3</b> داخل <b>public/noor/audio/</b> واختر «ملفي الخاص».</p>
+    </section>
+
+    <!-- أهل الكرم -->
+    <section class="card">
+      <h2>🌹 أهل الكرم (الجلسة)</h2>
+      <div id="supporters" class="list"></div>
+      <h2 style="margin-top:14px">🏆 الفائزون</h2>
+      <div id="history" class="list"></div>
+    </section>
+
+    <!-- السجل -->
+    <section class="card">
+      <h2>📝 سجل الأحداث</h2>
+      <div id="log" class="list" style="max-height:520px"></div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

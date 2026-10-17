@@ -1,0 +1,339 @@
+:root {
+  --gold: #f7d58b;
+  --gold-2: #ffe9a8;
+  --gold-deep: #b8862b;
+  --ink: #050b1f;
+  --panel: rgba(9, 16, 44, .72);
+  --panel-line: rgba(247, 213, 139, .45);
+  --text: #fff8e6;
+  --muted: #c9c3e6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+body.transparent { background: transparent; }
+body { font-family: 'Cairo', system-ui, sans-serif; color: var(--text); }
+
+#stage {
+  position: absolute; left: 0; top: 0;
+  width: 1080px; height: 1920px;
+  transform-origin: 0 0;
+  overflow: hidden;
+}
+#sky, #fx { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#fx { pointer-events: none; z-index: 5; }
+body.transparent #sky { opacity: 0; }
+
+/* ---------------- الرأس ---------------- */
+#header {
+  position: absolute; top: 22px; left: 24px; right: 24px; height: 120px;
+  display: flex; align-items: center; justify-content: space-between; z-index: 6;
+}
+.title {
+  font-family: 'Amiri', serif; font-weight: 700; font-size: 92px; line-height: 1;
+  background: linear-gradient(180deg, #fffbe6 0%, var(--gold) 45%, var(--gold-deep) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 210, 120, .55)) drop-shadow(0 4px 0 rgba(0,0,0,.45));
+  white-space: nowrap;
+}
+.title .orn { font-size: 54px; vertical-align: middle; }
+.pill {
+  min-width: 170px; height: 96px; border-radius: 48px;
+  background: var(--panel); border: 2px solid var(--panel-line);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 22px rgba(247, 213, 139, .15), 0 8px 24px rgba(0,0,0,.4);
+}
+.pill .lbl { font-size: 22px; color: var(--muted); line-height: 1.1; }
+.pill b { font-size: 46px; font-weight: 900; line-height: 1.1; color: var(--gold-2); font-variant-numeric: tabular-nums; }
+.pill.timer.low b { color: #ff9a8a; animation: pulse 1s infinite; }
+
+/* ---------------- شريط الحكمة ---------------- */
+#wisdom {
+  position: absolute; top: 158px; left: 40px; right: 40px; height: 116px; z-index: 6;
+  background:
+    linear-gradient(90deg, transparent, rgba(247,213,139,.18) 15%, rgba(247,213,139,.18) 85%, transparent),
+    linear-gradient(180deg, rgba(10,18,50,.85), rgba(10,18,50,.6));
+  border-top: 2px solid var(--panel-line); border-bottom: 2px solid var(--panel-line);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+#wisdom::before, #wisdom::after {
+  content: '❁'; position: absolute; top: 50%; transform: translateY(-50%);
+  color: var(--gold); font-size: 40px; opacity: .8;
+}
+#wisdom::before { right: 14px; } #wisdom::after { left: 14px; }
+.wisdom-inner { padding: 0 70px; transition: opacity .8s, transform .8s; }
+.wisdom-inner.fade { opacity: 0; transform: translateY(8px); }
+.wisdom-text { font-family: 'Amiri', serif; font-size: 38px; line-height: 1.35; color: #fffbe6; text-shadow: 0 0 14px rgba(255,220,150,.45); }
+.wisdom-text.ayah::before { content: '﴿ '; color: var(--gold); }
+.wisdom-text.ayah::after { content: ' ﴾'; color: var(--gold); }
+.wisdom-text.hadith::before { content: 'قال ﷺ: «'; color: var(--gold); font-size: .85em; }
+.wisdom-text.hadith::after { content: '»'; color: var(--gold); }
+.wisdom-src { font-size: 20px; color: var(--muted); }
+
+/* ---------------- المسبحة وأهل الكرم ---------------- */
+#infoRow { position: absolute; top: 292px; left: 30px; right: 30px; height: 220px; z-index: 6; }
+#tasbeeh { position: absolute; left: 0; top: 0; width: 220px; height: 220px; }
+#beads { width: 220px; height: 220px; filter: drop-shadow(0 0 8px rgba(255,220,150,.35)); }
+#beads .bead { fill: rgba(255,255,255,.12); stroke: rgba(247,213,139,.5); stroke-width: 1; transition: fill .3s, r .3s; }
+#beads .bead.on { fill: var(--gold); stroke: #fff; }
+#beads .bead.last { fill: #fff; }
+#tasbeeh.complete #beads { animation: spinGlow 1.6s ease-out; }
+.tasbeeh-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tasbeeh-center b { font-size: 58px; font-weight: 900; line-height: 1; color: var(--gold-2); }
+.tasbeeh-center span { font-size: 22px; color: var(--muted); }
+.tasbeeh-center small { font-size: 18px; color: var(--muted); margin-top: 2px; }
+
+#supporters {
+  position: absolute; right: 0; top: 6px; width: 560px; height: 208px;
+  background: var(--panel); border: 2px solid var(--panel-line); border-radius: 26px;
+  padding: 10px 22px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.sup-title { font-family: 'Amiri', serif; font-weight: 700; font-size: 30px; color: var(--gold); text-align: center; line-height: 1.2; }
+#supList { list-style: none; }
+#supList li { display: flex; align-items: center; gap: 12px; height: 50px; font-size: 26px; font-weight: 700; }
+#supList li .rank { width: 34px; text-align: center; font-size: 26px; }
+#supList li img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: #233; }
+#supList li .nm { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#supList li .cn { color: var(--gold-2); font-variant-numeric: tabular-nums; }
+#supList li.empty { justify-content: center; color: var(--muted); font-weight: 400; font-size: 24px; height: 140px; text-align: center; }
+
+/* ---------------- نوري ---------------- */
+#nouri { position: absolute; left: 290px; top: 296px; width: 150px; z-index: 9; }
+.nouri-body { width: 150px; height: 195px; animation: float 4s ease-in-out infinite; transform-origin: 50% 0; }
+.nouri-body svg { width: 100%; height: 100%; overflow: visible; }
+.nouri-svg .eyes-happy { display: none; }
+#nouri.happy .eyes-open { display: none; }
+#nouri.happy .eyes-happy { display: inline; }
+#nouri.happy .nouri-body { animation: hop .5s ease-in-out 3; }
+.nouri-aura { animation: glow 3s ease-in-out infinite; }
+.bubble {
+  position: absolute; top: 196px; left: 50%; width: max-content; max-width: 300px; text-align: center;
+  background: #fffbe6; color: #2a1a05; font-size: 21px; font-weight: 800; line-height: 1.35;
+  padding: 10px 16px; border-radius: 20px; box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  transition: opacity .4s, transform .4s; transform: translateX(-50%); transform-origin: 50% 0;
+}
+.bubble::before { content: ''; position: absolute; left: 50%; top: -14px; margin-left: -9px; border: 9px solid transparent; border-bottom: 14px solid #fffbe6; border-top: 0; }
+.bubble.hide { opacity: 0; transform: translateX(-50%) scale(.7); }
+
+/* ---------------- المنارات والمسجد ---------------- */
+#mosque { position: absolute; inset: 0; z-index: 1; }
+#mosque svg { width: 1080px; height: 1920px; }
+#mosque .arch { fill: #ffcf7a; opacity: .75; filter: drop-shadow(0 0 8px #ffb84d); animation: flicker 5s infinite; }
+#minarets {
+  position: absolute; left: 15px; right: 15px; top: 540px; height: 940px; z-index: 2;
+  display: flex; gap: 10px;
+}
+.minaret { position: relative; flex: 1; display: flex; justify-content: center; align-items: flex-end; }
+.minaret .minaret-svg { width: 200px; height: 900px; overflow: visible; }
+.minaret .light-fill, .minaret .light-edge { transition: y 1.2s cubic-bezier(.2,.8,.2,1); }
+.minaret .win { fill: #0a1028; stroke: rgba(255,255,255,.2); transition: fill .8s, filter .8s; }
+.minaret .win.lit { fill: #fff6c8; filter: drop-shadow(0 0 10px #ffe9a8); }
+.minaret .crescent { transition: filter 1s; }
+.minaret.full .crescent { filter: drop-shadow(0 0 22px #fff); animation: pulse 1s infinite; }
+.minaret .aura {
+  position: absolute; bottom: 0; left: 50%; width: 260px; height: 0; transform: translateX(-50%);
+  border-radius: 50% 50% 0 0; pointer-events: none; transition: height 1.2s, opacity 1.2s;
+  filter: blur(30px); opacity: .45;
+}
+.minaret.boost .aura { animation: muskAura 1.4s ease-in-out infinite; }
+.minaret .garden { position: absolute; bottom: -8px; left: 0; right: 0; height: 40px; display: flex; justify-content: center; flex-wrap: wrap-reverse; gap: 0 2px; }
+.minaret .garden span { width: 30px; height: 30px; animation: bloom .7s ease-out both; }
+.minaret .garden span svg { width: 100%; height: 100%; }
+.minaret .pct {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 30px; font-weight: 900; color: #fff; text-shadow: 0 2px 6px #000, 0 0 12px rgba(0,0,0,.8);
+}
+.minaret.leader .pct::before { content: '👑 '; }
+.minaret.hit .minaret-svg { animation: hit .5s ease-out; }
+
+/* ---------------- بطاقات الفرق ---------------- */
+#teams { position: absolute; left: 15px; right: 15px; top: 1492px; height: 176px; display: flex; gap: 10px; z-index: 6; }
+.team {
+  flex: 1; position: relative; border-radius: 24px; padding: 8px 8px 6px;
+  background: linear-gradient(180deg, rgba(10,18,50,.92), rgba(6,10,30,.92));
+  border: 2px solid var(--c); box-shadow: 0 0 22px color-mix(in srgb, var(--c) 45%, transparent), inset 0 0 16px color-mix(in srgb, var(--c) 25%, transparent);
+  display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden;
+}
+.team .no {
+  position: absolute; top: 6px; right: 8px; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--c); color: #0a1028; font-weight: 900; font-size: 28px; line-height: 40px;
+}
+.team .badge { margin-top: -2px; }
+.team .tname { font-family: 'Amiri', serif; font-weight: 700; font-size: 36px; line-height: 1; color: var(--g); margin-top: -4px; }
+.team .score { direction: ltr; unicode-bidi: isolate; font-size: 24px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.team .meta { font-size: 18px; color: var(--muted); }
+.team .top { position: absolute; top: 6px; left: 8px; width: 44px; height: 44px; }
+.team .top img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--g); object-fit: cover; }
+.team .boost {
+  position: absolute; inset: auto 0 0 0; height: 30px; font-size: 18px; font-weight: 900; color: #2a1a05;
+  background: linear-gradient(90deg, #ffe59a, #d9b8ff, #ffe59a); background-size: 200% 100%; animation: shimmer 1.5s linear infinite;
+  display: none; align-items: center; justify-content: center;
+}
+.team.boosted .boost { display: flex; }
+.team.bump { animation: bump .45s ease-out; }
+
+/* ---------------- دليل الهدايا والتعليمات ---------------- */
+#legend { position: absolute; left: 15px; right: 15px; top: 1684px; height: 108px; display: flex; gap: 10px; z-index: 6; }
+.gift-chip {
+  flex: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  background: var(--panel); border: 1.5px solid rgba(255,255,255,.18); border-radius: 20px;
+}
+.gift-chip .ic { width: 62px; height: 62px; flex: none; animation: float 3s ease-in-out infinite; }
+.gift-chip .ic svg { width: 100%; height: 100%; }
+.gift-chip:nth-child(2) .ic { animation-delay: -.7s; } .gift-chip:nth-child(3) .ic { animation-delay: -1.4s; } .gift-chip:nth-child(4) .ic { animation-delay: -2.1s; }
+.gift-chip b { display: block; font-size: 23px; color: var(--gold-2); line-height: 1.15; }
+.gift-chip small { display: block; font-size: 16px; color: var(--muted); line-height: 1.2; }
+
+#howto { position: absolute; left: 30px; right: 30px; top: 1808px; height: 84px; z-index: 6; display: flex; align-items: center; justify-content: center; }
+#howtoText {
+  font-size: 30px; font-weight: 800; text-align: center; padding: 10px 30px; border-radius: 40px;
+  background: linear-gradient(90deg, rgba(247,213,139,.0), rgba(247,213,139,.22), rgba(247,213,139,.0));
+  transition: opacity .5s;
+}
+#howtoText.fade { opacity: 0; }
+#howtoText em { font-style: normal; color: var(--gold-2); }
+
+/* ---------------- الأذكار الطائرة ---------------- */
+#dhikrLayer { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+.dhikr-fly {
+  position: absolute; font-family: 'Amiri', serif; font-weight: 700; font-size: 44px; white-space: nowrap;
+  color: #fffbe6; text-shadow: 0 0 16px var(--c, #ffe9a8), 0 0 4px #000;
+  animation: rise 3.2s ease-out forwards;
+}
+.dhikr-fly small { display: block; font-family: 'Cairo'; font-size: 20px; text-align: center; color: var(--c, #ffe9a8); }
+
+/* ---------------- تنبيه الهدايا ---------------- */
+#alerts { position: absolute; left: 70px; right: 70px; top: 560px; z-index: 11; pointer-events: none; transition: top .5s; }
+.quiz-on #alerts { top: 1130px; }
+.alert {
+  position: relative; display: flex; align-items: center; gap: 18px; padding: 16px 22px;
+  border-radius: 34px; border: 3px solid var(--c);
+  background: linear-gradient(135deg, rgba(12,20,56,.95), rgba(30,22,60,.95));
+  box-shadow: 0 0 40px color-mix(in srgb, var(--c) 60%, transparent), 0 20px 40px rgba(0,0,0,.5);
+  animation: alertIn .55s cubic-bezier(.2,1.4,.4,1) both;
+}
+.alert.out { animation: alertOut .45s ease-in forwards; }
+.alert .av { width: 118px; height: 118px; border-radius: 50%; border: 4px solid var(--c); object-fit: cover; flex: none; background: #223; }
+.alert .txt { flex: 1; min-width: 0; }
+.alert .who { font-size: 38px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alert .what { font-size: 28px; color: var(--gold-2); font-weight: 700; }
+.alert .eff { font-size: 22px; color: var(--muted); }
+.alert .gi { width: 120px; height: 120px; flex: none; animation: giftSpin 1.2s ease-out both; }
+.alert .gi svg, .alert .gi img { width: 100%; height: 100%; object-fit: contain; }
+.alert .cnt { position: absolute; left: 22px; bottom: -14px; font-size: 40px; font-weight: 900; color: #fff; text-shadow: 0 0 10px var(--c), 0 3px 0 #000; }
+.alert.grand { border-width: 5px; transform-origin: center; }
+.alert.grand .who { font-size: 44px; color: var(--gold-2); }
+
+/* ---------------- إشعارات صغيرة ---------------- */
+#toasts { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+.toast {
+  position: absolute; transform: translateX(-50%); white-space: nowrap;
+  display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 30px;
+  background: rgba(8,14,40,.88); border: 2px solid var(--c); font-size: 22px; font-weight: 800;
+  animation: toastUp 2.6s ease-out forwards;
+}
+.toast img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+.toast.center { left: 540px !important; font-size: 30px; padding: 10px 24px 10px 12px; }
+.toast.center img { width: 52px; height: 52px; }
+
+/* ---------------- سؤال النور ---------------- */
+#quiz {
+  position: absolute; left: 50px; right: 50px; top: 540px; z-index: 10;
+  border-radius: 40px; padding: 26px 34px 30px;
+  background: linear-gradient(180deg, rgba(8,40,40,.96), rgba(6,20,36,.97));
+  border: 3px solid #4fe3b8; box-shadow: 0 0 60px rgba(79,227,184,.45), 0 30px 60px rgba(0,0,0,.6);
+  transition: opacity .5s, transform .5s;
+}
+#quiz.hidden { opacity: 0; transform: scale(.9) translateY(30px); pointer-events: none; }
+.quiz-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.quiz-head .tag { font-family: 'Amiri'; font-weight: 700; font-size: 40px; color: #8affda; }
+.quiz-head .qt { font-size: 40px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; }
+.quiz-bar { height: 10px; border-radius: 5px; background: rgba(255,255,255,.12); overflow: hidden; margin-bottom: 18px; }
+.quiz-bar i { display: block; height: 100%; background: linear-gradient(90deg, #4fe3b8, #f7d58b); transition: width .25s linear; }
+.quiz-q { font-size: 46px; font-weight: 900; line-height: 1.35; text-align: center; margin-bottom: 20px; }
+.quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.opt {
+  position: relative; border-radius: 22px; padding: 14px 16px; min-height: 92px; overflow: hidden;
+  background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.2);
+  display: flex; align-items: center; gap: 14px; font-size: 32px; font-weight: 800;
+  transition: background .4s, border-color .4s, opacity .4s, transform .4s;
+}
+.opt .l {
+  flex: none; width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--gold); color: #2a1a05; font-weight: 900; font-size: 32px;
+}
+.opt .t { position: relative; flex: 1; z-index: 1; }
+.opt .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: rgba(79,227,184,.18); transition: width .4s; }
+.opt .n { position: relative; z-index: 1; font-size: 22px; color: var(--muted); }
+.quiz.revealed .opt { opacity: .4; }
+.quiz.revealed .opt.correct { opacity: 1; background: rgba(79,227,184,.3); border-color: #4fe3b8; transform: scale(1.04); box-shadow: 0 0 30px rgba(79,227,184,.6); }
+.quiz.revealed .opt.correct .l { background: #4fe3b8; }
+.quiz-foot { margin-top: 18px; text-align: center; font-size: 26px; color: var(--muted); min-height: 40px; }
+.quiz-foot b { color: var(--gold-2); }
+.quiz-winners { display: flex; justify-content: center; gap: 14px; margin-top: 8px; }
+.quiz-winners div { display: flex; flex-direction: column; align-items: center; font-size: 20px; font-weight: 800; max-width: 140px; }
+.quiz-winners img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #4fe3b8; object-fit: cover; }
+.quiz-winners div:first-child img { border-color: var(--gold); width: 84px; height: 84px; }
+.quiz-winners span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+
+/* ---------------- الفوز ---------------- */
+#victory {
+  position: absolute; inset: 0; z-index: 12; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--c) 40%, rgba(3,6,20,.9)), rgba(3,6,20,.95) 62%);
+  transition: opacity .8s;
+}
+#victory.hidden { opacity: 0; pointer-events: none; }
+#victory .rays {
+  position: absolute; left: 50%; top: 42%; width: 1800px; height: 1800px; margin: -900px 0 0 -900px;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c) 30%, transparent) 0 6deg, transparent 6deg 18deg);
+  mask-image: radial-gradient(circle, #000 20%, transparent 65%); -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 65%);
+  animation: spin 30s linear infinite;
+}
+#victory .v-inner { position: relative; text-align: center; padding: 0 60px; }
+#victory .v-small { font-family: 'Amiri'; font-size: 48px; color: var(--gold-2); }
+#victory .v-team { font-family: 'Amiri'; font-weight: 700; font-size: 140px; line-height: 1.3; margin-top: 16px; white-space: nowrap; color: var(--g); text-shadow: 0 0 40px var(--c), 0 6px 0 rgba(0,0,0,.5); animation: zoomIn 1s cubic-bezier(.2,1.4,.4,1) both; }
+#victory .v-sub { font-size: 38px; font-weight: 800; margin: 6px 0 36px; }
+#victory .v-badge { margin: 0 auto 10px; width: 200px; height: 200px; animation: zoomIn .8s .2s both; }
+#victory .v-badge svg { width: 100%; height: 100%; }
+#victory .v-top { display: flex; justify-content: center; align-items: flex-end; gap: 30px; }
+#victory .v-top div { display: flex; flex-direction: column; align-items: center; font-size: 26px; font-weight: 800; width: 220px; animation: zoomIn .7s both; }
+#victory .v-top div:nth-child(2) { animation-delay: .5s; } #victory .v-top div:nth-child(3) { animation-delay: .8s; }
+#victory .v-top img { width: 130px; height: 130px; border-radius: 50%; border: 5px solid var(--g); object-fit: cover; box-shadow: 0 0 30px var(--c); }
+#victory .v-top div.mvp img { width: 180px; height: 180px; border-color: var(--gold); }
+#victory .v-top .medal { font-size: 46px; line-height: 1; margin-bottom: -10px; z-index: 1; }
+#victory .v-top span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+#victory .v-top small { color: var(--gold-2); font-size: 22px; }
+#victory .v-next { margin-top: 40px; font-size: 30px; color: var(--muted); }
+#victory .v-dua { margin-top: 26px; font-family: 'Amiri'; font-size: 40px; color: #fffbe6; }
+
+#pausedOverlay { position: absolute; inset: 0; z-index: 13; display: grid; place-items: center; background: rgba(3,6,20,.6); font-size: 54px; font-weight: 900; color: var(--gold-2); }
+#pausedOverlay.hidden { display: none; }
+
+#soundBtn {
+  position: fixed; bottom: 16px; left: 16px; z-index: 100; font: 800 18px 'Cairo', sans-serif;
+  padding: 10px 18px; border-radius: 30px; border: 2px solid var(--gold); background: #0b1433; color: var(--gold-2); cursor: pointer;
+}
+.hidden { display: none; }
+#quiz.hidden, #victory.hidden { display: block; }
+#victory.hidden { display: flex; }
+
+/* ---------------- الحركات ---------------- */
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes hop { 0%,100% { transform: translateY(0) rotate(0); } 40% { transform: translateY(-34px) rotate(-6deg); } 70% { transform: translateY(0) rotate(5deg); } }
+@keyframes glow { 0%,100% { opacity: .25; } 50% { opacity: .55; } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+@keyframes flicker { 0%,100% { opacity: .75; } 45% { opacity: .62; } 50% { opacity: .85; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinGlow { 0% { transform: rotate(0); filter: drop-shadow(0 0 30px #fff); } 100% { transform: rotate(360deg); } }
+@keyframes rise { 0% { opacity: 0; transform: translate(-50%, 30px) scale(.7); } 15% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -360px) scale(.6); } }
+@keyframes alertIn { from { opacity: 0; transform: translateY(-40px) scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes alertOut { to { opacity: 0; transform: translateY(-30px) scale(.9); } }
+@keyframes giftSpin { 0% { transform: scale(0) rotate(-40deg); } 60% { transform: scale(1.25) rotate(10deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes toastUp { 0% { opacity: 0; transform: translate(-50%, 20px); } 12% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -70px); } }
+@keyframes bloom { from { transform: scale(0) rotate(-90deg); } to { transform: scale(1) rotate(0); } }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.07); } 100% { transform: scale(1); } }
+@keyframes hit { 0% { filter: brightness(1); } 30% { filter: brightness(1.8) drop-shadow(0 0 20px #fff); } 100% { filter: brightness(1); } }
+@keyframes muskAura { 0%,100% { opacity: .5; } 50% { opacity: .9; } }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes zoomIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }

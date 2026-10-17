@@ -17,6 +17,44 @@ export function commentText(data = {}) {
   return String(data.content ?? data.comment ?? '');
 }
 
+/**
+ * يحوّل رسائل هدايا تيك توك المتتالية (السلسلة/الكومبو) إلى زيادات فعلية.
+ * تيك توك يرسل رسالة لكل زيادة في السلسلة مع repeatCount تراكمي، فنحسب الفرق فقط
+ * حتى يظهر التأثير فوراً دون احتساب الهدية مرتين.
+ */
+export class GiftStreaks {
+  constructor() { this.seen = new Map(); }
+
+  /** @returns {number} عدد الهدايا الجديدة في هذه الرسالة */
+  delta({ userId, giftId, groupId, repeatCount = 1, repeatEnd = false, streakable = false }) {
+    const count = Math.max(1, Number(repeatCount) || 1);
+    if (!streakable) return count;
+    const key = `${userId}:${giftId}:${groupId || ''}`;
+    const prev = this.seen.get(key) || 0;
+    if (repeatEnd) this.seen.delete(key);
+    else this.seen.set(key, Math.max(prev, count));
+    if (this.seen.size > 5000) this.seen.clear();
+    return Math.max(0, count - prev);
+  }
+}
+
+/** يقرأ بيانات الهدية من رسالة تيك توك (يدعم صيغة الإصدار 2 والصيغ القديمة) */
+export function normalizeGift(data = {}) {
+  const g = data.gift || data.giftDetails || data.extendedGiftInfo || {};
+  const image = g.image?.urlList?.[0] || g.giftImage?.giftPictureUrl || data.giftPictureUrl || '';
+  const type = g.type ?? g.giftType ?? data.giftType;
+  return {
+    id: String(data.giftId ?? g.id ?? ''),
+    name: String(g.name || g.giftName || data.giftName || data.extendedGiftInfo?.name || 'هدية'),
+    coins: Number(g.diamondCount ?? data.diamondCount ?? data.extendedGiftInfo?.diamond_count ?? 0) || 0,
+    image,
+    streakable: type === 1 || g.combo === true,
+    repeatCount: Number(data.repeatCount) || 1,
+    repeatEnd: Boolean(data.repeatEnd),
+    groupId: String(data.groupId || ''),
+  };
+}
+
 export function normalizeUser(u = {}) {
   const uniqueId = u.uniqueId || u.displayId || '';
   const id = String(u.userId || u.id || uniqueId || '');
@@ -30,7 +68,8 @@ export function normalizeUser(u = {}) {
 
 /**
  * غلاف بسيط حول tiktok-live-connector يعيد الاتصال تلقائياً عند الانقطاع.
- * الأحداث: 'comment' ({user, text}), 'status' ({state, message, roomId?})
+ * الأحداث: 'comment' ({user, text}), 'gift' ({user, gift}), 'like' ({user, count}),
+ *          'follow' ({user}), 'share' ({user}), 'status' ({state, message, roomId?})
  */
 export class TikTokSource extends EventEmitter {
   constructor({ signApiKey } = {}) {
@@ -42,6 +81,7 @@ export class TikTokSource extends EventEmitter {
     this.message = '';
     this.reconnectTimer = null;
     this.wanted = false;
+    this.streaks = new GiftStreaks();
   }
 
   status() {
@@ -84,6 +124,29 @@ export class TikTokSource extends EventEmitter {
         console.warn('[TikTok] وصل تعليق بدون نص. الحقول الموجودة:', Object.keys(data || {}).join(', '));
       }
       this.emit('comment', { user, text });
+    });
+
+    conn.on(WebcastEvent.GIFT, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (!user.id) return;
+      const gift = normalizeGift(data);
+      const count = this.streaks.delta({ userId: user.id, giftId: gift.id, ...gift });
+      if (count > 0) this.emit('gift', { user, gift: { ...gift, count } });
+    });
+
+    conn.on(WebcastEvent.LIKE, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (user.id) this.emit('like', { user, count: Number(data.count ?? data.likeCount) || 1 });
+    });
+
+    conn.on(WebcastEvent.FOLLOW, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (user.id) this.emit('follow', { user });
+    });
+
+    conn.on(WebcastEvent.SHARE, (data) => {
+      const user = normalizeUser(data.user || data);
+      if (user.id) this.emit('share', { user });
     });
 
     conn.on(ControlEvent.DISCONNECTED, () => {

@@ -1,12 +1,14 @@
 {
   "name": "tiktok-red-light-game",
   "version": "1.0.0",
-  "description": "لعبة تفاعلية لبث تيك توك المباشر: الضوء الأحمر / الضوء الأخضر (مستوحاة من لعبة الحبار)",
+  "description": "ألعاب تفاعلية لبث تيك توك المباشر: «منارة النور» الإسلامية و«الضوء الأحمر / الضوء الأخضر»",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "demo": "node server.js --demo",
+    "noor": "node noor-server.js",
+    "noor:demo": "node noor-server.js --demo",
     "test": "node --test test/*.test.js"
   },
   "engines": {
