@@ -1,5 +1,5 @@
-/* التعليق الصوتي بصوت «الجدّ الحكيم» + ترجمة مكتوبة على الشاشة (لمن يشاهد بدون صوت)
-   تأثير الرجل العجوز يُضاف لحظياً: إبطاء وتعميق، بحّة دافئة، رجفة خفيفة في الصوت، وصدى غرفة. */
+/* التعليق الصوتي بصوت مقدّم البرنامج + ترجمة مكتوبة على الشاشة (لمن يشاهد بدون صوت)
+   معالجة خفيفة لوضوح الكلام فوق الموسيقى: إزالة الهمهمة، إبراز مخارج الحروف، وضغط يثبّت مستوى الصوت. */
 (() => {
   'use strict';
 
@@ -27,44 +27,21 @@
 
     get ctx() { return window.BrainMusic.ctx; }
 
-    /** سلسلة تأثير «الرجل العجوز» — تُبنى مرة واحدة */
+    /** سلسلة وضوح الصوت — تُبنى مرة واحدة */
     chain() {
       if (this.input) return this.input;
       const c = this.ctx;
-      const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 110;
-      const warm = c.createBiquadFilter(); warm.type = 'peaking'; warm.frequency.value = 280; warm.gain.value = 4; warm.Q.value = 0.8;
-      const rasp = c.createBiquadFilter(); rasp.type = 'peaking'; rasp.frequency.value = 2600; rasp.gain.value = 3; rasp.Q.value = 1.2;
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 6200;
-      // رجفة الصوت: تأخير صغير يتذبذب بتردد ~5.5 هرتز (vibrato)
-      const wobble = c.createDelay(0.05); wobble.delayTime.value = 0.012;
-      const lfo = c.createOscillator(); lfo.frequency.value = 5.5;
-      const depth = c.createGain(); depth.gain.value = 0.0011;
-      lfo.connect(depth).connect(wobble.delayTime); lfo.start();
-      // تموّج خفيف في الشدة (tremolo)
-      const trem = c.createGain(); trem.gain.value = 0.9;
-      const lfo2 = c.createOscillator(); lfo2.frequency.value = 5.5;
-      const tdepth = c.createGain(); tdepth.gain.value = 0.08;
-      lfo2.connect(tdepth).connect(trem.gain); lfo2.start();
-      // صدى غرفة قصير
-      const verb = c.createConvolver(); verb.buffer = this.impulse(1.3);
-      const wet = c.createGain(); wet.gain.value = 0.16;
-      const out = c.createGain(); out.gain.value = 1.25;
+      const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 90;
+      const mud = c.createBiquadFilter(); mud.type = 'peaking'; mud.frequency.value = 320; mud.gain.value = -2; mud.Q.value = 1;
+      const presence = c.createBiquadFilter(); presence.type = 'peaking'; presence.frequency.value = 3200; presence.gain.value = 4; presence.Q.value = 0.9;
+      const air = c.createBiquadFilter(); air.type = 'highshelf'; air.frequency.value = 8000; air.gain.value = 2;
+      const comp = c.createDynamicsCompressor();
+      comp.threshold.value = -20; comp.ratio.value = 3; comp.attack.value = 0.005; comp.release.value = 0.15;
+      const out = c.createGain(); out.gain.value = 1.35;
       this.input = c.createGain();
-      this.input.connect(hp).connect(warm).connect(rasp).connect(lp).connect(wobble).connect(trem);
-      trem.connect(out);
-      trem.connect(verb).connect(wet).connect(out);
+      this.input.connect(hp).connect(mud).connect(presence).connect(air).connect(comp).connect(out);
       out.connect(window.BrainMusic.sfxOut() || c.destination);
       return this.input;
-    }
-
-    impulse(sec) {
-      const c = this.ctx; const len = Math.floor(c.sampleRate * sec);
-      const b = c.createBuffer(2, len, c.sampleRate);
-      for (let ch = 0; ch < 2; ch++) {
-        const d = b.getChannelData(ch);
-        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2.6;
-      }
-      return b;
     }
 
     async buffer(id) {
@@ -104,10 +81,9 @@
       if (!buf) { this.playing = null; this.next(); return; }
       const src = this.ctx.createBufferSource();
       src.buffer = buf;
-      src.playbackRate.value = 0.94; // أبطأ وأعمق قليلاً = صوت أكبر سناً
       src.connect(this.chain());
-      const dur = buf.duration / src.playbackRate.value;
-      window.BrainMusic.duck(0.32, dur);
+      const dur = buf.duration;
+      window.BrainMusic.duck(0.22, dur); // الموسيقى تنخفض أكثر ليبقى الكلام واضحاً
       this.caption(line.caption, dur);
       src.onended = () => {
         if (this.playing !== token) return;
