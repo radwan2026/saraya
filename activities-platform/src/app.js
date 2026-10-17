@@ -199,6 +199,16 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     initialPassword = adminPassword || generatePassword();
     return buildSeed({ adminPassword: initialPassword });
   });
+  // صور الأنشطة التجريبية التي أُضيفت بعد الإصدار الأول: تُملأ فقط إن كانت الصورة ما زالت فارغة.
+  const SAMPLE_IMAGES = {
+    'مسابقة حفظ القرآن الكريم': '/assets/quran-competition.webp',
+    'معرض المواهب الفنية: تصوير ورسم وخط عربي': '/assets/art-talents.webp',
+    'حملة التبرع بالدم': '/assets/blood-donation.webp',
+  };
+  const missing = store.all('activities').filter((a) => !a.image && SAMPLE_IMAGES[a.title]);
+  for (const a of missing) a.image = SAMPLE_IMAGES[a.title];
+  if (missing.length) store.save();
+
   const docs = loadDocs(new URL('content/', root));
   const sessions = createSessions();
   const S = () => store.data.settings;

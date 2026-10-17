@@ -108,7 +108,7 @@ export function buildSeed({ adminPassword }) {
         description: 'مسابقة ثقافية للعاملين والعاملات في حفظ وتجويد القرآن الكريم، بجوائز قيّمة للفائزين.',
         location: 'قاعة الاجتماعات الرئيسية',
         startDate: isoDate(25), endDate: isoDate(27), deadline: isoDate(18),
-        capacity: 0, image: '', status: 'open', published: true, requiresApproval: false,
+        capacity: 0, image: '/assets/quran-competition.webp', status: 'open', published: true, requiresApproval: false,
       }),
       row({
         title: 'معرض المواهب الفنية: تصوير ورسم وخط عربي',
@@ -116,7 +116,7 @@ export function buildSeed({ adminPassword }) {
         description: 'شارك بأعمالك الفنية في معرض داخلي يحتفي بمواهب العاملين، وتُكرّم أفضل الأعمال.',
         location: 'بهو المبنى الرئيسي',
         startDate: isoDate(30), endDate: isoDate(32), deadline: isoDate(22),
-        capacity: 0, image: '', status: 'open', published: true, requiresApproval: false,
+        capacity: 0, image: '/assets/art-talents.webp', status: 'open', published: true, requiresApproval: false,
       }),
       row({
         title: 'حملة التبرع بالدم',
@@ -124,7 +124,7 @@ export function buildSeed({ adminPassword }) {
         description: 'مبادرة تطوعية بالتعاون مع الهلال الأحمر، ساهم وأنقذ حياة.',
         location: 'مقر الشركة',
         startDate: isoDate(8), endDate: isoDate(8), deadline: isoDate(7),
-        capacity: 80, image: '', status: 'open', published: true, requiresApproval: false,
+        capacity: 80, image: '/assets/blood-donation.webp', status: 'open', published: true, requiresApproval: false,
       }),
       row({
         title: 'فريق قدامى اللاعبين — مباريات ودية',
