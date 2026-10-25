@@ -233,19 +233,38 @@ test('complaints get a ticket, email the committee and can be tracked', async ()
   assert.equal((await call('GET', `/api/complaints/track?ticket=${r.data.ticket}&employeeId=1`)).status, 404);
 });
 
-test('talent registry: consent required, duplicates blocked, committee evaluates', async () => {
-  const base = { ...employee, discipline: 'الشطرنج', category: 'cultural', level: 'club', affiliation: 'club', clubName: 'نادي الشطرنج' };
-  assert.equal((await call('POST', '/api/talents', { ...base, consent: false })).status, 400);
-  assert.equal((await call('POST', '/api/talents', { ...base, consent: true })).status, 201);
-  assert.equal((await call('POST', '/api/talents', { ...base, consent: true })).status, 409);
+test('talent inventory form: validation, one active request per employee, committee evaluation and export', async () => {
+  const form = {
+    name: 'أحمد علي محمد الورفلي', employeeId: '١٢٣٤٥', age: 31, branch: 'فرع المنطقة الغربية', department: 'الشبكات',
+    division: 'دائرة التشغيل', section: 'قسم الصيانة', phone: '0912345678', email: 'a@x.ly',
+    fields: ['sports', 'innovation', 'bogus'], sportType: 'team', fieldDescription: 'كرة القدم والبرمجة',
+    level: 'advanced', levelDescription: 'لاعب في نادي الاتحاد', achievements: 'بطولة 2024',
+    needs: ['training', 'other'], otherNeed: 'أخصائي تغذية', needsDescription: 'دورات تدريبية', extra: 'لا شيء', consent: true,
+  };
+  assert.equal((await call('POST', '/api/talents', { ...form, consent: false })).status, 400);
+  assert.equal((await call('POST', '/api/talents', { ...form, fields: [] })).status, 400, 'a field is required');
+  assert.equal((await call('POST', '/api/talents', { ...form, fields: ['other'] })).status, 400, '"other" needs a description');
+  assert.equal((await call('POST', '/api/talents', { ...form, level: '' })).status, 400, 'level is required');
+  assert.equal((await call('POST', '/api/talents', { ...form, age: 7 })).status, 400);
+  assert.equal((await call('POST', '/api/talents', form)).status, 201);
+  assert.equal((await call('POST', '/api/talents', { ...form, fields: ['arts'] })).status, 409, 'one active request per employee');
   assert.equal((await call('GET', '/api/talents/stats')).data.registered, 0, 'new requests are not counted until accepted');
+
   const [t] = (await call('GET', '/api/admin/talents', undefined, { auth: true })).data;
+  assert.deepEqual(t.fields, ['sports', 'innovation']);
+  assert.equal(t.employeeId, '12345');
+  assert.equal(t.sportType, 'team');
+  assert.equal(t.otherNeed, 'أخصائي تغذية');
   const upd = await call('PATCH', `/api/admin/talents/${t.id}`, { status: 'sponsored', rating: 4, evaluation: 'موهبة واعدة' }, { auth: true });
   assert.equal(upd.data.status, 'sponsored');
   const stats = (await call('GET', '/api/talents/stats')).data;
-  assert.equal(stats.registered, 1);
-  assert.equal(stats.sponsored, 1);
-  assert.equal(stats.byCategory.cultural, 1);
+  assert.deepEqual([stats.registered, stats.sponsored, stats.byField.sports, stats.byField.innovation], [1, 1, 1, 1]);
+
+  const csv = await call('GET', '/api/admin/talents.csv', undefined, { auth: true });
+  assert.equal(csv.status, 200);
+  assert.match(csv.data, /أحمد علي محمد الورفلي/);
+  assert.match(csv.data, /رياضة \(جماعية\)، ابتكار/);
+  assert.match(csv.data, /تدريب ودورات، أخصائي تغذية/);
 });
 
 test('teams: public view hides employee ids and lists linked participations; deleting unlinks', async () => {
@@ -332,6 +351,7 @@ test('older databases migrate to the external-participation model', () => {
     users: [{ id: 'u1', username: 'x', role: 'member', permissions: ['stars', 'posts'], active: true }],
     activities: [{ id: 'a1', title: 'قديم', status: 'closed', published: true }],
     stars: [{ id: 's1', name: 'نجم' }], ideas: [],
+    talents: [{ id: 't1', name: 'قديم', employeeId: '5', category: 'arts', discipline: 'الخط العربي', level: 'club', clubName: 'مركز الفنون', needs: 'أدوات', status: 'new', createdAt: '2026-01-01' }],
   }));
   const { store } = createApp({ dataDir: dir, log: () => {} });
   const a = store.find('activities', 'a1');
@@ -340,5 +360,8 @@ test('older databases migrate to the external-participation model', () => {
   assert.deepEqual(store.find('users', 'u1').permissions.sort(), ['posts', 'talents']);
   assert.match(store.data.settings.tagline, /محفل/);
   assert.deepEqual(store.all('teams'), []);
+  const t = store.find('talents', 't1');
+  assert.deepEqual([t.fields, t.fieldDescription, t.level, t.levelDescription, t.needsDescription], [['arts'], 'الخط العربي', 'advanced', 'مركز الفنون', 'أدوات']);
+  assert.deepEqual(t.needs, []);
   fs.rmSync(dir, { recursive: true, force: true });
 });

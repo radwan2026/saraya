@@ -33,9 +33,17 @@ export const RESULT_RANKS = {
   honor: 'تكريم / جائزة خاصة', participation: 'مشاركة مشرّفة',
 };
 const AFFILIATIONS = { none: 'غير منتسب', club: 'منتسب لنادٍ', national: 'منتسب لمنتخب وطني', other: 'جهة أخرى' };
-const TALENT_LEVELS = {
-  amateur: 'هاوٍ', regular: 'ممارس منتظم', club: 'لاعب أو عضو نادٍ', national: 'منتخب وطني', professional: 'محترف / خبير',
+// نموذج حصر المواهب داخل شركة المدار الجديد.
+const TALENT_FIELDS = { sports: 'رياضة', literature: 'أدب', innovation: 'ابتكار', arts: 'فنون', media: 'إعلام', other: 'أخرى' };
+const TALENT_FIELD_HINTS = {
+  sports: 'جماعية – فردية', literature: 'كتابة – شعر – قصة – رواية – الخ', innovation: 'اختراع – برمجة – أبحاث – علوم – الخ',
+  arts: 'رسم – خط – تصوير – تصميم – الخ', media: 'مونتاج – إخراج – إذاعة – تقديم – صناعة محتوى – الخ', other: '',
 };
+const SPORT_TYPES = { team: 'جماعية', individual: 'فردية' };
+const TALENT_LEVELS = { beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'متقدم', professional: 'محترف' };
+const TALENT_NEEDS = { training: 'تدريب ودورات', equipment: 'تجهيز وأدوات', exposure: 'فرص عرض ومشاركة', media: 'دعم إعلامي', other: 'أخرى' };
+const BRANCHES = ['الإدارة العامة', 'فرع المنطقة الغربية', 'فرع المنطقة الشرقية', 'فرع المنطقة الجنوبية', 'فرع المنطقة الوسطى'];
+const keysOf = (dict) => (v) => [...new Set((Array.isArray(v) ? v : []).map(String).filter((k) => k in dict))];
 const TALENT_STATUSES = ['new', 'evaluating', 'registered', 'sponsored', 'declined'];
 const TEAM_STATUSES = { forming: 'قيد التشكيل', training: 'في مرحلة الإعداد', active: 'جاهز للمشاركة', inactive: 'غير نشط' };
 
@@ -258,6 +266,19 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       migrated = true;
     }
   }
+  // طلبات المواهب بصيغة الإصدار السابق ← حقول نموذج حصر المواهب.
+  const oldCategoryToField = { sports: 'sports', cultural: 'literature', arts: 'arts', volunteer: 'other', social: 'other', other: 'other' };
+  const oldLevelToNew = { amateur: 'beginner', regular: 'intermediate', club: 'advanced', national: 'advanced', professional: 'professional' };
+  for (const t of store.all('talents')) {
+    if (Array.isArray(t.fields)) continue;
+    t.fields = [oldCategoryToField[t.category] || 'other'];
+    t.fieldDescription = t.discipline || '';
+    t.level = oldLevelToNew[t.level] || 'beginner';
+    t.levelDescription = [t.clubName].filter(Boolean).join(' — ');
+    t.needsDescription = typeof t.needs === 'string' ? t.needs : '';
+    t.needs = [];
+    migrated = true;
+  }
   if (S0().tagline === 'معاً نصنع بيئة عمل نابضة بالحياة — رياضة، ثقافة، فن وتطوع') {
     S0().tagline = 'نمثّل الشركة بفخر في كل محفل — بطولات، مسابقات، ومواهب نرعاها ونجهّزها';
     migrated = true;
@@ -293,7 +314,8 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       departments: s.departments || [], maxActivitiesPerEmployee: s.maxActivitiesPerEmployee || 0,
       categories: CATEGORIES, postTypes: POST_TYPES, complaintTypes: COMPLAINT_TYPES, contractTypes: CONTRACT_TYPES,
       stages: STAGES, levels: LEVELS, resultRanks: RESULT_RANKS, affiliations: AFFILIATIONS,
-      talentLevels: TALENT_LEVELS, teamStatuses: TEAM_STATUSES, defaultChecklist: DEFAULT_CHECKLIST,
+      talentLevels: TALENT_LEVELS, talentFields: TALENT_FIELDS, talentFieldHints: TALENT_FIELD_HINTS, sportTypes: SPORT_TYPES,
+      talentNeeds: TALENT_NEEDS, branches: BRANCHES, teamStatuses: TEAM_STATUSES, defaultChecklist: DEFAULT_CHECKLIST,
     };
   };
 
@@ -588,29 +610,41 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
 
   const talentStats = () => {
     const accepted = store.all('talents').filter((t) => ['registered', 'sponsored'].includes(t.status));
-    const byCategory = {};
-    for (const t of accepted) byCategory[t.category] = (byCategory[t.category] || 0) + 1;
-    return { registered: accepted.length, sponsored: accepted.filter((t) => t.status === 'sponsored').length, byCategory };
+    const byField = {};
+    for (const t of accepted) for (const f of t.fields || []) byField[f] = (byField[f] || 0) + 1;
+    return { registered: accepted.length, sponsored: accepted.filter((t) => t.status === 'sponsored').length, byField };
   };
+
+  const talentSummary = (t) => (t.fields || []).map((f) => (f === 'other' && t.otherField ? t.otherField
+    : f === 'sports' && t.sportType ? `${TALENT_FIELDS.sports} (${SPORT_TYPES[t.sportType]})` : TALENT_FIELDS[f])).join('، ');
 
   app.get('/api/talents/stats', (req, res) => res.json(talentStats()));
 
+  // نموذج حصر المواهب داخل شركة المدار الجديد.
   app.post('/api/talents', publicLimiter, (req, res) => {
     const d = clean(req.body, {
-      name: str(120), employeeId: normalizeEmployeeId, jobTitle: str(160), department: str(160), phone: str(30),
-      category: oneOf(Object.keys(CATEGORIES), 'sports'), discipline: str(160), level: oneOf(Object.keys(TALENT_LEVELS), 'amateur'),
-      affiliation: oneOf(Object.keys(AFFILIATIONS), 'none'), clubName: str(160), achievements: str(5000),
-      needs: str(2000), wantsSponsorship: bool, consent: bool,
+      name: str(160), employeeId: normalizeEmployeeId, age: int(0, 99), branch: str(120), department: str(160),
+      division: str(160), section: str(160), phone: str(30), email: str(160),
+      fields: keysOf(TALENT_FIELDS), sportType: oneOf(['', ...Object.keys(SPORT_TYPES)], ''), otherField: str(160),
+      fieldDescription: str(3000), level: oneOf(Object.keys(TALENT_LEVELS), ''), levelDescription: str(3000),
+      achievements: str(5000), needs: keysOf(TALENT_NEEDS), otherNeed: str(160), needsDescription: str(3000),
+      extra: str(5000), consent: bool,
     });
     requireFields(d, {
-      name: 'الاسم', employeeId: 'الرقم الوظيفي', department: 'الإدارة / المكتب', phone: 'رقم الهاتف', discipline: 'مجال الموهبة',
+      name: 'الاسم الرباعي', employeeId: 'الرقم الوظيفي', department: 'الإدارة', phone: 'رقم الهاتف', level: 'مستوى الموهبة',
     });
+    if (d.age && (d.age < 16 || d.age > 80)) fail(400, 'يرجى إدخال عمر صحيح');
+    if (!d.fields.length) fail(400, 'اختر مجال الموهبة (مجالاً واحداً على الأقل)');
+    if (d.fields.includes('other') && !d.otherField) fail(400, 'اكتب مجال الموهبة في خانة «أخرى»');
+    if (!d.fields.includes('sports')) d.sportType = '';
+    if (!d.fields.includes('other')) d.otherField = '';
+    if (!d.needs.includes('other')) d.otherNeed = '';
     if (!d.consent) fail(400, 'يجب الموافقة على القيد في سجل المواهب (القيد اختياري وفق المادة 30)');
-    if (store.all('talents').some((t) => t.employeeId === d.employeeId && t.discipline === d.discipline && t.status !== 'declined')) {
-      fail(409, 'لديك طلب قيد سابق في هذا المجال');
+    if (store.all('talents').some((t) => t.employeeId === d.employeeId && t.status !== 'declined')) {
+      fail(409, 'لديك طلب قائم في سجل المواهب — يمكنك التواصل مع اللجنة لتحديثه');
     }
-    store.insert('talents', { ...d, status: 'new', evaluation: '', rating: 0 });
-    notifyCommittee(`طلب قيد موهبة: ${d.discipline}`, `${d.name} (${d.employeeId}) — ${d.department}\nالمستوى: ${TALENT_LEVELS[d.level]}\n\n${d.achievements}`);
+    const saved = store.insert('talents', { ...d, status: 'new', evaluation: '', rating: 0 });
+    notifyCommittee(`نموذج حصر المواهب: ${d.name}`, `${d.name} (${d.employeeId}) — ${d.department}\nالمجال: ${talentSummary(saved)}\nالمستوى: ${TALENT_LEVELS[d.level]}\n\n${d.fieldDescription}`);
     res.status(201).json({ ok: true });
   });
 
@@ -862,6 +896,24 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
   // سجل المواهب (المواد 26-30 من الميثاق)
   app.get('/api/admin/talents', auth('talents'), (req, res) => {
     res.json(store.all('talents').filter((t) => !req.query.status || t.status === req.query.status).sort(byDateDesc('createdAt')));
+  });
+
+  app.get('/api/admin/talents.csv', auth('talents'), (req, res) => {
+    const statusLabel = { new: 'جديد', evaluating: 'قيد التقييم', registered: 'مقيد بالسجل', sponsored: 'ترعاه الشركة', declined: 'غير مقبول' };
+    const header = ['الاسم الرباعي', 'الرقم الوظيفي', 'العمر', 'الفرع', 'الإدارة', 'الدائرة', 'القسم', 'الهاتف', 'البريد', 'المجال',
+      'وصف المجال', 'المستوى', 'وصف المستوى والجهة', 'الإنجازات والمشاركات', 'الاحتياجات', 'وصف الاحتياج', 'إضافات', 'الحالة', 'التقييم', 'ملاحظات اللجنة', 'تاريخ الطلب'];
+    const cell = (v) => {
+      let x = String(v ?? '');
+      if (/^[=+\-@]/.test(x)) x = `'${x}`;
+      return `"${x.replace(/"/g, '""')}"`;
+    };
+    const rows = store.all('talents').filter((t) => !req.query.status || t.status === req.query.status).sort(byDateDesc('createdAt'))
+      .map((t) => [t.name, t.employeeId, t.age || '', t.branch, t.department, t.division, t.section, t.phone, t.email, talentSummary(t),
+        t.fieldDescription, TALENT_LEVELS[t.level] || '', t.levelDescription, t.achievements,
+        (t.needs || []).map((n) => (n === 'other' && t.otherNeed ? t.otherNeed : TALENT_NEEDS[n])).join('، '), t.needsDescription, t.extra,
+        statusLabel[t.status], t.rating || '', t.evaluation, t.createdAt.slice(0, 10)]);
+    res.set('Content-Disposition', 'attachment; filename="talents.csv"');
+    res.type('text/csv; charset=utf-8').send(`\uFEFF${[header, ...rows].map((r) => r.map(cell).join(',')).join('\r\n')}`);
   });
 
   app.patch('/api/admin/talents/:id', auth('talents'), (req, res) => {

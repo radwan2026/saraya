@@ -410,36 +410,71 @@ async function pageAchievements() {
     </section>`;
 }
 
+const TALENT_FIELD_ICONS = { sports: '⚽', literature: '✍️', innovation: '💡', arts: '🎨', media: '🎬', other: '✨' };
+
 async function pageTalents() {
   const st = await api('/api/talents/stats');
-  $app.innerHTML = `${pageHead('سجل المواهب', 'نكتشف المواهب ونؤهلها وندعمها لتمثيل الشركة خارجياً — المواد (26–30) من الميثاق')}
+  const me = store.get('employee', {});
+  const S = SETTINGS;
+  const box = (name, key, label, hint) => `<label class="option"><input type="checkbox" name="${name}" value="${key}"> <span>${label}${hint ? ` <small class="muted">(${esc(hint)})</small>` : ''}</span></label>`;
+  $app.innerHTML = `${pageHead('سجل المواهب', 'نموذج حصر المواهب داخل شركة المدار الجديد — نكتشف المواهب ونؤهلها وندعمها لتمثيل الشركة')}
     <section class="section container">
       <div class="medals">
         <div class="stat"><b>${st.registered}</b><span>موهبة مقيدة</span></div>
         <div class="stat"><b>${st.sponsored}</b><span>موهبة ترعاها الشركة</span></div>
-        ${Object.entries(st.byCategory).slice(0, 2).map(([k, n]) => `<div class="stat"><b>${n}</b><span>${CATEGORY_ICONS[k] || ''} ${esc(SETTINGS.categories[k] || k)}</span></div>`).join('')}
+        ${Object.entries(st.byField).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, n]) => `<div class="stat"><b>${n}</b><span>${TALENT_FIELD_ICONS[k] || ''} ${esc(S.talentFields[k] || k)}</span></div>`).join('')}
       </div>
     </section>
     <section class="section container layout-2" style="padding-top:20px">
       <div class="panel" id="talentPanel">
-        <h3>⭐ طلب القيد في سجل المواهب</h3>
-        <form class="form" id="talentForm">
-          ${employeeFields({})}
+        <div class="flex" style="justify-content:space-between"><h3 style="margin:0">📋 نموذج حصر المواهب</h3><a class="btn small ghost" href="/docs/talent-form.pdf" download>⬇️ النموذج الورقي (PDF)</a></div>
+        <div class="alert info mt" style="font-size:14.5px">يُعد هذا النموذج جزءاً من منظومة تطوير وتنمية المواهب بالشركة، ولا يترتب عليه أي التزام أو قرار إلا بعد دراسة الطلب من لجنة الأنشطة واعتماده وفق اللوائح والسياسات النافذة، كما تلتزم الشركة بمبدأ تكافؤ الفرص وعدم التمييز بين العاملين في جميع مراحل الفرز والتقييم.</div>
+        <form class="form mt" id="talentForm">
+          <h4 class="form-sec"><span>1</span> البيانات الشخصية</h4>
           <div class="row">
-            <div class="field"><label>المجال</label><select class="input" name="category">${Object.entries(SETTINGS.categories).map(([k, v]) => `<option value="${k}">${CATEGORY_ICONS[k]} ${esc(v)}</option>`).join('')}</select></div>
-            <div class="field"><label>الموهبة / اللعبة <span class="req">*</span></label><input class="input" name="discipline" required maxlength="160" placeholder="مثال: كرة القدم، الشطرنج، الخط العربي، البرمجة"></div>
+            <div class="field"><label>الاسم الرباعي <span class="req">*</span></label><input class="input" name="name" required maxlength="160" value="${esc(me.name)}"></div>
+            <div class="field"><label>الرقم الوظيفي <span class="req">*</span></label><input class="input" name="employeeId" required maxlength="30" inputmode="numeric" value="${esc(me.employeeId)}"></div>
           </div>
           <div class="row">
-            <div class="field"><label>المستوى</label><select class="input" name="level">${Object.entries(SETTINGS.talentLevels).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
-            <div class="field"><label>الانتساب</label><select class="input" name="affiliation">${Object.entries(SETTINGS.affiliations).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+            <div class="field"><label>العمر</label><input class="input" name="age" type="number" min="16" max="80"></div>
+            <div class="field"><label>الفرع</label><select class="input" name="branch"><option value="">— اختر —</option>${S.branches.map((b) => `<option>${esc(b)}</option>`).join('')}</select></div>
           </div>
-          <div class="field"><label>اسم النادي / المنتخب / الجهة (إن وجد)</label><input class="input" name="clubName" maxlength="160"></div>
-          <div class="field"><label>الإنجازات والمشاركات السابقة</label><textarea class="input" name="achievements" maxlength="5000" placeholder="بطولات، ميداليات، شهادات، مشاركات محلية أو دولية..."></textarea></div>
-          <div class="field"><label>ما الذي تحتاجه لتطوير موهبتك؟</label><textarea class="input" name="needs" maxlength="2000" style="min-height:70px" placeholder="تدريب، معدات، تفرغ، رعاية للمشاركة في بطولة..."></textarea></div>
-          <label class="check"><input type="checkbox" name="wantsSponsorship"><span>أرغب في دراسة رعاية الشركة لمشاركاتي الخارجية (المواد 46–49).</span></label>
-          <label class="check"><input type="checkbox" name="consent" required><span>أوافق على قيد اسمي في سجل المواهب بالشركة، وأعلم أن القيد اختياري (المادة 30).</span></label>
+          <div class="row">
+            <div class="field"><label>الإدارة <span class="req">*</span></label><input class="input" name="department" required maxlength="160" list="deps" value="${esc(me.department)}"><datalist id="deps">${(S.departments || []).map((d) => `<option value="${esc(d)}">`).join('')}</datalist></div>
+            <div class="field"><label>الدائرة</label><input class="input" name="division" maxlength="160"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>القسم</label><input class="input" name="section" maxlength="160"></div>
+            <div class="field"><label>رقم الهاتف <span class="req">*</span></label><input class="input" name="phone" required maxlength="30" inputmode="tel" value="${esc(me.phone)}"></div>
+          </div>
+          <div class="field"><label>البريد الإلكتروني</label><input class="input" type="email" name="email" maxlength="160" value="${esc(me.email)}"></div>
+
+          <h4 class="form-sec"><span>2</span> المجال / الموهبة <small class="muted">(يمكن اختيار أكثر من مجال)</small></h4>
+          <div class="options">
+            ${Object.entries(S.talentFields).map(([k, v]) => box('fields', k, `${TALENT_FIELD_ICONS[k]} ${esc(v)}`, S.talentFieldHints[k])).join('')}
+          </div>
+          <div class="field" id="sportTypeBox" hidden><label>نوع الرياضة</label><div class="chips" style="margin:0">${Object.entries(S.sportTypes).map(([k, v]) => `<label class="option" style="padding:6px 14px"><input type="radio" name="sportType" value="${k}"> ${esc(v)}</label>`).join('')}</div></div>
+          <div class="field" id="otherFieldBox" hidden><label>حدّد المجال <span class="req">*</span></label><input class="input" name="otherField" maxlength="160"></div>
+          <div class="field"><label>وصف مبسّط عن المجال الذي فيه الموهبة</label><textarea class="input" name="fieldDescription" maxlength="3000"></textarea></div>
+
+          <h4 class="form-sec"><span>3</span> مستوى الموهبة <span class="req">*</span></h4>
+          <div class="chips" style="margin:0">${Object.entries(S.talentLevels).map(([k, v]) => `<label class="option" style="padding:8px 18px"><input type="radio" name="level" value="${k}" required> ${esc(v)}</label>`).join('')}</div>
+          <div class="field"><label>وصف محدد لمستوى الموهبة وذكر الجهة التي ينتمي إليها الموظف لممارسة موهبته (نادي – جهة – مركز – تطوير ذاتي – الخ)</label><textarea class="input" name="levelDescription" maxlength="3000"></textarea></div>
+
+          <h4 class="form-sec"><span>4</span> الإنجازات والمشاركات السابقة (إن وجدت)</h4>
+          <textarea class="input" name="achievements" maxlength="5000"></textarea>
+
+          <h4 class="form-sec"><span>5</span> الاحتياجات لتطوير الموهبة</h4>
+          <div class="options">${Object.entries(S.talentNeeds).map(([k, v]) => box('needs', k, esc(v))).join('')}</div>
+          <div class="field" id="otherNeedBox" hidden><label>حدّد الاحتياج</label><input class="input" name="otherNeed" maxlength="160"></div>
+          <div class="field"><label>وصف نوع الاحتياج</label><textarea class="input" name="needsDescription" maxlength="3000"></textarea></div>
+
+          <h4 class="form-sec"><span>6</span> أي إضافة أخرى</h4>
+          <textarea class="input" name="extra" maxlength="5000"></textarea>
+
+          <label class="check"><input type="checkbox" name="consent" required><span>أُقر بصحة البيانات، وأوافق على قيد اسمي في سجل المواهب بالشركة، وأعلم أن القيد اختياري (المادة 30 من الميثاق).</span></label>
           <div class="form-msg"></div>
-          <button class="btn gold" type="submit">إرسال طلب القيد</button>
+          <button class="btn gold" type="submit">إرسال النموذج</button>
         </form>
       </div>
       <div>
@@ -457,18 +492,40 @@ async function pageTalents() {
           <ul class="muted" style="padding-inline-start:20px">
             <li>تقييم متخصص واختبارات لتحديد مستوى الموهبة.</li>
             <li>برامج تأهيل وتدريب وتوفير الأدوات والموارد.</li>
-            <li>دراسة طلبات المشاركة في المسابقات الداخلية والخارجية.</li>
-            <li>الرعاية المالية أو اللوجستية للمشاركات المعتمدة.</li>
-            <li>إبراز الإنجازات إعلامياً.</li>
+            <li>فرص العرض والمشاركة في المسابقات الداخلية والخارجية.</li>
+            <li>الرعاية المالية أو اللوجستية للمشاركات المعتمدة، والدعم الإعلامي.</li>
           </ul>
           <a class="btn ghost small" href="#/docs/charter">اقرأ المواد 26–50 في الميثاق</a>
         </div>
+        <div class="panel">
+          <h3>🗂️ مراحل الطلب</h3>
+          <ol class="muted" style="padding-inline-start:20px">
+            <li>تعبئة النموذج وإرساله.</li>
+            <li>دراسة الطلب وتقييم الموهبة من اللجنة.</li>
+            <li>القيد في سجل المواهب ووضع برنامج التأهيل والدعم.</li>
+            <li>الترشيح لتمثيل الشركة في المحافل المناسبة، أو رعاية مشاركاتك.</li>
+          </ol>
+        </div>
       </div>
     </section>`;
-  bindForm(document.getElementById('talentForm'), async (data) => {
-    await api('/api/talents', { method: 'POST', body: data });
+  const form = document.getElementById('talentForm');
+  const sync = () => {
+    const picked = (n) => [...form.querySelectorAll(`[name=${n}]:checked`)].map((i) => i.value);
+    document.getElementById('sportTypeBox').hidden = !picked('fields').includes('sports');
+    const otherF = picked('fields').includes('other');
+    document.getElementById('otherFieldBox').hidden = !otherF;
+    form.querySelector('[name=otherField]').required = otherF;
+    document.getElementById('otherNeedBox').hidden = !picked('needs').includes('other');
+  };
+  form.addEventListener('change', sync);
+  bindForm(form, async (data) => {
+    const picked = (n) => [...form.querySelectorAll(`[name=${n}]:checked`)].map((i) => i.value);
+    const body = { ...data, fields: picked('fields'), needs: picked('needs'), age: Number(data.age) || 0 };
+    if (!body.fields.length) throw new Error('اختر مجال الموهبة (مجالاً واحداً على الأقل)');
+    await api('/api/talents', { method: 'POST', body });
     rememberEmployee(data);
-    document.getElementById('talentPanel').innerHTML = '<div class="center"><div style="font-size:64px">⭐</div><h3>وصل طلبك إلى اللجنة</h3><p class="muted">ستتواصل معك اللجنة لتقييم موهبتك وتحديد برنامج التأهيل والدعم المناسب.</p></div>';
+    document.getElementById('talentPanel').innerHTML = '<div class="center"><div style="font-size:64px">⭐</div><h3>وصل نموذجك إلى لجنة الأنشطة</h3><p class="muted">ستدرس اللجنة طلبك وتقيّم موهبتك، ثم تتواصل معك بشأن برنامج التأهيل والدعم المناسب.</p></div>';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 

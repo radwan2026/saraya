@@ -541,6 +541,43 @@ async function pollDetailView(id) {
     </div>`;
 }
 
+const talentFieldsText = (t) => (t.fields || []).map((f) => (f === 'other' && t.otherField ? t.otherField
+  : f === 'sports' && t.sportType ? `${CFG.talentFields.sports} (${CFG.sportTypes[t.sportType]})` : CFG.talentFields[f])).join('، ');
+const talentNeedsText = (t) => (t.needs || []).map((n) => (n === 'other' && t.otherNeed ? t.otherNeed : CFG.talentNeeds[n])).join('، ');
+
+// طباعة الطلب بتخطيط «نموذج حصر المواهب» الرسمي للأرشفة.
+function printTalent(t) {
+  const tick = (on) => (on ? '☑' : '☐');
+  const rows = [['الاسم الرباعي', t.name], ['الرقم الوظيفي', t.employeeId], ['العمر', t.age || ''], ['الفرع', t.branch], ['الإدارة', t.department],
+    ['الدائرة', t.division], ['القسم', t.section], ['رقم الهاتف', t.phone], ['البريد الإلكتروني', t.email]];
+  const boxText = (v) => `<div class="box">${esc(v || '').replace(/\n/g, '<br>') || '&nbsp;'}</div>`;
+  const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>نموذج حصر المواهب — ${esc(t.name)}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <style>@page{size:A4;margin:14mm}body{font-family:Tajawal,Tahoma,sans-serif;color:#111;font-size:12.5pt;line-height:1.7}
+  header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #1f8a3d;padding-bottom:6px;margin-bottom:10px}
+  header img{height:58px}header b{color:#14532d;font-size:15pt}.note{font-size:11pt;color:#333;margin-bottom:10px}
+  h3{font-size:13pt;margin:14px 0 6px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #444;padding:3px 8px;text-align:right}
+  th{width:28%;background:#f1f6f2}td.n{width:24px;text-align:center}.box{border:1px solid #444;min-height:46px;padding:6px 8px;margin-top:4px;break-inside:avoid}h3,b{break-after:avoid}table,ul{break-inside:avoid}
+  ul{list-style:none;padding:0;margin:0}li{margin:2px 0}.meta{margin-top:16px;font-size:10.5pt;color:#555;border-top:1px dashed #999;padding-top:6px}</style></head>
+  <body><header><div><b>نموذج حصر المواهب داخل شركة المدار الجديد</b><div>لجنة الأنشطة</div></div><img src="/assets/logo-full.png"></header>
+  <p class="note">يعد هذا النموذج جزءاً من منظومة تطوير وتنمية المواهب بالشركة ولا يترتب عليه أي التزام أو قرار إلا بعد دراسة الطلب من لجنة الأنشطة واعتماده وفق اللوائح والسياسات النافذة، كما تلتزم الشركة بمبدأ تكافؤ الفرص وعدم التمييز بين العاملين في جميع مراحل الفرز والتقييم.</p>
+  <h3>1- البيانات الشخصية:</h3><table>${rows.map(([k, v], i) => `<tr><td class="n">${i + 1}</td><th>${k}</th><td>${esc(v || '')}</td></tr>`).join('')}</table>
+  <h3>2- المجال / الموهبة</h3><ul>${Object.entries(CFG.talentFields).map(([k, v]) => `<li>${tick((t.fields || []).includes(k))} ${v}${k === 'sports' ? ` (${Object.entries(CFG.sportTypes).map(([sk, sv]) => `${tick(t.sportType === sk)} ${sv}`).join(' – ')})` : CFG.talentFieldHints[k] ? ` (${CFG.talentFieldHints[k]})` : ''}${k === 'other' && t.otherField ? `: ${esc(t.otherField)}` : ''}</li>`).join('')}</ul>
+  <b>وصف مبسط عن المجال الذي فيه الموهبة:</b>${boxText(t.fieldDescription)}
+  <h3>3- مستوى الموهبة</h3><ul style="display:flex;gap:24px">${Object.entries(CFG.talentLevels).map(([k, v]) => `<li>${tick(t.level === k)} ${v}</li>`).join('')}</ul>
+  <b>وصف محدد لمستوى الموهبة وذكر الجهة التي ينتمي إليها الموظف لممارسة موهبته:</b>${boxText(t.levelDescription)}
+  <h3>4- الإنجازات والمشاركات السابقة (إن وجدت)</h3>${boxText(t.achievements)}
+  <h3>5- الاحتياجات لتطوير الموهبة</h3><ul>${Object.entries(CFG.talentNeeds).map(([k, v]) => `<li>${tick((t.needs || []).includes(k))} ${v}${k === 'other' && t.otherNeed ? `: ${esc(t.otherNeed)}` : ''}</li>`).join('')}</ul>
+  <b>وصف نوع الاحتياج:</b>${boxText(t.needsDescription)}
+  <h3>6- أي إضافة أخرى:</h3>${boxText(t.extra)}
+  <div class="meta">تاريخ تقديم الطلب: ${fmtDate(t.createdAt.slice(0, 10))} — حالة الطلب: ${esc(STATUS_LABELS[t.status]?.[0] || '')}${t.rating ? ` — التقييم: ${'★'.repeat(t.rating)}` : ''}${t.evaluation ? `<br>ملاحظات اللجنة: ${esc(t.evaluation)}` : ''}</div>
+  <script>document.fonts.ready.then(()=>setTimeout(()=>print(),300))<\/script></body></html>`;
+  const w = window.open('', '_blank');
+  if (!w) { toast('اسمح بالنوافذ المنبثقة لطباعة النموذج', true); return; }
+  w.document.write(html);
+  w.document.close();
+}
+
 async function talentsView(params) {
   const status = params.get('status') || '';
   const rows = await api(`/api/admin/talents${status ? `?status=${status}` : ''}`);
@@ -548,33 +585,41 @@ async function talentsView(params) {
   $view.innerHTML = `
     <div class="toolbar">
       <select class="input" id="fStatus"><option value="">كل الحالات</option>${STS.map((x) => `<option value="${x}" ${x === status ? 'selected' : ''}>${STATUS_LABELS[x][0]}</option>`).join('')}</select>
-      <input class="input" id="fSearch" placeholder="🔍 بحث بالاسم أو المجال">
-      <span class="spacer"></span><span class="muted">${rows.length} طلب — القيد اختياري (المادة 30)</span>
+      <input class="input" id="fSearch" placeholder="🔍 بحث بالاسم أو الرقم أو المجال">
+      <span class="spacer"></span>
+      <a class="btn ghost" href="/api/admin/talents.csv${status ? `?status=${status}` : ''}">⬇️ تصدير حصر المواهب (Excel)</a>
+      <a class="btn ghost" href="/docs/talent-form.pdf" target="_blank">📄 النموذج الورقي</a>
     </div>
-    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list" id="tTable"><thead><tr><th>الموظف</th><th>الموهبة</th><th>المستوى / الانتساب</th><th>يطلب رعاية</th><th>التقييم</th><th>الحالة</th><th></th></tr></thead><tbody>
-      ${rows.map((t) => `<tr data-search="${esc(`${t.name} ${t.discipline} ${t.employeeId}`.toLowerCase())}">
-        <td><b>${esc(t.name)}</b><br><small class="muted">${esc(t.employeeId)} — ${esc(t.department)}</small></td>
-        <td>${CATEGORY_ICONS[t.category] || ''} <b>${esc(t.discipline)}</b><br><small class="muted">${esc(CFG.categories[t.category])}</small></td>
-        <td>${esc(CFG.talentLevels[t.level] || '')}<br><small class="muted">${esc(CFG.affiliations[t.affiliation] || '')}${t.clubName ? ` — ${esc(t.clubName)}` : ''}</small></td>
-        <td>${yesNo(t.wantsSponsorship)}</td>
+    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list" id="tTable"><thead><tr><th>الموظف</th><th>الفرع / الإدارة</th><th>المجال</th><th>المستوى</th><th>الاحتياجات</th><th>التقييم</th><th>الحالة</th><th></th></tr></thead><tbody>
+      ${rows.map((t) => `<tr data-search="${esc(`${t.name} ${t.employeeId} ${talentFieldsText(t)} ${t.fieldDescription || ''}`.toLowerCase())}">
+        <td><b>${esc(t.name)}</b><br><small class="muted">${esc(t.employeeId)}${t.age ? ` — ${t.age} سنة` : ''}</small></td>
+        <td>${esc(t.branch || '')}<br><small class="muted">${esc([t.department, t.division, t.section].filter(Boolean).join(' / '))}</small></td>
+        <td>${esc(talentFieldsText(t))}${t.fieldDescription ? `<br><small class="muted">${esc(t.fieldDescription.slice(0, 60))}</small>` : ''}</td>
+        <td>${esc(CFG.talentLevels[t.level] || '')}</td>
+        <td><small>${esc(talentNeedsText(t))}</small></td>
         <td>${'★'.repeat(t.rating || 0)}${'☆'.repeat(5 - (t.rating || 0))}</td>
         <td>${statusBadge(t.status)}</td>
-        <td><div class="actions-cell"><button class="btn small" data-eval="${t.id}">تقييم</button><button class="btn small danger" data-del="${t.id}">حذف</button></div></td></tr>`).join('')}
-    </tbody></table>` : empty('⭐', 'لا توجد طلبات قيد مواهب')}</div></div>`;
+        <td><div class="actions-cell"><button class="btn small" data-eval="${t.id}">دراسة وتقييم</button><button class="btn small ghost" data-print="${t.id}">🖨️ طباعة</button><button class="btn small danger" data-del="${t.id}">حذف</button></div></td></tr>`).join('')}
+    </tbody></table>` : empty('⭐', 'لا توجد نماذج حصر مواهب بعد')}</div></div>
+    <p class="muted" style="font-size:14px">القيد في سجل المواهب اختياري (المادة 30)، ولا يترتب على النموذج أي التزام إلا بعد دراسة اللجنة واعتماده.</p>`;
   document.getElementById('fStatus').addEventListener('change', (e) => { location.hash = `#/talents${e.target.value ? `?status=${e.target.value}` : ''}`; });
   document.getElementById('fSearch').addEventListener('input', (e) => {
     const q = e.target.value.trim().toLowerCase();
     $view.querySelectorAll('#tTable tbody tr').forEach((tr) => { tr.hidden = q && !tr.dataset.search.includes(q); });
   });
+  $view.querySelectorAll('[data-print]').forEach((b) => b.addEventListener('click', () => printTalent(rows.find((x) => x.id === b.dataset.print))));
   $view.querySelectorAll('[data-eval]').forEach((b) => b.addEventListener('click', () => {
     const t = rows.find((x) => x.id === b.dataset.eval);
-    openModal(`تقييم موهبة: ${t.name}`, `<div class="full"><table class="list"><tbody>
-      ${[['الرقم الوظيفي', t.employeeId], ['الوصف الوظيفي', t.jobTitle], ['الإدارة', t.department], ['الهاتف', t.phone], ['الموهبة', `${t.discipline} (${CFG.categories[t.category]})`],
-    ['المستوى', CFG.talentLevels[t.level]], ['الانتساب', `${CFG.affiliations[t.affiliation] || ''} ${t.clubName || ''}`], ['الإنجازات', t.achievements], ['الاحتياجات', t.needs],
-    ['يطلب رعاية الشركة', t.wantsSponsorship ? 'نعم' : 'لا'], ['تاريخ الطلب', fmtDate(t.createdAt.slice(0, 10))]]
-    .map(([k, v]) => `<tr><th>${k}</th><td style="white-space:pre-line">${esc(v || '—')}</td></tr>`).join('')}
-      </tbody></table></div>
-      ${fieldHtml({ name: 'status', label: 'الحالة', type: 'select', options: Object.fromEntries(STS.map((x) => [x, STATUS_LABELS[x][0]])) }, t.status)}
+    const sec = (title, pairs) => `<h4 style="margin:10px 0 4px;color:var(--green-800)">${title}</h4><table class="list"><tbody>${pairs.map(([k, v]) => `<tr><th style="width:190px">${k}</th><td style="white-space:pre-line">${esc(v || '—')}</td></tr>`).join('')}</tbody></table>`;
+    openModal(`نموذج حصر المواهب: ${t.name}`, `<div class="full">
+      ${sec('1- البيانات الشخصية', [['الرقم الوظيفي', t.employeeId], ['العمر', t.age || ''], ['الفرع', t.branch], ['الإدارة', t.department], ['الدائرة', t.division], ['القسم', t.section], ['الهاتف', t.phone], ['البريد', t.email]])}
+      ${sec('2- المجال / الموهبة', [['المجال', talentFieldsText(t)], ['وصف المجال', t.fieldDescription]])}
+      ${sec('3- مستوى الموهبة', [['المستوى', CFG.talentLevels[t.level]], ['الوصف والجهة', t.levelDescription]])}
+      ${sec('4- الإنجازات والمشاركات السابقة', [['', t.achievements]])}
+      ${sec('5- الاحتياجات لتطوير الموهبة', [['الاحتياجات', talentNeedsText(t)], ['وصف الاحتياج', t.needsDescription]])}
+      ${sec('6- إضافات', [['', t.extra]])}
+      </div>
+      ${fieldHtml({ name: 'status', label: 'قرار اللجنة', type: 'select', options: Object.fromEntries(STS.map((x) => [x, STATUS_LABELS[x][0]])) }, t.status)}
       ${fieldHtml({ name: 'rating', label: 'التقييم (0–5)', type: 'select', options: { 0: '—', 1: '★', 2: '★★', 3: '★★★', 4: '★★★★', 5: '★★★★★' } }, String(t.rating || 0))}
       ${fieldHtml({ name: 'evaluation', label: 'ملاحظات التقييم وبرنامج التأهيل والدعم', type: 'textarea', full: true, rows: 4 }, t.evaluation)}`,
     async (root) => {
