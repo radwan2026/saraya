@@ -721,7 +721,7 @@ function cardHtml(c) {
     <img class="wm" src="/assets/emblem.png" alt="">
     <div class="top">
       <div><b>بطاقة مشارك رسمي — تمثيل الشركة</b><small>${esc(SETTINGS.committeeName)} — ${esc(SETTINGS.companyName)}</small></div>
-      <img src="/assets/logo-full.png" alt="">
+      <img src="/assets/emblem.png" alt="">
     </div>
     <div class="mid">
       <div class="who">
