@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 
 export const COLLECTIONS = [
   'users', 'activities', 'registrations', 'posts', 'quizzes', 'quizSubmissions',
-  'polls', 'votes', 'members', 'stars', 'ideas', 'complaints',
+  'polls', 'votes', 'members', 'teams', 'talents', 'complaints',
 ];
 
 export const newId = () => crypto.randomBytes(8).toString('hex');

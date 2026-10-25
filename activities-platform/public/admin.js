@@ -157,33 +157,98 @@ function bindOptionsBuilder(root) {
 
 const readOptions = (root) => [...root.querySelectorAll('#oBuilder input')].map((i) => ({ id: i.dataset.oid || undefined, label: i.value }));
 
+// ---------- قائمة التجهيز وتشكيلة الفريق ----------
+const checkRow = (c = { label: '', done: false }) => `<div class="opt flex"><input type="checkbox" data-done ${c.done ? 'checked' : ''} style="width:20px;height:20px;accent-color:var(--green-600)"><input class="input" data-label value="${esc(c.label)}" placeholder="بند التجهيز" style="flex:1"><button type="button" class="icon-btn" data-del-c>🗑</button></div>`;
+function checklistBuilder(list) {
+  const items = list && list.length ? list : (CFG.defaultChecklist || []).map((label) => ({ label, done: false }));
+  return `<div class="field full"><label>قائمة تجهيز المشاركة (حدّد ما تم إنجازه)</label><div class="builder" id="cBuilder">
+    ${items.map(checkRow).join('')}
+  </div><button type="button" class="btn small ghost" id="addC" style="justify-self:start;margin-top:8px">+ إضافة بند</button></div>`;
+}
+const readChecklist = (root) => [...root.querySelectorAll('#cBuilder .opt')].map((r) => ({ label: r.querySelector('[data-label]').value, done: r.querySelector('[data-done]').checked }));
+
+const memberRow = (m = { name: '', employeeId: '', role: '' }) => `<div class="opt flex"><input class="input" data-mname value="${esc(m.name)}" placeholder="الاسم" style="flex:2"><input class="input" data-mid value="${esc(m.employeeId)}" placeholder="الرقم الوظيفي" style="flex:1"><input class="input" data-mrole value="${esc(m.role)}" placeholder="المركز / الدور" style="flex:1"><button type="button" class="icon-btn" data-del-m>🗑</button></div>`;
+function membersBuilder(list = []) {
+  return `<div class="field full"><label>التشكيلة (أعضاء الفريق)</label><div class="builder" id="mBuilder">
+    ${(list.length ? list : [undefined]).map(memberRow).join('')}
+  </div><button type="button" class="btn small ghost" id="addM" style="justify-self:start;margin-top:8px">+ إضافة عضو</button></div>`;
+}
+const readMembers = (root) => [...root.querySelectorAll('#mBuilder .opt')].map((r) => ({ name: r.querySelector('[data-mname]').value, employeeId: r.querySelector('[data-mid]').value, role: r.querySelector('[data-mrole]').value }));
+function bindRows(root, boxId, addId, delAttr, rowFn) {
+  const b = root.querySelector(boxId);
+  root.querySelector(addId).addEventListener('click', () => b.insertAdjacentHTML('beforeend', rowFn()));
+  b.addEventListener('click', (e) => { if (e.target.closest(`[${delAttr}]`)) e.target.closest('.opt').remove(); });
+}
+let TEAMS = [];
+const prepPct = (r) => { const c = r.checklist || []; return c.length ? Math.round((c.filter((x) => x.done).length / c.length) * 100) : 0; };
+
 // ---------- تعريف الموارد ----------
 const RES = {
   activities: {
-    title: 'الأنشطة', single: 'نشاط', perm: 'activities', icon: '🏆',
+    title: 'المشاركات الخارجية', single: 'مشاركة خارجية', perm: 'activities', icon: '🏁',
+    preload: async () => { TEAMS = await api('/api/admin/teams').catch(() => api('/api/teams')); },
     fields: () => [
-      { name: 'title', label: 'عنوان النشاط', required: true, full: true },
-      { name: 'category', label: 'التصنيف', type: 'select', options: CFG.categories },
-      { name: 'status', label: 'حالة التسجيل', type: 'select', options: { open: 'مفتوح', closed: 'مغلق', completed: 'منتهي' } },
+      { name: 'title', label: 'اسم البطولة / المسابقة / المحفل', required: true, full: true },
+      { name: 'category', label: 'المجال', type: 'select', options: CFG.categories },
+      { name: 'level', label: 'المستوى', type: 'select', options: CFG.levels },
+      { name: 'organizer', label: 'الجهة المنظمة', full: true },
+      { name: 'status', label: 'المرحلة الحالية', type: 'select', options: CFG.stages },
+      { name: 'teamId', label: 'الفريق / المنتخب الممثل', type: 'select', options: { '': '— بدون فريق —', ...Object.fromEntries(TEAMS.map((t) => [t.id, t.name])) } },
       { name: 'startDate', label: 'تاريخ البداية', type: 'date' },
       { name: 'endDate', label: 'تاريخ النهاية', type: 'date' },
-      { name: 'deadline', label: 'آخر موعد للتسجيل', type: 'date' },
+      { name: 'deadline', label: 'آخر موعد للترشح', type: 'date' },
       { name: 'capacity', label: 'العدد المطلوب', type: 'number', default: 0, help: '0 = بدون حد' },
       { name: 'location', label: 'المكان', full: true },
-      { name: 'image', label: 'صورة النشاط', type: 'image', full: true },
-      { name: 'description', label: 'الوصف والشروط', type: 'textarea', full: true, rows: 5 },
-      { name: 'requiresApproval', label: 'يتطلب موافقة اللجنة قبل إصدار البطاقة', type: 'checkbox', default: true },
-      { name: 'published', label: 'منشور في المنصة', type: 'checkbox', default: true },
+      { name: 'budget', label: 'الميزانية التقديرية (دينار)', type: 'number', default: 0 },
+      { name: 'image', label: 'الصورة', type: 'image', full: true },
+      { name: 'description', label: 'الوصف وشروط الترشح', type: 'textarea', full: true, rows: 4 },
+      { name: 'resultRank', label: 'النتيجة', type: 'select', options: CFG.resultRanks },
+      { name: 'result', label: 'وصف النتيجة', help: 'مثال: المركز الأول وكأس البطولة' },
+      { name: 'resultNotes', label: 'تقرير ما بعد المشاركة (المادة 75)', type: 'textarea', full: true, rows: 3 },
+      { name: 'requiresApproval', label: 'يتطلب الترشح موافقة اللجنة قبل إصدار البطاقة', type: 'checkbox', default: true },
+      { name: 'published', label: 'منشورة في المنصة', type: 'checkbox', default: true },
     ],
+    extra: (r) => checklistBuilder(r?.checklist),
+    bindExtra: (root) => bindRows(root, '#cBuilder', '#addC', 'data-del-c', checkRow),
+    readExtra: (root) => ({ checklist: readChecklist(root) }),
     columns: [
       ['', (r) => `<div class="thumb" style="${r.image ? `background-image:url('${esc(r.image)}')` : ''}"></div>`],
-      ['العنوان', (r) => `<b>${esc(r.title)}</b>`],
-      ['التصنيف', (r) => esc(CFG.categories[r.category])],
+      ['المشاركة', (r) => `<b>${esc(r.title)}</b>${r.organizer ? `<br><small class="muted">${esc(r.organizer)}</small>` : ''}`],
+      ['المستوى', (r) => esc(CFG.levels[r.level] || '')],
       ['التاريخ', (r) => fmtDate(r.startDate)],
-      ['الحالة', (r) => statusBadge(r.status)],
-      ['منشور', (r) => yesNo(r.published)],
+      ['المرحلة', (r) => statusBadge(r.status)],
+      ['التجهيز', (r) => `<div class="bar" style="width:90px"><i style="width:${prepPct(r)}%"></i></div><small>${prepPct(r)}%</small>`],
+      ['النتيجة', (r) => (r.resultRank ? esc(r.result || CFG.resultRanks[r.resultRank]) : '—')],
     ],
-    rowActions: (r) => `<a class="btn small ghost" href="#/registrations?activityId=${r.id}">التسجيلات</a>`,
+    rowActions: (r) => `<a class="btn small ghost" href="#/registrations?activityId=${r.id}">المرشّحون</a>`,
+  },
+  teams: {
+    title: 'الفرق والمنتخبات', single: 'فريق / منتخب', perm: 'teams', icon: '🛡️',
+    fields: () => [
+      { name: 'name', label: 'اسم الفريق / المنتخب', required: true, full: true },
+      { name: 'category', label: 'المجال', type: 'select', options: CFG.categories },
+      { name: 'status', label: 'الحالة', type: 'select', options: CFG.teamStatuses },
+      { name: 'coach', label: 'المدرب' },
+      { name: 'manager', label: 'إداري الفريق' },
+      { name: 'captain', label: 'القائد' },
+      { name: 'schedule', label: 'مواعيد التدريب' },
+      { name: 'image', label: 'صورة الفريق', type: 'image', full: true },
+      { name: 'description', label: 'نبذة', type: 'textarea', full: true, rows: 2 },
+      { name: 'needs', label: 'احتياجات الدعم والتجهيز (للجنة فقط)', type: 'textarea', full: true, rows: 2 },
+      { name: 'published', label: 'منشور في المنصة', type: 'checkbox', default: true },
+    ],
+    extra: (r) => membersBuilder(r?.members),
+    bindExtra: (root) => bindRows(root, '#mBuilder', '#addM', 'data-del-m', memberRow),
+    readExtra: (root) => ({ members: readMembers(root) }),
+    columns: [
+      ['', (r) => `<div class="thumb" style="${r.image ? `background-image:url('${esc(r.image)}')` : ''}"></div>`],
+      ['الفريق', (r) => `<b>${esc(r.name)}</b>`],
+      ['المجال', (r) => esc(CFG.categories[r.category])],
+      ['الحالة', (r) => `<span class="badge ${r.status === 'active' ? '' : r.status === 'inactive' ? 'gray' : 'warn'}">${esc(CFG.teamStatuses[r.status] || '')}</span>`],
+      ['المدرب', (r) => esc(r.coach)],
+      ['الأعضاء', (r) => (r.members || []).length],
+      ['الاحتياجات', (r) => `<small>${esc((r.needs || '').slice(0, 60))}</small>`],
+    ],
   },
   posts: {
     title: 'الإعلانات والأخبار والقرارات', single: 'منشور', perm: 'posts', icon: '📢',
@@ -270,32 +335,11 @@ const RES = {
       ['الإدارة', (r) => esc(r.department)],
     ],
   },
-  stars: {
-    title: 'نجم الأسبوع', single: 'نجم أسبوع', perm: 'stars', icon: '⭐',
-    fields: () => [
-      { name: 'name', label: 'اسم الموظف', required: true },
-      { name: 'employeeId', label: 'الرقم الوظيفي' },
-      { name: 'jobTitle', label: 'الوصف الوظيفي' },
-      { name: 'department', label: 'الإدارة / المكتب' },
-      { name: 'weekOf', label: 'أسبوع التكريم', type: 'date', required: true, default: new Date().toISOString().slice(0, 10) },
-      { name: 'reason', label: 'سبب الاختيار (الفكرة / البرنامج / النشاط)' },
-      { name: 'photo', label: 'الصورة', type: 'image', full: true },
-      { name: 'achievements', label: 'نبذة عن الإنجاز', type: 'textarea', full: true, rows: 5 },
-      { name: 'published', label: 'منشور في المنصة', type: 'checkbox', default: true },
-    ],
-    columns: [
-      ['الأسبوع', (r) => fmtDate(r.weekOf)],
-      ['الاسم', (r) => `<b>${esc(r.name)}</b>`],
-      ['الإدارة', (r) => esc(r.department)],
-      ['السبب', (r) => esc(r.reason)],
-      ['منشور', (r) => yesNo(r.published)],
-    ],
-    headerExtra: '<a class="btn ghost" href="#/ideas">💡 الأفكار المقدّمة من الموظفين</a>',
-  },
 };
 
 async function resourceView(name) {
   const cfg = RES[name];
+  if (cfg.preload) await cfg.preload();
   const rows = await api(`/api/admin/${name}`);
   $view.innerHTML = `
     <div class="toolbar"><button class="btn" id="addBtn">+ إضافة ${esc(cfg.single)}</button>${cfg.headerExtra || ''}<span class="spacer"></span><span class="muted">${rows.length} عنصر</span></div>
@@ -335,26 +379,29 @@ async function dashboardView() {
       <p style="margin:4px 0 0;opacity:.9">صلاحياتك: ${ME.role === 'admin' ? 'مدير المنصة (جميع الصلاحيات)' : ME.permissions.map((p) => esc(LABELS[p])).join('، ') || 'لا توجد'}</p>
     </div>
     <div class="kpis">
-      <div class="kpi"><b>${s.openActivities} / ${s.activities}</b><span>أنشطة مفتوحة / الكل</span></div>
-      <div class="kpi gold"><b>${s.pendingRegistrations}</b><span>طلبات تسجيل بانتظار المراجعة</span></div>
-      <div class="kpi"><b>${s.registrations}</b><span>إجمالي التسجيلات</span></div>
-      <div class="kpi red"><b>${s.newComplaints}</b><span>شكاوى جديدة</span></div>
-      <div class="kpi gold"><b>${s.newIdeas}</b><span>أفكار جديدة</span></div>
-      <div class="kpi"><b>${s.quizSubmissions}</b><span>مشاركات المسابقات</span></div>
-      <div class="kpi"><b>${s.votes}</b><span>أصوات التصويت</span></div>
+      <div class="kpi"><b>${s.openActivities}</b><span>ترشح مفتوح</span></div>
+      <div class="kpi"><b>${s.upcoming}</b><span>مشاركات قيد الاختيار والتجهيز</span></div>
+      <div class="kpi gold"><b>${s.pendingRegistrations}</b><span>ترشيحات بانتظار المراجعة</span></div>
+      <div class="kpi red"><b>${s.managerNotice}</b><span>مقبولون لم يُشعَر رؤساؤهم</span></div>
+      <div class="kpi"><b>${s.teams}</b><span>فرق ومنتخبات</span></div>
+      <div class="kpi gold"><b>${s.newTalents}</b><span>طلبات مواهب جديدة</span></div>
+      <div class="kpi"><b>${s.talents}</b><span>مواهب مقيدة</span></div>
+      <div class="kpi gold"><b>${s.medals}</b><span>ميداليات</span></div>
+      <div class="kpi red"><b>${s.newComplaints}</b><span>طلبات دعم وشكاوى جديدة</span></div>
     </div>
     <div class="grid cols-2">
-      <div class="panel"><h3>المشاركات حسب نوع النشاط</h3>
+      <div class="panel"><h3>المرشّحون حسب المجال</h3>
         ${Object.entries(s.categories).map(([k, l]) => { const n = s.byCategory[k] || 0; return `<div class="bar-row"><div class="lbl"><span>${CATEGORY_ICONS[k]} ${esc(l)}</span><b>${n}</b></div><div class="bar"><i style="width:${Math.round((n / total) * 100)}%"></i></div></div>`; }).join('')}
       </div>
       <div class="panel"><h3>اختصارات</h3>
         <div class="flex">
-          ${can('activities') ? '<a class="btn" href="#/registrations?status=pending">مراجعة الطلبات</a>' : ''}
-          ${can('posts') ? '<a class="btn ghost" href="#/posts">نشر إعلان</a>' : ''}
-          ${can('quizzes') ? '<a class="btn gold" href="#/quizzes">المسابقة الأسبوعية</a>' : ''}
-          ${can('complaints') ? '<a class="btn ghost" href="#/complaints">الشكاوى</a>' : ''}
+          ${can('activities') ? '<a class="btn" href="#/registrations?status=pending">مراجعة الترشيحات</a>' : ''}
+          ${can('activities') ? '<a class="btn ghost" href="#/activities">قوائم التجهيز</a>' : ''}
+          ${can('talents') ? '<a class="btn gold" href="#/talents?status=new">تقييم المواهب</a>' : ''}
+          ${can('teams') ? '<a class="btn ghost" href="#/teams">الفرق والمنتخبات</a>' : ''}
+          ${can('complaints') ? '<a class="btn ghost" href="#/complaints">طلبات الدعم</a>' : ''}
         </div>
-        <p class="muted mt" style="font-size:14px">${s.mailEnabled ? '✅ إرسال الشكاوى والأفكار إلى بريد اللجنة مُفعّل.' : 'ℹ️ إرسال الشكاوى إلى بريد اللجنة غير مُفعّل — تُحفظ في المنصة فقط. راجع ملف README لضبط إعدادات SMTP.'}</p>
+        <p class="muted mt" style="font-size:14px">${s.mailEnabled ? '✅ إرسال طلبات الدعم وطلبات المواهب إلى بريد اللجنة مُفعّل.' : 'ℹ️ إرسال الشكاوى إلى بريد اللجنة غير مُفعّل — تُحفظ في المنصة فقط. راجع ملف README لضبط إعدادات SMTP.'}</p>
       </div>
     </div>`;
 }
@@ -366,28 +413,31 @@ async function registrationsView(params) {
   const q = new URLSearchParams({ ...(activityId && { activityId }), ...(status && { status }) });
   $view.innerHTML = `
     <div class="toolbar">
-      <select class="input" id="fAct"><option value="">كل الأنشطة</option>${acts.map((a) => `<option value="${a.id}" ${a.id === activityId ? 'selected' : ''}>${esc(a.title)}</option>`).join('')}</select>
-      <select class="input" id="fStatus"><option value="">كل الحالات</option>${['pending', 'approved', 'rejected'].map((s) => `<option value="${s}" ${s === status ? 'selected' : ''}>${STATUS_LABELS[s][0]}</option>`).join('')}</select>
+      <select class="input" id="fAct"><option value="">كل المشاركات</option>${acts.map((a) => `<option value="${a.id}" ${a.id === activityId ? 'selected' : ''}>${esc(a.title)}</option>`).join('')}</select>
+      <select class="input" id="fStatus"><option value="">كل الحالات</option>${['pending', 'approved', 'reserve', 'rejected'].map((s) => `<option value="${s}" ${s === status ? 'selected' : ''}>${STATUS_LABELS[s][0]}</option>`).join('')}</select>
       <input class="input" id="fSearch" placeholder="🔍 بحث بالاسم أو الرقم الوظيفي">
       <span class="spacer"></span>
       <a class="btn ghost" href="/api/admin/registrations.csv?${q}">⬇️ تصدير Excel (CSV)</a>
     </div>
-    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list" id="regTable"><thead><tr><th>الاسم</th><th>الرقم الوظيفي</th><th>الوصف الوظيفي / الإدارة</th><th>النشاط</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th></th></tr></thead><tbody>
+    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list" id="regTable"><thead><tr><th>الاسم</th><th>الرقم الوظيفي</th><th>الوصف الوظيفي / الإدارة</th><th>المشاركة</th><th>الانتساب</th><th>الهاتف</th><th>الحالة</th><th>إشعار الرئيس المباشر</th><th></th></tr></thead><tbody>
       ${rows.map((r) => `<tr data-search="${esc(`${r.name} ${r.employeeId}`.toLowerCase())}">
         <td><b>${esc(r.name)}</b>${r.contractType ? `<br><small class="muted">${esc(r.contractType)}</small>` : ''}</td>
         <td>${esc(r.employeeId)}</td>
         <td>${esc(r.jobTitle)}<br><small class="muted">${esc(r.department)}</small></td>
-        <td>${esc(r.activityTitle)}</td>
+        <td>${esc(r.activityTitle)}<br><small class="muted">${fmtDate(r.createdAt.slice(0, 10))}</small></td>
+        <td>${esc(CFG.affiliations[r.affiliation || 'none'])}${r.clubName ? `<br><small class="muted">${esc(r.clubName)}</small>` : ''}</td>
         <td dir="ltr">${esc(r.phone)}</td>
-        <td>${fmtDate(r.createdAt.slice(0, 10))}</td>
         <td>${statusBadge(r.status)}${r.reviewNote ? `<br><small class="muted">${esc(r.reviewNote)}</small>` : ''}</td>
+        <td>${r.status === 'approved' || r.status === 'reserve' ? `<label class="check"><input type="checkbox" data-notify="${r.id}" ${r.managerNotified ? 'checked' : ''}> تم</label>` : '—'}</td>
         <td><div class="actions-cell">
           <button class="btn small ghost" data-view="${r.id}">التفاصيل</button>
           ${r.status !== 'approved' ? `<button class="btn small" data-approve="${r.id}">قبول</button>` : ''}
+          ${r.status !== 'reserve' ? `<button class="btn small ghost" data-reserve="${r.id}">احتياطي</button>` : ''}
           ${r.status !== 'rejected' ? `<button class="btn small danger" data-reject="${r.id}">رفض</button>` : ''}
           ${r.status === 'approved' && r.cardCode ? `<a class="btn small gold" target="_blank" href="/#/card/${esc(r.cardCode)}">🪪 البطاقة</a>` : ''}
         </div></td></tr>`).join('')}
-    </tbody></table>` : empty('📭', 'لا توجد تسجيلات')}</div></div>`;
+    </tbody></table>` : empty('📭', 'لا توجد ترشيحات')}</div></div>
+    <p class="muted" style="font-size:14px">تلتزم اللجنة بإشعار الرئيس المباشر لكل مرشّح قبل موعد المشاركة بمدة لا تقل عن 7 أيام عمل (المادة 58)، ويُستبدل من يعتذر بمرشّح من القائمة الاحتياطية (المادة 10).</p>`;
   const reload = () => {
     const p = new URLSearchParams();
     if (document.getElementById('fAct').value) p.set('activityId', document.getElementById('fAct').value);
@@ -404,8 +454,10 @@ async function registrationsView(params) {
     try { await api(`/api/admin/registrations/${id}`, { method: 'PATCH', body }); toast('تم التحديث'); registrationsView(params); } catch (err) { toast(err.message, true); }
   };
   $view.querySelectorAll('[data-approve]').forEach((b) => b.addEventListener('click', () => patch(b.dataset.approve, { status: 'approved' })));
+  $view.querySelectorAll('[data-reserve]').forEach((b) => b.addEventListener('click', () => patch(b.dataset.reserve, { status: 'reserve' })));
+  $view.querySelectorAll('[data-notify]').forEach((c) => c.addEventListener('change', () => patch(c.dataset.notify, { managerNotified: c.checked })));
   $view.querySelectorAll('[data-reject]').forEach((b) => b.addEventListener('click', () => {
-    openModal('رفض طلب التسجيل', `<div class="field full"><label>سبب الرفض <span class="req">*</span></label><textarea class="input" name="reviewNote" required></textarea><small>تلتزم اللجنة بتسبيب قرار الرفض (المادة 10 من الميثاق).</small></div>`,
+    openModal('رفض طلب الترشح', `<div class="field full"><label>سبب الرفض <span class="req">*</span></label><textarea class="input" name="reviewNote" required></textarea><small>تلتزم اللجنة بتسبيب قرار الرفض (المادة 10 من الميثاق).</small></div>`,
       async (root) => {
         await api(`/api/admin/registrations/${b.dataset.reject}`, { method: 'PATCH', body: { status: 'rejected', reviewNote: root.querySelector('[name=reviewNote]').value } });
         toast('تم رفض الطلب');
@@ -415,8 +467,9 @@ async function registrationsView(params) {
   $view.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
     const r = rows.find((x) => x.id === b.dataset.view);
     openModal(`طلب: ${r.name}`, `<div class="full"><table class="list"><tbody>
-      ${[['النشاط', r.activityTitle], ['الاسم', r.name], ['الرقم الوظيفي', r.employeeId], ['الوصف الوظيفي', r.jobTitle], ['الإدارة / المكتب', r.department],
-    ['الهاتف', r.phone], ['البريد', r.email], ['نوع العقد', r.contractType], ['الخبرة السابقة', r.experience], ['ملاحظات', r.notes],
+      ${[['المشاركة', r.activityTitle], ['الاسم', r.name], ['الرقم الوظيفي', r.employeeId], ['الوصف الوظيفي', r.jobTitle], ['الإدارة / المكتب', r.department],
+    ['الهاتف', r.phone], ['البريد', r.email], ['نوع العقد', r.contractType], ['الانتساب', CFG.affiliations[r.affiliation || 'none']], ['النادي / المنتخب', r.clubName],
+    ['الخبرة السابقة', r.experience], ['ملاحظات', r.notes], ['إشعار الرئيس المباشر', r.managerNotified ? 'تم' : 'لم يتم'],
     ['رقم البطاقة', r.cardNo], ['تاريخ الطلب', fmtDateTime(r.createdAt.slice(0, 16))], ['تمت المراجعة بواسطة', r.reviewedBy]]
     .map(([k, v]) => `<tr><th>${k}</th><td style="white-space:pre-line">${esc(v || '—')}</td></tr>`).join('')}
     </tbody></table>
@@ -488,39 +541,52 @@ async function pollDetailView(id) {
     </div>`;
 }
 
-async function ideasView() {
-  const rows = await api('/api/admin/ideas');
+async function talentsView(params) {
+  const status = params.get('status') || '';
+  const rows = await api(`/api/admin/talents${status ? `?status=${status}` : ''}`);
+  const STS = ['new', 'evaluating', 'registered', 'sponsored', 'declined'];
   $view.innerHTML = `
-    <div class="toolbar"><a class="btn ghost" href="#/stars">→ نجم الأسبوع</a><p class="muted" style="margin:0">الأفكار والبرامج المقدّمة من الموظفين — يمكن اعتماد صاحب الفكرة كنجم للأسبوع.</p></div>
-    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list"><thead><tr><th>الفكرة</th><th>صاحب الفكرة</th><th>المجال</th><th>التاريخ</th><th>الحالة</th><th></th></tr></thead><tbody>
-      ${rows.map((r) => `<tr><td><b>${esc(r.title)}</b><br><small class="muted">${esc(r.description.slice(0, 140))}${r.description.length > 140 ? '…' : ''}</small></td>
-        <td>${esc(r.name)}<br><small class="muted">${esc(r.employeeId)} — ${esc(r.department)}</small></td>
-        <td>${CATEGORY_ICONS[r.category] || ''} ${esc(CFG.categories[r.category])}</td><td>${fmtDate(r.createdAt.slice(0, 10))}</td><td>${statusBadge(r.status)}</td>
-        <td><div class="actions-cell">
-          <button class="btn small ghost" data-view="${r.id}">عرض</button>
-          <select class="input" data-status="${r.id}" style="width:auto;padding:4px 8px">${['new', 'reviewed', 'adopted', 'archived'].map((s) => `<option value="${s}" ${s === r.status ? 'selected' : ''}>${STATUS_LABELS[s][0]}</option>`).join('')}</select>
-          <button class="btn small gold" data-promote="${r.id}">⭐ نجم الأسبوع</button>
-          <button class="btn small danger" data-del="${r.id}">حذف</button>
-        </div></td></tr>`).join('')}
-    </tbody></table>` : empty('💡', 'لا توجد أفكار مقدّمة بعد')}</div></div>`;
-  $view.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
-    const r = rows.find((x) => x.id === b.dataset.view);
-    openModal(r.title, `<div class="full"><p><b>${esc(r.name)}</b> — ${esc(r.employeeId)} — ${esc(r.jobTitle)} — ${esc(r.department)} ${r.phone ? `— <span dir="ltr">${esc(r.phone)}</span>` : ''}</p><pre class="box">${esc(r.description)}</pre></div>`, null);
-  }));
-  $view.querySelectorAll('[data-status]').forEach((s) => s.addEventListener('change', async () => {
-    await api(`/api/admin/ideas/${s.dataset.status}`, { method: 'PATCH', body: { status: s.value } });
-    toast('تم التحديث');
-  }));
-  $view.querySelectorAll('[data-promote]').forEach((b) => b.addEventListener('click', async () => {
-    if (!confirm('إنشاء «نجم الأسبوع» من هذه الفكرة؟ سيُنشأ كمسودة لتضيف الصورة ثم تنشره.')) return;
-    await api(`/api/admin/ideas/${b.dataset.promote}/promote`, { method: 'POST', body: {} });
-    toast('تم الإنشاء — راجعه وانشره من قسم نجم الأسبوع');
-    location.hash = '#/stars';
+    <div class="toolbar">
+      <select class="input" id="fStatus"><option value="">كل الحالات</option>${STS.map((x) => `<option value="${x}" ${x === status ? 'selected' : ''}>${STATUS_LABELS[x][0]}</option>`).join('')}</select>
+      <input class="input" id="fSearch" placeholder="🔍 بحث بالاسم أو المجال">
+      <span class="spacer"></span><span class="muted">${rows.length} طلب — القيد اختياري (المادة 30)</span>
+    </div>
+    <div class="panel"><div class="table-wrap">${rows.length ? `<table class="list" id="tTable"><thead><tr><th>الموظف</th><th>الموهبة</th><th>المستوى / الانتساب</th><th>يطلب رعاية</th><th>التقييم</th><th>الحالة</th><th></th></tr></thead><tbody>
+      ${rows.map((t) => `<tr data-search="${esc(`${t.name} ${t.discipline} ${t.employeeId}`.toLowerCase())}">
+        <td><b>${esc(t.name)}</b><br><small class="muted">${esc(t.employeeId)} — ${esc(t.department)}</small></td>
+        <td>${CATEGORY_ICONS[t.category] || ''} <b>${esc(t.discipline)}</b><br><small class="muted">${esc(CFG.categories[t.category])}</small></td>
+        <td>${esc(CFG.talentLevels[t.level] || '')}<br><small class="muted">${esc(CFG.affiliations[t.affiliation] || '')}${t.clubName ? ` — ${esc(t.clubName)}` : ''}</small></td>
+        <td>${yesNo(t.wantsSponsorship)}</td>
+        <td>${'★'.repeat(t.rating || 0)}${'☆'.repeat(5 - (t.rating || 0))}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td><div class="actions-cell"><button class="btn small" data-eval="${t.id}">تقييم</button><button class="btn small danger" data-del="${t.id}">حذف</button></div></td></tr>`).join('')}
+    </tbody></table>` : empty('⭐', 'لا توجد طلبات قيد مواهب')}</div></div>`;
+  document.getElementById('fStatus').addEventListener('change', (e) => { location.hash = `#/talents${e.target.value ? `?status=${e.target.value}` : ''}`; });
+  document.getElementById('fSearch').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    $view.querySelectorAll('#tTable tbody tr').forEach((tr) => { tr.hidden = q && !tr.dataset.search.includes(q); });
+  });
+  $view.querySelectorAll('[data-eval]').forEach((b) => b.addEventListener('click', () => {
+    const t = rows.find((x) => x.id === b.dataset.eval);
+    openModal(`تقييم موهبة: ${t.name}`, `<div class="full"><table class="list"><tbody>
+      ${[['الرقم الوظيفي', t.employeeId], ['الوصف الوظيفي', t.jobTitle], ['الإدارة', t.department], ['الهاتف', t.phone], ['الموهبة', `${t.discipline} (${CFG.categories[t.category]})`],
+    ['المستوى', CFG.talentLevels[t.level]], ['الانتساب', `${CFG.affiliations[t.affiliation] || ''} ${t.clubName || ''}`], ['الإنجازات', t.achievements], ['الاحتياجات', t.needs],
+    ['يطلب رعاية الشركة', t.wantsSponsorship ? 'نعم' : 'لا'], ['تاريخ الطلب', fmtDate(t.createdAt.slice(0, 10))]]
+    .map(([k, v]) => `<tr><th>${k}</th><td style="white-space:pre-line">${esc(v || '—')}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${fieldHtml({ name: 'status', label: 'الحالة', type: 'select', options: Object.fromEntries(STS.map((x) => [x, STATUS_LABELS[x][0]])) }, t.status)}
+      ${fieldHtml({ name: 'rating', label: 'التقييم (0–5)', type: 'select', options: { 0: '—', 1: '★', 2: '★★', 3: '★★★', 4: '★★★★', 5: '★★★★★' } }, String(t.rating || 0))}
+      ${fieldHtml({ name: 'evaluation', label: 'ملاحظات التقييم وبرنامج التأهيل والدعم', type: 'textarea', full: true, rows: 4 }, t.evaluation)}`,
+    async (root) => {
+      await api(`/api/admin/talents/${t.id}`, { method: 'PATCH', body: { status: root.querySelector('[name=status]').value, rating: Number(root.querySelector('[name=rating]').value), evaluation: root.querySelector('[name=evaluation]').value } });
+      toast('تم حفظ التقييم');
+      talentsView(params);
+    });
   }));
   $view.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', async () => {
-    if (!confirm('حذف الفكرة؟')) return;
-    await api(`/api/admin/ideas/${b.dataset.del}`, { method: 'DELETE' });
-    ideasView();
+    if (!confirm('حذف الطلب؟')) return;
+    await api(`/api/admin/talents/${b.dataset.del}`, { method: 'DELETE' });
+    talentsView(params);
   }));
 }
 
@@ -646,16 +712,16 @@ async function usersView() {
 // ---------- التنقل ----------
 const NAV = [
   ['dashboard', '📊', 'الرئيسية', null],
-  ['sep', 'المحتوى والأنشطة'],
-  ['activities', '🏆', 'الأنشطة', 'activities'],
-  ['registrations', '📝', 'التسجيلات والبطاقات', 'activities'],
-  ['posts', '📢', 'الإعلانات والأخبار', 'posts'],
-  ['sep', 'التفاعل'],
+  ['sep', 'المشاركات الخارجية'],
+  ['activities', '🏁', 'البطولات والمحافل', 'activities'],
+  ['registrations', '📝', 'الترشيحات والبطاقات', 'activities'],
+  ['teams', '🛡️', 'الفرق والمنتخبات', 'teams'],
+  ['talents', '⭐', 'سجل المواهب', 'talents'],
+  ['sep', 'التواصل والتفاعل'],
+  ['posts', '📢', 'الأخبار والقرارات', 'posts'],
   ['quizzes', '🎁', 'المسابقة الأسبوعية', 'quizzes'],
   ['polls', '🗳️', 'التصويت', 'polls'],
-  ['stars', '⭐', 'نجم الأسبوع', 'stars'],
-  ['ideas', '💡', 'أفكار الموظفين', 'stars'],
-  ['complaints', '💬', 'الشكاوى والمقترحات', 'complaints'],
+  ['complaints', '🧰', 'الدعم والشكاوى', 'complaints'],
   ['sep', 'اللجنة والإعدادات'],
   ['members', '👥', 'أعضاء اللجنة', 'members'],
   ['settings', '⚙️', 'الإعدادات والروابط', 'settings'],
@@ -679,7 +745,7 @@ function renderNav(active) {
 const VIEWS = {
   dashboard: [() => dashboardView(), null],
   registrations: [(p) => registrationsView(p), 'activities'],
-  ideas: [() => ideasView(), 'stars'],
+  talents: [(p) => talentsView(p), 'talents'],
   complaints: [(p) => complaintsView(p), 'complaints'],
   settings: [() => settingsView(), 'settings'],
   users: [() => usersView(), 'admin'],

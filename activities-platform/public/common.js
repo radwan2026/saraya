@@ -57,10 +57,13 @@ function formData(form) {
 
 const CATEGORY_ICONS = { sports: '⚽', cultural: '📚', arts: '🎨', volunteer: '🤝', social: '🎉', other: '✨' };
 const STATUS_LABELS = {
-  pending: ['قيد المراجعة', 'warn'], approved: ['مقبول', ''], rejected: ['مرفوض', 'red'],
+  pending: ['قيد المراجعة', 'warn'], approved: ['مقبول', ''], reserve: ['احتياطي', 'blue'], rejected: ['مرفوض', 'red'],
+  evaluating: ['قيد التقييم', 'warn'], registered: ['مقيد بالسجل', ''], sponsored: ['ترعاه الشركة', 'gold'], declined: ['غير مقبول', 'gray'],
+  selection: ['الاختيار والاختبارات', 'blue'], preparing: ['التجهيز والتدريب', 'warn'], competing: ['المشاركة جارية', 'gold'],
+  forming: ['قيد التشكيل', 'blue'], training: ['في مرحلة الإعداد', 'warn'], inactive: ['غير نشط', 'gray'],
   new: ['جديدة', 'blue'], in_progress: ['قيد المعالجة', 'warn'], resolved: ['تم الحل', ''], closed: ['مغلقة', 'gray'],
   reviewed: ['تمت المراجعة', 'warn'], adopted: ['معتمدة', ''], archived: ['مؤرشفة', 'gray'],
-  open: ['التسجيل مفتوح', ''], completed: ['منتهي', 'gray'],
+  open: ['باب الترشح مفتوح', ''], completed: ['منتهية', 'gray'],
   active: ['جارية', ''], upcoming: ['قادمة', 'blue'], ended: ['منتهية', 'gray'],
 };
 const statusBadge = (s) => {

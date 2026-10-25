@@ -53,12 +53,13 @@ button, input, select, textarea { font: inherit; }
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
-.site-header .bar { display: flex; align-items: center; gap: 16px; min-height: 72px; }
+.site-header .hbar { display: flex; align-items: center; gap: 16px; min-height: 72px; }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--green-800); font-weight: 800; }
 .brand img { width: 54px; height: 54px; object-fit: contain; }
 .brand small { display: block; font-weight: 500; color: var(--gold-dark); font-size: 12px; line-height: 1.2; }
 .brand span { font-size: 18px; line-height: 1.2; }
-.nav { display: flex; gap: 2px; margin-inline-start: auto; flex-wrap: nowrap; }
+.site-header .hbar { flex-wrap: wrap; }
+.nav { display: flex; gap: 2px; flex-wrap: nowrap; width: 100%; justify-content: center; border-top: 1px solid var(--line); padding: 6px 0; }
 .nav a {
   padding: 7px 10px; border-radius: 999px; color: var(--ink); font-weight: 500; font-size: 14px; white-space: nowrap;
   transition: background .2s, color .2s;
@@ -73,7 +74,7 @@ button, input, select, textarea { font: inherit; }
 @media (max-width: 1260px) {
   .menu-btn { display: block; }
   .nav {
-    position: absolute; inset-inline: 0; top: 72px; background: #fff; flex-direction: column;
+    position: absolute; inset-inline: 0; top: 72px; width: auto; border-top: 0; background: #fff; flex-direction: column;
     padding: 12px 16px 20px; border-bottom: 1px solid var(--line); box-shadow: var(--shadow); display: none;
   }
   .nav.open { display: flex; }
@@ -200,7 +201,9 @@ a.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); color:
 }
 .chip.active, .chip:hover { border-color: var(--green-600); background: var(--green-600); color: #fff; }
 
-.quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.quick { display: grid; grid-template-columns: repeat(8, 1fr); gap: 14px; }
+@media (max-width: 1100px) { .quick { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 520px) { .quick { grid-template-columns: repeat(2, 1fr); } }
 .quick a {
   background: #fff; border-radius: var(--radius); padding: 18px 12px; text-align: center; box-shadow: var(--shadow);
   color: var(--ink); font-weight: 700; transition: transform .2s, background .2s;
@@ -428,3 +431,31 @@ table.list tr:hover td { background: #fbfdfb; }
   body.print-card .print-area { padding: 0; }
   body.print-card .pcard { box-shadow: none; max-width: 150mm; margin-top: 10mm; }
 }
+
+/* ---------- المشاركات الخارجية ---------- */
+.stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.stage { background: #fff; border-radius: 12px; padding: 12px 8px; text-align: center; font-weight: 700; font-size: 14.5px; color: var(--muted); box-shadow: var(--shadow); border-top: 4px solid var(--line); }
+.stage span { display: block; font-size: 24px; }
+.stage.done { color: var(--green-700); border-top-color: var(--green-500); }
+.stage.now { color: #fff; background: linear-gradient(135deg, var(--green-700), var(--green-500)); border-top-color: var(--gold); transform: translateY(-3px); }
+@media (max-width: 640px) { .stages { grid-template-columns: repeat(3, 1fr); } }
+table.facts th { width: 200px; background: transparent; color: var(--ink); }
+.result-box { display: flex; gap: 14px; align-items: center; margin-top: 16px; padding: 16px; border-radius: 14px; background: linear-gradient(135deg, var(--gold-100), #fff); border: 1.5px solid var(--gold); }
+.result-box > span { font-size: 54px; }
+.result-box p { margin: 4px 0 0; color: var(--muted); }
+.ach { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.ach:last-child { border-bottom: 0; }
+.ach:hover { color: var(--green-700); }
+.ach .medal { font-size: 34px; flex: none; }
+.medals { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }
+.medals .stat b { font-size: 28px; }
+.talent-cta { background: linear-gradient(135deg, var(--green-800), var(--green-600)); color: #fff; }
+.talent-cta p { color: rgba(255,255,255,.9); }
+.team { margin-bottom: 24px; }
+.team-head { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: center; }
+.team-img { aspect-ratio: 16 / 10; border-radius: 14px; background: var(--green-100) center / cover no-repeat; }
+.team-img.placeholder { display: grid; place-items: center; font-size: 64px; }
+@media (max-width: 720px) { .team-head { grid-template-columns: 1fr; } }
+.roster { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.roster li { background: var(--green-50); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; gap: 6px; }
+.roster small { color: var(--gold-dark); font-weight: 700; }

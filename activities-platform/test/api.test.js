@@ -73,7 +73,9 @@ test('home exposes seeded content without private fields', async () => {
   assert.ok(data.activities.length > 0);
   assert.ok(data.ads.length > 0);
   assert.ok(data.quiz);
-  assert.equal(data.stats.members, 7);
+  assert.equal(data.stats.teams, 4);
+  assert.ok(data.achievements.length >= 2, 'completed participations with results appear as achievements');
+  assert.ok(data.upcoming.length >= 1);
   const quiz = await call('GET', '/api/quiz');
   assert.ok(quiz.data.current.questions.every((q) => !('correct' in q)), 'answers must not leak');
 });
@@ -231,17 +233,60 @@ test('complaints get a ticket, email the committee and can be tracked', async ()
   assert.equal((await call('GET', `/api/complaints/track?ticket=${r.data.ticket}&employeeId=1`)).status, 404);
 });
 
-test('ideas can be promoted to star of the week', async () => {
-  await call('POST', '/api/ideas', { ...employee, title: 'دوري الشطرنج', description: 'تنظيم دوري شطرنج شهري' });
-  const ideas = (await call('GET', '/api/admin/ideas', undefined, { auth: true })).data;
-  const star = await call('POST', `/api/admin/ideas/${ideas[0].id}/promote`, {}, { auth: true });
-  assert.equal(star.status, 201);
-  assert.equal(star.data.published, false);
-  assert.equal((await call('GET', '/api/stars')).data.length, 0, 'drafts stay hidden');
-  await call('PUT', `/api/admin/stars/${star.data.id}`, { ...star.data, published: true }, { auth: true });
-  const stars = (await call('GET', '/api/stars')).data;
-  assert.equal(stars[0].name, employee.name);
-  assert.equal(stars[0].employeeId, undefined, 'employee ids are not public');
+test('talent registry: consent required, duplicates blocked, committee evaluates', async () => {
+  const base = { ...employee, discipline: 'الشطرنج', category: 'cultural', level: 'club', affiliation: 'club', clubName: 'نادي الشطرنج' };
+  assert.equal((await call('POST', '/api/talents', { ...base, consent: false })).status, 400);
+  assert.equal((await call('POST', '/api/talents', { ...base, consent: true })).status, 201);
+  assert.equal((await call('POST', '/api/talents', { ...base, consent: true })).status, 409);
+  assert.equal((await call('GET', '/api/talents/stats')).data.registered, 0, 'new requests are not counted until accepted');
+  const [t] = (await call('GET', '/api/admin/talents', undefined, { auth: true })).data;
+  const upd = await call('PATCH', `/api/admin/talents/${t.id}`, { status: 'sponsored', rating: 4, evaluation: 'موهبة واعدة' }, { auth: true });
+  assert.equal(upd.data.status, 'sponsored');
+  const stats = (await call('GET', '/api/talents/stats')).data;
+  assert.equal(stats.registered, 1);
+  assert.equal(stats.sponsored, 1);
+  assert.equal(stats.byCategory.cultural, 1);
+});
+
+test('teams: public view hides employee ids and lists linked participations; deleting unlinks', async () => {
+  const team = await call('POST', '/api/admin/teams', {
+    name: 'منتخب الشطرنج', category: 'cultural', status: 'training', published: true, needs: 'ساعات شطرنج',
+    members: [{ name: 'لاعب أ', employeeId: '١١١', role: 'الرقعة الأولى' }, { name: '' }],
+  }, { auth: true });
+  assert.equal(team.status, 201);
+  assert.equal(team.data.members.length, 1);
+  assert.equal(team.data.members[0].employeeId, '111');
+  const act = await call('POST', '/api/admin/activities', {
+    title: 'بطولة الشطرنج للمؤسسات', category: 'cultural', level: 'regional', status: 'preparing', teamId: team.data.id, published: true,
+    checklist: [{ label: 'الزي', done: true }, { label: 'السفر', done: false }], resultRank: 'nope',
+  }, { auth: true });
+  assert.equal(act.data.resultRank, '', 'unknown result ranks are dropped');
+  const pub = (await call('GET', '/api/teams')).data.find((t) => t.id === team.data.id);
+  assert.equal(pub.members[0].employeeId, undefined);
+  assert.equal(pub.needs, undefined, 'support needs stay internal');
+  assert.equal(pub.participations[0].title, 'بطولة الشطرنج للمؤسسات');
+  const view = (await call('GET', `/api/activities/${act.data.id}`)).data;
+  assert.deepEqual(view.prep, { done: 1, total: 2 });
+  assert.equal(view.team.name, 'منتخب الشطرنج');
+  assert.equal(view.isOpen, false, 'nominations only open in the open stage');
+  assert.equal((await call('POST', `/api/activities/${act.data.id}/register`, employee)).status, 400);
+  await call('DELETE', `/api/admin/teams/${team.data.id}`, undefined, { auth: true });
+  assert.equal((await call('GET', `/api/activities/${act.data.id}`)).data.team, null);
+});
+
+test('nominations support a reserve list and manager notification tracking', async () => {
+  const acts = (await call('GET', '/api/activities?status=open')).data;
+  assert.ok(acts.every((a) => a.status === 'open'));
+  const target = acts.find((a) => a.requiresApproval);
+  const r = await call('POST', `/api/activities/${target.id}/register`, { ...employee, employeeId: '777', affiliation: 'national', clubName: 'المنتخب الوطني' });
+  assert.equal(r.status, 201);
+  const reserve = await call('PATCH', `/api/admin/registrations/${r.data.id}`, { status: 'reserve' }, { auth: true });
+  assert.equal(reserve.data.status, 'reserve');
+  assert.equal(reserve.data.cardCode, undefined, 'reserves get no card');
+  const notified = await call('PATCH', `/api/admin/registrations/${r.data.id}`, { managerNotified: true }, { auth: true });
+  assert.equal(notified.data.managerNotified, true);
+  assert.equal(notified.data.status, 'reserve', 'toggling notification keeps the status');
+  assert.equal(notified.data.affiliation, 'national');
 });
 
 test('settings update social links and reject unsafe urls', async () => {
@@ -278,4 +323,22 @@ test('data persists across restarts', async () => {
   const { store } = createApp({ dataDir, log: () => {} });
   assert.ok(store.all('registrations').length >= 2);
   assert.ok(store.all('complaints').length >= 1);
+});
+
+test('older databases migrate to the external-participation model', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'activities-old-'));
+  fs.writeFileSync(path.join(dir, 'db.json'), JSON.stringify({
+    settings: { committeeName: 'لجنة', companyName: 'شركة', tagline: 'معاً نصنع بيئة عمل نابضة بالحياة — رياضة، ثقافة، فن وتطوع' },
+    users: [{ id: 'u1', username: 'x', role: 'member', permissions: ['stars', 'posts'], active: true }],
+    activities: [{ id: 'a1', title: 'قديم', status: 'closed', published: true }],
+    stars: [{ id: 's1', name: 'نجم' }], ideas: [],
+  }));
+  const { store } = createApp({ dataDir: dir, log: () => {} });
+  const a = store.find('activities', 'a1');
+  assert.equal(a.status, 'selection');
+  assert.equal(a.checklist.length, 8);
+  assert.deepEqual(store.find('users', 'u1').permissions.sort(), ['posts', 'talents']);
+  assert.match(store.data.settings.tagline, /محفل/);
+  assert.deepEqual(store.all('teams'), []);
+  fs.rmSync(dir, { recursive: true, force: true });
 });

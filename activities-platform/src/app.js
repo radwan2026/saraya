@@ -12,13 +12,32 @@ import {
 import { loadDocs } from './docs.js';
 import { buildSeed, generatePassword } from './seed.js';
 import { createMailer } from './mailer.js';
+import { DEFAULT_CHECKLIST } from './checklist.js';
+
+export { DEFAULT_CHECKLIST };
 
 export const CATEGORIES = {
   sports: 'رياضية', cultural: 'ثقافية', arts: 'فنية', volunteer: 'تطوعية', social: 'اجتماعية', other: 'أخرى',
 };
 export const POST_TYPES = { announcement: 'إعلان', decision: 'قرار', news: 'خبر' };
-const COMPLAINT_TYPES = { complaint: 'شكوى', problem: 'مشكلة', suggestion: 'مقترح' };
+const COMPLAINT_TYPES = { support: 'طلب دعم وتجهيز', complaint: 'شكوى', problem: 'مشكلة', suggestion: 'مقترح' };
 const CONTRACT_TYPES = ['دائم', 'محدد المدة', 'متعاون'];
+// مراحل المشاركة الخارجية من فتح باب الترشح حتى إعلان النتيجة.
+export const STAGES = {
+  open: 'باب الترشح مفتوح', selection: 'الاختيار والاختبارات', preparing: 'التجهيز والتدريب',
+  competing: 'المشاركة جارية', completed: 'منتهية',
+};
+export const LEVELS = { local: 'محلية', regional: 'إقليمية', international: 'دولية' };
+export const RESULT_RANKS = {
+  '': 'لم تُسجَّل بعد', gold: 'المركز الأول', silver: 'المركز الثاني', bronze: 'المركز الثالث',
+  honor: 'تكريم / جائزة خاصة', participation: 'مشاركة مشرّفة',
+};
+const AFFILIATIONS = { none: 'غير منتسب', club: 'منتسب لنادٍ', national: 'منتسب لمنتخب وطني', other: 'جهة أخرى' };
+const TALENT_LEVELS = {
+  amateur: 'هاوٍ', regular: 'ممارس منتظم', club: 'لاعب أو عضو نادٍ', national: 'منتخب وطني', professional: 'محترف / خبير',
+};
+const TALENT_STATUSES = ['new', 'evaluating', 'registered', 'sponsored', 'declined'];
+const TEAM_STATUSES = { forming: 'قيد التشكيل', training: 'في مرحلة الإعداد', active: 'جاهز للمشاركة', inactive: 'غير نشط' };
 
 class HttpError extends Error {
   constructor(status, message) { super(message); this.status = status; }
@@ -115,17 +134,40 @@ const pollOptionsSchema = (v) => (Array.isArray(v) ? v : []).slice(0, 20)
   .map((o) => ({ id: str(40)(o?.id) || newId(), label: str(200)(o?.label) }))
   .filter((o) => o.label);
 
+const checklistSchema = (v) => (Array.isArray(v) ? v : []).slice(0, 40)
+  .map((c) => ({ label: str(200)(c?.label), done: bool(c?.done) }))
+  .filter((c) => c.label);
+
+const membersSchema = (v) => (Array.isArray(v) ? v : []).slice(0, 80)
+  .map((m) => ({ name: str(120)(m?.name), employeeId: normalizeEmployeeId(m?.employeeId), role: str(80)(m?.role) }))
+  .filter((m) => m.name);
+
 const RESOURCES = {
   activities: {
     perm: 'activities',
     sort: byDateDesc('startDate'),
     schema: {
       title: str(200), category: oneOf(Object.keys(CATEGORIES), 'other'), description: str(5000),
+      organizer: str(200), level: oneOf(Object.keys(LEVELS), 'local'),
       location: str(200), startDate: date, endDate: date, deadline: date, capacity: int(0, 100000),
-      image: link, status: oneOf(['open', 'closed', 'completed'], 'open'), published: bool, requiresApproval: bool,
+      image: link, status: oneOf(Object.keys(STAGES), 'open'), teamId: str(40), checklist: checklistSchema,
+      budget: int(0, 1e9), resultRank: oneOf(Object.keys(RESULT_RANKS), ''), result: str(300), resultNotes: str(5000),
+      published: bool, requiresApproval: bool,
     },
-    validate: (d) => requireFields(d, { title: 'عنوان النشاط' }),
+    validate: (d) => requireFields(d, { title: 'عنوان المشاركة' }),
     cascade: { registrations: 'activityId' },
+  },
+  teams: {
+    perm: 'teams',
+    sort: (a, b) => String(a.name).localeCompare(String(b.name), 'ar'),
+    schema: {
+      name: str(160), category: oneOf(Object.keys(CATEGORIES), 'sports'), description: str(3000),
+      coach: str(120), manager: str(120), captain: str(120), image: link,
+      status: oneOf(Object.keys(TEAM_STATUSES), 'forming'), schedule: str(1000), needs: str(2000),
+      members: membersSchema, published: bool,
+    },
+    validate: (d) => requireFields(d, { name: 'اسم الفريق / المنتخب' }),
+    onDelete: (store, id) => { for (const a of store.all('activities')) if (a.teamId === id) a.teamId = ''; },
   },
   posts: {
     perm: 'posts',
@@ -177,15 +219,6 @@ const RESOURCES = {
     },
     validate: (d) => requireFields(d, { name: 'الاسم', position: 'الصفة في اللجنة' }),
   },
-  stars: {
-    perm: 'stars',
-    sort: byDateDesc('weekOf'),
-    schema: {
-      name: str(120), employeeId: normalizeEmployeeId, jobTitle: str(160), department: str(160),
-      reason: str(500), achievements: str(5000), photo: link, weekOf: date, published: bool,
-    },
-    validate: (d) => requireFields(d, { name: 'الاسم', weekOf: 'أسبوع التكريم' }),
-  },
 };
 
 export function createApp({ dataDir, adminPassword, mailer = createMailer(), log = console.log } = {}) {
@@ -208,6 +241,28 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
   const missing = store.all('activities').filter((a) => !a.image && SAMPLE_IMAGES[a.title]);
   for (const a of missing) a.image = SAMPLE_IMAGES[a.title];
   if (missing.length) store.save();
+
+  const S0 = () => store.data.settings;
+  // ترحيل بيانات الإصدارات السابقة إلى نموذج المشاركات الخارجية.
+  let migrated = false;
+  for (const a of store.all('activities')) {
+    if (a.status === 'closed') { a.status = 'selection'; migrated = true; }
+    if (!Array.isArray(a.checklist)) {
+      Object.assign(a, { checklist: DEFAULT_CHECKLIST.map((label) => ({ label, done: false })), level: a.level || 'local', organizer: a.organizer || '' });
+      migrated = true;
+    }
+  }
+  for (const u of store.all('users')) {
+    if (u.permissions?.includes('stars')) {
+      u.permissions = [...new Set(u.permissions.map((x) => (x === 'stars' ? 'talents' : x)))];
+      migrated = true;
+    }
+  }
+  if (S0().tagline === 'معاً نصنع بيئة عمل نابضة بالحياة — رياضة، ثقافة، فن وتطوع') {
+    S0().tagline = 'نمثّل الشركة بفخر في كل محفل — بطولات، مسابقات، ومواهب نرعاها ونجهّزها';
+    migrated = true;
+  }
+  if (migrated) store.save();
 
   const docs = loadDocs(new URL('content/', root));
   const sessions = createSessions();
@@ -237,6 +292,8 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       email: s.email, phone: s.phone, whatsapp: s.whatsapp, social: s.social || {},
       departments: s.departments || [], maxActivitiesPerEmployee: s.maxActivitiesPerEmployee || 0,
       categories: CATEGORIES, postTypes: POST_TYPES, complaintTypes: COMPLAINT_TYPES, contractTypes: CONTRACT_TYPES,
+      stages: STAGES, levels: LEVELS, resultRanks: RESULT_RANKS, affiliations: AFFILIATIONS,
+      talentLevels: TALENT_LEVELS, teamStatuses: TEAM_STATUSES, defaultChecklist: DEFAULT_CHECKLIST,
     };
   };
 
@@ -247,16 +304,36 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     const registered = activeRegistrations(a.id).length;
     const deadlinePassed = a.deadline ? Date.now() > toTime(a.deadline, true) : false;
     const full = a.capacity > 0 && registered >= a.capacity;
+    const team = a.teamId ? store.find('teams', a.teamId) : null;
+    const checklist = a.checklist || [];
     return {
       id: a.id, title: a.title, category: a.category, categoryLabel: CATEGORIES[a.category],
-      description: a.description, location: a.location, startDate: a.startDate, endDate: a.endDate,
-      deadline: a.deadline, capacity: a.capacity, image: a.image, status: a.status,
+      description: a.description, organizer: a.organizer || '', level: a.level || 'local', levelLabel: LEVELS[a.level || 'local'],
+      location: a.location, startDate: a.startDate, endDate: a.endDate,
+      deadline: a.deadline, capacity: a.capacity, image: a.image, status: a.status, stageLabel: STAGES[a.status] || '',
       requiresApproval: a.requiresApproval, registered,
+      team: team && team.published ? { id: team.id, name: team.name } : null,
+      prep: { done: checklist.filter((c) => c.done).length, total: checklist.length },
+      resultRank: a.resultRank || '', resultLabel: a.resultRank ? RESULT_RANKS[a.resultRank] : '', result: a.result || '',
+      resultNotes: a.status === 'completed' ? a.resultNotes || '' : '',
       isOpen: a.status === 'open' && !deadlinePassed && !full,
-      closedReason: a.status !== 'open' ? (a.status === 'completed' ? 'انتهى النشاط' : 'التسجيل مغلق')
-        : deadlinePassed ? 'انتهى موعد التسجيل' : full ? 'اكتمل العدد' : '',
+      closedReason: a.status !== 'open' ? `${STAGES[a.status] || 'الترشح مغلق'}`
+        : deadlinePassed ? 'انتهى موعد الترشح' : full ? 'اكتمل العدد المطلوب' : '',
     };
   };
+
+  const teamPublic = (t) => ({
+    id: t.id, name: t.name, category: t.category, categoryLabel: CATEGORIES[t.category], description: t.description,
+    coach: t.coach, manager: t.manager, captain: t.captain, image: t.image, status: t.status,
+    statusLabel: TEAM_STATUSES[t.status], schedule: t.schedule,
+    members: (t.members || []).map(({ name, role }) => ({ name, role })),
+    participations: store.all('activities').filter((a) => a.published && a.teamId === t.id)
+      .sort(byDateDesc('startDate')).map((a) => ({ id: a.id, title: a.title, status: a.status, stageLabel: STAGES[a.status], startDate: a.startDate, resultLabel: a.resultRank ? RESULT_RANKS[a.resultRank] : '' })),
+  });
+
+  const achievements = () => store.all('activities')
+    .filter((a) => a.published && a.status === 'completed' && a.resultRank)
+    .sort(byDateDesc('endDate')).map(activityView);
 
   const publishedPosts = () => store.all('posts').filter((p) => p.published).sort((a, b) => (
     (b.pinned - a.pinned) || String(b.publishedAt).localeCompare(String(a.publishedAt))
@@ -299,7 +376,9 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       activity: a ? {
         title: a.title, category: a.category, categoryLabel: CATEGORIES[a.category],
         startDate: a.startDate, endDate: a.endDate, location: a.location,
-      } : { title: 'نشاط محذوف' },
+        organizer: a.organizer || '', levelLabel: LEVELS[a.level || 'local'],
+        team: a.teamId ? store.find('teams', a.teamId)?.name || '' : '',
+      } : { title: 'مشاركة محذوفة' },
       verifyUrl: `${base.replace(/\/$/, '')}/#/verify/${reg.cardCode}`,
     };
   };
@@ -325,28 +404,33 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     const activities = store.all('activities').filter((a) => a.published).map(activityView);
     const quiz = store.all('quizzes').find((q) => q.published && windowStatus(q) === 'active');
     const polls = store.all('polls').filter((p) => p.published && windowStatus(p) === 'active');
-    const star = store.all('stars').filter((s) => s.published).sort(byDateDesc('weekOf'))[0] || null;
+    const wins = achievements();
+    const teams = store.all('teams').filter((t) => t.published);
     res.json({
       settings: publicSettings(),
       ads: posts.filter((p) => p.pinned).slice(0, 5),
       latest: posts.slice(0, 6),
       activities: activities.filter((a) => a.isOpen).slice(0, 6),
+      upcoming: activities.filter((a) => ['selection', 'preparing', 'competing'].includes(a.status))
+        .sort((a, b) => String(a.startDate).localeCompare(String(b.startDate))).slice(0, 6),
+      teams: teams.slice(0, 6).map(teamPublic),
+      achievements: wins.slice(0, 6),
       quiz: quiz ? { id: quiz.id, title: quiz.title, prize: quiz.prize, endsAt: quiz.endsAt } : null,
       polls: polls.map((p) => ({ id: p.id, title: p.title, endsAt: p.endsAt })),
-      star,
       stats: {
         activities: activities.length,
-        participants: new Set(store.all('registrations').filter((r) => r.status !== 'rejected').map((r) => r.employeeId)).size,
-        members: store.all('members').length,
-        votes: store.all('votes').length,
+        teams: teams.length,
+        participants: new Set(store.all('registrations').filter((r) => r.status === 'approved').map((r) => r.employeeId)).size,
+        talents: store.all('talents').filter((t) => ['registered', 'sponsored'].includes(t.status)).length,
+        medals: wins.filter((a) => ['gold', 'silver', 'bronze'].includes(a.resultRank)).length,
       },
     });
   });
 
   app.get('/api/activities', (req, res) => {
-    const { category } = req.query;
+    const { category, status } = req.query;
     const list = store.all('activities')
-      .filter((a) => a.published && (!category || a.category === category))
+      .filter((a) => a.published && (!category || a.category === category) && (!status || a.status === status))
       .map(activityView)
       .sort((a, b) => (b.isOpen - a.isOpen) || String(a.startDate).localeCompare(String(b.startDate)));
     res.json(list);
@@ -354,33 +438,33 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
 
   app.get('/api/activities/:id', (req, res) => {
     const a = store.find('activities', req.params.id);
-    if (!a || !a.published) fail(404, 'النشاط غير موجود');
+    if (!a || !a.published) fail(404, 'المشاركة غير موجودة');
     res.json(activityView(a));
   });
 
   app.post('/api/activities/:id/register', publicLimiter, (req, res) => {
     const a = store.find('activities', req.params.id);
-    if (!a || !a.published) fail(404, 'النشاط غير موجود');
+    if (!a || !a.published) fail(404, 'المشاركة غير موجودة');
     const view = activityView(a);
-    if (!view.isOpen) fail(400, view.closedReason || 'التسجيل غير متاح');
+    if (!view.isOpen) fail(400, view.closedReason || 'باب الترشح غير مفتوح');
     const d = clean(req.body, {
       name: str(120), employeeId: normalizeEmployeeId, jobTitle: str(160), department: str(160),
       phone: str(30), email: str(160), contractType: oneOf(CONTRACT_TYPES, ''), experience: str(1000),
-      notes: str(1000), pledge: bool,
+      notes: str(1000), pledge: bool, affiliation: oneOf(Object.keys(AFFILIATIONS), 'none'), clubName: str(160),
     });
     requireFields(d, {
       name: 'الاسم', employeeId: 'الرقم الوظيفي', jobTitle: 'الوصف الوظيفي', department: 'الإدارة / المكتب', phone: 'رقم الهاتف',
     });
-    if (!d.pledge) fail(400, 'يجب الإقرار بالالتزام ببنود الميثاق قبل التسجيل');
+    if (!d.pledge) fail(400, 'يجب الإقرار بالالتزام ببنود الميثاق قبل الترشح');
     const mine = store.all('registrations').filter((r) => r.employeeId === d.employeeId && r.status !== 'rejected');
-    if (mine.some((r) => r.activityId === a.id)) fail(409, 'هذا الرقم الوظيفي مسجّل مسبقاً في هذا النشاط');
+    if (mine.some((r) => r.activityId === a.id)) fail(409, 'هذا الرقم الوظيفي مرشّح مسبقاً لهذه المشاركة');
     const max = S().maxActivitiesPerEmployee || 0;
     if (max > 0) {
       const live = mine.filter((r) => {
         const act = store.find('activities', r.activityId);
         return act && act.status !== 'completed';
       });
-      if (live.length >= max) fail(400, `وفق الميثاق لا يُسمح بالتسجيل في أكثر من ${max} أنشطة في نفس الوقت`);
+      if (live.length >= max) fail(400, `وفق الميثاق لا يُسمح بالترشح لأكثر من ${max} مشاركات في نفس الوقت`);
     }
     const reg = {
       ...d, activityId: a.id, status: a.requiresApproval ? 'pending' : 'approved', reviewNote: '',
@@ -397,7 +481,8 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       .map((r) => {
         const a = store.find('activities', r.activityId);
         return {
-          id: r.id, activityTitle: a?.title || 'نشاط محذوف', category: a?.category, status: r.status,
+          id: r.id, activityTitle: a?.title || 'مشاركة محذوفة', category: a?.category, status: r.status,
+          stageLabel: a ? STAGES[a.status] : '',
           reviewNote: r.status === 'rejected' ? r.reviewNote : '', createdAt: r.createdAt,
           cardCode: r.status === 'approved' ? r.cardCode : null,
         };
@@ -490,19 +575,42 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     res.json(store.all('members').slice().sort(RESOURCES.members.sort));
   });
 
-  app.get('/api/stars', (req, res) => {
-    res.json(store.all('stars').filter((s) => s.published).sort(byDateDesc('weekOf'))
-      .map(({ employeeId, ...rest }) => rest));
+  app.get('/api/teams', (req, res) => {
+    res.json(store.all('teams').filter((t) => t.published).sort(RESOURCES.teams.sort).map(teamPublic));
   });
 
-  app.post('/api/ideas', publicLimiter, (req, res) => {
+  app.get('/api/achievements', (req, res) => {
+    const list = achievements();
+    const medals = { gold: 0, silver: 0, bronze: 0 };
+    for (const a of list) if (a.resultRank in medals) medals[a.resultRank] += 1;
+    res.json({ medals, total: list.length, list });
+  });
+
+  const talentStats = () => {
+    const accepted = store.all('talents').filter((t) => ['registered', 'sponsored'].includes(t.status));
+    const byCategory = {};
+    for (const t of accepted) byCategory[t.category] = (byCategory[t.category] || 0) + 1;
+    return { registered: accepted.length, sponsored: accepted.filter((t) => t.status === 'sponsored').length, byCategory };
+  };
+
+  app.get('/api/talents/stats', (req, res) => res.json(talentStats()));
+
+  app.post('/api/talents', publicLimiter, (req, res) => {
     const d = clean(req.body, {
       name: str(120), employeeId: normalizeEmployeeId, jobTitle: str(160), department: str(160), phone: str(30),
-      category: oneOf(Object.keys(CATEGORIES), 'other'), title: str(200), description: str(5000),
+      category: oneOf(Object.keys(CATEGORIES), 'sports'), discipline: str(160), level: oneOf(Object.keys(TALENT_LEVELS), 'amateur'),
+      affiliation: oneOf(Object.keys(AFFILIATIONS), 'none'), clubName: str(160), achievements: str(5000),
+      needs: str(2000), wantsSponsorship: bool, consent: bool,
     });
-    requireFields(d, { name: 'الاسم', employeeId: 'الرقم الوظيفي', department: 'الإدارة / المكتب', title: 'عنوان الفكرة', description: 'وصف الفكرة' });
-    store.insert('ideas', { ...d, status: 'new' });
-    notifyCommittee(`فكرة جديدة: ${d.title}`, `${d.name} (${d.employeeId}) — ${d.department}\n\n${d.description}`);
+    requireFields(d, {
+      name: 'الاسم', employeeId: 'الرقم الوظيفي', department: 'الإدارة / المكتب', phone: 'رقم الهاتف', discipline: 'مجال الموهبة',
+    });
+    if (!d.consent) fail(400, 'يجب الموافقة على القيد في سجل المواهب (القيد اختياري وفق المادة 30)');
+    if (store.all('talents').some((t) => t.employeeId === d.employeeId && t.discipline === d.discipline && t.status !== 'declined')) {
+      fail(409, 'لديك طلب قيد سابق في هذا المجال');
+    }
+    store.insert('talents', { ...d, status: 'new', evaluation: '', rating: 0 });
+    notifyCommittee(`طلب قيد موهبة: ${d.discipline}`, `${d.name} (${d.employeeId}) — ${d.department}\nالمستوى: ${TALENT_LEVELS[d.level]}\n\n${d.achievements}`);
     res.status(201).json({ ok: true });
   });
 
@@ -611,7 +719,12 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
       registrations: regs.length,
       pendingRegistrations: regs.filter((r) => r.status === 'pending').length,
       newComplaints: store.all('complaints').filter((c) => c.status === 'new').length,
-      newIdeas: store.all('ideas').filter((i) => i.status === 'new').length,
+      newTalents: store.all('talents').filter((t) => t.status === 'new').length,
+      talents: talentStats().registered,
+      teams: store.all('teams').length,
+      upcoming: store.all('activities').filter((a) => ['selection', 'preparing', 'competing'].includes(a.status)).length,
+      medals: store.all('activities').filter((a) => a.status === 'completed' && ['gold', 'silver', 'bronze'].includes(a.resultRank)).length,
+      managerNotice: regs.filter((r) => r.status === 'approved' && !r.managerNotified).length,
       quizSubmissions: store.all('quizSubmissions').length,
       votes: store.all('votes').length,
       byCategory,
@@ -639,6 +752,7 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     });
     app.delete(`/api/admin/${name}/:id`, auth(cfg.perm), (req, res) => {
       if (!store.remove(name, req.params.id)) fail(404, 'العنصر غير موجود');
+      cfg.onDelete?.(store, req.params.id);
       for (const [child, key] of Object.entries(cfg.cascade || {})) {
         store.data[child] = store.all(child).filter((x) => x[key] !== req.params.id);
       }
@@ -651,13 +765,13 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
   const registrationRows = (query) => store.all('registrations')
     .filter((r) => (!query.activityId || r.activityId === query.activityId) && (!query.status || r.status === query.status))
     .sort(byDateDesc('createdAt'))
-    .map((r) => ({ ...r, activityTitle: store.find('activities', r.activityId)?.title || 'نشاط محذوف' }));
+    .map((r) => ({ ...r, activityTitle: store.find('activities', r.activityId)?.title || 'مشاركة محذوفة' }));
 
   app.get('/api/admin/registrations', auth('activities'), (req, res) => res.json(registrationRows(req.query)));
 
   app.get('/api/admin/registrations.csv', auth('activities'), (req, res) => {
-    const statusLabel = { pending: 'قيد المراجعة', approved: 'مقبول', rejected: 'مرفوض' };
-    const header = ['النشاط', 'الاسم', 'الرقم الوظيفي', 'الوصف الوظيفي', 'الإدارة / المكتب', 'الهاتف', 'البريد', 'نوع العقد', 'الخبرة', 'ملاحظات', 'الحالة', 'رقم البطاقة', 'تاريخ التسجيل'];
+    const statusLabel = { pending: 'قيد المراجعة', approved: 'مقبول', reserve: 'احتياطي', rejected: 'مرفوض' };
+    const header = ['المشاركة', 'الاسم', 'الرقم الوظيفي', 'الوصف الوظيفي', 'الإدارة / المكتب', 'الهاتف', 'البريد', 'نوع العقد', 'الانتساب', 'النادي / المنتخب', 'الخبرة', 'ملاحظات', 'الحالة', 'إشعار الرئيس المباشر', 'رقم البطاقة', 'تاريخ الترشح'];
     const cell = (v) => {
       let s = String(v ?? '');
       if (/^[=+\-@]/.test(s)) s = `'${s}`;
@@ -665,20 +779,22 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     };
     const rows = registrationRows(req.query).map((r) => [
       r.activityTitle, r.name, r.employeeId, r.jobTitle, r.department, r.phone, r.email, r.contractType,
-      r.experience, r.notes, statusLabel[r.status], r.cardNo || '', r.createdAt.slice(0, 10),
+      AFFILIATIONS[r.affiliation || 'none'], r.clubName, r.experience, r.notes, statusLabel[r.status],
+      r.managerNotified ? 'تم' : 'لم يتم', r.cardNo || '', r.createdAt.slice(0, 10),
     ]);
-    res.set('Content-Disposition', 'attachment; filename="registrations.csv"');
+    res.set('Content-Disposition', 'attachment; filename="nominations.csv"');
     res.type('text/csv; charset=utf-8').send(`﻿${[header, ...rows].map((r) => r.map(cell).join(',')).join('\r\n')}`);
   });
 
   app.patch('/api/admin/registrations/:id', auth('activities'), (req, res) => {
     const reg = store.find('registrations', req.params.id);
     if (!reg) fail(404, 'التسجيل غير موجود');
-    const status = oneOf(['pending', 'approved', 'rejected'], reg.status)(req.body?.status);
+    const status = oneOf(['pending', 'approved', 'reserve', 'rejected'], reg.status)(req.body?.status);
     const reviewNote = str(500)(req.body?.reviewNote ?? reg.reviewNote);
     if (status === 'rejected' && !reviewNote) fail(400, 'يجب تسبيب قرار الرفض (المادة 10 من الميثاق)');
     if (status === 'approved') issueCard(reg);
-    res.json(store.update('registrations', reg.id, { status, reviewNote, reviewedBy: req.user.username }));
+    const managerNotified = req.body?.managerNotified === undefined ? !!reg.managerNotified : bool(req.body.managerNotified);
+    res.json(store.update('registrations', reg.id, { status, reviewNote, managerNotified, reviewedBy: req.user.username }));
   });
 
   app.delete('/api/admin/registrations/:id', auth('activities'), (req, res) => {
@@ -743,31 +859,24 @@ export function createApp({ dataDir, adminPassword, mailer = createMailer(), log
     res.json({ poll: p, total, counts, votes });
   });
 
-  // الأفكار المقدّمة (لترشيح نجم الأسبوع)
-  app.get('/api/admin/ideas', auth('stars'), (req, res) => res.json(store.all('ideas').slice().sort(byDateDesc('createdAt'))));
+  // سجل المواهب (المواد 26-30 من الميثاق)
+  app.get('/api/admin/talents', auth('talents'), (req, res) => {
+    res.json(store.all('talents').filter((t) => !req.query.status || t.status === req.query.status).sort(byDateDesc('createdAt')));
+  });
 
-  app.patch('/api/admin/ideas/:id', auth('stars'), (req, res) => {
-    const idea = store.find('ideas', req.params.id);
-    if (!idea) fail(404, 'الفكرة غير موجودة');
-    res.json(store.update('ideas', idea.id, {
-      status: oneOf(['new', 'reviewed', 'adopted', 'archived'], idea.status)(req.body?.status),
+  app.patch('/api/admin/talents/:id', auth('talents'), (req, res) => {
+    const t = store.find('talents', req.params.id);
+    if (!t) fail(404, 'الطلب غير موجود');
+    res.json(store.update('talents', t.id, {
+      status: oneOf(TALENT_STATUSES, t.status)(req.body?.status),
+      evaluation: str(3000)(req.body?.evaluation ?? t.evaluation),
+      rating: int(0, 5)(req.body?.rating ?? t.rating),
+      reviewedBy: req.user.username,
     }));
   });
 
-  app.post('/api/admin/ideas/:id/promote', auth('stars'), (req, res) => {
-    const idea = store.find('ideas', req.params.id);
-    if (!idea) fail(404, 'الفكرة غير موجودة');
-    const star = store.insert('stars', {
-      name: idea.name, employeeId: idea.employeeId, jobTitle: idea.jobTitle, department: idea.department,
-      reason: idea.title, achievements: idea.description, photo: '', weekOf: new Date().toISOString().slice(0, 10),
-      published: false, createdBy: req.user.username,
-    });
-    store.update('ideas', idea.id, { status: 'adopted' });
-    res.status(201).json(star);
-  });
-
-  app.delete('/api/admin/ideas/:id', auth('stars'), (req, res) => {
-    if (!store.remove('ideas', req.params.id)) fail(404, 'الفكرة غير موجودة');
+  app.delete('/api/admin/talents/:id', auth('talents'), (req, res) => {
+    if (!store.remove('talents', req.params.id)) fail(404, 'الطلب غير موجود');
     res.json({ ok: true });
   });
 

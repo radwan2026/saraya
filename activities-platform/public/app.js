@@ -75,23 +75,34 @@ function countdown(el, until) {
   timers.push(setInterval(tick, 1000));
 }
 
+const STAGE_ORDER = ['open', 'selection', 'preparing', 'competing', 'completed'];
+const STAGE_ICONS = { open: '📝', selection: '🎯', preparing: '🏋️', competing: '🏁', completed: '🏆' };
+const RANK_ICONS = { gold: '🥇', silver: '🥈', bronze: '🥉', honor: '🎖️', participation: '🏅' };
+const stageBadge = (a) => {
+  const cls = { open: '', selection: 'blue', preparing: 'warn', competing: 'gold', completed: 'gray' }[a.status] || 'gray';
+  return `<span class="badge ${cls}">${STAGE_ICONS[a.status] || ''} ${esc(a.stageLabel)}</span>`;
+};
+const prepBar = (p) => (p && p.total ? `<div class="bar-row" style="margin:4px 0 0"><div class="lbl"><span>جاهزية التجهيز</span><b>${Math.round((p.done / p.total) * 100)}%</b></div><div class="bar"><i style="width:${Math.round((p.done / p.total) * 100)}%"></i></div></div>` : '');
+
 const activityCard = (a) => `
   <a class="card" href="#/activity/${a.id}">
     <div class="media ${a.image ? '' : 'placeholder'}" ${a.image ? `style="background-image:url('${esc(a.image)}')"` : ''}>
       ${a.image ? '' : CATEGORY_ICONS[a.category] || '✨'}
-      <span class="badge ${a.isOpen ? '' : 'gray'}">${a.isOpen ? 'التسجيل مفتوح' : esc(a.closedReason)}</span>
+      ${stageBadge(a)}
     </div>
     <div class="body">
-      <span class="badge gold" style="align-self:flex-start">${CATEGORY_ICONS[a.category] || ''} ${esc(a.categoryLabel)}</span>
+      <div class="flex" style="gap:6px"><span class="badge gold">${CATEGORY_ICONS[a.category] || ''} ${esc(a.categoryLabel)}</span><span class="badge gray">🌍 ${esc(a.levelLabel)}</span></div>
       <h3>${esc(a.title)}</h3>
-      <p>${esc((a.description || '').slice(0, 120))}${(a.description || '').length > 120 ? '…' : ''}</p>
+      ${a.organizer ? `<p style="font-size:14px">🏛️ ${esc(a.organizer)}</p>` : ''}
       <div class="meta">
         ${a.startDate ? `<span>📅 ${fmtDate(a.startDate)}</span>` : ''}
         ${a.location ? `<span>📍 ${esc(a.location)}</span>` : ''}
       </div>
+      ${a.status === 'completed' && a.resultLabel ? `<div class="alert ok" style="padding:8px 12px">${RANK_ICONS[a.resultRank] || ''} ${esc(a.result || a.resultLabel)}</div>`
+    : ['preparing', 'competing', 'selection'].includes(a.status) ? prepBar(a.prep) : ''}
       <div class="foot">
-        <span class="muted" style="font-size:14px">👥 ${a.registered}${a.capacity ? ` / ${a.capacity}` : ''} مشترك</span>
-        ${a.deadline ? `<span class="muted" style="font-size:13px">آخر موعد: ${fmtDate(a.deadline)}</span>` : ''}
+        <span class="muted" style="font-size:14px">👥 ${a.registered}${a.capacity ? ` / ${a.capacity}` : ''} مرشّح</span>
+        ${a.isOpen && a.deadline ? `<span class="muted" style="font-size:13px">آخر موعد للترشح: ${fmtDate(a.deadline)}</span>` : a.team ? `<span class="muted" style="font-size:13px">🛡️ ${esc(a.team.name)}</span>` : ''}
       </div>
     </div>
   </a>`;
@@ -114,6 +125,25 @@ const avatar = (photo, name, cls = '') => (photo
   ? `<div class="avatar ${cls}" style="background-image:url('${esc(photo)}')"></div>`
   : `<div class="avatar ${cls}">${esc((name || '؟').trim().charAt(0))}</div>`);
 
+const teamCard = (t) => `
+  <a class="card" href="#/teams" data-team="${t.id}">
+    <div class="media ${t.image ? '' : 'placeholder'}" ${t.image ? `style="background-image:url('${esc(t.image)}')"` : ''}>
+      ${t.image ? '' : '🛡️'}<span class="badge ${t.status === 'active' ? '' : t.status === 'training' ? 'warn' : 'blue'}">${esc(t.statusLabel)}</span>
+    </div>
+    <div class="body">
+      <h3>${esc(t.name)}</h3>
+      <div class="meta"><span>🧑‍🏫 المدرب: ${esc(t.coach || '—')}</span><span>👥 ${t.members.length} عضو</span></div>
+      ${t.participations.length ? `<p style="font-size:14px">🏁 ${esc(t.participations[0].title)}</p>` : ''}
+    </div>
+  </a>`;
+
+const achievementRow = (a) => `
+  <a class="ach" href="#/activity/${a.id}">
+    <span class="medal">${RANK_ICONS[a.resultRank] || '🏅'}</span>
+    <div><b>${esc(a.result || a.resultLabel)}</b><br><span class="muted">${esc(a.title)}${a.team ? ` — ${esc(a.team.name)}` : ''}</span></div>
+    <span class="muted" style="margin-inline-start:auto;font-size:14px">${fmtDate(a.endDate || a.startDate)}</span>
+  </a>`;
+
 // ---------- الصفحات ----------
 async function pageHome() {
   const d = await api('/api/home');
@@ -121,22 +151,22 @@ async function pageHome() {
   $app.innerHTML = `
     <section class="hero"><div class="container inner">
       <div>
-        <span class="badge gold">${esc(s.companyName)}</span>
-        <h1 style="margin-top:12px">منصة <em>${esc(s.committeeName)}</em><br>بوابتك للمشاركة والتميّز</h1>
+        <span class="badge gold">${esc(s.companyName)} — ${esc(s.committeeName)}</span>
+        <h1 style="margin-top:12px">نمثّل الشركة <em>في كل محفل</em><br>ونرعى مواهبها</h1>
         <p>${esc(s.tagline)}</p>
         <div class="actions">
-          <a class="btn gold" href="#/activities">سجّل في نشاط الآن</a>
-          <a class="btn outline-light" href="#/quiz">🎁 المسابقة الأسبوعية</a>
+          <a class="btn gold" href="#/activities?status=open">ترشّح لتمثيل الشركة</a>
+          <a class="btn outline-light" href="#/talents">⭐ سجّل موهبتك</a>
         </div>
       </div>
       <div class="logo-card"><img src="/assets/logo-full.png" alt="شعار لجنة الأنشطة"></div>
     </div></section>
 
     <div class="container stats">
-      <div class="stat"><b>${d.stats.activities}</b><span>نشاط</span></div>
-      <div class="stat"><b>${d.stats.participants}</b><span>موظف مشارك</span></div>
-      <div class="stat"><b>${d.stats.votes}</b><span>صوت في الاستطلاعات</span></div>
-      <div class="stat"><b>${d.stats.members}</b><span>عضو في اللجنة</span></div>
+      <div class="stat"><b>${d.stats.activities}</b><span>مشاركة خارجية</span></div>
+      <div class="stat"><b>${d.stats.teams}</b><span>فريق ومنتخب</span></div>
+      <div class="stat"><b>${d.stats.talents}</b><span>موهبة مقيدة</span></div>
+      <div class="stat"><b>${d.stats.medals}</b><span>ميدالية وإنجاز</span></div>
     </div>
 
     ${d.ads.length ? `<section class="section container">
@@ -156,20 +186,45 @@ async function pageHome() {
 
     <section class="section container">
       <div class="quick">
-        <a href="#/activities"><span class="ico">🏆</span>الأنشطة</a>
+        <a href="#/activities"><span class="ico">🏁</span>المشاركات الخارجية</a>
+        <a href="#/teams"><span class="ico">🛡️</span>الفرق والمنتخبات</a>
+        <a href="#/talents"><span class="ico">⭐</span>سجل المواهب</a>
+        <a href="#/achievements"><span class="ico">🏆</span>سجل الإنجازات</a>
+        <a href="#/card"><span class="ico">🪪</span>بطاقة المشارك</a>
         <a href="#/quiz"><span class="ico">🎁</span>المسابقة الأسبوعية</a>
-        <a href="#/polls"><span class="ico">🗳️</span>التصويت</a>
-        <a href="#/star"><span class="ico">⭐</span>نجم الأسبوع</a>
-        <a href="#/card"><span class="ico">🪪</span>بطاقة المشاركة</a>
-        <a href="#/committee"><span class="ico">👥</span>أعضاء اللجنة</a>
-        <a href="#/docs/charter"><span class="ico">📜</span>الميثاق واللائحة</a>
-        <a href="#/complaints"><span class="ico">💬</span>الشكاوى والمقترحات</a>
+        <a href="#/polls"><span class="ico">🗳️</span>اختر مشاركاتنا</a>
+        <a href="#/complaints"><span class="ico">🧰</span>الدعم والشكاوى</a>
       </div>
     </section>
 
     <section class="section container">
-      <div class="section-head"><div><h2>أنشطة مفتوحة للتسجيل</h2><p>رياضية، ثقافية، فنية، تطوعية واجتماعية</p></div><a class="btn ghost small" href="#/activities">كل الأنشطة</a></div>
-      ${d.activities.length ? `<div class="grid cols-3">${d.activities.map(activityCard).join('')}</div>` : empty('📭', 'لا توجد أنشطة مفتوحة حالياً، تابعنا قريباً')}
+      <div class="section-head"><div><h2>باب الترشح مفتوح</h2><p>بطولات ومحافل خارجية تبحث عمّن يمثّل الشركة</p></div><a class="btn ghost small" href="#/activities">كل المشاركات</a></div>
+      ${d.activities.length ? `<div class="grid cols-3">${d.activities.map(activityCard).join('')}</div>` : empty('📭', 'لا يوجد ترشح مفتوح حالياً، تابعنا قريباً')}
+    </section>
+
+    ${d.upcoming.length ? `<section class="section container">
+      <div class="section-head"><div><h2>مشاركات قيد الإعداد</h2><p>فرقنا تستعد — تابع مراحل الاختيار والتجهيز</p></div></div>
+      <div class="grid cols-3">${d.upcoming.map(activityCard).join('')}</div>
+    </section>` : ''}
+
+    <section class="section container">
+      <div class="section-head"><div><h2>الفرق والمنتخبات</h2><p>من يمثّل الشركة في البطولات والدوريات</p></div><a class="btn ghost small" href="#/teams">كل الفرق</a></div>
+      ${d.teams.length ? `<div class="grid cols-4">${d.teams.map(teamCard).join('')}</div>` : empty('🛡️', 'لم تُشكَّل فرق بعد')}
+    </section>
+
+    <section class="section container">
+      <div class="grid cols-2">
+        <div class="panel">
+          <h3>🏆 أحدث الإنجازات</h3>
+          ${d.achievements.length ? d.achievements.slice(0, 4).map(achievementRow).join('') : '<p class="muted">ستظهر هنا نتائج مشاركات الشركة وإنجازاتها.</p>'}
+          <a class="btn ghost mt" href="#/achievements">سجل الإنجازات</a>
+        </div>
+        <div class="panel talent-cta">
+          <h3>⭐ هل لديك موهبة تمثّل بها الشركة؟</h3>
+          <p>رياضية، ثقافية، فنية أو تقنية… سجّلها في <b>سجل المواهب</b> لتحظى بالتقييم والتأهيل والدعم والرعاية وفق المواد (26–30) من الميثاق.</p>
+          <a class="btn gold mt" href="#/talents">سجّل موهبتك الآن</a>
+        </div>
+      </div>
     </section>
 
     <section class="section container">
@@ -180,10 +235,10 @@ async function pageHome() {
             <div class="prize"><span class="ico">📱</span><div><b>الجائزة</b><br>${esc(d.quiz.prize)}</div></div>
             <p class="muted mt">تنتهي المسابقة خلال:</p><div class="countdown" id="homeCountdown"></div>
             <a class="btn gold mt" href="#/quiz">شارك الآن</a>`
-    : `<p class="muted">لا توجد مسابقة جارية الآن. تُطرح مسابقة جديدة كل أسبوع بجوائز رصيد — زرنا باستمرار!</p><a class="btn ghost" href="#/quiz">نتائج المسابقات السابقة</a>`}
+    : `<p class="muted">لا توجد مسابقة جارية الآن. تُطرح مسابقة جديدة كل أسبوع بجوائز رصيد.</p><a class="btn ghost" href="#/quiz">نتائج المسابقات السابقة</a>`}
         </div>
         <div class="panel">
-          <h3>🗳️ صوتك يصنع القرار</h3>
+          <h3>🗳️ اختر معنا مشاركاتنا القادمة</h3>
           ${d.polls.length ? d.polls.map((p) => `<div class="flex" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:10px 0"><div><b>${esc(p.title)}</b><br><small class="muted">ينتهي ${fmtDateTime(p.endsAt)}</small></div><a class="btn small" href="#/polls">صوّت</a></div>`).join('')
     : '<p class="muted">لا توجد استطلاعات مفتوحة حالياً.</p>'}
           <a class="btn ghost mt" href="#/polls">كل الاستطلاعات</a>
@@ -192,21 +247,16 @@ async function pageHome() {
     </section>
 
     <section class="section container">
-      <div class="section-head"><div><h2>⭐ نجم الأسبوع</h2><p>نحتفي بالموظفين المبادرين بالأفكار والبرامج والأنشطة</p></div><a class="btn ghost small" href="#/star">شاركنا فكرتك</a></div>
-      ${d.star ? starCard(d.star) : `<div class="panel center"><p class="muted">سيتم الإعلان عن نجم الأسبوع قريباً. هل لديك فكرة أو برنامج مميز؟</p><a class="btn gold" href="#/star">قدّم فكرتك وكن نجم الأسبوع</a></div>`}
-    </section>
-
-    <section class="section container">
-      <div class="section-head"><div><h2>الأخبار والقرارات</h2><p>آخر مستجدات اللجنة</p></div><a class="btn ghost small" href="#/news">كل الأخبار</a></div>
+      <div class="section-head"><div><h2>الأخبار والقرارات</h2><p>نتائج المشاركات وقرارات اللجنة</p></div><a class="btn ghost small" href="#/news">كل الأخبار</a></div>
       ${d.latest.length ? `<div class="grid cols-3">${d.latest.slice(0, 3).map(postCard).join('')}</div>` : empty('📰', 'لا توجد أخبار بعد')}
     </section>
 
     <section class="section container">
-      <div class="section-head"><div><h2>من أنشطتنا</h2></div></div>
+      <div class="section-head"><div><h2>من مشاركاتنا</h2></div></div>
       <div class="gallery">
-        <div style="background-image:url('/assets/team-veterans.webp')"></div>
-        <div style="background-image:url('/assets/team-futsal.webp')"></div>
         <div style="background-image:url('/assets/volleyball-champions.webp')"></div>
+        <div style="background-image:url('/assets/team-futsal.webp')"></div>
+        <div style="background-image:url('/assets/team-veterans.webp')"></div>
       </div>
     </section>
 
@@ -233,57 +283,68 @@ async function pageHome() {
   }
 }
 
-const starCard = (s) => `
-  <div class="star-card">
-    ${avatar(s.photo, s.name)}
-    <div style="position:relative">
-      <div class="label">⭐ نجم الأسبوع — ${fmtDate(s.weekOf)}</div>
-      <h2>${esc(s.name)}</h2>
-      <div style="opacity:.9">${esc([s.jobTitle, s.department].filter(Boolean).join(' — '))}</div>
-      ${s.reason ? `<h3 style="margin-top:14px;color:#ffe39a">${esc(s.reason)}</h3>` : ''}
-      ${s.achievements ? `<p>${esc(s.achievements)}</p>` : ''}
-    </div>
-  </div>`;
-
 async function pageActivities(params) {
   const cat = params.get('category') || '';
-  const list = await api(`/api/activities${cat ? `?category=${encodeURIComponent(cat)}` : ''}`);
-  $app.innerHTML = `${pageHead('الأنشطة', 'اختر النشاط المناسب لك وسجّل بياناتك للمشاركة')}
+  const status = params.get('status') || '';
+  const q = new URLSearchParams({ ...(cat && { category: cat }), ...(status && { status }) });
+  const list = await api(`/api/activities${q.toString() ? `?${q}` : ''}`);
+  const link = (c, st) => {
+    const p = new URLSearchParams({ ...(c && { category: c }), ...(st && { status: st }) });
+    return `#/activities${p.toString() ? `?${p}` : ''}`;
+  };
+  $app.innerHTML = `${pageHead('المشاركات الخارجية', 'البطولات والمسابقات والمحافل التي تمثّل فيها الشركة خارجياً')}
     <section class="section container">
       <div class="chips">
-        <a class="chip ${cat ? '' : 'active'}" href="#/activities">الكل</a>
-        ${Object.entries(SETTINGS.categories).map(([k, v]) => `<a class="chip ${cat === k ? 'active' : ''}" href="#/activities?category=${k}">${CATEGORY_ICONS[k]} ${esc(v)}</a>`).join('')}
+        <a class="chip ${status ? '' : 'active'}" href="${link(cat, '')}">كل المراحل</a>
+        ${STAGE_ORDER.map((k) => `<a class="chip ${status === k ? 'active' : ''}" href="${link(cat, k)}">${STAGE_ICONS[k]} ${esc(SETTINGS.stages[k])}</a>`).join('')}
       </div>
-      ${list.length ? `<div class="grid cols-3">${list.map(activityCard).join('')}</div>` : empty('📭', 'لا توجد أنشطة في هذا التصنيف حالياً')}
+      <div class="chips">
+        <a class="chip ${cat ? '' : 'active'}" href="${link('', status)}">كل المجالات</a>
+        ${Object.entries(SETTINGS.categories).map(([k, v]) => `<a class="chip ${cat === k ? 'active' : ''}" href="${link(k, status)}">${CATEGORY_ICONS[k]} ${esc(v)}</a>`).join('')}
+      </div>
+      ${list.length ? `<div class="grid cols-3">${list.map(activityCard).join('')}</div>` : empty('📭', 'لا توجد مشاركات بهذه التصفية حالياً')}
     </section>`;
 }
 
 async function pageActivity(id) {
   const a = await api(`/api/activities/${id}`);
-  $app.innerHTML = `${pageHead(a.title, `${CATEGORY_ICONS[a.category]} نشاط ${a.categoryLabel}`, [['الأنشطة', '#/activities'], [a.title]])}
-    <section class="section container layout-2">
+  const current = STAGE_ORDER.indexOf(a.status);
+  $app.innerHTML = `${pageHead(a.title, `${CATEGORY_ICONS[a.category]} مشاركة ${a.categoryLabel} — ${a.levelLabel}`, [['المشاركات الخارجية', '#/activities'], [a.title]])}
+    <section class="section container">
+      <div class="stages">${STAGE_ORDER.map((k, i) => `<div class="stage ${i < current ? 'done' : i === current ? 'now' : ''}"><span>${STAGE_ICONS[k]}</span>${esc(SETTINGS.stages[k])}</div>`).join('')}</div>
+    </section>
+    <section class="section container layout-2" style="padding-top:20px">
       <div class="panel">
         ${a.image ? `<img src="${esc(a.image)}" alt="" style="border-radius:12px;margin-bottom:16px;width:100%;max-height:340px;object-fit:cover">` : ''}
-        <div class="meta" style="margin-bottom:12px">
-          ${a.startDate ? `<span>📅 ${fmtDate(a.startDate)}${a.endDate && a.endDate !== a.startDate ? ` — ${fmtDate(a.endDate)}` : ''}</span>` : ''}
-          ${a.location ? `<span>📍 ${esc(a.location)}</span>` : ''}
-          ${a.deadline ? `<span>⏰ آخر موعد للتسجيل: ${fmtDate(a.deadline)}</span>` : ''}
-          <span>👥 ${a.registered}${a.capacity ? ` / ${a.capacity}` : ''} مشترك</span>
-        </div>
-        <p class="post-body">${esc(a.description)}</p>
-        ${a.requiresApproval ? '<div class="alert info">يخضع التسجيل في هذا النشاط لمراجعة اللجنة وفق المادة (10) من الميثاق، وستصدر بطاقة المشاركة بعد القبول.</div>' : ''}
+        <table class="list facts"><tbody>
+          ${a.organizer ? `<tr><th>🏛️ الجهة المنظمة</th><td>${esc(a.organizer)}</td></tr>` : ''}
+          <tr><th>🌍 المستوى</th><td>${esc(a.levelLabel)}</td></tr>
+          ${a.startDate ? `<tr><th>📅 الموعد</th><td>${fmtDate(a.startDate)}${a.endDate && a.endDate !== a.startDate ? ` — ${fmtDate(a.endDate)}` : ''}</td></tr>` : ''}
+          ${a.location ? `<tr><th>📍 المكان</th><td>${esc(a.location)}</td></tr>` : ''}
+          ${a.team ? `<tr><th>🛡️ الفريق الممثل</th><td><a href="#/teams">${esc(a.team.name)}</a></td></tr>` : ''}
+          ${a.deadline && a.status === 'open' ? `<tr><th>⏰ آخر موعد للترشح</th><td>${fmtDate(a.deadline)}</td></tr>` : ''}
+          <tr><th>👥 المرشّحون</th><td>${a.registered}${a.capacity ? ` من أصل ${a.capacity} مطلوب` : ''}</td></tr>
+        </tbody></table>
+        <p class="post-body mt">${esc(a.description)}</p>
+        ${a.status === 'completed' && a.resultLabel ? `<div class="result-box"><span>${RANK_ICONS[a.resultRank] || '🏅'}</span><div><b>${esc(a.result || a.resultLabel)}</b>${a.resultNotes ? `<p>${esc(a.resultNotes)}</p>` : ''}</div></div>` : ''}
+        ${['selection', 'preparing', 'competing'].includes(a.status) && a.prep.total ? `<div class="mt">${prepBar(a.prep)}<small class="muted">تتابع اللجنة قائمة تجهيز المشاركة: الاعتماد، إشعار الرؤساء المباشرين، الإيفاد، الكشف الطبي، الزي والمعدات، السفر والإقامة.</small></div>` : ''}
       </div>
       <div class="panel" id="regPanel">
-        <h3>📝 نموذج التسجيل</h3>
+        <h3>📝 نموذج الترشح لتمثيل الشركة</h3>
         ${a.isOpen ? `<form class="form" id="regForm">
           ${employeeFields({ email: true })}
-          <div class="field"><label>نوع العقد</label><select class="input" name="contractType"><option value="">— اختر —</option>${SETTINGS.contractTypes.map((c) => `<option>${esc(c)}</option>`).join('')}</select></div>
-          <div class="field"><label>الخبرة السابقة</label><textarea class="input" name="experience" maxlength="1000" placeholder="مثال: لاعب سابق في نادي...، مشاركات سابقة مع فريق الشركة"></textarea></div>
-          <div class="field"><label>ملاحظات أو اعتبارات خاصة</label><textarea class="input" name="notes" maxlength="1000" style="min-height:70px"></textarea></div>
-          <label class="check"><input type="checkbox" name="pledge" required><span>أُقر بصحة البيانات وأتعهد بالالتزام ببنود <a href="#/docs/charter" target="_blank">الميثاق الرياضي الاجتماعي الثقافي</a> وتعليمات اللجنة.</span></label>
+          <div class="row">
+            <div class="field"><label>نوع العقد</label><select class="input" name="contractType"><option value="">— اختر —</option>${SETTINGS.contractTypes.map((c) => `<option>${esc(c)}</option>`).join('')}</select></div>
+            <div class="field"><label>الانتساب الرياضي</label><select class="input" name="affiliation">${Object.entries(SETTINGS.affiliations).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+          </div>
+          <div class="field"><label>اسم النادي / المنتخب (إن وجد)</label><input class="input" name="clubName" maxlength="160"></div>
+          <div class="field"><label>الخبرة السابقة</label><textarea class="input" name="experience" maxlength="1000" placeholder="مثال: لاعب سابق في نادي...، مشاركات سابقة مع فريق الشركة، دوريات رمضانية"></textarea></div>
+          <div class="field"><label>ملاحظات أو اعتبارات خاصة</label><textarea class="input" name="notes" maxlength="1000" style="min-height:70px" placeholder="اللياقة البدنية، الاستعداد لحضور التدريبات..."></textarea></div>
+          <label class="check"><input type="checkbox" name="pledge" required><span>أُقر بصحة البيانات وخلوّي من أي حالة صحية تمنع المشاركة، وأتعهد بالالتزام ببنود <a href="#/docs/charter" target="_blank">الميثاق</a> وتعليمات اللجنة والجهاز الفني.</span></label>
           <div class="form-msg"></div>
-          <button class="btn" type="submit">إرسال طلب التسجيل</button>
-        </form>` : `<div class="alert err">${esc(a.closedReason || 'التسجيل غير متاح')}</div>`}
+          <button class="btn" type="submit">إرسال طلب الترشح</button>
+          <small class="muted">تراجع اللجنة الطلبات وفق المواد (9–12) من الميثاق، وتُعلن قائمة المختارين والقائمة الاحتياطية.</small>
+        </form>` : `<div class="alert info">${esc(a.closedReason || 'باب الترشح غير مفتوح')}</div><p class="muted mt">يمكنك متابعة طلباتك السابقة من صفحة <a href="#/card">بطاقة المشارك</a>.</p>`}
       </div>
     </section>`;
   const form = document.getElementById('regForm');
@@ -292,10 +353,123 @@ async function pageActivity(id) {
       const r = await api(`/api/activities/${id}/register`, { method: 'POST', body: data });
       rememberEmployee(data);
       document.getElementById('regPanel').innerHTML = r.status === 'approved'
-        ? `<div class="center"><div style="font-size:64px">🎉</div><h3>تم تسجيلك بنجاح!</h3><p class="muted">بطاقة مشاركتك جاهزة.</p><a class="btn gold" href="#/card/${esc(r.cardCode)}">عرض بطاقة المشاركة</a></div>`
-        : `<div class="center"><div style="font-size:64px">✅</div><h3>تم استلام طلبك</h3><p class="muted">طلبك قيد المراجعة من اللجنة. يمكنك متابعة حالته وإصدار بطاقتك بعد القبول من صفحة «بطاقة المشاركة».</p><a class="btn" href="#/card">متابعة الطلب</a></div>`;
+        ? `<div class="center"><div style="font-size:64px">🎉</div><h3>تم قبول ترشحك!</h3><p class="muted">بطاقة المشارك الرسمي جاهزة.</p><a class="btn gold" href="#/card/${esc(r.cardCode)}">عرض البطاقة</a></div>`
+        : `<div class="center"><div style="font-size:64px">✅</div><h3>تم استلام طلب ترشحك</h3><p class="muted">طلبك قيد المراجعة من اللجنة. تابع حالته (مقبول / احتياطي) وأصدر بطاقتك بعد القبول من صفحة «بطاقة المشارك».</p><a class="btn" href="#/card">متابعة الطلب</a></div>`;
     });
   }
+}
+
+async function pageTeams() {
+  const teams = await api('/api/teams');
+  $app.innerHTML = `${pageHead('الفرق والمنتخبات', 'فرق الشركة المرشّحة والمنتخبة لتمثيلها في البطولات والدوريات والمحافل')}
+    <section class="section container">
+      ${teams.length ? teams.map((t) => `
+        <article class="panel team" id="team-${t.id}">
+          <div class="team-head">
+            ${t.image ? `<div class="team-img" style="background-image:url('${esc(t.image)}')"></div>` : '<div class="team-img placeholder">🛡️</div>'}
+            <div>
+              <div class="flex" style="gap:8px"><span class="badge gold">${CATEGORY_ICONS[t.category] || ''} ${esc(t.categoryLabel)}</span><span class="badge ${t.status === 'active' ? '' : t.status === 'training' ? 'warn' : 'blue'}">${esc(t.statusLabel)}</span></div>
+              <h2 style="margin:8px 0 4px">${esc(t.name)}</h2>
+              ${t.description ? `<p class="muted">${esc(t.description)}</p>` : ''}
+              <div class="meta" style="margin-top:6px">
+                <span>🧑‍🏫 المدرب: <b>${esc(t.coach || '—')}</b></span>
+                <span>📋 الإداري: <b>${esc(t.manager || '—')}</b></span>
+                ${t.captain ? `<span>©️ القائد: <b>${esc(t.captain)}</b></span>` : ''}
+              </div>
+              ${t.schedule ? `<p style="margin-top:8px">🗓️ ${esc(t.schedule)}</p>` : ''}
+            </div>
+          </div>
+          <div class="grid cols-2 mt">
+            <div>
+              <h4>👥 التشكيلة (${t.members.length})</h4>
+              ${t.members.length ? `<ul class="roster">${t.members.map((m) => `<li><span>${esc(m.name)}</span>${m.role ? `<small>${esc(m.role)}</small>` : ''}</li>`).join('')}</ul>` : '<p class="muted">تُعلن التشكيلة بعد اختبارات الانتقاء.</p>'}
+            </div>
+            <div>
+              <h4>🏁 المشاركات</h4>
+              ${t.participations.length ? t.participations.map((p) => `<a class="ach" href="#/activity/${p.id}"><span class="medal">${STAGE_ICONS[p.status]}</span><div><b>${esc(p.title)}</b><br><span class="muted">${esc(p.resultLabel || p.stageLabel)}</span></div></a>`).join('') : '<p class="muted">لا توجد مشاركات مرتبطة بعد.</p>'}
+            </div>
+          </div>
+        </article>`).join('') : empty('🛡️', 'لم تُشكَّل فرق بعد')}
+    </section>`;
+}
+
+async function pageAchievements() {
+  const d = await api('/api/achievements');
+  $app.innerHTML = `${pageHead('سجل الإنجازات', 'نتائج مشاركات الشركة في البطولات والمحافل الخارجية')}
+    <section class="section container">
+      <div class="medals">
+        <div class="stat"><b>🥇 ${d.medals.gold}</b><span>مركز أول</span></div>
+        <div class="stat"><b>🥈 ${d.medals.silver}</b><span>مركز ثانٍ</span></div>
+        <div class="stat"><b>🥉 ${d.medals.bronze}</b><span>مركز ثالث</span></div>
+        <div class="stat"><b>🏅 ${d.total}</b><span>إنجاز مسجّل</span></div>
+      </div>
+      <div class="panel mt">
+        ${d.list.length ? d.list.map(achievementRow).join('') : empty('🏆', 'لم تُسجَّل نتائج بعد')}
+      </div>
+      <p class="muted center mt">تحتفظ الشركة بالكؤوس والدروع والجوائز الجماعية في مكتبة الإنجازات تحت إشراف لجنة الأنشطة (المادة 89).</p>
+    </section>`;
+}
+
+async function pageTalents() {
+  const st = await api('/api/talents/stats');
+  $app.innerHTML = `${pageHead('سجل المواهب', 'نكتشف المواهب ونؤهلها وندعمها لتمثيل الشركة خارجياً — المواد (26–30) من الميثاق')}
+    <section class="section container">
+      <div class="medals">
+        <div class="stat"><b>${st.registered}</b><span>موهبة مقيدة</span></div>
+        <div class="stat"><b>${st.sponsored}</b><span>موهبة ترعاها الشركة</span></div>
+        ${Object.entries(st.byCategory).slice(0, 2).map(([k, n]) => `<div class="stat"><b>${n}</b><span>${CATEGORY_ICONS[k] || ''} ${esc(SETTINGS.categories[k] || k)}</span></div>`).join('')}
+      </div>
+    </section>
+    <section class="section container layout-2" style="padding-top:20px">
+      <div class="panel" id="talentPanel">
+        <h3>⭐ طلب القيد في سجل المواهب</h3>
+        <form class="form" id="talentForm">
+          ${employeeFields({})}
+          <div class="row">
+            <div class="field"><label>المجال</label><select class="input" name="category">${Object.entries(SETTINGS.categories).map(([k, v]) => `<option value="${k}">${CATEGORY_ICONS[k]} ${esc(v)}</option>`).join('')}</select></div>
+            <div class="field"><label>الموهبة / اللعبة <span class="req">*</span></label><input class="input" name="discipline" required maxlength="160" placeholder="مثال: كرة القدم، الشطرنج، الخط العربي، البرمجة"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>المستوى</label><select class="input" name="level">${Object.entries(SETTINGS.talentLevels).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+            <div class="field"><label>الانتساب</label><select class="input" name="affiliation">${Object.entries(SETTINGS.affiliations).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+          </div>
+          <div class="field"><label>اسم النادي / المنتخب / الجهة (إن وجد)</label><input class="input" name="clubName" maxlength="160"></div>
+          <div class="field"><label>الإنجازات والمشاركات السابقة</label><textarea class="input" name="achievements" maxlength="5000" placeholder="بطولات، ميداليات، شهادات، مشاركات محلية أو دولية..."></textarea></div>
+          <div class="field"><label>ما الذي تحتاجه لتطوير موهبتك؟</label><textarea class="input" name="needs" maxlength="2000" style="min-height:70px" placeholder="تدريب، معدات، تفرغ، رعاية للمشاركة في بطولة..."></textarea></div>
+          <label class="check"><input type="checkbox" name="wantsSponsorship"><span>أرغب في دراسة رعاية الشركة لمشاركاتي الخارجية (المواد 46–49).</span></label>
+          <label class="check"><input type="checkbox" name="consent" required><span>أوافق على قيد اسمي في سجل المواهب بالشركة، وأعلم أن القيد اختياري (المادة 30).</span></label>
+          <div class="form-msg"></div>
+          <button class="btn gold" type="submit">إرسال طلب القيد</button>
+        </form>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>🔍 من هو الموهوب؟</h3>
+          <ul class="muted" style="padding-inline-start:20px">
+            <li>من يمتلك قدرات وأداءً متميزاً في مجال أو أكثر مقارنة بأقرانه.</li>
+            <li>القادر على إنتاج أفكار جديدة ومبتكرة.</li>
+            <li>من قدّم حلولاً تقنية أو تجارية أسهمت في نمو الشركة.</li>
+            <li>من لديه أفكار ومقترحات تحتاج إلى تطوير.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>🤝 ماذا تقدّم اللجنة للمواهب؟</h3>
+          <ul class="muted" style="padding-inline-start:20px">
+            <li>تقييم متخصص واختبارات لتحديد مستوى الموهبة.</li>
+            <li>برامج تأهيل وتدريب وتوفير الأدوات والموارد.</li>
+            <li>دراسة طلبات المشاركة في المسابقات الداخلية والخارجية.</li>
+            <li>الرعاية المالية أو اللوجستية للمشاركات المعتمدة.</li>
+            <li>إبراز الإنجازات إعلامياً.</li>
+          </ul>
+          <a class="btn ghost small" href="#/docs/charter">اقرأ المواد 26–50 في الميثاق</a>
+        </div>
+      </div>
+    </section>`;
+  bindForm(document.getElementById('talentForm'), async (data) => {
+    await api('/api/talents', { method: 'POST', body: data });
+    rememberEmployee(data);
+    document.getElementById('talentPanel').innerHTML = '<div class="center"><div style="font-size:64px">⭐</div><h3>وصل طلبك إلى اللجنة</h3><p class="muted">ستتواصل معك اللجنة لتقييم موهبتك وتحديد برنامج التأهيل والدعم المناسب.</p></div>';
+  });
 }
 
 async function pageNews(params) {
@@ -399,7 +573,7 @@ const quizResult = (r) => `<div class="center">
 
 async function pagePolls() {
   const list = await api('/api/polls');
-  $app.innerHTML = `${pageHead('التصويت على المشاريع والبرامج', 'شارك برأيك في خطط وبرامج لجنة الأنشطة — صوت واحد لكل موظف')}
+  $app.innerHTML = `${pageHead('اختر معنا مشاركاتنا', 'صوّت على البطولات والمحافل التي تشارك فيها الشركة وبرامج تجهيز الفرق — صوت واحد لكل موظف')}
     <section class="section container" style="max-width:900px" id="polls">
       ${list.length ? list.map(pollPanel).join('') : empty('🗳️', 'لا توجد استطلاعات حالياً')}
     </section>`;
@@ -456,45 +630,9 @@ async function pageCommittee() {
     </section>`;
 }
 
-async function pageStar() {
-  const stars = await api('/api/stars');
-  const [current, ...archive] = stars;
-  $app.innerHTML = `${pageHead('نجم الأسبوع', 'مساحة للاحتفاء بالموظفين المبادرين بالأفكار والبرامج والأنشطة المتنوعة')}
-    <section class="section container">
-      ${current ? starCard(current) : `<div class="panel center"><div style="font-size:64px">⭐</div><h3>لم يُعلن نجم الأسبوع بعد</h3><p class="muted">قدّم فكرتك أو برنامجك وقد تكون النجم القادم!</p></div>`}
-    </section>
-    <section class="section container layout-2">
-      <div class="panel" id="ideaPanel">
-        <h3>💡 شاركنا فكرتك أو برنامجك</h3>
-        <p class="muted">تراجع اللجنة الأفكار المقدّمة أسبوعياً، ويُكرَّم صاحب الفكرة أو المبادرة المميزة كنجم للأسبوع.</p>
-        <form class="form" id="ideaForm">
-          ${employeeFields({ phoneRequired: false })}
-          <div class="row">
-            <div class="field"><label>عنوان الفكرة / البرنامج <span class="req">*</span></label><input class="input" name="title" required maxlength="200"></div>
-            <div class="field"><label>المجال</label><select class="input" name="category">${Object.entries(SETTINGS.categories).map(([k, v]) => `<option value="${k}">${CATEGORY_ICONS[k]} ${esc(v)}</option>`).join('')}</select></div>
-          </div>
-          <div class="field"><label>وصف الفكرة <span class="req">*</span></label><textarea class="input" name="description" required maxlength="5000" placeholder="ما الفكرة؟ ما أهدافها؟ كيف يمكن تنفيذها؟"></textarea></div>
-          <div class="form-msg"></div>
-          <button class="btn gold" type="submit">إرسال الفكرة</button>
-        </form>
-      </div>
-      <div class="panel">
-        <h3>🌟 نجوم الأسابيع السابقة</h3>
-        ${archive.length ? archive.map((s) => `<div class="flex" style="border-bottom:1px solid var(--line);padding:10px 0">
-          ${avatar(s.photo, s.name, 'sm')}
-          <div><b>${esc(s.name)}</b><br><small class="muted">${esc(s.reason || s.department)} · ${fmtDate(s.weekOf)}</small></div></div>`).join('') : '<p class="muted">لا يوجد أرشيف بعد.</p>'}
-      </div>
-    </section>`;
-  bindForm(document.getElementById('ideaForm'), async (data) => {
-    await api('/api/ideas', { method: 'POST', body: data });
-    rememberEmployee(data);
-    document.getElementById('ideaPanel').innerHTML = '<div class="center"><div style="font-size:64px">💡</div><h3>شكراً لمبادرتك!</h3><p class="muted">وصلت فكرتك إلى اللجنة وستتم مراجعتها.</p></div>';
-  });
-}
-
 async function pageCardLookup() {
   const me = store.get('employee', {});
-  $app.innerHTML = `${pageHead('بطاقة المشاركة', 'تابع طلبات تسجيلك وأصدر بطاقة المشاركة في النشاط')}
+  $app.innerHTML = `${pageHead('بطاقة المشارك الرسمي', 'تابع طلبات ترشحك وأصدر بطاقة تمثيل الشركة بعد قبولك')}
     <section class="section container" style="max-width:900px">
       <div class="panel">
         <form class="form" id="lookupForm">
@@ -511,11 +649,11 @@ async function pageCardLookup() {
   const run = async (data) => {
     const list = await api(`/api/my/registrations?employeeId=${encodeURIComponent(data.employeeId)}`);
     document.getElementById('lookupResult').innerHTML = `<div class="panel mt">${list.length ? `
-      <div class="table-wrap"><table class="list"><thead><tr><th>النشاط</th><th>تاريخ الطلب</th><th>الحالة</th><th></th></tr></thead><tbody>
-      ${list.map((r) => `<tr><td>${CATEGORY_ICONS[r.category] || ''} ${esc(r.activityTitle)}</td><td>${fmtDate(r.createdAt.slice(0, 10))}</td>
+      <div class="table-wrap"><table class="list"><thead><tr><th>المشاركة</th><th>المرحلة</th><th>تاريخ الطلب</th><th>حالة الترشح</th><th></th></tr></thead><tbody>
+      ${list.map((r) => `<tr><td>${CATEGORY_ICONS[r.category] || ''} ${esc(r.activityTitle)}</td><td>${esc(r.stageLabel || '')}</td><td>${fmtDate(r.createdAt.slice(0, 10))}</td>
         <td>${statusBadge(r.status)}${r.reviewNote ? `<br><small class="muted">السبب: ${esc(r.reviewNote)}</small>` : ''}</td>
         <td>${r.cardCode ? `<a class="btn small gold" href="#/card/${esc(r.cardCode)}">🪪 إصدار البطاقة</a>` : ''}</td></tr>`).join('')}
-      </tbody></table></div>` : empty('🔍', 'لا توجد طلبات مسجلة بهذا الرقم الوظيفي')}</div>`;
+      </tbody></table></div>` : empty('🔍', 'لا توجد طلبات ترشح بهذا الرقم الوظيفي')}</div>`;
   };
   bindForm(form, run);
   if (me.employeeId) run({ employeeId: me.employeeId }).catch(() => {});
@@ -525,7 +663,7 @@ function cardHtml(c) {
   return `<div class="pcard">
     <img class="wm" src="/assets/emblem.png" alt="">
     <div class="top">
-      <div><b>بطاقة مشاركة</b><small>${esc(SETTINGS.committeeName)} — ${esc(SETTINGS.companyName)}</small></div>
+      <div><b>بطاقة مشارك رسمي — تمثيل الشركة</b><small>${esc(SETTINGS.committeeName)} — ${esc(SETTINGS.companyName)}</small></div>
       <img src="/assets/logo-full.png" alt="">
     </div>
     <div class="mid">
@@ -534,7 +672,8 @@ function cardHtml(c) {
         <p>الرقم الوظيفي: <b>${esc(c.employeeId)}</b></p>
         <p>${esc(c.jobTitle)}${c.department ? ` — ${esc(c.department)}` : ''}</p>
         <span class="act">${CATEGORY_ICONS[c.activity.category] || ''} ${esc(c.activity.title)}</span>
-        ${c.activity.startDate ? `<p style="margin-top:6px">📅 ${fmtDate(c.activity.startDate)}${c.activity.endDate && c.activity.endDate !== c.activity.startDate ? ` — ${fmtDate(c.activity.endDate)}` : ''}${c.activity.location ? ` · 📍 ${esc(c.activity.location)}` : ''}</p>` : ''}
+        ${c.activity.team || c.activity.organizer ? `<p style="margin-top:6px">${c.activity.team ? `🛡️ ${esc(c.activity.team)}` : ''}${c.activity.team && c.activity.organizer ? ' · ' : ''}${c.activity.organizer ? `🏛️ ${esc(c.activity.organizer)}` : ''}</p>` : ''}
+        ${c.activity.startDate ? `<p>📅 ${fmtDate(c.activity.startDate)}${c.activity.endDate && c.activity.endDate !== c.activity.startDate ? ` — ${fmtDate(c.activity.endDate)}` : ''}${c.activity.location ? ` · 📍 ${esc(c.activity.location)}` : ''}</p>` : ''}
       </div>
       <div class="qr"><img src="/api/cards/${esc(c.code)}/qr.svg" alt="رمز التحقق"></div>
     </div>
@@ -544,7 +683,7 @@ function cardHtml(c) {
 
 async function pageCard(code) {
   const c = await api(`/api/cards/${encodeURIComponent(code)}`);
-  $app.innerHTML = `${pageHead('بطاقة المشاركة', c.activity.title, [['بطاقة المشاركة', '#/card'], [c.name]])}
+  $app.innerHTML = `${pageHead('بطاقة المشارك الرسمي', c.activity.title, [['بطاقة المشارك', '#/card'], [c.name]])}
     <section class="section container print-area">
       ${cardHtml(c)}
       <div class="flex no-print" style="justify-content:center;margin-top:24px">
@@ -562,7 +701,7 @@ async function pageCard(code) {
 async function pageVerify(code) {
   let c = null;
   try { c = await api(`/api/cards/${encodeURIComponent(code)}`); } catch { /* بطاقة غير صالحة */ }
-  $app.innerHTML = `${pageHead('التحقق من بطاقة المشاركة')}
+  $app.innerHTML = `${pageHead('التحقق من بطاقة المشارك')}
     <section class="section container" style="max-width:640px">
       <div class="panel center">
         ${c ? `<div style="font-size:64px">✅</div><h2 style="color:var(--green-700)">بطاقة سارية المفعول</h2>
@@ -570,7 +709,7 @@ async function pageVerify(code) {
             <tr><th>الاسم</th><td>${esc(c.name)}</td></tr>
             <tr><th>الرقم الوظيفي</th><td>${esc(c.employeeId)}</td></tr>
             <tr><th>الإدارة / المكتب</th><td>${esc(c.department)}</td></tr>
-            <tr><th>النشاط</th><td>${esc(c.activity.title)}</td></tr>
+            <tr><th>المشاركة</th><td>${esc(c.activity.title)}</td></tr>
             <tr><th>رقم البطاقة</th><td>${esc(c.cardNo)}</td></tr>
             <tr><th>تاريخ الإصدار</th><td>${fmtDate((c.issuedAt || '').slice(0, 10))}</td></tr>
           </tbody></table>`
@@ -653,10 +792,10 @@ async function pageDocs(slug) {
 
 async function pageComplaints() {
   const s = SETTINGS;
-  $app.innerHTML = `${pageHead('الشكاوى وحل المشاكل', 'نستقبل شكاواك ومقترحاتك ونتابعها حتى الحل')}
+  $app.innerHTML = `${pageHead('الدعم والشكاوى', 'طلبات الدعم والتجهيز للمشاركين، والشكاوى والمقترحات — نتابعها حتى الحل')}
     <section class="section container layout-2">
       <div class="panel" id="cPanel">
-        <h3>📨 تقديم شكوى أو مقترح</h3>
+        <h3>📨 تقديم طلب دعم أو شكوى أو مقترح</h3>
         <form class="form" id="cForm">
           <div class="field"><label>نوع الطلب</label>
             <div class="chips" style="margin:0">${Object.entries(s.complaintTypes).map(([k, v], i) => `<label class="option" style="padding:6px 14px"><input type="radio" name="type" value="${k}" ${i === 0 ? 'checked' : ''}> ${esc(v)}</label>`).join('')}</div>
@@ -713,7 +852,9 @@ const routes = [
   [/^\/quiz$/, () => pageQuiz()],
   [/^\/polls$/, () => pagePolls()],
   [/^\/committee$/, () => pageCommittee()],
-  [/^\/star$/, () => pageStar()],
+  [/^\/teams$/, () => pageTeams()],
+  [/^\/talents$/, () => pageTalents()],
+  [/^\/achievements$/, () => pageAchievements()],
   [/^\/card$/, () => pageCardLookup()],
   [/^\/card\/([\w-]+)$/, (m) => pageCard(m[1])],
   [/^\/verify\/([\w-]+)$/, (m) => pageVerify(m[1])],
