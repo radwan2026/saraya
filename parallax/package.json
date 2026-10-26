@@ -1,0 +1,24 @@
+{
+  "name": "parallax-the-room-that-remembers",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PARALLAX: The Room That Remembers — a cinematic 3D escape room built with three.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "test": "vitest run",
+    "test:e2e": "node e2e/playthrough.cjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.160.0",
+    "typescript": "5.4.5",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
+  }
+}

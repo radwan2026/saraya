@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050607" />
+    <title>PARALLAX — The Room That Remembers</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <canvas id="view" aria-label="The Memory Engine hall"></canvas>
+    <div id="ripple" aria-hidden="true"></div>
+    <div id="letterbox" aria-hidden="true"><i></i><i></i></div>
+    <div id="black" aria-hidden="true"></div>
+
+    <div id="hud" hidden>
+      <div class="hud-top">
+        <div class="objective"><span class="eyebrow">Objective</span><span id="objective"></span></div>
+        <div class="timeline" id="timelineInd" aria-live="polite">
+          <span class="tl-dot"></span>
+          <span class="tl-name" id="tlName">Present</span>
+          <span class="tl-year" id="tlYear">2026</span>
+        </div>
+        <div class="hud-tools">
+          <button class="tool" id="btnJournal" title="Journal (Tab or J)">Journal <span class="count" id="journalCount">0</span></button>
+          <button class="tool" id="btnPause" title="Pause (Esc)">Pause</button>
+        </div>
+      </div>
+      <div class="crosshair" id="crosshair"></div>
+      <div class="prompt" id="prompt" hidden><kbd id="promptKey">E</kbd><span id="promptText"></span></div>
+      <div class="hint" id="hint" hidden></div>
+      <div class="caption" id="caption" hidden></div>
+      <div class="toasts" id="toasts" aria-live="polite"></div>
+      <div class="inv-strip" id="invStrip"></div>
+      <div class="touch" id="touch">
+        <button id="tE" aria-label="Interact">E</button>
+        <button id="tQ" aria-label="Shift time">Q</button>
+        <button id="tJ" aria-label="Journal">J</button>
+      </div>
+    </div>
+
+    <section class="panel" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+      <header>
+        <div><span class="eyebrow" id="panelEyebrow"></span><h2 id="panelTitle"></h2></div>
+        <button class="close" id="panelClose" aria-label="Close">Close <kbd>Esc</kbd></button>
+      </header>
+      <div class="panel-body" id="panelBody"></div>
+    </section>
+
+    <section class="overlay" id="journal" hidden role="dialog" aria-modal="true" aria-labelledby="journalTitle">
+      <div class="sheet">
+        <header>
+          <h2 id="journalTitle">Journal</h2>
+          <nav class="tabs" id="journalTabs">
+            <button data-tab="clues" class="on">Clues</button>
+            <button data-tab="items">Items</button>
+            <button data-tab="symbols">Symbols</button>
+          </nav>
+          <button class="close" id="journalClose">Close <kbd>Tab</kbd></button>
+        </header>
+        <div class="sheet-body" id="journalBody"></div>
+      </div>
+    </section>
+
+    <section class="overlay" id="pause" hidden role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+      <div class="menu-card">
+        <h2 id="pauseTitle">Paused</h2>
+        <button class="btn primary" id="pResume">Resume</button>
+        <button class="btn" id="pJournal">Journal</button>
+        <button class="btn" id="pSettings">Settings</button>
+        <button class="btn" id="pMenu">Save and return to title</button>
+        <button class="btn danger" id="pRestart">Restart from the beginning</button>
+        <p class="confirm" id="pConfirm" hidden>This erases your progress. <button class="btn danger small" id="pRestartYes">Erase and restart</button></p>
+      </div>
+    </section>
+
+    <section class="overlay" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="menu-card wide">
+        <h2 id="settingsTitle">Settings</h2>
+        <div class="settings-grid">
+          <label for="sMaster">Master volume</label><input type="range" id="sMaster" min="0" max="1" step="0.05" />
+          <label for="sMusic">Music</label><input type="range" id="sMusic" min="0" max="1" step="0.05" />
+          <label for="sAmbience">Ambience</label><input type="range" id="sAmbience" min="0" max="1" step="0.05" />
+          <label for="sSfx">Effects</label><input type="range" id="sSfx" min="0" max="1" step="0.05" />
+          <label for="sSens">Mouse sensitivity</label><input type="range" id="sSens" min="0.3" max="2.5" step="0.05" />
+          <label for="sQuality">Graphics quality</label>
+          <select id="sQuality"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low (no post-processing)</option></select>
+          <label for="sInvert">Invert vertical look</label><input type="checkbox" id="sInvert" />
+          <label for="sCaptions">Sound captions</label><input type="checkbox" id="sCaptions" />
+          <label for="sMotion">Reduce motion</label><input type="checkbox" id="sMotion" />
+        </div>
+        <p class="note" id="qualityNote" hidden>Quality changes apply after a reload. <button class="btn small" id="sReload">Save and reload</button></p>
+        <button class="btn primary" id="sDone">Done</button>
+      </div>
+    </section>
+
+    <section class="screen" id="loading">
+      <div class="loading-inner">
+        <div class="mark">PARALLAX</div>
+        <div class="bar"><i id="loadBar"></i></div>
+        <p id="loadText">Assembling the hall…</p>
+      </div>
+    </section>
+
+    <section class="screen menu" id="menu" hidden>
+      <div class="menu-inner">
+        <p class="eyebrow">A cinematic escape room</p>
+        <h1 class="title">PARALLAX</h1>
+        <p class="subtitle">The Room That Remembers</p>
+        <div class="menu-buttons">
+          <button class="btn primary" id="mBegin">Begin</button>
+          <button class="btn" id="mContinue" hidden>Continue</button>
+          <button class="btn" id="mSettings">Settings</button>
+        </div>
+        <p class="confirm" id="mConfirm" hidden>Beginning again erases your saved progress. <button class="btn danger small" id="mBeginYes">Erase and begin</button></p>
+        <p class="controls-line">Mouse look · WASD move · E interact · Q shift time · Tab journal · Esc pause<br />Headphones recommended</p>
+      </div>
+    </section>
+
+    <section class="screen ending" id="ending" hidden>
+      <div class="ending-lines" id="endingLines"></div>
+      <button class="btn ghost skipbtn" id="endingNext">Continue</button>
+    </section>
+
+    <section class="screen complete" id="complete" hidden>
+      <div class="complete-inner">
+        <p class="eyebrow">The present is open</p>
+        <h1 class="title small">I remember being you.</h1>
+        <dl class="stats" id="stats"></dl>
+        <div class="menu-buttons">
+          <button class="btn primary" id="cAgain">Play again</button>
+          <button class="btn" id="cMenu">Title screen</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen error" id="error" hidden>
+      <div class="menu-inner">
+        <h1 class="title small">The hall could not be drawn.</h1>
+        <p id="errorText">Your browser could not start WebGL.</p>
+        <button class="btn" id="eRetry">Try the low quality mode</button>
+      </div>
+    </section>
+
+    <button class="btn ghost skipbtn" id="skip" hidden>Skip <kbd>Space</kbd></button>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
