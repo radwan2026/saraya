@@ -52,7 +52,7 @@
   // ===== العناصر =====
   const ITEMS = {
     wristband: { name: 'سوار التجربة', desc: 'سوار معدني مثبت على معصمك. شاشته الصغيرة تعرض: الخاضع ٠ · الدورة ٧.', model: 'band' },
-    crystal: { name: 'بلورة زمردية', desc: 'بلورة متشققة تنبض بضوء أخضر خافت. على قاعدتها نقش صغير: «مختبر الضوء — المقبس ٢».', model: 'crystal' },
+    crystal: { name: 'بلورة بنفسجية', desc: 'بلورة متشققة تنبض بضوء بنفسجي خافت. على قاعدتها نقش صغير: «مختبر الضوء — المقبس ٢».', model: 'crystal' },
     axle: { name: 'محور فولاذي', desc: 'محور قصير مصقول، طرفاه مسننان. يبدو أنه صُنع ليثبّت شيئًا يدور.', model: 'axle' },
     gear: { name: 'ترس نحاسي', desc: 'ترس من أربعة عشر سنًا، وفتحته الوسطى فارغة. لو رُكّب هكذا لدار في مكانه دون أن ينقل شيئًا.', model: 'gear' },
     gear_axle: { name: 'ترس بمحوره', desc: 'الترس النحاسي مثبّت على المحور الفولاذي. صار قطعة واحدة جاهزة للتركيب.', model: 'gearAxle' },
@@ -190,10 +190,10 @@
       }
       case 'band':
         g.strokeStyle = '#8f9a96'; g.lineWidth = 9; g.beginPath(); g.ellipse(0, 0, 32, 22, 0, 0, 7); g.stroke();
-        g.fillStyle = '#0b1a14'; g.fillRect(-14, -30, 28, 18); g.fillStyle = '#3dffb4'; g.font = '700 12px Arial'; g.textAlign = 'center'; g.fillText('0', 0, -16); break;
+        g.fillStyle = '#150a1f'; g.fillRect(-14, -30, 28, 18); g.fillStyle = '#c99bff'; g.font = '700 12px Arial'; g.textAlign = 'center'; g.fillText('0', 0, -16); break;
       case 'crystal':
-        glowCircle('rgba(25,230,160,.5)', 40);
-        g.fillStyle = '#19e6a0'; g.beginPath(); g.moveTo(0, -36); g.lineTo(16, 0); g.lineTo(0, 36); g.lineTo(-16, 0); g.closePath(); g.fill();
+        glowCircle('rgba(180,107,255,.5)', 40);
+        g.fillStyle = '#b46bff'; g.beginPath(); g.moveTo(0, -36); g.lineTo(16, 0); g.lineTo(0, 36); g.lineTo(-16, 0); g.closePath(); g.fill();
         g.fillStyle = 'rgba(255,255,255,.4)'; g.beginPath(); g.moveTo(0, -36); g.lineTo(16, 0); g.lineTo(0, 4); g.closePath(); g.fill(); break;
       case 'axle':
         g.rotate(-0.7); g.fillStyle = '#cfd6d3'; g.fillRect(-36, -5, 72, 10); g.fillStyle = '#8f9693'; for (let i = -36; i < -22; i += 4) g.fillRect(i, -6, 2, 12); for (let i = 24; i < 36; i += 4) g.fillRect(i, -6, 2, 12); break;
@@ -202,7 +202,7 @@
         g.beginPath();
         for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2, r = i % 2 ? 26 : 34; g.lineTo(Math.cos(a) * r, Math.sin(a) * r); }
         g.closePath(); g.fill();
-        g.fillStyle = '#0b0e0d'; g.beginPath(); g.arc(0, 0, 9, 0, 7); g.fill();
+        g.fillStyle = '#0d0b11'; g.beginPath(); g.arc(0, 0, 9, 0, 7); g.fill();
         if (it.model === 'gearAxle') { g.rotate(-0.7); g.fillStyle = '#cfd6d3'; g.fillRect(-42, -5, 84, 10); }
         break;
       }
@@ -359,8 +359,8 @@
   const HINTS = {
     clock_collect: ['الصور في هذه الغرفة ليست زينة.', 'هناك خمس صور: أربع على الجدارين الجانبيين، وواحدة سقطت على الأرض قرب الباب.', 'اجمع الصور الخمس (اثنتان على الجدار الأيسر، اثنتان على الأيمن، وواحدة على الأرض)، ثم افتح سكة الصور تحت الساعة.'],
     clock_order: ['الساعة تكذب، فلا تثق بالأوقات المكتوبة على الصور. افحص ظهر سوارك.', 'رتّب الصور كما يتحرك ظل المسلّة في يوم واحد. الشمس تشرق من الشرق، فيمتد الظل أولًا نحو الغرب، ثم يقصر عند الظهيرة، ثم يطول نحو الشرق.', ZS.SOLUTIONS.clock],
-    light_crystal: ['المقبس الفارغ على الطاولة يحجب كل شيء.', 'السبورة تقول إن البلورة نُقلت إلى غرفة الساعة بعد الحادث.', 'بعد إصلاح الساعة انفتح الصندوق الزجاجي في غرفة الساعة. خذ البلورة الزمردية منه، ثم ركّبها في المقبس على طاولة البصريات.'],
-    light_mirrors: ['كل مستقبل يقبل لونًا واحدًا فقط.', 'الأبيض يجب ألا يعبر أي زجاج. الذهبي يخرج من الزجاج الذهبي، والأخضر من البلورة. تتبّع كل شعاع من المقسِّم الذي يخرج منه.', ZS.SOLUTIONS.light],
+    light_crystal: ['المقبس الفارغ على الطاولة يحجب كل شيء.', 'السبورة تقول إن البلورة نُقلت إلى غرفة الساعة بعد الحادث.', 'بعد إصلاح الساعة انفتح الصندوق الزجاجي في غرفة الساعة. خذ البلورة البنفسجية منه، ثم ركّبها في المقبس على طاولة البصريات.'],
+    light_mirrors: ['كل مستقبل يقبل لونًا واحدًا فقط.', 'الأبيض يجب ألا يعبر أي زجاج. الذهبي يخرج من الزجاج الذهبي، والبنفسجي من البلورة. تتبّع كل شعاع من المقسِّم الذي يخرج منه.', ZS.SOLUTIONS.light],
     archive_find: ['الأرشيف مليء بالأوراق، لكن ستة سجلات فقط تخص الحوادث.', 'ابحث عن صورة، وملصق، وخزانة ملفات، وجهاز تسجيل، ومذكرة، وملف ممزق.', 'المصادر الستة: الصورة المؤطرة على الجدار الأيسر، والملصق على الأيمن، وخزانة الملفات في الزاوية، وجهاز التسجيل والمذكرة على المكتب، والملف الممزق على الأرض.'],
     archive_order: ['بطاقتان تصفان الحدث نفسه، وإحداهما كاذبة.', 'اقرأ عبارات «قبل» و«بعد» في كل بطاقة وابنِ منها سلسلة واحدة. البطاقة التي تناقض بطاقتين أخريين هي المزوّرة.', ZS.SOLUTIONS.archive],
     archive_code: ['المذكرة الداخلية تقول كيف تُفتح الخزنة.', 'لكل بطاقة صادقة ختم يحمل رقمًا. اقرأ الأختام بترتيب وقوع الحوادث.', 'الرمز ' + AR(ZS.archiveCode()) + '.'],
@@ -500,7 +500,7 @@
       const a = ((forward ? i : (12 - i) % 12) / 12) * Math.PI * 2;
       g.fillText(AR(i === 0 ? 12 : i), cx + Math.sin(a) * w * 0.32, cy - Math.cos(a) * w * 0.32);
     }
-    g.font = '600 22px "IBM Plex Sans Arabic", sans-serif'; g.fillStyle = forward ? '#19e6a0' : '#c9a253';
+    g.font = '600 22px "IBM Plex Sans Arabic", sans-serif'; g.fillStyle = forward ? '#b46bff' : '#c9a253';
     g.fillText(forward ? 'الزمن يسير' : 'الزمن يرتد', cx, cy + w * 0.16);
     ft.needsUpdate = true;
   }
@@ -529,7 +529,7 @@
       render() {
         const tr = ZS.traceLasers(S.mirrors, S.crystalIn);
         const grid = ZS.LASER_GRID, cs = 40, wpx = grid[0].length * cs, hpx = grid.length * cs;
-        const col = { white: '#ffffff', green: '#40ffb8', gold: '#ffc85a' };
+        const col = { white: '#ffffff', green: '#c08aff', gold: '#ffc85a' };
         let svg = `<svg class="laser" viewBox="0 0 ${wpx} ${hpx}" role="img" aria-label="شبكة المرايا والأشعة"><defs><filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>`;
         for (let y = 0; y < grid.length; y++) for (let x = 0; x < grid[0].length; x++) {
           const ch = grid[y][x], X = x * cs, Y = y * cs, cx = X + cs / 2, cy = Y + cs / 2;
@@ -546,7 +546,7 @@
           if (ch === 'E') svg += `<rect x="${X + 4}" y="${cy - 8}" width="${cs - 8}" height="16" rx="4" fill="#3a403e"/><circle cx="${X + cs - 6}" cy="${cy}" r="4" fill="#fff"/>`;
           if (ch === 'S') svg += `<line x1="${X + 7}" y1="${Y + cs - 7}" x2="${X + cs - 7}" y2="${Y + 7}" stroke="#bfe6ff" stroke-width="3" stroke-dasharray="4 3"/>`;
           if (ch === 'y') svg += `<rect x="${cx - 4}" y="${Y + 5}" width="8" height="${cs - 10}" fill="#ffc040" opacity=".75" rx="2"/>`;
-          if (ch === 'C') svg += `<g data-act="socket" style="cursor:pointer"><circle cx="${cx}" cy="${cy}" r="13" fill="#0d1110" stroke="#c9a253" stroke-width="2"/>${S.crystalIn ? `<path d="M${cx} ${cy - 11} L${cx + 7} ${cy} L${cx} ${cy + 11} L${cx - 7} ${cy}Z" fill="#19e6a0"/>` : '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#2a2f2d"/>'}</g>`;
+          if (ch === 'C') svg += `<g data-act="socket" style="cursor:pointer"><circle cx="${cx}" cy="${cy}" r="13" fill="#0d1110" stroke="#c9a253" stroke-width="2"/>${S.crystalIn ? `<path d="M${cx} ${cy - 11} L${cx + 7} ${cy} L${cx} ${cy + 11} L${cx - 7} ${cy}Z" fill="#b46bff"/>` : '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#2a2f2d"/>'}</g>`;
           if (ch === 'm') {
             const m = S.mirrors[k];
             const [ax, ay, bx, by] = m === '/' ? [X + 7, Y + cs - 7, X + cs - 7, Y + 7] : [X + 7, Y + 7, X + cs - 7, Y + cs - 7];
@@ -560,8 +560,8 @@
         svg += '</svg>';
         const lit = Object.values(tr.receivers).filter((r) => r.ok).length;
         let h = `<p>${S.solved.light ? 'الأشعة الثلاثة مستقرة. اللوح في الجدار الخلفي انفتح.' : 'مصدر ضوء أبيض، ومقسِّمان، ومرايا تدور حول محاورها. ثلاثة مستقبلات تنتظر ألوانها. انقر على أي مرآة لتديرها.'}</p>${svg}`;
-        h += `<div class="legend"><span><i style="background:#fff"></i>أبيض</span><span><i style="background:#ffc85a"></i>ذهبي</span><span><i style="background:#40ffb8"></i>زمردي</span><span><i style="border:2px dashed #bfe6ff"></i>مقسِّم</span><span><i style="border:2px solid #c9a253"></i>مقبس البلورة</span></div>`;
-        if (!S.crystalIn) h += has('crystal') ? '<div class="row"><button class="btn em" data-act="socket">ركّب البلورة الزمردية في المقبس</button></div>' : '<div class="status">المقبس فارغ ويحجب الشعاع الذي يصله.</div>';
+        h += `<div class="legend"><span><i style="background:#fff"></i>أبيض</span><span><i style="background:#ffc85a"></i>ذهبي</span><span><i style="background:#c08aff"></i>بنفسجي</span><span><i style="border:2px dashed #bfe6ff"></i>مقسِّم</span><span><i style="border:2px solid #c9a253"></i>مقبس البلورة</span></div>`;
+        if (!S.crystalIn) h += has('crystal') ? '<div class="row"><button class="btn vi" data-act="socket">ركّب البلورة البنفسجية في المقبس</button></div>' : '<div class="status">المقبس فارغ ويحجب الشعاع الذي يصله.</div>';
         h += `<div class="status ${S.solved.light ? 'good' : ''}">المستقبلات المضاءة بلونها الصحيح: ${AR(lit)} من ٣</div>`;
         return h;
       },
@@ -581,7 +581,7 @@
     S.inv = S.inv.filter((x) => x !== 'crystal');
     if (sel === 'crystal') sel = null;
     renderInv(); sfx('beam');
-    toast('استقرت البلورة في المقبس، وأضاءت بالأخضر.', 'good');
+    toast('استقرت البلورة في المقبس، وأضاءت بالبنفسجي.', 'good');
     return true;
   }
   function syncLaser(check) {
@@ -593,7 +593,7 @@
       W.setDoor(2, 3, 'open');
       W.burst(new THREE.Vector3(0, 2.9, -6.4), 0xffd27a);
       sfx('solve'); droneFor(2, true);
-      addNote('lightSolved', 'مصدر الطاقة المخفي', 'حين وصل الأخضر والذهبي والأبيض إلى مستقبلاتها معًا، انزلق لوح في الجدار الخلفي وكشف نواة ذهبية. وانفتح باب القطاع الثالث.', { room: 2 });
+      addNote('lightSolved', 'مصدر الطاقة المخفي', 'حين وصل البنفسجي والذهبي والأبيض إلى مستقبلاتها معًا، انزلق لوح في الجدار الخلفي وكشف نواة ذهبية. وانفتح باب القطاع الثالث.', { room: 2 });
       toast('اكتملت الأشعة. انفتح لوح في الجدار الخلفي.', 'good');
       updateHud();
     }
@@ -675,7 +675,7 @@
       hot: 'vault', title: 'خزنة الأرشيف',
       render: () => `<p>قفل بخمس خانات. تحته لوحة: «لا تُفتح إلا بأختام السجلات الصادقة».</p>
         <div class="codeview ${codeMsg ? 'shake' : ''}" id="codeview">${AR(code) || '·····'}</div>
-        <div class="keypad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => `<button data-act="d" data-d="${d}">${AR(d)}</button>`).join('')}<button data-act="del" aria-label="حذف">⌫</button><button data-act="d" data-d="0">${AR(0)}</button><button data-act="ok" style="color:var(--emerald)">↵</button></div>
+        <div class="keypad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => `<button data-act="d" data-d="${d}">${AR(d)}</button>`).join('')}<button data-act="del" aria-label="حذف">⌫</button><button data-act="d" data-d="0">${AR(0)}</button><button data-act="ok" style="color:var(--violet)">↵</button></div>
         <div class="status ${codeMsg ? 'bad' : ''}">${codeMsg || 'أدخل الرمز ثم اضغط ↵'}</div>`,
       on(act, el) {
         codeMsg = '';
@@ -751,13 +751,13 @@
       ${part('socket', '#c77a3a', '#f0b070', s.gear ? 'المقبس' : 'مقبس فارغ')}
       <g transform="translate(${H.x} ${cy})">
         <g class="spin" data-id="heart" data-dir="${dirOf.heart || 0}" data-r="${H.r}"><path d="${gearPath(H.t, H.r)}" fill="#3a1410" stroke="#ff7a3a" stroke-width="1.4"/><circle r="${H.r * 0.55}" fill="#1a0806" stroke="#ff7a3a"/><circle r="${H.r * 0.3}" fill="${s.solved ? '#ff9a5a' : '#5a1a10'}"/></g>
-        <path d="M ${-H.r - 10} -12 A ${H.r + 10} ${H.r + 10} 0 0 1 ${-12} ${-H.r - 10}" fill="none" stroke="#19e6a0" stroke-width="2"/>
-        <path d="M -12 ${-H.r - 10} l -10 -6 l 2 12 z" fill="#19e6a0"/>
+        <path d="M ${-H.r - 10} -12 A ${H.r + 10} ${H.r + 10} 0 0 1 ${-12} ${-H.r - 10}" fill="none" stroke="#b46bff" stroke-width="2"/>
+        <path d="M -12 ${-H.r - 10} l -10 -6 l 2 12 z" fill="#b46bff"/>
         <text y="${H.r + 22}" text-anchor="middle" fill="#ffb27a" font-size="12" font-family="IBM Plex Sans Arabic, sans-serif">القلب</text>
-        <text y="${-H.r - 22}" x="-30" text-anchor="middle" fill="#19e6a0" font-size="11" font-family="IBM Plex Sans Arabic, sans-serif">محفور: مع العقارب</text>
+        <text y="${-H.r - 22}" x="-30" text-anchor="middle" fill="#b46bff" font-size="11" font-family="IBM Plex Sans Arabic, sans-serif">محفور: مع العقارب</text>
       </g>
       <g transform="translate(16 236)"><text fill="#a89a7e" font-size="11" font-family="IBM Plex Sans Arabic, sans-serif" x="0" y="0">الضغط</text>${[0, 1, 2, 3, 4].map((i) => `<rect x="${40 + i * 18}" y="-10" width="14" height="10" rx="2" fill="${i < pressure ? (jam ? '#ff5a4a' : '#c9a253') : '#1d1a16'}"/>`).join('')}
-      <text x="150" y="0" fill="${s.pistons === 'locked' ? '#ff8b7a' : '#19e6a0'}" font-size="11" font-family="IBM Plex Sans Arabic, sans-serif">المكابس: ${s.pistons === 'locked' ? 'مقفلة' : 'محررة'}</text></g>
+      <text x="150" y="0" fill="${s.pistons === 'locked' ? '#ff8b7a' : '#b46bff'}" font-size="11" font-family="IBM Plex Sans Arabic, sans-serif">المكابس: ${s.pistons === 'locked' ? 'مقفلة' : 'محررة'}</text></g>
     </svg>`;
   }
   function heartPanel() {
@@ -766,7 +766,7 @@
       render() {
         const s = S.heart;
         let h = `<p>المحرك يدور دائمًا مع عقارب الساعة. يمر الدوران عبر سلسلة التروس حتى القلب، والقلب لا ينفتح إلا إذا دار في الاتجاه المحفور عليه.</p>${heartSvg(s)}`;
-        if (!s.gear) h += has('gear_axle') ? '<div class="row"><button class="btn em" data-act="installGear">ركّب الترس بمحوره في المقبس</button></div>' : has('gear') ? '<div class="status bad">الترس النحاسي يدور في المقبس دون أن يثبت. ينقصه محور.</div>' : '';
+        if (!s.gear) h += has('gear_axle') ? '<div class="row"><button class="btn vi" data-act="installGear">ركّب الترس بمحوره في المقبس</button></div>' : has('gear') ? '<div class="status bad">الترس النحاسي يدور في المقبس دون أن يثبت. ينقصه محور.</div>' : '';
         const lever = (act, on, title, sub, warn) => `<button class="lever ${on ? 'on' : ''} ${warn ? 'warn' : ''}" data-act="${act}" ${s.solved ? 'disabled' : ''}><span class="sw"></span><b>${title}</b><small>${sub}</small></button>`;
         h += `<div class="levers">
           ${lever('idler', s.idler, 'الترس الوسيط', s.idler ? 'داخل السلسلة' : 'خارج السلسلة')}
@@ -885,8 +885,8 @@
         const cores = ['light_core', 'heart_core', 'mirror_shard'].filter(has);
         let h = '<p>حلقة ذهبية بثلاثة مقابس، ومنصتان أمامها. البوابة تنتظر ثلاثة أشياء: طاقة، وذاكرة، واعترافًا.</p><div class="steps">';
         h += `<div class="step ${socketsDone ? 'done' : ''}"><h4>١. الطاقة <small>${socketsDone ? 'اكتملت' : 'اختر نواة ثم مقبسها'}</small></h4>
-          <div class="sockets">${ZS.GATE_SOCKETS.map((gid, i) => `<button class="sock ${S.gateSockets[i] ? 'full' : ''}" data-act="sock" data-i="${i}">${glyphSvg(gid, S.gateSockets[i] ? '#19e6a0' : '#e8d4a0')}<span>${S.gateSockets[i] ? ITEMS[S.gateSockets[i]].name : 'مقبس ' + ZS.GLYPHS[gid].name}</span></button>`).join('')}</div>
-          ${!socketsDone ? (cores.length ? `<div class="row">${cores.map((c) => `<button class="btn ${gateCore === c ? 'em' : 'ghost'}" data-act="core" data-c="${c}">${ITEMS[c].name}</button>`).join('')}</div>` : '<p>لا تحمل أي نواة.</p>') : ''}</div>`;
+          <div class="sockets">${ZS.GATE_SOCKETS.map((gid, i) => `<button class="sock ${S.gateSockets[i] ? 'full' : ''}" data-act="sock" data-i="${i}">${glyphSvg(gid, S.gateSockets[i] ? '#b46bff' : '#e8d4a0')}<span>${S.gateSockets[i] ? ITEMS[S.gateSockets[i]].name : 'مقبس ' + ZS.GLYPHS[gid].name}</span></button>`).join('')}</div>
+          ${!socketsDone ? (cores.length ? `<div class="row">${cores.map((c) => `<button class="btn ${gateCore === c ? 'vi' : 'ghost'}" data-act="core" data-c="${c}">${ITEMS[c].name}</button>`).join('')}</div>` : '<p>لا تحمل أي نواة.</p>') : ''}</div>`;
         h += `<div class="step ${socketsDone ? '' : 'locked'} ${S.sigilsDone ? 'done' : ''}"><h4>٢. الذاكرة <small>«أيقظ القطاعات بالترتيب الذي سقطت به»</small></h4>
           <div class="sigils">${SIGIL_ROOMS.map((r) => `<button data-act="sig" data-r="${r}" class="${S.sigils.includes(r) || S.sigilsDone ? 'pressed' : ''}" ${S.sigilsDone ? 'disabled' : ''}><b>0${r}</b>${SIGIL_NAMES[r]}</button>`).join('')}</div>
           <div class="seq">${(S.sigilsDone ? ZS.collapseOrder() : S.sigils).map((r) => `<span>0${r}</span>`).join('')}</div></div>`;
@@ -943,7 +943,7 @@
     renderInv(); sfx('clunk'); setTimeout(() => sfx('beam'), 200);
     W.setGate({ sockets: S.gateSockets, sigilCount: S.sigils.length, sigilsDone: !!S.sigilsDone });
     gateMsg = `استقرت ${ITEMS[core].name} في مقبسها.`;
-    if (S.gateSockets.every(Boolean)) { gateMsg = 'اكتملت النوى الثلاث. الحلقة تدور والضوء الزمردي يملأ البوابة.'; W.pulse(1.2); }
+    if (S.gateSockets.every(Boolean)) { gateMsg = 'اكتملت النوى الثلاث. الحلقة تدور والضوء البنفسجي يملأ البوابة.'; W.pulse(1.2); }
   }
 
   // ===== التفاعل مع العناصر =====
@@ -982,8 +982,8 @@
       case 'crt': notePanel('crt', 'شاشة قديمة', ['«أنت لم تدخل هذه الغرفة للمرة الأولى.»', 'في الزاوية السفلى رقم خافت: الدورة ٧.']); addNote('crt', 'رسالة الشاشة', '«أنت لم تدخل هذه الغرفة للمرة الأولى.» — الدورة ٧.', { room: 1 }); break;
       case 'scratches': notePanel('scratches', 'خدوش على الجدار', ['ستة خطوط محفورة بأداة حادة، أربعة يقطعها خط خامس ثم خط وحيد. شخص ما كان يعدّ شيئًا.', 'الخدوش قديمة، لكن الغبار في آخرها أقل من أولها.']); addNote('tally1', 'ستة خدوش', 'في غرفة الساعة ستة خدوش محفورة على الجدار، كأن أحدًا يعدّ مرات.', { room: 1 }); break;
       case 'vitrine':
-        if (S.solved.clock && !tk.crystal) { tk.crystal = true; W.dyn.vitrine.crystal.visible = false; give('crystal', { msg: 'أخذت البلورة الزمردية من الصندوق.' }); W.setHotEnabled('vitrine', false); }
-        else notePanel('vitrine', 'صندوق زجاجي مختوم', ['في داخله بلورة زمردية تنبض ببطء. قفل الصندوق موصول بسلك نحاسي يصعد إلى آلية الساعة.']);
+        if (S.solved.clock && !tk.crystal) { tk.crystal = true; W.dyn.vitrine.crystal.visible = false; give('crystal', { msg: 'أخذت البلورة البنفسجية من الصندوق.' }); W.setHotEnabled('vitrine', false); }
+        else notePanel('vitrine', 'صندوق زجاجي مختوم', ['في داخله بلورة بنفسجية تنبض ببطء. قفل الصندوق موصول بسلك نحاسي يصعد إلى آلية الساعة.']);
         break;
       case 'laser': laserPanel(); break;
       case 'axle': if (!tk.axle) { tk.axle = true; W.dyn.axle.visible = false; give('axle', { msg: 'أخذت المحور الفولاذي.' }); W.setHotEnabled('axle', false); } break;
@@ -1015,7 +1015,7 @@
     S.mirrorView = true;
     notePanel('mirror', 'المرآة الكبرى', [
       'المرآة تعكس الغرفة بدقة مزعجة. الكتابة على الجدار الأيمن تُقرأ فيها بوضوح: «ما حفظته الساعة، لا تقرؤه إلا المرآة.»',
-      'وفي الانعكاس شيء ليس في الغرفة: هيئة زمردية باهتة تقف أمام القفل، ويدها على أقراصه. وعلى الجدار خلفها سبعة خدوش، لا ستة.',
+      'وفي الانعكاس شيء ليس في الغرفة: هيئة بنفسجية باهتة تقف أمام القفل، ويدها على أقراصه. وعلى الجدار خلفها سبعة خدوش، لا ستة.',
     ]);
     if (!S.sawGhost) {
       S.sawGhost = true; sfx('glitch');
@@ -1068,9 +1068,9 @@
     I.r.toneMapping = THREE.ACESFilmicToneMapping;
     I.scene = new THREE.Scene();
     I.cam = new THREE.PerspectiveCamera(35, 1, 0.05, 50);
-    I.scene.add(new THREE.HemisphereLight(0xdfffee, 0x221a10, 0.9));
+    I.scene.add(new THREE.HemisphereLight(0xf0e4ff, 0x221a10, 0.9));
     const k = new THREE.DirectionalLight(0xfff1d6, 1.6); k.position.set(2, 3, 4); I.scene.add(k);
-    const r = new THREE.DirectionalLight(0x19e6a0, 0.8); r.position.set(-3, 1, -2); I.scene.add(r);
+    const r = new THREE.DirectionalLight(0xb46bff, 0.8); r.position.set(-3, 1, -2); I.scene.add(r);
     const envScene = new THREE.Scene();
     envScene.background = new THREE.Color(0x445550);
     const pm = new THREE.PMREMGenerator(I.r);
@@ -1100,8 +1100,8 @@
     const t = tex(512, 512, (g, w, h) => {
       g.fillStyle = b.photo ? '#e4dccb' : '#151a18'; g.fillRect(0, 0, w, h);
       if (b.glyph) W.drawGlyph(g, b.glyph, w / 2 - 170, h / 2 - 170, 340, b.photo ? '#1a1a17' : '#e8d4a0', 1.3);
-      if (b.text) { g.direction = 'rtl'; g.textAlign = 'center'; g.fillStyle = '#c9ffe9'; g.font = '600 46px "IBM Plex Sans Arabic", sans-serif'; b.text.split('\n').forEach((ln, i) => g.fillText(ln, w / 2, 200 + i * 70)); }
-      if (b.sign || b.photo) { g.fillStyle = b.photo ? '#1a3d33' : '#19e6a0'; g.font = 'italic 54px Georgia, serif'; g.textAlign = 'right'; g.fillText('—٠', w - 50, h - 50); }
+      if (b.text) { g.direction = 'rtl'; g.textAlign = 'center'; g.fillStyle = '#ecdcff'; g.font = '600 46px "IBM Plex Sans Arabic", sans-serif'; b.text.split('\n').forEach((ln, i) => g.fillText(ln, w / 2, 200 + i * 70)); }
+      if (b.sign || b.photo) { g.fillStyle = b.photo ? '#3d1f5e' : '#b46bff'; g.font = 'italic 54px Georgia, serif'; g.textAlign = 'right'; g.fillText('—٠', w - 50, h - 50); }
     });
     const p = new THREE.Mesh(new THREE.PlaneGeometry(size[0], size[1]), new THREE.MeshStandardMaterial({ map: t, roughness: 0.7, metalness: 0.1 }));
     p.position.z = z; p.rotation.y = Math.PI;
@@ -1124,7 +1124,7 @@
       case 'band': {
         const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.09, 20, 64), M(0x8f9a96, { metalness: 1, roughness: 0.25 }));
         ring.scale.y = 0.8; g.add(ring);
-        const scr = tex(256, 128, (c, w, h) => { c.fillStyle = '#04140e'; c.fillRect(0, 0, w, h); c.fillStyle = '#3dffb4'; c.textAlign = 'center'; c.direction = 'rtl'; c.font = '700 34px "IBM Plex Sans Arabic", sans-serif'; c.fillText('الخاضع ٠', w / 2, 56); c.font = '24px "IBM Plex Sans Arabic", sans-serif'; c.fillText('الدورة ٧', w / 2, 100); });
+        const scr = tex(256, 128, (c, w, h) => { c.fillStyle = '#12061c'; c.fillRect(0, 0, w, h); c.fillStyle = '#c99bff'; c.textAlign = 'center'; c.direction = 'rtl'; c.font = '700 34px "IBM Plex Sans Arabic", sans-serif'; c.fillText('الخاضع ٠', w / 2, 56); c.font = '24px "IBM Plex Sans Arabic", sans-serif'; c.fillText('الدورة ٧', w / 2, 100); });
         const box = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.28, 0.12), M(0x2a302e));
         box.position.set(0, 0.44, 0.03); g.add(box);
         const s = new THREE.Mesh(new THREE.PlaneGeometry(0.44, 0.22), new THREE.MeshBasicMaterial({ map: scr, toneMapped: false })); s.position.set(0, 0.44, 0.091); g.add(s);
@@ -1136,7 +1136,7 @@
         break;
       }
       case 'crystal': {
-        const c = new THREE.Mesh(new THREE.OctahedronGeometry(0.45, 0), M(0x19e6a0, { emissive: 0x19e6a0, emissiveIntensity: 0.6, metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.92 }));
+        const c = new THREE.Mesh(new THREE.OctahedronGeometry(0.45, 0), M(0xb46bff, { emissive: 0xb46bff, emissiveIntensity: 0.6, metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.92 }));
         c.scale.y = 1.6; g.add(c);
         const crack = new THREE.Mesh(new THREE.PlaneGeometry(0.02, 0.9), new THREE.MeshBasicMaterial({ color: 0xffffff })); crack.position.z = 0.2; crack.rotation.z = 0.4; g.add(crack);
         break;
@@ -1277,7 +1277,7 @@
       g.clearRect(0, 0, w, h);
       const cx = w / 2, cy = h / 2, R = Math.min(w, h);
       const grd = g.createRadialGradient(cx, cy, 0, cx, cy, R * 0.6);
-      grd.addColorStop(0, 'rgba(25,230,160,.10)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+      grd.addColorStop(0, 'rgba(180,107,255,.10)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = grd; g.fillRect(0, 0, w, h);
       g.strokeStyle = 'rgba(201,162,83,.18)';
       [0.38, 0.44, 0.5].forEach((r, i) => {
@@ -1285,7 +1285,7 @@
         g.beginPath(); g.arc(cx, cy, R * r, t * (i % 2 ? -1 : 1), t * (i % 2 ? -1 : 1) + Math.PI * 1.6); g.stroke();
       });
       for (let i = 0; i < 60; i++) { const a = (i / 60) * Math.PI * 2 + t * 0.5; g.fillStyle = 'rgba(201,162,83,.25)'; g.fillRect(cx + Math.cos(a) * R * 0.44 - 1, cy + Math.sin(a) * R * 0.44 - 1, 2, i % 5 ? 2 : 6); }
-      P.forEach((p) => { p.y -= p.v; if (p.y < 0) p.y = 1; g.fillStyle = 'rgba(25,230,160,.5)'; g.beginPath(); g.arc(p.x * w, p.y * h, p.s, 0, 7); g.fill(); });
+      P.forEach((p) => { p.y -= p.v; if (p.y < 0) p.y = 1; g.fillStyle = 'rgba(180,107,255,.5)'; g.beginPath(); g.arc(p.x * w, p.y * h, p.s, 0, 7); g.fill(); });
       fxRaf = requestAnimationFrame(step);
     };
     cancelAnimationFrame(fxRaf);
@@ -1368,7 +1368,7 @@
       <p class="by">انتهت الدورة السابعة في نحو ${AR(mins)} دقيقة، باستخدام ${AR(S.hintsUsed)} من التلميحات.</p>
       <div class="studio" id="endLogo"></div>
       <p class="by">تصميم وتطوير: أكاديمية ستيم لألعاب العلوم</p>
-      <div class="menu"><button class="btn em" id="btnAgain">ابدأ الدورة الثامنة</button></div></div>`;
+      <div class="menu"><button class="btn vi" id="btnAgain">ابدأ الدورة الثامنة</button></div></div>`;
     mountLogo($('endLogo'), 'logo.png', LOGO_FULL);
     $('btnAgain').onclick = () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} location.reload(); };
   }

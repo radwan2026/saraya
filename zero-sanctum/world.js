@@ -8,18 +8,18 @@
   const ZS = window.ZS;
   const T = THREE;
 
-  // الهوية البصرية: فحمي، زمردي مضيء، ذهبي معتّق
+  // الهوية البصرية: فحمي، بنفسجي مضيء، ذهبي معتّق
   const C = {
-    char: 0x0c0f0e, charLift: 0x1a1f1d, steel: 0x3a403e, emerald: 0x19e6a0, emeraldDeep: 0x0b7a57,
+    char: 0x0c0f0e, charLift: 0x1a1f1d, steel: 0x3a403e, violet: 0xb46bff, violetDeep: 0x6a2fb0,
     gold: 0xc9a253, goldDeep: 0x7a5a24, bone: 0xe8e0cc, red: 0xff3b3b,
   };
   const ROOM_THEME = {
-    1: { fog: 0x0a0c0a, accent: C.gold, key: 0xffd9a0, dust: 0xd8b878, density: 0.055 },
-    2: { fog: 0x06100d, accent: C.emerald, key: 0xb8ffe6, dust: 0x7affd0, density: 0.05 },
+    1: { fog: 0x0c0a0e, accent: C.gold, key: 0xffd9a0, dust: 0xd8b878, density: 0.055 },
+    2: { fog: 0x0c0714, accent: C.violet, key: 0xe6d2ff, dust: 0xc9a0ff, density: 0.05 },
     3: { fog: 0x0d0b07, accent: 0xe0a24a, key: 0xffcf8a, dust: 0xe8c48a, density: 0.06 },
     4: { fog: 0x0e0806, accent: 0xff7a3a, key: 0xffb27a, dust: 0xffa060, density: 0.05 },
     5: { fog: 0x070a0e, accent: 0x9fd8ff, key: 0xd8eeff, dust: 0xbfe6ff, density: 0.045 },
-    6: { fog: 0x03100b, accent: C.emerald, key: 0x9fffe0, dust: 0x5cffc4, density: 0.04 },
+    6: { fog: 0x0a0512, accent: C.violet, key: 0xe2c7ff, dust: 0xc08aff, density: 0.04 },
   };
 
   const W = {
@@ -140,7 +140,7 @@
   }
   function floorTexture(accentRGB) {
     return canvasTex(512, 512, (g, w, h) => {
-      g.fillStyle = '#0d100f'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#0e0c12'; g.fillRect(0, 0, w, h);
       for (let i = 0; i < 14000; i++) {
         g.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`;
         g.fillRect(Math.random() * w, Math.random() * h, 1, 1);
@@ -155,7 +155,7 @@
 
   function shell(group, n, opts = {}) {
     const th = ROOM_THEME[n];
-    const wallTex = panelTexture(opts.wall || '#141816', 'rgba(0,0,0,.6)', '#' + th.accent.toString(16).padStart(6, '0'));
+    const wallTex = panelTexture(opts.wall || '#15121a', 'rgba(0,0,0,.6)', '#' + th.accent.toString(16).padStart(6, '0'));
     wallTex.wrapS = wallTex.wrapT = T.RepeatWrapping; wallTex.repeat.set(4, 2);
     const wallMat = std(0xffffff, { map: wallTex, metalness: 0.35, roughness: 0.72 });
     const ft = floorTexture(hex2rgb(th.accent));
@@ -215,7 +215,7 @@
       if (!m.isMesh || !m.material || !m.material.emissive) return;
       if (on) {
         m.userData.e0 = m.userData.e0 || { c: m.material.emissive.clone(), i: m.material.emissiveIntensity };
-        m.material.emissive.setHex(C.emerald); m.material.emissiveIntensity = Math.max(0.35, m.userData.e0.i);
+        m.material.emissive.setHex(C.violet); m.material.emissiveIntensity = Math.max(0.35, m.userData.e0.i);
       } else if (m.userData.e0) {
         m.material.emissive.copy(m.userData.e0.c); m.material.emissiveIntensity = m.userData.e0.i;
         delete m.userData.e0;
@@ -238,7 +238,7 @@
     const lR = mesh(new T.BoxGeometry(1, 3.2, 0.12), leafMat, d, 0.5, 1.6, 0.02);
     const seam = mesh(new T.BoxGeometry(0.03, 3.1, 0.14), glow(C.red, 1.4), d, 0, 1.6, 0.03, false);
     const sign = canvasTex(256, 64, (g, w, h) => {
-      g.fillStyle = '#050706'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#070509'; g.fillRect(0, 0, w, h);
       g.fillStyle = '#c9a253'; g.font = '700 30px "Michroma", "Segoe UI", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
       g.fillText('SECTOR 0' + toRoom, w / 2, h / 2 + 2);
     });
@@ -255,7 +255,7 @@
   W.setDoor = (room, toRoom, state) => {
     const s = W.dyn['door' + room + '_' + toRoom];
     if (!s) return;
-    s.seam.material.emissive.setHex(state === 'locked' ? C.red : C.emerald);
+    s.seam.material.emissive.setHex(state === 'locked' ? C.red : C.violet);
     s.unlocked = state !== 'locked';
   };
   W.openDoor = (room, toRoom, open) => { const s = W.dyn['door' + room + '_' + toRoom]; if (s) s.target = open ? 1 : 0; };
@@ -307,7 +307,7 @@
       for (let y = 30; y < h; y += 22) { g.beginPath(); g.moveTo(20, y); g.lineTo(w - 20, y); g.stroke(); }
       drawGlyph(g, ZS.PHOTOS[id].back, w / 2 - 60, h / 2 - 70, 120, '#1a1a17', 1.5);
       g.save(); g.translate(w - 40, h - 30); g.rotate(-0.05);
-      g.fillStyle = '#1a3d33'; g.font = 'italic 22px Georgia, serif'; g.textAlign = 'right';
+      g.fillStyle = '#3d1f5e'; g.font = 'italic 22px Georgia, serif'; g.textAlign = 'right';
       g.fillText('—٠', 0, 0); g.restore();
     };
   }
@@ -334,7 +334,7 @@
         const a = ((forward ? i : (12 - i) % 12) / 12) * Math.PI * 2;
         arabicText(g, n, cx + Math.sin(a) * w * 0.32, cy - Math.cos(a) * w * 0.32, 44, '#e8d4a0', { weight: 700, font: '"Reem Kufi", "IBM Plex Sans Arabic", sans-serif' });
       });
-      arabicText(g, forward ? 'الزمن يسير' : 'الزمن يرتد', cx, cy + w * 0.16, 22, forward ? '#19e6a0' : '#c9a253', { glow: 8 });
+      arabicText(g, forward ? 'الزمن يسير' : 'الزمن يرتد', cx, cy + w * 0.16, 22, forward ? '#b46bff' : '#c9a253', { glow: 8 });
     };
   }
 
@@ -409,10 +409,10 @@
     [[-1.1, -0.45], [1.1, -0.45], [-1.1, 0.45], [1.1, 0.45]].forEach(([x, z]) => mesh(new T.BoxGeometry(0.07, 0.9, 0.07), deskMat, desk, x, 0.45, z));
     mesh(new T.BoxGeometry(0.9, 0.72, 0.7), std(0x2b2e2a, { metalness: 0.3, roughness: 0.7 }), desk, 0.2, 1.32, -0.05);
     const crtTex = canvasTex(512, 384, (g, w, h) => {
-      g.fillStyle = '#021a12'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#14061f'; g.fillRect(0, 0, w, h);
       for (let y = 0; y < h; y += 4) { g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, y, w, 2); }
-      arabicText(g, 'أنت لم تدخل هذه الغرفة\nللمرة الأولى.', w / 2, h / 2 - 10, 40, '#3dffb4', { glow: 14, weight: 700 });
-      arabicText(g, 'الدورة ٧', w / 2, h - 40, 22, 'rgba(61,255,180,.55)');
+      arabicText(g, 'أنت لم تدخل هذه الغرفة\nللمرة الأولى.', w / 2, h / 2 - 10, 40, '#c99bff', { glow: 14, weight: 700 });
+      arabicText(g, 'الدورة ٧', w / 2, h - 40, 22, 'rgba(201,155,255,.55)');
     });
     const crt = mesh(new T.PlaneGeometry(0.7, 0.52), new T.MeshBasicMaterial({ map: crtTex, toneMapped: false }), desk, 0.2, 1.34, 0.31, false);
     hotspot(1, 'crt', 'شاشة قديمة', [crt, desk.children[desk.children.length - 2]], { pos: new T.Vector3(-3.4, 1.6, -3.6), look: new T.Vector3(-4, 1.34, -5.1) });
@@ -432,8 +432,8 @@
     // صندوق زجاجي تحت الساعة ينفتح بعد إصلاحها
     const vitrine = new T.Group(); vitrine.position.set(3.6, 0, -5.6); group.add(vitrine);
     mesh(new T.CylinderGeometry(0.45, 0.55, 1.1, 8), std(0x1b1a17, { metalness: 0.8 }), vitrine, 0, 0.55, 0);
-    const glass = mesh(new T.CylinderGeometry(0.38, 0.38, 0.7, 24, 1, true), std(0x9fffe0, { transparent: true, opacity: 0.18, metalness: 1, roughness: 0.05, side: T.DoubleSide }), vitrine, 0, 1.45, 0, false);
-    const crystal = mesh(new T.OctahedronGeometry(0.17, 0), std(C.emerald, { emissive: C.emerald, emissiveIntensity: 0.9, metalness: 0.2, roughness: 0.1 }), vitrine, 0, 1.42, 0);
+    const glass = mesh(new T.CylinderGeometry(0.38, 0.38, 0.7, 24, 1, true), std(0xe2c7ff, { transparent: true, opacity: 0.18, metalness: 1, roughness: 0.05, side: T.DoubleSide }), vitrine, 0, 1.45, 0, false);
+    const crystal = mesh(new T.OctahedronGeometry(0.17, 0), std(C.violet, { emissive: C.violet, emissiveIntensity: 0.9, metalness: 0.2, roughness: 0.1 }), vitrine, 0, 1.42, 0);
     crystal.scale.y = 1.6;
     mesh(new T.CylinderGeometry(0.4, 0.4, 0.05, 24), goldMat, vitrine, 0, 1.82, 0);
     W.dyn.vitrine = { glass, crystal, open: 0, target: 0 };
@@ -462,7 +462,7 @@
     const top = mesh(new T.BoxGeometry(tw, 0.1, td), std(0x111513, { metalness: 0.85, roughness: 0.25 }), table, 0, -0.05, 0);
     [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => mesh(new T.CylinderGeometry(0.06, 0.08, 1, 10), std(C.steel, { metalness: 0.9 }), table, sx * (tw / 2 - 0.2), -0.55, sz * (td / 2 - 0.2)));
     const holeTex = canvasTex(256, 256, (g, w, h) => {
-      g.fillStyle = '#0b0e0d'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#0d0b11'; g.fillRect(0, 0, w, h);
       g.fillStyle = '#020303';
       for (let x = 16; x < w; x += 32) for (let y = 16; y < h; y += 32) { g.beginPath(); g.arc(x, y, 3, 0, 7); g.fill(); }
     });
@@ -489,17 +489,17 @@
       if (ch === 'y') mesh(new T.BoxGeometry(0.06, 0.24, TABLE.cell * 0.8), std(0xffc040, { transparent: true, opacity: 0.6, emissive: 0x8a5a10, emissiveIntensity: 0.6, metalness: 0.2, roughness: 0.1 }), table, p.x, 0.14, p.z);
       if (ch === 'C') {
         mesh(new T.TorusGeometry(0.13, 0.03, 8, 24).rotateX(Math.PI / 2), std(C.gold, { metalness: 0.95, roughness: 0.25 }), table, p.x, 0.06, p.z);
-        crystalMesh = mesh(new T.OctahedronGeometry(0.11, 0), std(C.emerald, { emissive: C.emerald, emissiveIntensity: 1.1, roughness: 0.1 }), table, p.x, 0.22, p.z);
+        crystalMesh = mesh(new T.OctahedronGeometry(0.11, 0), std(C.violet, { emissive: C.violet, emissiveIntensity: 1.1, roughness: 0.1 }), table, p.x, 0.22, p.z);
         crystalMesh.scale.y = 1.5; crystalMesh.visible = false;
       }
       if (ch === 'm') {
         const piv = new T.Group(); piv.position.set(p.x, 0, p.z); table.add(piv);
         mesh(new T.CylinderGeometry(0.15, 0.17, 0.05, 20), std(C.gold, { metalness: 0.9, roughness: 0.3 }), piv, 0, 0.025, 0);
-        mesh(new T.BoxGeometry(0.035, 0.26, TABLE.cell * 0.85), std(0xe9fff8, { metalness: 1, roughness: 0.02, emissive: 0x0b3a2a, emissiveIntensity: 0.5 }), piv, 0, 0.17, 0);
+        mesh(new T.BoxGeometry(0.035, 0.26, TABLE.cell * 0.85), std(0xe9fff8, { metalness: 1, roughness: 0.02, emissive: 0x2e1450, emissiveIntensity: 0.5 }), piv, 0, 0.17, 0);
         mirrorMeshes[x + ',' + y] = piv;
       }
       if (ch in ZS.RECEIVERS) {
-        const col = { green: C.emerald, gold: 0xffc040, white: 0xffffff }[ZS.RECEIVERS[ch]];
+        const col = { green: C.violet, gold: 0xffc040, white: 0xffffff }[ZS.RECEIVERS[ch]];
         const r = new T.Group(); r.position.set(p.x, 0.18, p.z); table.add(r);
         mesh(new T.CylinderGeometry(0.16, 0.18, 0.34, 20), std(0x1b201e, { metalness: 0.9 }), r, 0, 0, 0);
         const lens = mesh(new T.SphereGeometry(0.1, 20, 14), new T.MeshStandardMaterial({ color: 0x111111, emissive: col, emissiveIntensity: 0.15 }), r, 0, 0.2, 0);
@@ -555,7 +555,7 @@
 
     // بلورات معلقة للزينة
     for (let i = 0; i < 6; i++) {
-      const cr = mesh(new T.OctahedronGeometry(0.12 + Math.random() * 0.1, 0), std(C.emerald, { emissive: C.emeraldDeep, emissiveIntensity: 0.8, transparent: true, opacity: 0.85, roughness: 0.1 }), group, 3 + Math.random() * 3, 3.4 + Math.random() * 1.8, -5 + Math.random() * 4);
+      const cr = mesh(new T.OctahedronGeometry(0.12 + Math.random() * 0.1, 0), std(C.violet, { emissive: C.violetDeep, emissiveIntensity: 0.8, transparent: true, opacity: 0.85, roughness: 0.1 }), group, 3 + Math.random() * 3, 3.4 + Math.random() * 1.8, -5 + Math.random() * 4);
       cr.userData.ph = Math.random() * 6;
       anims.push((dt, t) => { cr.rotation.y += dt * 0.4; cr.position.y += Math.sin(t + cr.userData.ph) * dt * 0.05; });
     }
@@ -565,7 +565,7 @@
 
   const beamMat = {
     white: new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }),
-    green: new T.MeshBasicMaterial({ color: 0x40ffb8, toneMapped: false }),
+    green: new T.MeshBasicMaterial({ color: 0xc08aff, toneMapped: false }),
     gold: new T.MeshBasicMaterial({ color: 0xffc85a, toneMapped: false }),
   };
   W.setLaser = (mirrors, crystal, trace) => {
@@ -689,10 +689,10 @@
     // ملصق رسمي على الجدار الأيمن
     const posterTex = canvasTex(320, 440, (g, w, h) => {
       g.fillStyle = '#e8e2d4'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#0b5a43'; g.fillRect(0, 0, w, 70);
+      g.fillStyle = '#4b2a86'; g.fillRect(0, 0, w, 70);
       arabicText(g, 'بيان رسمي', w / 2, 36, 30, '#ffffff', { weight: 700 });
       g.fillStyle = 'rgba(0,0,0,.45)'; for (let y = 110; y < h - 80; y += 22) g.fillRect(30, y, w - 60 - Math.random() * 60, 4);
-      g.strokeStyle = '#0b5a43'; g.lineWidth = 4; g.beginPath(); g.arc(w - 70, h - 60, 32, 0, 7); g.stroke();
+      g.strokeStyle = '#4b2a86'; g.lineWidth = 4; g.beginPath(); g.arc(w - 70, h - 60, 32, 0, 7); g.stroke();
     });
     const poster = mesh(new T.PlaneGeometry(0.9, 1.24), std(0xffffff, { map: posterTex, metalness: 0, roughness: 0.85 }), group, 6.88, 2.3, -0.4, false);
     poster.rotation.y = -Math.PI / 2;
@@ -712,7 +712,7 @@
   }
   W.setTimelineHolo = (labels, ok) => {
     redraw(W.dyn.holo.holoTex, (g, w, h) => {
-      const col = ok ? '#7dffc9' : '#ffd08a';
+      const col = ok ? '#d2b0ff' : '#ffd08a';
       g.fillStyle = ok ? 'rgba(60,255,180,.07)' : 'rgba(255,190,90,.06)'; g.fillRect(0, 0, w, h);
       g.strokeStyle = col; g.lineWidth = 3; g.strokeRect(10, 10, w - 20, h - 20);
       g.beginPath(); g.moveTo(60, h / 2); g.lineTo(w - 60, h / 2); g.stroke();
@@ -863,13 +863,13 @@
     const tally = mesh(new T.PlaneGeometry(0.9, 0.56), new T.MeshBasicMaterial({ map: canvasTex(256, 160, tallyDraw(6)), transparent: true }), group, -6.94, 1.4, 1.8, false);
     tally.rotation.y = Math.PI / 2;
     // الخدش السابع لا يظهر إلا في الانعكاس
-    const ghostTally = mesh(new T.PlaneGeometry(0.9, 0.56), new T.MeshBasicMaterial({ map: canvasTex(256, 160, (g, w, h) => { g.strokeStyle = 'rgba(25,230,160,.95)'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.moveTo(216, 32); g.lineTo(219, 122); g.stroke(); }), transparent: true, toneMapped: false }), group, -6.93, 1.4, 1.8, false);
+    const ghostTally = mesh(new T.PlaneGeometry(0.9, 0.56), new T.MeshBasicMaterial({ map: canvasTex(256, 160, (g, w, h) => { g.strokeStyle = 'rgba(180,107,255,.95)'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.moveTo(216, 32); g.lineTo(219, 122); g.stroke(); }), transparent: true, toneMapped: false }), group, -6.93, 1.4, 1.8, false);
     ghostTally.rotation.y = Math.PI / 2; ghostTally.visible = false;
     hotspot(5, 'tally5', 'خدوش على الجدار', tally, { pos: new T.Vector3(-4.6, 1.6, 1.8), look: new T.Vector3(-6.9, 1.4, 1.8) });
 
     // هيئة شخص أمام القفل، لا تظهر إلا في المرآة
     const ghost = new T.Group(); ghost.position.set(-5.2, 0, -2.6); ghost.rotation.y = Math.PI / 2; group.add(ghost); ghost.visible = false;
-    const gm = new T.MeshBasicMaterial({ color: 0x19e6a0, transparent: true, opacity: 0.6, toneMapped: false });
+    const gm = new T.MeshBasicMaterial({ color: 0xb46bff, transparent: true, opacity: 0.6, toneMapped: false });
     mesh(T.CapsuleGeometry ? new T.CapsuleGeometry(0.28, 0.9, 6, 12) : new T.CylinderGeometry(0.28, 0.24, 1.4, 12), gm, ghost, 0, 1.15, 0, false);
     mesh(new T.SphereGeometry(0.2, 16, 12), gm, ghost, 0, 1.95, 0, false);
     const arm = mesh(new T.CylinderGeometry(0.06, 0.05, 0.7, 8), gm, ghost, 0.15, 1.45, 0.3, false); arm.rotation.x = -1.1;
@@ -930,9 +930,9 @@
     const swirlTex = canvasTex(512, 512, (g, w, h) => {
       const cx = w / 2, cy = h / 2;
       const grd = g.createRadialGradient(cx, cy, 0, cx, cy, w / 2);
-      grd.addColorStop(0, 'rgba(180,255,230,1)'); grd.addColorStop(0.25, 'rgba(25,230,160,.85)'); grd.addColorStop(0.7, 'rgba(5,80,55,.6)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+      grd.addColorStop(0, 'rgba(230,205,255,1)'); grd.addColorStop(0.25, 'rgba(180,107,255,.85)'); grd.addColorStop(0.7, 'rgba(60,20,100,.6)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = grd; g.fillRect(0, 0, w, h);
-      g.strokeStyle = 'rgba(220,255,240,.35)'; g.lineWidth = 2;
+      g.strokeStyle = 'rgba(240,225,255,.35)'; g.lineWidth = 2;
       for (let i = 0; i < 18; i++) { g.beginPath(); for (let a = 0; a < 5; a += 0.05) { const r = 10 + a * 46; g.lineTo(cx + Math.cos(a + i * 0.35) * r, cy + Math.sin(a + i * 0.35) * r); } g.stroke(); }
     });
     const swirl = mesh(new T.CircleGeometry(2.4, 64), new T.MeshBasicMaterial({ map: swirlTex, transparent: true, opacity: 0.25, toneMapped: false, depthWrite: false }), gate, 0, 0, -0.05, false);
@@ -943,12 +943,12 @@
       mesh(new T.CylinderGeometry(0.36, 0.36, 0.14, 32).rotateX(Math.PI / 2), std(0x0d1210, { metalness: 0.9 }), s, 0, 0, 0);
       const engr = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#0a0f0d'; g.fillRect(0, 0, w, h); g.strokeStyle = '#c9a253'; g.lineWidth = 6; g.beginPath(); g.arc(w / 2, h / 2, 118, 0, 7); g.stroke(); drawGlyph(g, gid, 58, 58, 140, '#e8d4a0', 1.4); });
       const face = mesh(new T.CircleGeometry(0.33, 32), new T.MeshStandardMaterial({ map: engr, emissive: 0xffffff, emissiveMap: engr, emissiveIntensity: 0.35, metalness: 0.4, roughness: 0.5 }), s, 0, 0, 0.075, false);
-      const core = mesh(new T.SphereGeometry(0.2, 24, 16), glow(C.emerald, 2), s, 0, 0, 0.2);
+      const core = mesh(new T.SphereGeometry(0.2, 24, 16), glow(C.violet, 2), s, 0, 0, 0.2);
       core.visible = false;
       sockets.push({ group: s, face, core });
       hotspot(6, 'socket' + i, 'مقبس محفور', [face, s.children[0]], { pos: new T.Vector3(s.position.x * 0.5, 3 + s.position.y * 0.6, -2.4), look: new T.Vector3(s.position.x, 3 + s.position.y, -5.6) });
     });
-    const gateLight = new T.PointLight(C.emerald, 0.5, 12, 2); gateLight.position.set(0, 3, -4.8); group.add(gateLight);
+    const gateLight = new T.PointLight(C.violet, 0.5, 12, 2); gateLight.position.set(0, 3, -4.8); group.add(gateLight);
     W.dyn.gate = { gate, swirl, sockets, gateLight, power: 0, target: 0, open: 0 };
     anims.push((dt, t) => {
       const G = W.dyn.gate;
@@ -963,7 +963,7 @@
     // قاعدة رموز القطاعات
     const ped = new T.Group(); ped.position.set(-3.4, 0, -2.4); ped.rotation.y = 0.5; group.add(ped);
     mesh(new T.CylinderGeometry(0.7, 0.9, 1.05, 6), std(0x141917, { metalness: 0.85 }), ped, 0, 0.52, 0);
-    const pedTop = mesh(new T.CylinderGeometry(0.75, 0.75, 0.06, 6), std(0x0c100e, { metalness: 0.8, emissive: 0x062a1d, emissiveIntensity: 0.8 }), ped, 0, 1.07, 0);
+    const pedTop = mesh(new T.CylinderGeometry(0.75, 0.75, 0.06, 6), std(0x0c100e, { metalness: 0.8, emissive: 0x22103a, emissiveIntensity: 0.8 }), ped, 0, 1.07, 0);
     const sig = [];
     for (let i = 0; i < 5; i++) {
       const a = (i / 5) * Math.PI * 2;
@@ -975,14 +975,14 @@
     // منصة الهوية
     const id = new T.Group(); id.position.set(3.4, 0, -2.4); id.rotation.y = -0.5; group.add(id);
     mesh(new T.BoxGeometry(0.9, 1.1, 0.5), std(0x141917, { metalness: 0.85 }), id, 0, 0.55, 0);
-    const idScreen = canvasTex(512, 320, (g, w, h) => { g.fillStyle = '#021a12'; g.fillRect(0, 0, w, h); arabicText(g, 'من ترك لك الأدلة؟', w / 2, h / 2, 40, '#3dffb4', { glow: 12, weight: 700 }); });
+    const idScreen = canvasTex(512, 320, (g, w, h) => { g.fillStyle = '#14061f'; g.fillRect(0, 0, w, h); arabicText(g, 'من ترك لك الأدلة؟', w / 2, h / 2, 40, '#c99bff', { glow: 12, weight: 700 }); });
     const idS = mesh(new T.PlaneGeometry(1.1, 0.68), new T.MeshBasicMaterial({ map: idScreen, toneMapped: false }), id, 0, 1.55, 0, false);
     idS.rotation.x = -0.2;
     hotspot(6, 'identity', 'منصة الاعتراف', [id.children[0], idS], { pos: new T.Vector3(2.0, 2.0, -0.4), look: new T.Vector3(3.4, 1.4, -2.4) });
 
     // دوائر طاقة على الأرض
     for (let r = 1; r <= 3; r++) {
-      const ring = mesh(new T.RingGeometry(r * 1.1, r * 1.1 + 0.03, 96).rotateX(-Math.PI / 2), glow(C.emerald, 0.6), group, 0, 0.02, -3.2, false);
+      const ring = mesh(new T.RingGeometry(r * 1.1, r * 1.1 + 0.03, 96).rotateX(-Math.PI / 2), glow(C.violet, 0.6), group, 0, 0.02, -3.2, false);
       anims.push((dt) => { ring.rotation.y += dt * 0.05 * (r % 2 ? 1 : -1); });
     }
     door(group, 6, 'left', 5, 'العودة إلى الغرفة المعكوسة');
@@ -994,7 +994,7 @@
       if (c) G.sockets[i].core.material.emissive.setHex({ light_core: 0xffc85a, heart_core: 0xff6a30, mirror_shard: 0xbfe6ff }[c]);
     });
     G.target = g.sockets.filter(Boolean).length / 3 * 0.5 + (g.sigilsDone ? 0.5 : 0);
-    W.dyn.sigils.forEach((s, i) => { s.material.emissiveIntensity = g.sigilsDone ? 2.2 : i < g.sigilCount ? 1.6 : 0.25; s.material.emissive.setHex(g.sigilsDone ? C.emerald : C.gold); });
+    W.dyn.sigils.forEach((s, i) => { s.material.emissiveIntensity = g.sigilsDone ? 2.2 : i < g.sigilCount ? 1.6 : 0.25; s.material.emissive.setHex(g.sigilsDone ? C.violet : C.gold); });
   };
 
   // ===== الجسيمات =====
@@ -1018,7 +1018,7 @@
     });
   }
   // انفجار جسيمات عند حل لغز
-  W.burst = (pos, color = C.emerald) => {
+  W.burst = (pos, color = C.violet) => {
     if (W.reduced) return;
     const n = 260, p = new Float32Array(n * 3), v = [];
     for (let i = 0; i < n; i++) {
@@ -1162,10 +1162,10 @@
   function envMap() {
     const pm = new T.PMREMGenerator(renderer);
     const tex = canvasTex(512, 256, (g, w, h) => {
-      g.fillStyle = '#050706'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#070509'; g.fillRect(0, 0, w, h);
       const add = (x, y, rw, rh, c) => { const grd = g.createRadialGradient(x, y, 0, x, y, rw); grd.addColorStop(0, c); grd.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = grd; g.fillRect(x - rw, y - rh, rw * 2, rh * 2); };
       add(w * 0.25, h * 0.3, 90, 60, 'rgba(255,214,150,.9)');
-      add(w * 0.7, h * 0.25, 120, 40, 'rgba(25,230,160,.6)');
+      add(w * 0.7, h * 0.25, 120, 40, 'rgba(180,107,255,.6)');
       add(w * 0.5, h * 0.05, 200, 20, 'rgba(255,255,255,.6)');
       g.fillStyle = 'rgba(201,162,83,.25)'; g.fillRect(0, h * 0.55, w, 6);
     });
@@ -1183,11 +1183,11 @@
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     scene = new T.Scene();
-    scene.background = new T.Color(0x050706);
-    scene.fog = new T.FogExp2(0x0a0c0a, 0.05);
+    scene.background = new T.Color(0x070509);
+    scene.fog = new T.FogExp2(0x0c0a0e, 0.05);
     scene.environment = envMap();
     camera = new T.PerspectiveCamera(58, 1, 0.05, 60);
-    hemi = new T.HemisphereLight(0x8fa89d, 0x0a0806, 0.35);
+    hemi = new T.HemisphereLight(0x9a8fb0, 0x0a0806, 0.35);
     scene.add(hemi);
     clock = new T.Clock();
 
