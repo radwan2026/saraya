@@ -45,15 +45,26 @@ export class AudioEngine {
     return !!this.ctx && this.ctx.state === 'running';
   }
 
+  private silentLoop: HTMLAudioElement | null = null;
+
   /** Must be called from a user gesture. Safe to call repeatedly. */
   start() {
     if (this.ctx) {
-      if (this.ctx.state === 'suspended') void this.ctx.resume();
+      // 'suspended' after backgrounding, 'interrupted' on iOS after a call or another app took the audio
+      if (this.ctx.state !== 'running') void this.ctx.resume().catch(() => {});
+      this.keepSessionAwake();
       return;
     }
     const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AC) return;
     const ctx = (this.ctx = new AC());
+    void ctx.resume().catch(() => {});
+    // iOS only unlocks Web Audio once a buffer has started inside the gesture
+    const blip = ctx.createBufferSource();
+    blip.buffer = ctx.createBuffer(1, 1, 22050);
+    blip.connect(ctx.destination);
+    blip.start(0);
+    this.keepSessionAwake();
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -16;
     comp.ratio.value = 4;
@@ -77,6 +88,31 @@ export class AudioEngine {
     this.scheduleMusic();
   }
 
+  /**
+   * On iPhone and iPad the ringer switch silences Web Audio unless the page is also playing media.
+   * A looping silent <audio> element (and the Audio Session API where Safari has it) moves the page
+   * into the playback category, so the game is heard with the switch on silent, like a video would be.
+   */
+  private keepSessionAwake() {
+    const nav = navigator as Navigator & { audioSession?: { type: string } };
+    if (nav.audioSession) {
+      try { nav.audioSession.type = 'playback'; } catch { /* older Safari */ }
+    }
+    if (!this.silentLoop) {
+      const rate = 8000, n = rate / 2;
+      const wav = new DataView(new ArrayBuffer(44 + n * 2));
+      const str = (o: number, s: string) => [...s].forEach((c, i) => wav.setUint8(o + i, c.charCodeAt(0)));
+      str(0, 'RIFF'); wav.setUint32(4, 36 + n * 2, true); str(8, 'WAVE'); str(12, 'fmt ');
+      wav.setUint32(16, 16, true); wav.setUint16(20, 1, true); wav.setUint16(22, 1, true);
+      wav.setUint32(24, rate, true); wav.setUint32(28, rate * 2, true); wav.setUint16(32, 2, true); wav.setUint16(34, 16, true);
+      str(36, 'data'); wav.setUint32(40, n * 2, true);
+      const el = (this.silentLoop = new Audio(URL.createObjectURL(new Blob([wav], { type: 'audio/wav' }))));
+      el.loop = true;
+      el.setAttribute('playsinline', '');
+    }
+    if (this.silentLoop.paused) void this.silentLoop.play().catch(() => {});
+  }
+
   setVolumes(v: Partial<Volumes>) {
     Object.assign(this.volumes, v);
     this.applyVolumes();
@@ -93,7 +129,13 @@ export class AudioEngine {
 
   suspend(on: boolean) {
     if (!this.ctx) return;
-    if (on) void this.ctx.suspend(); else void this.ctx.resume();
+    if (on) {
+      void this.ctx.suspend();
+      this.silentLoop?.pause();
+    } else {
+      void this.ctx.resume().catch(() => {});
+      if (this.silentLoop?.paused) void this.silentLoop.play().catch(() => {});
+    }
   }
 
   private impulse(seconds: number, decay: number) {

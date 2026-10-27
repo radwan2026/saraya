@@ -177,6 +177,14 @@ class Game {
     this.hud.toast('القاعة تتذكّر أين كنت.', 'info');
   }
 
+  /** Shown in Settings: whether the browser is actually letting the game play sound. */
+  private showSoundState() {
+    const ok = this.audio.running;
+    $('soundState').textContent = ok
+      ? 'الصوت يعمل. إن لم تسمع شيئًا فارفع صوت الجهاز وتأكّد من أن المتصفّح غير مكتوم.'
+      : 'المتصفّح أوقف الصوت. انقر على الشاشة ثم جرّب مرّة أخرى.';
+  }
+
   private startPlay() {
     this.mode = 'play';
     document.body.classList.remove('cinematic');
@@ -186,6 +194,8 @@ class Game {
     this.controller.enabled = true;
     this.world.engine.redrawHolo(this.logic.state);
     this.refreshHud();
+    // if the browser kept the audio stopped, say so instead of leaving the player in silence
+    setTimeout(() => { if (this.mode === 'play' && !this.audio.running) this.hud.toast('الصوت متوقّف: انقر على الشاشة لتشغيله.', 'warn'); }, 1500);
   }
 
   private playIntro() {
@@ -627,6 +637,12 @@ class Game {
       if ((e.code === 'Tab' || e.code === 'KeyJ') && this.overlay === 'journal') { e.preventDefault(); this.toggleJournal(); }
     });
     addEventListener('beforeunload', () => this.save());
+    // Browsers may refuse to resume audio without a gesture (returning to the tab, iOS interruptions),
+    // so every tap, click or key press brings the sound back if it has stopped.
+    const wakeAudio = () => {
+      if (this.audio.ctx && !this.paused && !document.hidden && !this.audio.running) this.audio.start();
+    };
+    for (const type of ['pointerdown', 'touchend', 'keydown']) addEventListener(type, wakeAudio, { capture: true, passive: true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { this.save(); this.audio.suspend(true); } else if (!this.paused) this.audio.suspend(false);
     });
@@ -659,6 +675,11 @@ class Game {
     };
     $('sReload').onclick = () => { this.save(); location.reload(); };
     $('sDone').onclick = () => (this.mode === 'play' ? this.openPause() : this.closeOverlay());
+    $('sTest').onclick = () => {
+      this.audio.start();
+      this.audio.sfx('solve');
+      setTimeout(() => this.showSoundState(), 600);
+    };
   }
 
   private applySettings() {
@@ -698,6 +719,7 @@ class Game {
   private openSettings() {
     this.showOverlay('settings');
     ($('sDone') as HTMLButtonElement).focus();
+    $('soundState').textContent = '';
   }
 
   private toggleJournal() {
