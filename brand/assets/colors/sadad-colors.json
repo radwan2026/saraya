@@ -4,153 +4,172 @@
   "note": "CMYK values are approximate conversions from RGB; confirm with a print proof.",
   "colors": [
     {
-      "key": "gold",
-      "name_ar": "ذهبي سداد",
-      "name_en": "Sadad Gold",
-      "hex": "#D99F41",
+      "key": "blue",
+      "name_ar": "أزرق سداد",
+      "name_en": "Sadad Blue",
+      "hex": "#0087B0",
       "rgb": [
-        217,
-        159,
-        65
+        0,
+        135,
+        176
       ],
       "cmyk_approx": [
-        0,
-        27,
-        70,
-        15
-      ],
-      "role": "primary",
-      "status": "approved — sampled from logo"
-    },
-    {
-      "key": "gold-light",
-      "name_ar": "ذهبي فاتح",
-      "name_en": "Gold Light",
-      "hex": "#EFC46A",
-      "rgb": [
-        239,
-        196,
-        106
-      ],
-      "cmyk_approx": [
-        0,
-        18,
-        56,
-        6
-      ],
-      "role": "secondary",
-      "status": "proposed"
-    },
-    {
-      "key": "gold-deep",
-      "name_ar": "ذهبي عميق",
-      "name_en": "Gold Deep",
-      "hex": "#8F6420",
-      "rgb": [
-        143,
         100,
-        32
-      ],
-      "cmyk_approx": [
+        23,
         0,
-        30,
-        78,
-        44
+        31
       ],
-      "role": "text on light",
-      "status": "proposed"
-    },
-    {
-      "key": "charcoal",
-      "name_ar": "فحمي",
-      "name_en": "Charcoal",
-      "hex": "#1C1C1E",
-      "rgb": [
-        28,
-        28,
-        30
-      ],
-      "cmyk_approx": [
-        7,
-        7,
-        0,
-        88
-      ],
-      "role": "dark base",
-      "status": "proposed"
-    },
-    {
-      "key": "graphite",
-      "name_ar": "جرافيت",
-      "name_en": "Graphite",
-      "hex": "#3B3B3B",
-      "rgb": [
-        59,
-        59,
-        59
-      ],
-      "cmyk_approx": [
-        0,
-        0,
-        0,
-        77
-      ],
-      "role": "body text — descriptor colour in logo",
+      "role": "primary — logo symbol",
       "status": "approved — sampled from logo"
+    },
+    {
+      "key": "teal",
+      "name_ar": "فيروزي",
+      "name_en": "Teal",
+      "hex": "#13B3BD",
+      "rgb": [
+        19,
+        179,
+        189
+      ],
+      "cmyk_approx": [
+        90,
+        5,
+        0,
+        26
+      ],
+      "role": "gradient start, accents on dark",
+      "status": "approved — sampled from logo"
+    },
+    {
+      "key": "azure",
+      "name_ar": "أزرق فعّال",
+      "name_en": "Action Azure",
+      "hex": "#006DBE",
+      "rgb": [
+        0,
+        109,
+        190
+      ],
+      "cmyk_approx": [
+        100,
+        43,
+        0,
+        25
+      ],
+      "role": "buttons, links, text on light",
+      "status": "approved — sampled from logo"
+    },
+    {
+      "key": "navy",
+      "name_ar": "كحلي",
+      "name_en": "Navy",
+      "hex": "#004985",
+      "rgb": [
+        0,
+        73,
+        133
+      ],
+      "cmyk_approx": [
+        100,
+        45,
+        0,
+        48
+      ],
+      "role": "wordmark, descriptor, headings",
+      "status": "approved — sampled from logo"
+    },
+    {
+      "key": "midnight",
+      "name_ar": "ليلي",
+      "name_en": "Midnight",
+      "hex": "#0A1E33",
+      "rgb": [
+        10,
+        30,
+        51
+      ],
+      "cmyk_approx": [
+        80,
+        41,
+        0,
+        80
+      ],
+      "role": "dark backgrounds",
+      "status": "proposed"
+    },
+    {
+      "key": "ink",
+      "name_ar": "حبري",
+      "name_en": "Ink",
+      "hex": "#1F2D3D",
+      "rgb": [
+        31,
+        45,
+        61
+      ],
+      "cmyk_approx": [
+        49,
+        26,
+        0,
+        76
+      ],
+      "role": "body text",
+      "status": "proposed"
     },
     {
       "key": "slate",
       "name_ar": "رمادي",
       "name_en": "Slate",
-      "hex": "#6E6E73",
+      "hex": "#5F6B7A",
       "rgb": [
-        110,
-        110,
-        115
+        95,
+        107,
+        122
       ],
       "cmyk_approx": [
-        4,
-        4,
+        22,
+        12,
         0,
-        55
+        52
       ],
       "role": "secondary text",
       "status": "proposed"
     },
     {
-      "key": "sand",
-      "name_ar": "رملي",
-      "name_en": "Sand",
-      "hex": "#ECE8E1",
+      "key": "mist",
+      "name_ar": "ضبابي",
+      "name_en": "Mist",
+      "hex": "#E4ECF2",
       "rgb": [
+        228,
         236,
-        232,
-        225
+        242
       ],
       "cmyk_approx": [
-        0,
+        6,
         2,
-        5,
-        7
+        0,
+        5
       ],
       "role": "dividers, secondary surfaces",
       "status": "proposed"
     },
     {
-      "key": "ivory",
-      "name_ar": "عاجي",
-      "name_en": "Ivory",
-      "hex": "#F8F6F2",
+      "key": "snow",
+      "name_ar": "ثلجي",
+      "name_en": "Snow",
+      "hex": "#F5F8FB",
       "rgb": [
+        245,
         248,
-        246,
-        242
+        251
       ],
       "cmyk_approx": [
-        0,
-        1,
         2,
-        3
+        1,
+        0,
+        2
       ],
       "role": "app / page background",
       "status": "proposed"
@@ -213,14 +232,20 @@
       "status": "proposed"
     }
   ],
-  "metallic_gradient": {
+  "brand_gradient": {
     "stops": [
-      "#F3CB72",
-      "#E2AF52",
-      "#C88E34",
-      "#9E6A22"
+      "#13B3BD",
+      "#0087B0",
+      "#006DBE",
+      "#004985"
+    ],
+    "positions": [
+      0,
+      45,
+      75,
+      100
     ],
     "angle_deg": 135,
-    "use": "special promotional use on dark backgrounds only"
+    "use": "screens, campaigns, app icon, large colour areas"
   }
 }

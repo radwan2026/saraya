@@ -2,14 +2,15 @@ GIMP Palette
 Name: Sadad Libya
 Columns: 4
 #
-217 159  65	Sadad Gold #D99F41
-239 196 106	Gold Light #EFC46A
-143 100  32	Gold Deep #8F6420
- 28  28  30	Charcoal #1C1C1E
- 59  59  59	Graphite #3B3B3B
-110 110 115	Slate #6E6E73
-236 232 225	Sand #ECE8E1
-248 246 242	Ivory #F8F6F2
+  0 135 176	Sadad Blue #0087B0
+ 19 179 189	Teal #13B3BD
+  0 109 190	Action Azure #006DBE
+  0  73 133	Navy #004985
+ 10  30  51	Midnight #0A1E33
+ 31  45  61	Ink #1F2D3D
+ 95 107 122	Slate #5F6B7A
+228 236 242	Mist #E4ECF2
+245 248 251	Snow #F5F8FB
 255 255 255	White #FFFFFF
  30 127  85	Success #1E7F55
 192  57  43	Error #C0392B

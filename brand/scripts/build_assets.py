@@ -1,8 +1,8 @@
-"""Build Sadad Libya logo assets from the approved reference PNGs.
+"""Build Sadad Libya logo assets from the approved reference PNG.
 
 Run:  python3 -I brand/scripts/build_assets.py   (from the repo root)
 
-Inputs  : brand/assets/reference/sadad-logo-source-{gold,white}.png (1920x1080, transparent)
+Input   : brand/assets/reference/sadad-logo-source.png (1920x1080, transparent, blue/teal gradient)
 Outputs : brand/assets/logo/*.png  (raster crops + colour variants)
           brand/assets/logo/*.svg  (auto-traced flat vectors — provisional, see README)
 """
@@ -16,9 +16,11 @@ REF = os.path.join(ROOT, "assets", "reference")
 OUT = os.path.join(ROOT, "assets", "logo")
 os.makedirs(OUT, exist_ok=True)
 
-GOLD = (217, 159, 65)      # Sadad Gold  #D99F41
-CHARCOAL = (28, 28, 30)    # Charcoal    #1C1C1E
-GRAPHITE = (59, 59, 59)    # Graphite    #3B3B3B (descriptor colour in the source)
+BLUE = (0, 135, 176)       # Sadad Blue  #0087B0 — symbol median in the source
+NAVY = (0, 73, 133)        # Navy        #004985 — wordmark / descriptor in the source
+TEAL = (19, 179, 189)      # Teal        #13B3BD — light end of the symbol gradient
+AZURE = (0, 109, 190)      # Azure       #006DBE — deep end of the symbol gradient
+MIDNIGHT = (10, 30, 51)    # Midnight    #0A1E33
 WHITE = (255, 255, 255)
 
 # Regions measured on the 1920x1080 source (x0, y0, x1, y1)
@@ -28,9 +30,8 @@ SYMBOL = (791, 225, 1156, 600)
 WORDMARK = (619, 633, 1302, 760)
 DESCRIPTOR_Y = 780
 
-gold_src = np.array(Image.open(os.path.join(REF, "sadad-logo-source-gold.png")).convert("RGBA"))
-white_src = np.array(Image.open(os.path.join(REF, "sadad-logo-source-white.png")).convert("RGBA"))
-alpha = gold_src[..., 3]
+gradient_src = np.array(Image.open(os.path.join(REF, "sadad-logo-source.png")).convert("RGBA"))
+alpha = gradient_src[..., 3]
 
 
 def crop(arr, box, pad=0):
@@ -46,75 +47,83 @@ def mono(box, rgb, pad=0):
     return out
 
 
-def save(arr, name, scale=1):
-    im = Image.fromarray(arr, "RGBA")
-    if scale != 1:
-        im = im.resize((im.width * scale, im.height * scale), Image.LANCZOS)
-    im.save(os.path.join(OUT, name), optimize=True)
+def two_tone(box, top_rgb, bottom_rgb, split_y, pad=0):
+    """Symbol in top_rgb, everything from source row split_y down in bottom_rgb."""
+    out = mono(box, top_rgb, pad)
+    out[split_y - (box[1] - pad):, :, :3] = bottom_rgb
+    return out
+
+
+def save(arr, name):
+    Image.fromarray(arr, "RGBA").save(os.path.join(OUT, name), optimize=True)
 
 
 PAD = 24
+NAME_Y = 620  # first source row below the symbol
 
-# 1) Primary full logo — gradient gold + graphite descriptor (light backgrounds)
-save(crop(gold_src, FULL, PAD), "sadad-logo-full-primary.png")
+# 1) Gradient logo exactly as supplied (light backgrounds)
+save(crop(gradient_src, FULL, PAD), "sadad-logo-full-primary.png")
+save(crop(gradient_src, NAME_LOCKUP, PAD), "sadad-logo-name-gradient.png")
+save(crop(gradient_src, SYMBOL, PAD), "sadad-symbol-gradient.png")
 
-# 2) Reverse full logo — gradient gold mark + white descriptor (dark backgrounds)
-rev = gold_src.copy()
-rev[DESCRIPTOR_Y:] = white_src[DESCRIPTOR_Y:]
+# 2) Reverse — gradient symbol, white name + descriptor (dark backgrounds)
+rev = gradient_src.copy()
+rev[NAME_Y:, :, :3] = WHITE
 save(crop(rev, FULL, PAD), "sadad-logo-full-reverse.png")
+save(crop(rev, NAME_LOCKUP, PAD), "sadad-logo-name-reverse.png")
 
-# 3) Flat single-colour versions (official everyday reference)
-for label, rgb in (("gold", GOLD), ("white", WHITE), ("charcoal", CHARCOAL)):
+# 3) Flat versions (official everyday reference)
+save(two_tone(FULL, BLUE, NAVY, NAME_Y, PAD), "sadad-logo-full-flat-light.png")
+save(two_tone(FULL, TEAL, WHITE, NAME_Y, PAD), "sadad-logo-full-flat-dark.png")
+for label, rgb in (("blue", BLUE), ("navy", NAVY), ("white", WHITE)):
     save(mono(FULL, rgb, PAD), f"sadad-logo-full-{label}.png")
     save(mono(NAME_LOCKUP, rgb, PAD), f"sadad-logo-name-{label}.png")
     save(mono(SYMBOL, rgb, PAD), f"sadad-symbol-{label}.png")
     save(mono(WORDMARK, rgb, PAD), f"sadad-wordmark-{label}.png")
+save(two_tone(NAME_LOCKUP, BLUE, NAVY, NAME_Y, PAD), "sadad-logo-name-color.png")
 
-# Flat gold full logo but with graphite / white descriptor
-flat = mono(FULL, GOLD, PAD)
-ys = DESCRIPTOR_Y - (FULL[1] - PAD)
-flat_light = flat.copy(); flat_light[ys:, :, :3] = GRAPHITE
-flat_dark = flat.copy(); flat_dark[ys:, :, :3] = WHITE
-save(flat_light, "sadad-logo-full-flat-light.png")
-save(flat_dark, "sadad-logo-full-flat-dark.png")
+# 4) Horizontal lockup (proposed): symbol on the right (RTL reading start), wordmark left
+def horizontal(sym_rgba, wm_rgba, name):
+    h_sym = sym_rgba.shape[0]
+    k = (h_sym * 0.42) / wm_rgba.shape[0]
+    wm_img = Image.fromarray(wm_rgba, "RGBA").resize((int(wm_rgba.shape[1] * k), int(wm_rgba.shape[0] * k)), Image.LANCZOS)
+    gap = int(sym_rgba.shape[1] * 0.16)
+    canvas = Image.new("RGBA", (wm_img.width + gap + sym_rgba.shape[1] + 2 * PAD, h_sym + 2 * PAD), (0, 0, 0, 0))
+    canvas.alpha_composite(wm_img, (PAD, PAD + (h_sym - wm_img.height) // 2 + int(h_sym * 0.04)))
+    canvas.alpha_composite(Image.fromarray(sym_rgba, "RGBA"), (PAD + wm_img.width + gap, PAD))
+    canvas.save(os.path.join(OUT, name), optimize=True)
 
-# 4) Gradient symbol / name lockup (special use)
-save(crop(gold_src, SYMBOL, PAD), "sadad-symbol-metallic.png")
-save(crop(gold_src, NAME_LOCKUP, PAD), "sadad-logo-name-metallic.png")
+horizontal(crop(gradient_src, SYMBOL), crop(gradient_src, WORDMARK), "sadad-logo-horizontal-gradient.png")
+horizontal(mono(SYMBOL, BLUE), mono(WORDMARK, NAVY), "sadad-logo-horizontal-color.png")
+horizontal(mono(SYMBOL, WHITE), mono(WORDMARK, WHITE), "sadad-logo-horizontal-white.png")
+horizontal(mono(SYMBOL, NAVY), mono(WORDMARK, NAVY), "sadad-logo-horizontal-navy.png")
 
-# 5) Horizontal lockup (proposed): symbol on the right (RTL reading start), wordmark left
-sym = crop(alpha, SYMBOL)
-wm = crop(alpha, WORDMARK)
-h_sym = sym.shape[0]
-scale_wm = (h_sym * 0.42) / wm.shape[0]
-wm_img = Image.fromarray(wm).resize((int(wm.shape[1] * scale_wm), int(wm.shape[0] * scale_wm)), Image.LANCZOS)
-gap = int(sym.shape[1] * 0.16)
-W = wm_img.width + gap + sym.shape[1] + 2 * PAD
-H = h_sym + 2 * PAD
-canvas = Image.new("L", (W, H), 0)
-canvas.paste(wm_img, (PAD, PAD + (h_sym - wm_img.height) // 2 + int(h_sym * 0.04)))
-canvas.paste(Image.fromarray(sym), (PAD + wm_img.width + gap, PAD))
-h_alpha = np.array(canvas)
-for label, rgb in (("gold", GOLD), ("white", WHITE), ("charcoal", CHARCOAL)):
-    out = np.zeros(h_alpha.shape + (4,), np.uint8)
-    out[..., :3] = rgb
-    out[..., 3] = h_alpha
-    save(out, f"sadad-logo-horizontal-{label}.png")
-
-# 6) App icon masters (1024px) — flat symbol on charcoal and on gold
+# 5) App icon masters (1024px)
 def app_icon(bg, fg, name):
     size = 1024
     a = Image.fromarray(crop(alpha, SYMBOL))
-    target = int(size * 0.62)
-    k = target / max(a.size)
+    k = int(size * 0.62) / max(a.size)
     a = a.resize((int(a.width * k), int(a.height * k)), Image.LANCZOS)
-    icon = Image.new("RGBA", (size, size), bg + (255,))
-    layer = Image.new("RGBA", a.size, fg + (255,))
-    icon.paste(layer, ((size - a.width) // 2, (size - a.height) // 2), a)
+    if isinstance(bg, tuple):
+        icon = Image.new("RGBA", (size, size), bg + (255,))
+    else:  # diagonal gradient teal -> azure -> navy
+        t = np.clip((np.add.outer(np.arange(size), np.arange(size)) / (2 * size - 2)), 0, 1)[..., None]
+        stops = [(0, TEAL), (0.55, AZURE), (1, NAVY)]
+        rgb = np.zeros((size, size, 3))
+        for (t0, c0), (t1, c1) in zip(stops, stops[1:]):
+            m = ((t >= t0) & (t <= t1))[..., 0]
+            u = ((t - t0) / (t1 - t0))[m]
+            rgb[m] = np.array(c0) * (1 - u) + np.array(c1) * u
+        icon = Image.fromarray(np.dstack([rgb.astype(np.uint8), np.full((size, size), 255, np.uint8)]), "RGBA")
+    if fg == "gradient":
+        g = Image.fromarray(crop(gradient_src, SYMBOL), "RGBA").resize(a.size, Image.LANCZOS)
+        icon.alpha_composite(g, ((size - a.width) // 2, (size - a.height) // 2))
+    else:
+        icon.paste(Image.new("RGBA", a.size, fg + (255,)), ((size - a.width) // 2, (size - a.height) // 2), a)
     icon.save(os.path.join(OUT, name), optimize=True)
 
-app_icon(CHARCOAL, GOLD, "sadad-app-icon-charcoal-1024.png")
-app_icon(GOLD, CHARCOAL, "sadad-app-icon-gold-1024.png")
+app_icon("gradient", WHITE, "sadad-app-icon-blue-1024.png")
+app_icon(WHITE, "gradient", "sadad-app-icon-white-1024.png")
 
 
 # 7) Auto-traced SVGs (flat). Upsample alpha 4x for smoother curves.
@@ -150,14 +159,14 @@ def trace_svg(box, fills, name, upscale=4):
         f.write(svg)
 
 
-desc_band = DESCRIPTOR_Y - (FULL[1] - PAD)
-trace_svg(FULL, [(0, "#D99F41"), (desc_band, "#3B3B3B")], "sadad-logo-full-flat-light.svg")
-trace_svg(FULL, [(0, "#D99F41"), (desc_band, "#FFFFFF")], "sadad-logo-full-flat-dark.svg")
-trace_svg(NAME_LOCKUP, [(0, "#D99F41")], "sadad-logo-name-gold.svg")
-trace_svg(NAME_LOCKUP, [(0, "#1C1C1E")], "sadad-logo-name-charcoal.svg")
+name_band = NAME_Y - (FULL[1] - PAD)
+trace_svg(FULL, [(0, "#0087B0"), (name_band, "#004985")], "sadad-logo-full-flat-light.svg")
+trace_svg(FULL, [(0, "#13B3BD"), (name_band, "#FFFFFF")], "sadad-logo-full-flat-dark.svg")
+trace_svg(NAME_LOCKUP, [(0, "#0087B0"), (name_band, "#004985")], "sadad-logo-name-color.svg")
+trace_svg(NAME_LOCKUP, [(0, "#004985")], "sadad-logo-name-navy.svg")
 trace_svg(NAME_LOCKUP, [(0, "#FFFFFF")], "sadad-logo-name-white.svg")
-trace_svg(SYMBOL, [(0, "#D99F41")], "sadad-symbol-gold.svg")
-trace_svg(SYMBOL, [(0, "#1C1C1E")], "sadad-symbol-charcoal.svg")
+trace_svg(SYMBOL, [(0, "#0087B0")], "sadad-symbol-blue.svg")
+trace_svg(SYMBOL, [(0, "#004985")], "sadad-symbol-navy.svg")
 trace_svg(SYMBOL, [(0, "#FFFFFF")], "sadad-symbol-white.svg")
 
 print("assets written to", os.path.normpath(OUT))

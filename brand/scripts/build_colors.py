@@ -4,19 +4,20 @@ import json, os, struct
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "colors")
 PALETTE = [  # key, Arabic name, English name, hex, role, status
-    ("gold", "ذهبي سداد", "Sadad Gold", "#D99F41", "primary", "approved — sampled from logo"),
-    ("gold-light", "ذهبي فاتح", "Gold Light", "#EFC46A", "secondary", "proposed"),
-    ("gold-deep", "ذهبي عميق", "Gold Deep", "#8F6420", "text on light", "proposed"),
-    ("charcoal", "فحمي", "Charcoal", "#1C1C1E", "dark base", "proposed"),
-    ("graphite", "جرافيت", "Graphite", "#3B3B3B", "body text — descriptor colour in logo", "approved — sampled from logo"),
-    ("slate", "رمادي", "Slate", "#6E6E73", "secondary text", "proposed"),
-    ("sand", "رملي", "Sand", "#ECE8E1", "dividers, secondary surfaces", "proposed"),
-    ("ivory", "عاجي", "Ivory", "#F8F6F2", "app / page background", "proposed"),
+    ("blue", "أزرق سداد", "Sadad Blue", "#0087B0", "primary — logo symbol", "approved — sampled from logo"),
+    ("teal", "فيروزي", "Teal", "#13B3BD", "gradient start, accents on dark", "approved — sampled from logo"),
+    ("azure", "أزرق فعّال", "Action Azure", "#006DBE", "buttons, links, text on light", "approved — sampled from logo"),
+    ("navy", "كحلي", "Navy", "#004985", "wordmark, descriptor, headings", "approved — sampled from logo"),
+    ("midnight", "ليلي", "Midnight", "#0A1E33", "dark backgrounds", "proposed"),
+    ("ink", "حبري", "Ink", "#1F2D3D", "body text", "proposed"),
+    ("slate", "رمادي", "Slate", "#5F6B7A", "secondary text", "proposed"),
+    ("mist", "ضبابي", "Mist", "#E4ECF2", "dividers, secondary surfaces", "proposed"),
+    ("snow", "ثلجي", "Snow", "#F5F8FB", "app / page background", "proposed"),
     ("white", "أبيض", "White", "#FFFFFF", "cards, fields", "proposed"),
     ("success", "نجاح", "Success", "#1E7F55", "digital UI only", "proposed"),
     ("error", "خطأ", "Error", "#C0392B", "digital UI only", "proposed"),
 ]
-METALLIC = ["#F3CB72", "#E2AF52", "#C88E34", "#9E6A22"]
+GRADIENT = ["#13B3BD", "#0087B0", "#006DBE", "#004985"]
 
 
 def rgb(h):
@@ -39,13 +40,13 @@ data = {
         {"key": k, "name_ar": ar, "name_en": en, "hex": h, "rgb": rgb(h), "cmyk_approx": cmyk(h), "role": role, "status": st}
         for k, ar, en, h, role, st in PALETTE
     ],
-    "metallic_gradient": {"stops": METALLIC, "angle_deg": 135, "use": "special promotional use on dark backgrounds only"},
+    "brand_gradient": {"stops": GRADIENT, "positions": [0, 45, 75, 100], "angle_deg": 135, "use": "screens, campaigns, app icon, large colour areas"},
 }
 with open(os.path.join(OUT, "sadad-colors.json"), "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
 css = [":root {"] + [f"  --sadad-{k}: {h}; /* {en} */" for k, _, en, h, _, _ in PALETTE]
-css.append(f"  --sadad-metallic: linear-gradient(135deg, {METALLIC[0]} 0%, {METALLIC[1]} 35%, {METALLIC[2]} 70%, {METALLIC[3]} 100%);")
+css.append(f"  --sadad-gradient: linear-gradient(135deg, {GRADIENT[0]} 0%, {GRADIENT[1]} 45%, {GRADIENT[2]} 75%, {GRADIENT[3]} 100%);")
 css.append("}")
 with open(os.path.join(OUT, "sadad-tokens.css"), "w") as f:
     f.write("/* Sadad Libya colour tokens v1.0 */\n" + "\n".join(css) + "\n")
