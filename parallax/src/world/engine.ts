@@ -293,8 +293,8 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
     });
     holo.needsUpdate = true;
   };
-  // the close-up sits just behind the bezel so its lowest station plate never blocks the console
-  ctx.interact('engine-console', [con], 3.2, { pos: new THREE.Vector3(0.9, 2.2, -4.5), look: new THREE.Vector3(0, 1.55, -6.1) });
+  // the close-up looks in from the east, past the bezel's lowest station plate, at the deck and hologram
+  ctx.interact('engine-console', [con], 3.2, { pos: new THREE.Vector3(1.9, 1.6, -3.7), look: new THREE.Vector3(-0.3, 1.15, -6.1) });
 
   // calibration plate on its stand
   const plaque = new THREE.Group();
