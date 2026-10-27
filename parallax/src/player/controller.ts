@@ -47,6 +47,8 @@ export class PlayerController {
     });
     addEventListener('mousemove', (e) => {
       if (!this.enabled || this.cinematic) return;
+      // Chrome can report one huge movement right after pointer lock engages; ignore such jumps
+      if (Math.abs(e.movementX) > 250 || Math.abs(e.movementY) > 250) return;
       if (this.pointerLocked || (this.dragLook && this.dragging)) this.look(e.movementX, e.movementY);
     });
     this.dom.addEventListener('mousedown', () => {

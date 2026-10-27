@@ -138,6 +138,43 @@ async function waitForServer() {
     await shot('03-echo');
     await shift('present');
 
+    console.log('Audio');
+    await page.waitForFunction(() => window.__parallax.audioLevel() > 0.002, null, { timeout: 60000 }).catch(() => {});
+    const level = await P(() => window.__parallax.audioLevel());
+    assert(level > 0.002, `the mix is audible (RMS ${level.toFixed(4)})`);
+    await page.waitForFunction(() => window.__parallax.audioLayers().present > 0.9, null, { timeout: 60000 }).catch(() => {});
+    let layers = await P(() => window.__parallax.audioLayers());
+    assert(layers.state === 'running' && layers.present > 0.9 && layers.echo < 0.1, `present ambience playing (present ${layers.present.toFixed(2)}, echo ${layers.echo.toFixed(2)})`);
+    await shift('echo');
+    await page.waitForFunction(() => window.__parallax.audioLayers().echo > 0.9, null, { timeout: 60000 }).catch(() => {});
+    layers = await P(() => window.__parallax.audioLayers());
+    assert(layers.echo > 0.9 && layers.present < 0.1, `shifting cross-fades into the echo layer (present ${layers.present.toFixed(2)}, echo ${layers.echo.toFixed(2)})`);
+    await shift('present');
+
+    console.log('Journal, pause and settings');
+    await ready();
+    await page.keyboard.press('Tab');
+    await page.waitForSelector('#journal:not([hidden])', { timeout: 30000 });
+    assert((await page.locator('#journalBody .entry').count()) >= 2, 'journal opens with Tab and lists clues');
+    await page.click('#journalTabs [data-tab="items"]');
+    assert((await page.textContent('#journalBody')).includes('Brass compass'), 'items tab lists the keepsake');
+    await page.keyboard.press('Tab');
+    await page.waitForSelector('#journal', { state: 'hidden', timeout: 30000 });
+    await ready();
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('#pause:not([hidden])', { timeout: 30000 });
+    assert(true, 'Escape pauses the game');
+    await page.click('#pSettings');
+    await page.waitForSelector('#settings:not([hidden])');
+    await page.fill('#sMaster', '0.5');
+    await page.dispatchEvent('#sMaster', 'input');
+    const stored = await P(() => JSON.parse(localStorage.getItem('parallax.settings')).master);
+    assert(stored === 0.5, 'settings are applied and remembered');
+    await page.click('#sDone');
+    await page.click('#pResume');
+    await ready();
+    assert(true, 'resume returns control');
+
     console.log('Puzzle A — shadow archive');
     const target = [2, 0, 2];
     for (let i = 0; i < 3; i++) {

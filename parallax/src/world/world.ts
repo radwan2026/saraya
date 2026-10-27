@@ -96,7 +96,7 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
   // ---------------------------------------------------------------- the ending's revealed words
   const wordOrder: GlyphId[] = ['wave', 'span', 'orbit', 'eye'];
   const words = new THREE.Group();
-  words.position.set(POS.engine.x, POS.engine.y, POS.engine.z + 1.5);
+  words.position.set(POS.engine.x, POS.engine.y, POS.engine.z - 1.8); // on the north side, facing the player's platform
   scene.add(words);
   const wordMats: THREE.MeshBasicMaterial[] = [];
   wordOrder.forEach((gid, i) => {
@@ -112,9 +112,10 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
     });
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
     const m = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.3), mat);
-    m.position.set(-4.5 + i * 3, 3.6 - i * 0.2, 0);
-    m.lookAt(0, 3.2 - i * 0.2, 20);
+    // an arc under the opened engine, read left to right from the north platform
+    m.position.set(4.6 - i * 3.05, -2.8 - (i === 1 || i === 2 ? 0.3 : 0), -2.4);
     words.add(m);
+    m.lookAt(new THREE.Vector3(0, 4, -18));
     wordMats.push(mat);
   });
   let wordsOn = false;

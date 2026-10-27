@@ -250,8 +250,8 @@ class Game {
     this.director.play(
       [
         { t: 0, pos: [p.x, p.y, p.z], look: [0, 7.2, -4] },
-        { t: 3, pos: [0, 4.5, -17.5], look: [0, 7.2, -4] },
-        { t: 7, pos: [0, 5.5, -13], look: [0, 7.4, -4] },
+        { t: 3, pos: [2.8, 3.3, -16.6], look: [0, 7.6, -4] },
+        { t: 7, pos: [0.4, 5.2, -12.8], look: [0, 7.6, -4] },
         { t: 10, pos: [0, 4.6, -19], look: [0, 5.2, -24] },
         { t: 13.5, pos: [0, 5.2, -23.2], look: [0, 5.2, -30] },
       ],
@@ -612,6 +612,8 @@ class Game {
       this.openPause();
     });
     addEventListener('keydown', (e) => {
+      // the controller already handled this key if it opened the journal on this same press
+      if (e.defaultPrevented) return;
       if ((e.code === 'Tab' || e.code === 'KeyJ') && this.overlay === 'journal') { e.preventDefault(); this.toggleJournal(); }
     });
     addEventListener('beforeunload', () => this.save());
@@ -864,6 +866,8 @@ class Game {
         this.startPlay();
       },
       initialState: () => createInitialState(),
+      audioLevel: () => this.audio.level(),
+      audioLayers: () => this.audio.layers(),
       fps: () => new Promise((resolve) => {
         let n = 0;
         const t0 = performance.now();

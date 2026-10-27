@@ -25,6 +25,7 @@ export function signatureTimeline(sig: Signature): PulseSegment[] {
 export class AudioEngine {
   ctx: AudioContext | null = null;
   private master!: GainNode;
+  private analyser!: AnalyserNode;
   private musicBus!: GainNode;
   private ambBus!: GainNode;
   private sfxBus!: GainNode;
@@ -58,6 +59,9 @@ export class AudioEngine {
     comp.ratio.value = 4;
     this.master = ctx.createGain();
     this.master.connect(comp).connect(ctx.destination);
+    this.analyser = ctx.createAnalyser();
+    this.analyser.fftSize = 2048;
+    comp.connect(this.analyser);
     this.musicBus = ctx.createGain();
     this.ambBus = ctx.createGain();
     this.sfxBus = ctx.createGain();
@@ -546,6 +550,22 @@ export class AudioEngine {
     const d = this.out(undefined, this.musicBus, 1.2);
     [65.4, 98, 130.8, 196, 261.6, 329.6, 392, 523.3].forEach((f, i) => this.tone(d, i % 2 ? 'triangle' : 'sine', f, f, t + i * 0.45, 9 - i * 0.5, 0.07, 1.4));
     this.noiseHit(d, t + 2, 7, 0.08, 'highpass', 3000, 9000, 1, 3);
+  }
+
+  /** RMS of the mixed output, for diagnostics and automated tests. */
+  level(): number {
+    if (!this.ctx || !this.analyser) return 0;
+    const buf = new Float32Array(this.analyser.fftSize);
+    this.analyser.getFloatTimeDomainData(buf);
+    let sum = 0;
+    for (const v of buf) sum += v * v;
+    return Math.sqrt(sum / buf.length);
+  }
+
+  /** Current gains of the two ambience layers. */
+  layers(): { present: number; echo: number; state: string } {
+    if (!this.ctx) return { present: 0, echo: 0, state: 'none' };
+    return { present: this.presentLayer.gain.value, echo: this.echoLayer.gain.value, state: this.ctx.state };
   }
 
   dispose() {

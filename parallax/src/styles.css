@@ -183,7 +183,8 @@ body.panel-open .toasts, body.panel-open .caption { left: calc((100vw - min(500p
 .menu-buttons .btn { min-width: 150px; }
 .controls-line { margin-top: 18px; font-size: 13px; line-height: 1.8; color: var(--muted); }
 .ending { background: #000; }
-.ending-lines { max-width: 720px; display: grid; gap: 22px; text-align: center; }
+.ending-lines { max-width: 720px; display: grid; text-align: center; }
+.ending-lines p { grid-area: 1 / 1; align-self: center; }
 .ending-lines p { margin: 0; font-family: var(--display); font-size: clamp(18px, 2.6vw, 26px); line-height: 1.65; opacity: 0; transform: translateY(8px); transition: opacity 1.4s, transform 1.4s; }
 .ending-lines p.on { opacity: 1; transform: none; }
 .skipbtn { position: fixed; z-index: 45; right: max(20px, env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
