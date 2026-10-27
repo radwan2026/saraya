@@ -48,6 +48,7 @@ async function waitForServer() {
   try {
     await waitForServer();
     page = await browser.newPage({ viewport: { width: Number(process.env.W || 800), height: Number(process.env.H || 450) } });
+    page.setDefaultTimeout(120000); // software renderers can take seconds per frame
     page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
     page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
     const P = (fn, arg) => page.evaluate(fn, arg);
