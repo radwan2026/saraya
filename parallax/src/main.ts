@@ -78,9 +78,9 @@ class Game {
     const quality: Quality = forced === 'low' || forced === 'medium' || forced === 'high' ? forced : this.settings.quality ?? detectQuality();
     this.setLoad(0.15, 'تشغيل محرّك العرض…');
     await frame();
-    // Textures in the world are drawn once, so the Arabic fonts must be ready first (offline: system fonts).
+    // Textures in the world are drawn once, so the Jannat LT font must be ready first.
     await Promise.race([
-      Promise.all(['400 48px Amiri', '700 48px Amiri', '400 16px "IBM Plex Sans Arabic"'].map((f) => document.fonts.load(f, 'بارالاكس'))).catch(() => {}),
+      Promise.all(['400 48px "Jannat LT"', '700 48px "Jannat LT"'].map((f) => document.fonts.load(f, 'بارالاكس'))).catch(() => {}),
       new Promise((r) => setTimeout(r, 4000)),
     ]);
     try {

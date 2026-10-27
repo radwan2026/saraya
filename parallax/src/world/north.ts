@@ -7,7 +7,7 @@ import { BuildCtx, PALETTE, gearGeometry } from './context';
 import { POS } from '../game/layout';
 import type { Keepsake, SourceId } from '../game/types';
 import { keepsakeModel } from './archive';
-import { AR_SERIF, canvasTexture } from './textures';
+import { AR_FONT, canvasTexture } from './textures';
 
 export type Pulses = Record<SourceId, number>;
 
@@ -241,7 +241,7 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
   const voiceHolo = canvasTexture(1024, 384, (g, w, h) => {
     g.clearRect(0, 0, w, h);
     g.strokeStyle = 'rgba(143,240,255,.6)'; g.lineWidth = 3; g.strokeRect(10, 10, w - 20, h - 20);
-    g.fillStyle = '#8ff0ff'; g.font = `50px ${AR_SERIF}`; g.direction = 'rtl'; g.textAlign = 'right'; g.fillText('كالدر — 1956 — إلى من يأتي بعدي', w - 40, 84);
+    g.fillStyle = '#8ff0ff'; g.font = `50px ${AR_FONT}`; g.direction = 'rtl'; g.textAlign = 'right'; g.fillText('كالدر — 1956 — إلى من يأتي بعدي', w - 40, 84);
   });
   const vh = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.68), new THREE.MeshBasicMaterial({ map: voiceHolo, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, side: THREE.DoubleSide }));
   vh.position.set(0, 2.0, -0.2);

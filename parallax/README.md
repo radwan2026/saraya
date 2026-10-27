@@ -106,5 +106,5 @@ Progress saves automatically to `localStorage` and survives reloads.
 - Collision is a custom floor-plan system rather than a physics engine; it covers everything the
   puzzles need (walls, props, gate, chasm, bridge, quarantine field) but there is no jumping or physics props.
 - Reflections come from an environment map, not real-time screen-space reflections.
-- The game is in Arabic (right-to-left interface, Arabic writing in the world). The Amiri and IBM Plex
-  Sans Arabic fonts load from Google Fonts; offline, the system's Arabic fonts are used instead.
+- The game is in Arabic (right-to-left interface, Arabic writing in the world), set in the Jannat LT
+  typeface bundled in `src/assets/fonts/`.

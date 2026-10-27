@@ -7,7 +7,7 @@ import { POS } from '../game/layout';
 import { echoRings, stationLabel } from '../game/puzzles/engine';
 import { PARALLAX_INITIAL_BEARING } from '../game/puzzles/parallax';
 import type { GameState } from '../game/types';
-import { canvasTexture, textTexture, AR_SERIF } from './textures';
+import { canvasTexture, textTexture, AR_FONT } from './textures';
 
 export interface EngineRig {
   root: THREE.Group;
@@ -272,12 +272,12 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
     g.strokeRect(12, 12, c.width - 24, c.height - 24);
     g.globalAlpha = 1;
     g.fillStyle = col;
-    g.font = `700 50px ${AR_SERIF}`;
+    g.font = `700 50px ${AR_FONT}`;
     g.textAlign = 'right';
     g.direction = 'rtl';
     const right = c.width - 48;
     g.fillText(echo ? 'محرّك الذاكرة — يعمل، 1956' : s.engine.solved ? 'محرّك الذاكرة — تمّت المعايرة' : 'محرّك الذاكرة — عطل', right, 90);
-    g.font = `44px ${AR_SERIF}`;
+    g.font = `44px ${AR_FONT}`;
     const rows: [string, string, string][] = echo
       ? [['الخارجية', 'V', ''], ['الوسطى', 'VII', ''], ['الداخلية', '—', 'محجوبة خلف الدرع']]
       : [

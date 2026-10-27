@@ -6,7 +6,7 @@ import { BuildCtx, PALETTE } from './context';
 import { POS } from '../game/layout';
 import { SHADOW_TARGET } from '../game/puzzles/shadow';
 import type { Keepsake } from '../game/types';
-import { AR_SERIF, canvasTexture } from './textures';
+import { AR_FONT, canvasTexture } from './textures';
 
 type P = [number, number];
 const tri = (a: P, b: P, c: P) => [a, b, c];
@@ -67,7 +67,7 @@ export function keepsakeModel(ctx: BuildCtx, k: Keepsake): THREE.Group {
   const { mats } = ctx;
   if (k === 'compass') {
     ctx.mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.035, 40), mats.gold, g, 0, 0.018, 0);
-    ctx.mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.004, 40), new THREE.MeshStandardMaterial({ map: canvasTexture(128, 128, (c, w) => { c.fillStyle = '#efe6cf'; c.fillRect(0, 0, w, w); c.strokeStyle = '#3a2f1c'; c.lineWidth = 2; c.beginPath(); c.arc(w / 2, w / 2, 54, 0, 7); c.stroke(); c.fillStyle = '#3a2f1c'; c.font = `bold 22px ${AR_SERIF}`; c.textAlign = 'center'; c.fillText('ش', w / 2, 32); }), roughness: 0.6 }), g, 0, 0.037, 0, false);
+    ctx.mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.004, 40), new THREE.MeshStandardMaterial({ map: canvasTexture(128, 128, (c, w) => { c.fillStyle = '#efe6cf'; c.fillRect(0, 0, w, w); c.strokeStyle = '#3a2f1c'; c.lineWidth = 2; c.beginPath(); c.arc(w / 2, w / 2, 54, 0, 7); c.stroke(); c.fillStyle = '#3a2f1c'; c.font = `bold 22px ${AR_FONT}`; c.textAlign = 'center'; c.fillText('ش', w / 2, 32); }), roughness: 0.6 }), g, 0, 0.037, 0, false);
     const needle = ctx.mesh(new THREE.ConeGeometry(0.012, 0.16, 4), new THREE.MeshStandardMaterial({ color: 0x8b1d1d, metalness: 0.6, roughness: 0.4 }), g, 0, 0.045, 0, false);
     needle.rotation.x = Math.PI / 2;
     ctx.mesh(new THREE.SphereGeometry(0.1, 24, 8, 0, Math.PI * 2, 0, Math.PI / 2), mats.glass, g, 0, 0.035, 0, false).scale.y = 0.25;
@@ -296,7 +296,7 @@ export function buildArchive(ctx: BuildCtx): ArchiveRig {
     const plate = canvasTexture(512, 128, (c, w, h) => {
       c.fillStyle = '#2a2116'; c.fillRect(0, 0, w, h);
       c.strokeStyle = '#b08d4a'; c.lineWidth = 6; c.strokeRect(6, 6, w - 12, h - 12);
-      c.fillStyle = '#e9dcb8'; c.font = `700 52px ${AR_SERIF}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.direction = 'rtl';
+      c.fillStyle = '#e9dcb8'; c.font = `700 52px ${AR_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.direction = 'rtl';
       c.fillText(side === 'west' ? 'رسّام الخرائط' : 'صانع الساعات', w / 2, h / 2 + 4);
     });
     const pm = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.3), new THREE.MeshStandardMaterial({ map: plate, metalness: 0.6, roughness: 0.4 }));

@@ -1,3 +1,7 @@
+/* The game's Arabic typeface, bundled so it works offline. */
+@font-face { font-family: "Jannat LT"; src: url("./assets/fonts/JannatLT-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Jannat LT"; src: url("./assets/fonts/JannatLT-Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
+
 /* Layout: the interface is a thin layer over a full-screen canvas. HUD at the edges, panels slide in
    from the right, full-screen screens for title, ending and completion. */
 :root {
@@ -14,8 +18,8 @@
   --amber: #ffb45e;
   --danger: #ff7a66;
   --accent: var(--cyan);
-  --display: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", "Times New Roman", serif;
-  --body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, "Geeza Pro", system-ui, sans-serif;
+  --display: "Jannat LT", "Noto Naskh Arabic", "Geeza Pro", Tahoma, serif;
+  --body: "Jannat LT", "Noto Sans Arabic", "Segoe UI", Tahoma, "Geeza Pro", system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: dark;
 }

@@ -14,7 +14,7 @@ import { GLYPH_MEANING } from '../game/puzzles/parallax';
 import { POS } from '../game/layout';
 import { drawGlyph } from './glyphs';
 import { FRAME_Y } from './archive';
-import { AR_SERIF, canvasTexture } from './textures';
+import { AR_FONT, canvasTexture } from './textures';
 
 export interface World {
   scene: THREE.Scene;
@@ -109,7 +109,7 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
       g.fillStyle = '#fff1d6';
       g.shadowColor = '#ffb45e';
       g.shadowBlur = 20;
-      g.font = `700 76px ${AR_SERIF}`;
+      g.font = `700 76px ${AR_FONT}`;
       g.textBaseline = 'middle';
       g.textAlign = 'right';
       g.direction = 'rtl';

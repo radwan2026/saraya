@@ -139,8 +139,8 @@ export function stainTexture(seed = 21) {
   });
 }
 
-/** Font stack for Arabic writing in the world (Amiri is loaded before the hall is built). */
-export const AR_SERIF = '"Amiri", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", serif';
+/** Font stack for Arabic writing in the world (Jannat LT is loaded before the hall is built). */
+export const AR_FONT = '"Jannat LT", "Noto Naskh Arabic", "Geeza Pro", Tahoma, serif';
 
 /** Canvas text direction for a string: right to left whenever it contains Arabic. */
 export const textDir = (t: string): CanvasDirection => (/[\u0600-\u06FF]/.test(t) ? 'rtl' : 'ltr');
@@ -151,7 +151,7 @@ export function textTexture(lines: string[], opts: { w?: number; h?: number; col
   return canvasTexture(w, h, (g) => {
     if (opts.bg) { g.fillStyle = opts.bg; g.fillRect(0, 0, w, h); } else g.clearRect(0, 0, w, h);
     const size = opts.size ?? 54;
-    g.font = `${size}px ${opts.font ?? AR_SERIF}`;
+    g.font = `${size}px ${opts.font ?? AR_FONT}`;
     g.direction = textDir(lines.join(''));
     g.fillStyle = opts.color ?? '#e9dcb8';
     g.textAlign = opts.align ?? 'center';

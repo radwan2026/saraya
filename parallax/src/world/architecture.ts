@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { BuildCtx, PALETTE, gearGeometry, ringGeometry } from './context';
 import { HALL, POS } from '../game/layout';
 import { DOOR_MESSAGE } from '../game/texts';
-import { AR_SERIF, canvasTexture, textTexture } from './textures';
+import { AR_FONT, canvasTexture, textTexture } from './textures';
 
 /** A plane whose UVs repeat every `tile` metres, so one material fits walls of any size. */
 function tiledPlane(w: number, h: number, tile: number): THREE.PlaneGeometry {
@@ -444,7 +444,7 @@ function buildDoor(ctx: BuildCtx): DoorRig {
   // the message, cut into the stone above the door: only in the present
   const message = new THREE.Mesh(
     new THREE.PlaneGeometry(9, 1.6),
-    new THREE.MeshStandardMaterial({ map: textTexture(DOOR_MESSAGE, { w: 2048, h: 360, size: 96, color: '#bdf6ff', glow: 24, font: AR_SERIF, spacing: 1.45 }), transparent: true, emissive: 0x9feaff, emissiveIntensity: 0.9, emissiveMap: textTexture(DOOR_MESSAGE, { w: 2048, h: 360, size: 96, color: '#ffffff', glow: 24, font: AR_SERIF, spacing: 1.45 }), depthWrite: false }),
+    new THREE.MeshStandardMaterial({ map: textTexture(DOOR_MESSAGE, { w: 2048, h: 360, size: 96, color: '#bdf6ff', glow: 24, font: AR_FONT, spacing: 1.45 }), transparent: true, emissive: 0x9feaff, emissiveIntensity: 0.9, emissiveMap: textTexture(DOOR_MESSAGE, { w: 2048, h: 360, size: 96, color: '#ffffff', glow: 24, font: AR_FONT, spacing: 1.45 }), depthWrite: false }),
   );
   message.position.set(0, 10.95 - 5.2, HALL.z0 + 0.06 - POS.door.z);
   group.add(message);
