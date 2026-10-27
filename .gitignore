@@ -1,3 +1,7 @@
 node_modules/
 npm-debug.log*
 .DS_Store
+
+# Licensed commercial font (Boutros International) — keep out of the repo
+brand/fonts/*.otf
+brand/fonts/*.ttf

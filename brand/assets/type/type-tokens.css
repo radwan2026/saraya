@@ -1,0 +1,42 @@
+/* Sadad Libya — typography tokens v1.0
+   Primary (display) : GE Dinar One Medium (Boutros International, commercial licence — confirm web/app embedding rights)
+   Supporting (text)  : IBM Plex Sans Arabic + IBM Plex Sans (SIL OFL 1.1)
+
+   IMPORTANT: GE Dinar One draws the Western digits 0–9 with Arabic-Indic shapes and has no Latin letters.
+   Always set Western numerals, amounts, dates and Latin text in IBM Plex Sans. */
+
+@font-face {
+  font-family: "GE Dinar One";
+  src: url("../../fonts/GE-Dinar-One-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  --font-display: "GE Dinar One", "IBM Plex Sans Arabic", sans-serif;
+  --font-text: "IBM Plex Sans Arabic", "IBM Plex Sans", sans-serif;
+  --font-number: "IBM Plex Sans", "IBM Plex Sans Arabic", sans-serif;
+
+  /* App scale (px): size / line-height */
+  --type-display: 500 32px/40px var(--font-display);
+  --type-h1: 500 24px/32px var(--font-display);
+  --type-h2: 600 20px/28px var(--font-text);
+  --type-h3: 600 17px/24px var(--font-text);
+  --type-body: 400 15px/24px var(--font-text);
+  --type-small: 400 13px/20px var(--font-text);
+  --type-label: 500 11px/16px var(--font-text);
+  --type-amount: 600 34px/40px var(--font-number);
+
+  /* Print scale (pt) */
+  --print-display: 48pt; --print-display-lh: 58pt;
+  --print-h1: 32pt;      --print-h1-lh: 40pt;
+  --print-h2: 20pt;      --print-h2-lh: 28pt;
+  --print-h3: 14pt;      --print-h3-lh: 20pt;
+  --print-body: 10pt;    --print-body-lh: 16pt;
+  --print-small: 8.5pt;  --print-small-lh: 13pt;
+  --print-label: 7pt;    --print-label-lh: 10pt;
+}
+
+/* Arabic is never tracked; amounts use tabular figures */
+:lang(ar) { letter-spacing: 0; }
+.amount { font: var(--type-amount); font-variant-numeric: tabular-nums; }

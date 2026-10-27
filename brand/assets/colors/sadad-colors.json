@@ -1,0 +1,226 @@
+{
+  "brand": "Sadad Libya / سداد ليبيا",
+  "version": "1.0",
+  "note": "CMYK values are approximate conversions from RGB; confirm with a print proof.",
+  "colors": [
+    {
+      "key": "gold",
+      "name_ar": "ذهبي سداد",
+      "name_en": "Sadad Gold",
+      "hex": "#D99F41",
+      "rgb": [
+        217,
+        159,
+        65
+      ],
+      "cmyk_approx": [
+        0,
+        27,
+        70,
+        15
+      ],
+      "role": "primary",
+      "status": "approved — sampled from logo"
+    },
+    {
+      "key": "gold-light",
+      "name_ar": "ذهبي فاتح",
+      "name_en": "Gold Light",
+      "hex": "#EFC46A",
+      "rgb": [
+        239,
+        196,
+        106
+      ],
+      "cmyk_approx": [
+        0,
+        18,
+        56,
+        6
+      ],
+      "role": "secondary",
+      "status": "proposed"
+    },
+    {
+      "key": "gold-deep",
+      "name_ar": "ذهبي عميق",
+      "name_en": "Gold Deep",
+      "hex": "#8F6420",
+      "rgb": [
+        143,
+        100,
+        32
+      ],
+      "cmyk_approx": [
+        0,
+        30,
+        78,
+        44
+      ],
+      "role": "text on light",
+      "status": "proposed"
+    },
+    {
+      "key": "charcoal",
+      "name_ar": "فحمي",
+      "name_en": "Charcoal",
+      "hex": "#1C1C1E",
+      "rgb": [
+        28,
+        28,
+        30
+      ],
+      "cmyk_approx": [
+        7,
+        7,
+        0,
+        88
+      ],
+      "role": "dark base",
+      "status": "proposed"
+    },
+    {
+      "key": "graphite",
+      "name_ar": "جرافيت",
+      "name_en": "Graphite",
+      "hex": "#3B3B3B",
+      "rgb": [
+        59,
+        59,
+        59
+      ],
+      "cmyk_approx": [
+        0,
+        0,
+        0,
+        77
+      ],
+      "role": "body text — descriptor colour in logo",
+      "status": "approved — sampled from logo"
+    },
+    {
+      "key": "slate",
+      "name_ar": "رمادي",
+      "name_en": "Slate",
+      "hex": "#6E6E73",
+      "rgb": [
+        110,
+        110,
+        115
+      ],
+      "cmyk_approx": [
+        4,
+        4,
+        0,
+        55
+      ],
+      "role": "secondary text",
+      "status": "proposed"
+    },
+    {
+      "key": "sand",
+      "name_ar": "رملي",
+      "name_en": "Sand",
+      "hex": "#ECE8E1",
+      "rgb": [
+        236,
+        232,
+        225
+      ],
+      "cmyk_approx": [
+        0,
+        2,
+        5,
+        7
+      ],
+      "role": "dividers, secondary surfaces",
+      "status": "proposed"
+    },
+    {
+      "key": "ivory",
+      "name_ar": "عاجي",
+      "name_en": "Ivory",
+      "hex": "#F8F6F2",
+      "rgb": [
+        248,
+        246,
+        242
+      ],
+      "cmyk_approx": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "role": "app / page background",
+      "status": "proposed"
+    },
+    {
+      "key": "white",
+      "name_ar": "أبيض",
+      "name_en": "White",
+      "hex": "#FFFFFF",
+      "rgb": [
+        255,
+        255,
+        255
+      ],
+      "cmyk_approx": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "role": "cards, fields",
+      "status": "proposed"
+    },
+    {
+      "key": "success",
+      "name_ar": "نجاح",
+      "name_en": "Success",
+      "hex": "#1E7F55",
+      "rgb": [
+        30,
+        127,
+        85
+      ],
+      "cmyk_approx": [
+        76,
+        0,
+        33,
+        50
+      ],
+      "role": "digital UI only",
+      "status": "proposed"
+    },
+    {
+      "key": "error",
+      "name_ar": "خطأ",
+      "name_en": "Error",
+      "hex": "#C0392B",
+      "rgb": [
+        192,
+        57,
+        43
+      ],
+      "cmyk_approx": [
+        0,
+        70,
+        78,
+        25
+      ],
+      "role": "digital UI only",
+      "status": "proposed"
+    }
+  ],
+  "metallic_gradient": {
+    "stops": [
+      "#F3CB72",
+      "#E2AF52",
+      "#C88E34",
+      "#9E6A22"
+    ],
+    "angle_deg": 135,
+    "use": "special promotional use on dark backgrounds only"
+  }
+}

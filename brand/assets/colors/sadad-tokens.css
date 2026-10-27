@@ -1,0 +1,15 @@
+/* Sadad Libya colour tokens v1.0 */
+:root {
+  --sadad-gold: #D99F41; /* Sadad Gold */
+  --sadad-gold-light: #EFC46A; /* Gold Light */
+  --sadad-gold-deep: #8F6420; /* Gold Deep */
+  --sadad-charcoal: #1C1C1E; /* Charcoal */
+  --sadad-graphite: #3B3B3B; /* Graphite */
+  --sadad-slate: #6E6E73; /* Slate */
+  --sadad-sand: #ECE8E1; /* Sand */
+  --sadad-ivory: #F8F6F2; /* Ivory */
+  --sadad-white: #FFFFFF; /* White */
+  --sadad-success: #1E7F55; /* Success */
+  --sadad-error: #C0392B; /* Error */
+  --sadad-metallic: linear-gradient(135deg, #F3CB72 0%, #E2AF52 35%, #C88E34 70%, #9E6A22 100%);
+}
