@@ -14,7 +14,7 @@ export const GLYPH_PATHS: Record<GlyphId, string> = {
 };
 
 export const GLYPH_NAMES: Record<GlyphId, string> = {
-  eye: 'Eye', orbit: 'Orbit', span: 'Span', wave: 'Wave', key: 'Key', crown: 'Crown',
+  eye: 'العين', orbit: 'المدار', span: 'القنطرة', wave: 'الموجة', key: 'المفتاح', crown: 'التاج',
 };
 
 export function glyphSvg(id: GlyphId, cls = 'glyph'): string {

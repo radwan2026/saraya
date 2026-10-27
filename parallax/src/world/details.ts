@@ -6,7 +6,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { BuildCtx, PALETTE } from './context';
 import { HALL, POS } from '../game/layout';
-import { canvasTexture, rng, textTexture } from './textures';
+import { AR_SERIF, canvasTexture, rng, textTexture } from './textures';
 
 /** Collects transformed geometry per material and merges it into one mesh per material. */
 class Batch {
@@ -183,7 +183,7 @@ export function buildDetails(ctx: BuildCtx): DetailsRig {
   }
 
   // transom inscription, honour board and the wall clock (textured, so separate meshes)
-  const inscription = textTexture(['PARALLAX INSTITUTE', 'MEMORY ENGINE · HALL ONE · MCMLI'], { w: 2048, h: 320, size: 92, color: '#d9b56b', font: '"Iowan Old Style", Palatino, Georgia, serif', spacing: 1.4 });
+  const inscription = textTexture(['معهد بارالاكس', 'محرّك الذاكرة · القاعة الأولى · 1951'], { w: 2048, h: 320, size: 104, color: '#d9b56b', font: AR_SERIF, spacing: 1.3 });
   const insMat = new THREE.MeshStandardMaterial({ map: inscription, transparent: true, metalness: 0.6, roughness: 0.4, emissive: 0xffc070, emissiveMap: inscription, emissiveIntensity: 0.1 });
   temporal.blendMaterial(insMat, { color: 0x6c6656, emissiveIntensity: 0.0 }, { color: 0xffffff, emissiveIntensity: 0.35 });
   const ins = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 0.97), insMat);
@@ -194,11 +194,11 @@ export function buildDetails(ctx: BuildCtx): DetailsRig {
   const boardTex = canvasTexture(768, 1024, (g, w, h) => {
     g.fillStyle = '#1a1510'; g.fillRect(0, 0, w, h);
     g.strokeStyle = '#b8924c'; g.lineWidth = 10; g.strokeRect(18, 18, w - 36, h - 36);
-    g.fillStyle = '#d9b56b'; g.textAlign = 'center';
-    g.font = '600 52px Georgia, serif'; g.fillText('OPERATORS', w / 2, 120);
-    g.font = '30px Georgia, serif'; g.fillText('of the Memory Engine', w / 2, 168);
-    g.font = '38px Georgia, serif';
-    ['1951   H. ABERNETHY', '1952   M. OYELARAN', '1953   S. VANTERPOOL', '1954   L. KRISTIANSEN', '1955   T. IBARRA', '1956   R. CALDER', '1957   —'].forEach((t, i) => g.fillText(t, w / 2, 290 + i * 92));
+    g.fillStyle = '#d9b56b'; g.textAlign = 'center'; g.direction = 'rtl';
+    g.font = `700 64px ${AR_SERIF}`; g.fillText('المشغّلون', w / 2, 120);
+    g.font = `36px ${AR_SERIF}`; g.fillText('محرّك الذاكرة', w / 2, 180);
+    g.font = `44px ${AR_SERIF}`;
+    ['1951   هـ. أبرنيثي', '1952   م. أويلاران', '1953   س. فانتربول', '1954   ل. كريستيانسن', '1955   ت. إيبارا', '1956   ر. كالدر', '1957   —'].forEach((t, i) => g.fillText(t, w / 2, 290 + i * 92));
   });
   const boardMat = new THREE.MeshStandardMaterial({ map: boardTex, roughness: 0.6, metalness: 0.3 });
   temporal.blendMaterial(boardMat, { color: 0x5c5850 }, { color: 0xffffff });
@@ -303,7 +303,7 @@ export function buildDetails(ctx: BuildCtx): DetailsRig {
   }
 
   // ---------------------------------------------------------------- cornice inscriptions
-  const motto = textTexture(['MEMORIA  ·  TEMPUS  ·  PARALLAX  ·  QUOD FUIT MANET'], { w: 4096, h: 160, size: 96, color: '#d9b56b', font: '"Iowan Old Style", Palatino, Georgia, serif' });
+  const motto = textTexture(['الذاكرة   ·   الزمن   ·   بارالاكس   ·   ما كان يبقى'], { w: 4096, h: 160, size: 104, color: '#d9b56b', font: AR_SERIF });
   const mottoMat = new THREE.MeshStandardMaterial({ map: motto, transparent: true, metalness: 0.6, roughness: 0.35, emissive: 0xffc070, emissiveMap: motto, emissiveIntensity: 0.1 });
   temporal.blendMaterial(mottoMat, { color: 0x5d5a4c, emissiveIntensity: 0.0 }, { color: 0xffffff, emissiveIntensity: 0.4 });
   for (const side of [-1, 1]) {

@@ -13,6 +13,8 @@ export type Contour = 'rising' | 'falling' | 'steady';
 
 export interface Signature {
   name: string;
+  /** The name with the definite article, for use inside sentences. */
+  the: string;
   rhythm: Beat[];
   contour: Contour;
   /** Timeline in which the source can be heard. `null` = carried by the player. */
@@ -20,15 +22,15 @@ export interface Signature {
 }
 
 export const SIGNATURES: Record<Exclude<SourceId, 'keepsake'>, Signature> = {
-  turbine: { name: 'Turbine', rhythm: ['L', 'L'], contour: 'rising', timeline: 'echo' },
-  bell: { name: 'Signal bell', rhythm: ['S', 'S', 'L'], contour: 'steady', timeline: 'echo' },
-  drip: { name: 'Cracked pipe', rhythm: ['S', 'S', 'S'], contour: 'falling', timeline: 'present' },
-  relay: { name: 'Arcing relay', rhythm: ['L', 'S'], contour: 'steady', timeline: 'present' },
+  turbine: { name: 'توربين', the: 'التوربين', rhythm: ['L', 'L'], contour: 'rising', timeline: 'echo' },
+  bell: { name: 'جرس الإشارة', the: 'جرس الإشارة', rhythm: ['S', 'S', 'L'], contour: 'steady', timeline: 'echo' },
+  drip: { name: 'أنبوب مشروخ', the: 'الأنبوب المشروخ', rhythm: ['S', 'S', 'S'], contour: 'falling', timeline: 'present' },
+  relay: { name: 'مُرحِّل كهربائي', the: 'المُرحِّل الكهربائي', rhythm: ['L', 'S'], contour: 'steady', timeline: 'present' },
 };
 
 export const KEEPSAKE_SIGNATURES: Record<Keepsake, Signature> = {
-  compass: { name: 'Brass compass', rhythm: ['S', 'S'], contour: 'rising', timeline: null },
-  hourglass: { name: 'Glass hourglass', rhythm: ['H'], contour: 'falling', timeline: null },
+  compass: { name: 'بوصلة نحاسية', the: 'البوصلة النحاسية', rhythm: ['S', 'S'], contour: 'rising', timeline: null },
+  hourglass: { name: 'ساعة رملية زجاجية', the: 'الساعة الرملية الزجاجية', rhythm: ['H'], contour: 'falling', timeline: null },
 };
 
 export function signatureOf(source: SourceId, keepsake: Keepsake | null): Signature | null {

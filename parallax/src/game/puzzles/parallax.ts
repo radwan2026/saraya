@@ -13,7 +13,8 @@
 import type { GlyphId, Keepsake, ParallaxFailure, PuzzleId, Timeline } from '../types';
 
 export const BEARINGS = 8;
-export const BEARING_NAMES = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+export const BEARING_NAMES = ['ش', 'ش ق', 'ق', 'ج ق', 'ج', 'ج غ', 'غ', 'ش غ'];
+export const BEARING_FULL = ['الشمال', 'الشمال الشرقي', 'الشرق', 'الجنوب الشرقي', 'الجنوب', 'الجنوب الغربي', 'الغرب', 'الشمال الغربي'];
 export const PARALLAX_INITIAL_BEARING = 4; // facing south, towards the player's entrance
 
 export const PUZZLE_GLYPH: Record<Exclude<PuzzleId, 'parallax'>, GlyphId> = {
@@ -23,12 +24,12 @@ export const PUZZLE_GLYPH: Record<Exclude<PuzzleId, 'parallax'>, GlyphId> = {
   voice: 'wave',
 };
 
-/** What each symbol turns out to mean at the end. Read in entry order: "I remember being you." */
+/** What each symbol turns out to mean at the end. Read in entry order: «أنا أتذكّر أنّي كنتُ أنت» (I remember being you). */
 export const GLYPH_MEANING: Record<GlyphId, string> = {
-  wave: 'I',
-  span: 'REMEMBER',
-  orbit: 'BEING',
-  eye: 'YOU',
+  wave: 'أنا',
+  span: 'أتذكّر',
+  orbit: 'أنّي كنتُ',
+  eye: 'أنت',
   key: '—',
   crown: '—',
 };
@@ -74,14 +75,14 @@ export function checkParallax(p: ParallaxInput): ParallaxFailure | null {
 export function parallaxFailureText(f: ParallaxFailure): string {
   switch (f) {
     case 'locked':
-      return 'The console is dark. Something on this platform still has to speak first.';
+      return 'اللوحة مُظلمة. ما زال على شيءٍ في هذه المنصّة أن يتكلّم أوّلًا.';
     case 'no-core':
-      return 'The core socket is empty. The engine has nothing of yours to remember.';
+      return 'تجويف النواة فارغ. ليس لدى المحرّك شيءٌ منك ليتذكّره.';
     case 'sequence':
-      return 'The symbols flare and scatter. The engine does not recognise that order.';
+      return 'تتوهّج الرموز ثم تتبعثر. المحرّك لا يعرف هذا الترتيب.';
     case 'bearing':
-      return 'The engine turns, searches, and settles. It is facing nothing the room has kept.';
+      return 'يدور المحرّك ويبحث ثم يستقرّ. إنه لا يواجه شيئًا احتفظت به الغرفة.';
     case 'timeline':
-      return 'Everything aligns, then fades. The echo cannot open the door.';
+      return 'يصطفّ كل شيء ثم يخبو. الصدى لا يستطيع فتح الباب.';
   }
 }

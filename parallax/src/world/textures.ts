@@ -139,13 +139,20 @@ export function stainTexture(seed = 21) {
   });
 }
 
+/** Font stack for Arabic writing in the world (Amiri is loaded before the hall is built). */
+export const AR_SERIF = '"Amiri", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", serif';
+
+/** Canvas text direction for a string: right to left whenever it contains Arabic. */
+export const textDir = (t: string): CanvasDirection => (/[\u0600-\u06FF]/.test(t) ? 'rtl' : 'ltr');
+
 /** A text panel, used for plaques, holograms and the door message. */
 export function textTexture(lines: string[], opts: { w?: number; h?: number; color?: string; bg?: string; font?: string; size?: number; glow?: number; align?: CanvasTextAlign; spacing?: number } = {}) {
   const w = opts.w ?? 1024, h = opts.h ?? 256;
   return canvasTexture(w, h, (g) => {
     if (opts.bg) { g.fillStyle = opts.bg; g.fillRect(0, 0, w, h); } else g.clearRect(0, 0, w, h);
     const size = opts.size ?? 54;
-    g.font = `${size}px ${opts.font ?? 'Georgia, "Times New Roman", serif'}`;
+    g.font = `${size}px ${opts.font ?? AR_SERIF}`;
+    g.direction = textDir(lines.join(''));
     g.fillStyle = opts.color ?? '#e9dcb8';
     g.textAlign = opts.align ?? 'center';
     g.textBaseline = 'middle';

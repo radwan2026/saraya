@@ -1,86 +1,86 @@
-// Every piece of in-world writing. PRESENT and ECHO versions differ: the ruin hides what the past shows.
+// Every piece of in-world writing (Arabic). PRESENT and ECHO versions differ: the ruin hides what the past shows.
 
 import type { Keepsake, Timeline } from './types';
 
-export const DOOR_MESSAGE = ['YOU HAVE BEEN HERE BEFORE', 'ONLY THE PRESENT MAY LEAVE'];
+export const DOOR_MESSAGE = ['لقد كنتَ هنا من قبل', 'وحدهُ الحاضرُ يستطيع المغادرة'];
 
 export interface Writing { title: string; present: string; echo: string }
 
 export const WRITINGS: Record<string, Writing> = {
   pedestal: {
-    title: 'Pedestal',
-    present: 'Two objects on velvet gone grey with dust. Engraved on the rim: TAKE ONE. THE ROOM WILL KEEP THE OTHER.',
-    echo: 'The velvet is red again. The rim reads: TAKE ONE. THE ROOM WILL KEEP THE OTHER.',
+    title: 'القاعدة',
+    present: 'قطعتان على مخملٍ صار رماديًا من الغبار. محفورٌ على الحافة: خُذ واحدة. وستحتفظ الغرفة بالأخرى.',
+    echo: 'عاد المخمل أحمر. وعلى الحافة: خُذ واحدة. وستحتفظ الغرفة بالأخرى.',
   },
   arrival: {
-    title: 'Visitor lectern',
-    present: 'A visitor badge, blank. The lanyard has rotted through. Someone scratched a line into the wood: "press the hour back — Q".',
-    echo: 'PARALLAX INSTITUTE — MEMORY ENGINE, HALL ONE. 14 March 1956. Operator on duty: R. Calder. Visitors are reminded that the hall exists twice.',
+    title: 'منصّة الزوّار',
+    present: 'بطاقة زائر فارغة، وقد تعفّن حبلها. خدش أحدهم سطرًا في الخشب: «أعِد الساعة إلى الوراء — Q».',
+    echo: 'معهد بارالاكس — محرّك الذاكرة، القاعة الأولى. 14 مارس 1956. المشغّل المناوب: ر. كالدر. يُذكَّر الزوّار بأن القاعة موجودة مرّتين.',
   },
   archive: {
-    title: 'Archivist\'s desk',
-    present: 'Water has turned the logbook to pulp. One phrase survives: "…the other half is light."',
-    echo: 'CALDER, LOG 3 — The archive lamp throws the plates\' shadows onto the engravings. The engraver only ever cut half of each figure. The other half is light. Turn each plate until its shadow closes the figure, then the wall gives up what it holds.',
+    title: 'مكتب أمين الأرشيف',
+    present: 'حوّل الماء دفتر السجلّات إلى عجينة. نجت عبارة واحدة: «…النصف الآخر هو الضوء».',
+    echo: 'كالدر، السجلّ 3 — يُلقي مصباح الأرشيف ظلال الألواح على النقوش. لم يحفر النقّاش إلا نصف كل شكل؛ النصف الآخر هو الضوء. أدِر كل لوح حتى يُكمل ظلُّه الشكل، عندها يُسلّم الجدار ما يخبّئه.',
   },
   calder: {
-    title: 'Operator\'s coat stand',
-    present: 'A coat hangs here, grey with dust. The pockets are empty except for a ticket stub dated 1956.',
-    echo: 'CALDER, LOG 7 — If they ever seal the hall, the engine will keep running on what it remembers. It remembers me best. I took one keepsake that night and left the other on the pedestal. I can never recall which. The room can.',
+    title: 'مشجب المشغّل',
+    present: 'معطفٌ معلّق هنا، رماديّ من الغبار. جيوبه فارغة إلا من كعب تذكرة مؤرّخ في 1956.',
+    echo: 'كالدر، السجلّ 7 — إن أغلقوا القاعة يومًا، فسيظلّ المحرّك يعمل على ما يتذكّره. وهو يتذكّرني أكثر من أي شيء. أخذتُ تذكارًا واحدًا تلك الليلة وتركتُ الآخر على القاعدة. لا أستطيع أبدًا أن أتذكّر أيّهما. الغرفة تستطيع.',
   },
   enginePlaque: {
-    title: 'Calibration plate',
-    present: 'Corroded brass. Only one word survives: CALIBRATION.',
-    echo: 'CALIBRATION LAW — Each ring rests two stations clockwise of the ring that holds it. Stations are read clockwise from the top: I to VIII.',
+    title: 'لوحة المعايرة',
+    present: 'نحاسٌ متآكل. لم تنجُ إلا كلمة واحدة: المعايرة.',
+    echo: 'قانون المعايرة — تستقرّ كل حلقة على بُعد محطّتين باتجاه عقارب الساعة من الحلقة التي تحملها. تُقرأ المحطّات باتجاه عقارب الساعة بدءًا من الأعلى: من I إلى VIII.',
   },
   finalPlaque: {
-    title: 'Steering plate',
-    present: 'Scratched into the metal, in a hand that looks uncomfortably like yours: "Turn it toward what the room kept. Wake it here, not there."',
-    echo: 'PARALLAX STEERING — Enter the symbols as the past holds them. WHAT THE PRESENT LEARNS LAST, THE PAST KNEW FIRST.',
+    title: 'لوحة التوجيه',
+    present: 'محفورٌ في المعدن، بخطٍّ يشبه خطّك على نحوٍ مُقلق: «وجِّهه نحو ما احتفظت به الغرفة. أيقِظه هنا، لا هناك».',
+    echo: 'توجيه بارالاكس — أدخِل الرموز كما يحفظها الماضي. ما يتعلّمه الحاضر أخيرًا، عرفه الماضي أوّلًا.',
   },
   gate: {
-    title: 'Bridge gate',
-    present: 'Six steel bolts hold the gate. Their cables climb into the engine overhead. Nothing moves until it does.',
-    echo: 'Six steel bolts hold the gate. A placard: "Gate releases on engine calibration."',
+    title: 'بوّابة الجسر',
+    present: 'ستّة مزاليج فولاذية تمسك البوّابة، وتصعد كابلاتها إلى المحرّك في الأعلى. لن يتحرّك شيء حتى يتحرّك هو.',
+    echo: 'ستّة مزاليج فولاذية تمسك البوّابة. لافتة: «تُفتح البوّابة عند معايرة المحرّك».',
   },
   barrier: {
-    title: 'Quarantine field',
-    present: 'The field emitters at the far end of the bridge are cracked and cold.',
-    echo: 'A wall of cold light across the far end of the bridge. A placard: "Quarantine field. Not to be switched off while the engine runs."',
+    title: 'حقل العزل',
+    present: 'بواعث الحقل في الطرف البعيد من الجسر متشقّقة وباردة.',
+    echo: 'جدارٌ من الضوء البارد يسدّ الطرف البعيد من الجسر. لافتة: «حقل عزل. لا يُطفأ ما دام المحرّك يعمل».',
   },
   anchor: {
-    title: 'Phase anchor',
-    present: 'PHASE ANCHOR — Locks the bridge to the moment of engagement. A sticker below: "It holds whatever is there. Make sure something is."',
-    echo: 'PHASE ANCHOR — Locks the bridge to the moment of engagement. The span hums beside it.',
+    title: 'مرساة الطور',
+    present: 'مرساة الطور — تُثبّت الجسر على لحظة التشغيل. ملصقٌ تحتها: «إنها تمسك ما هو موجود. تأكّد أن هناك شيئًا».',
+    echo: 'مرساة الطور — تُثبّت الجسر على لحظة التشغيل. الجسر يطنّ بجانبها.',
   },
   door: {
-    title: 'Exit door',
-    present: 'YOU HAVE BEEN HERE BEFORE. ONLY THE PRESENT MAY LEAVE.',
-    echo: 'In the echo the letters are not yet cut. The door is new, and closed.',
+    title: 'باب الخروج',
+    present: 'لقد كنتَ هنا من قبل. وحدهُ الحاضرُ يستطيع المغادرة.',
+    echo: 'في الصدى لم تُنقش الحروف بعد. الباب جديد، ومغلق.',
   },
   honourBoard: {
-    title: 'Operators\' board',
-    present: 'A lacquered board, peeling. Six names and years, 1951 to 1956. The last line reads 1957 and a dash. The name for 1956 has been scratched out and rewritten by hand: R. CALDER.',
-    echo: 'OPERATORS OF THE MEMORY ENGINE. 1951 H. Abernethy, 1952 M. Oyelaran, 1953 S. Vanterpool, 1954 L. Kristiansen, 1955 T. Ibarra, 1956 R. Calder. The line for 1957 waits, blank.',
+    title: 'لوحة المشغّلين',
+    present: 'لوحة مطليّة تتقشّر. ستّة أسماء وسنوات، من 1951 إلى 1956، والسطر الأخير يقرأ 1957 وشَرطة. اسم عام 1956 مكشوط، ثم أُعيدت كتابته بخط اليد: ر. كالدر.',
+    echo: 'مشغّلو محرّك الذاكرة: 1951 هـ. أبرنيثي، 1952 م. أويلاران، 1953 س. فانتربول، 1954 ل. كريستيانسن، 1955 ت. إيبارا، 1956 ر. كالدر. سطر عام 1957 ينتظر فارغًا.',
   },
   wallClock: {
-    title: 'Hall clock',
-    present: 'The clock above the entrance stopped at two minutes to twelve. Nobody wound it again.',
-    echo: 'The hall clock runs, ticking loudly enough to hear across the floor.',
+    title: 'ساعة القاعة',
+    present: 'توقّفت الساعة فوق المدخل عند الثانية عشرة إلا دقيقتين، ولم يعُد أحدٌ يملؤها.',
+    echo: 'ساعة القاعة تعمل، وتكّاتها عالية بما يكفي لتُسمع في أرجاء القاعة.',
   },
   lamp: {
-    title: 'Archive lamp',
-    present: 'The archive lamp lies on the floor, its lens smashed. In the present it lights nothing.',
-    echo: 'The archive lamp stands on its mast, burning amber, aimed at the west wall.',
+    title: 'مصباح الأرشيف',
+    present: 'مصباح الأرشيف مُلقى على الأرض، عدسته محطّمة. في الحاضر لا يضيء شيئًا.',
+    echo: 'مصباح الأرشيف قائم على ساريته، يتّقد بلونٍ كهرماني، مصوّبًا نحو الجدار الغربي.',
   },
   shadowWall: {
-    title: 'Engraved wall',
-    present: 'Three figures, each cut only halfway: the bottom of a left-pointing wedge, the right half of a disc, the bottom of a right-pointing wedge.',
-    echo: 'In the echo the stone is smooth. Only the shadows of the plates fall on it.',
+    title: 'الجدار المنقوش',
+    present: 'ثلاثة أشكال، كلٌّ منها محفور إلى نصفه فقط: النصف السفلي من إسفين يشير إلى اليسار، والنصف الأيمن من قرص، والنصف السفلي من إسفين يشير إلى اليمين.',
+    echo: 'في الصدى الحجر أملس. لا يسقط عليه إلا ظلال الألواح.',
   },
   engine: {
-    title: 'The Memory Engine',
-    present: 'Three rusted rings hang in the dark. The outer one is missing a segment.',
-    echo: 'The engine turns in amber light. The outer ring\'s mark sits at V, the middle at VII. The inner ring is hidden behind its spinning governor shield.',
+    title: 'محرّك الذاكرة',
+    present: 'ثلاث حلقات صدئة معلّقة في الظلام. الحلقة الخارجية ينقصها جزء.',
+    echo: 'يدور المحرّك في ضوء كهرماني. علامة الحلقة الخارجية عند V، والوسطى عند VII. أمّا الحلقة الداخلية فمخفيّة خلف درع الحاكم الدوّار.',
   },
 };
 
@@ -89,39 +89,48 @@ export function writing(id: string, t: Timeline): string {
   return w ? w[t] : '';
 }
 
+/** Ends a niche's text when the room has kept the player's left-behind keepsake there. */
+export const ROOM_KEPT_IT = 'لقد احتفظت الغرفة بها.';
+
 export function nicheText(side: 'west' | 'east', t: Timeline, kept: Keepsake | null): { title: string; body: string } {
-  const maker = side === 'west' ? 'THE CARTOGRAPHER' : 'THE CLOCKMAKER';
+  const maker = side === 'west' ? 'رسّام الخرائط' : 'صانع الساعات';
   const resident: Keepsake = side === 'west' ? 'compass' : 'hourglass';
   const leftBehind = kept && kept !== resident;
-  const title = side === 'west' ? "Cartographer's niche" : "Clockmaker's niche";
-  if (t === 'present') return { title, body: `An empty niche. A brass plate reads ${maker}.` };
+  const title = `كوّة ${maker}`;
+  if (t === 'present') return { title, body: `كوّة فارغة. لوحة نحاسية كُتب عليها: ${maker}.` };
   if (leftBehind) {
-    const what = resident === 'compass' ? 'The compass you left on the pedestal rests here, its needle trembling.' : 'The hourglass you left on the pedestal rests here. The sand is falling upwards.';
-    return { title, body: `${what} A brass plate reads ${maker}. The room kept it.` };
+    const what = resident === 'compass' ? 'البوصلة التي تركتَها على القاعدة ترقد هنا، وإبرتها ترتجف.' : 'الساعة الرملية التي تركتَها على القاعدة ترقد هنا، ورملها يتساقط إلى الأعلى.';
+    return { title, body: `${what} لوحة نحاسية كُتب عليها: ${maker}. ${ROOM_KEPT_IT}` };
   }
-  return { title, body: `Empty, but polished. A brass plate reads ${maker}.` };
+  return { title, body: `فارغة، لكنها مصقولة. لوحة نحاسية كُتب عليها: ${maker}.` };
 }
 
 export const KEEPSAKE_INFO: Record<Keepsake, { name: string; desc: string }> = {
-  compass: { name: 'Brass compass', desc: 'Heavy, warm, engraved "R.C.". It ticks twice when you turn it.' },
-  hourglass: { name: 'Glass hourglass', desc: 'The sand hisses as it falls. The frame is engraved "R.C.".' },
+  compass: { name: 'بوصلة نحاسية', desc: 'ثقيلة ودافئة، محفور عليها «ر.ك.». تتكّ مرّتين حين تديرها.' },
+  hourglass: { name: 'ساعة رملية زجاجية', desc: 'يهسّ الرمل وهو يسقط. إطارها محفور عليه «ر.ك.».' },
 };
+
+/** The keepsake with the definite article, for use inside sentences. */
+export const KEEPSAKE_NAME: Record<Keepsake, string> = { compass: 'البوصلة', hourglass: 'الساعة الرملية' };
+
+const ENDING_SHARED = [
+  'قبل سبعين عامًا أغلق ر. كالدر هذه القاعة، وترك المحرّك يحتفظ بالشيء الوحيد الذي يتذكّره أكثر من أي شيء: المشغّل.',
+  'لم يكن الصدى هو الماضي. كان أنت، مُتذكَّرًا. كل ملاحظة بخطّ كالدر تنبّأت بك، لأن كالدر هو من كان يتنبّأ.',
+];
 
 export const ENDING: Record<Keepsake, string[]> = {
   compass: [
-    'The rings open like an eye.',
-    'Inside the engine there is no machine. There is a chair, a coat, and a compass worn smooth by a thumb that was yours.',
-    'Seventy years ago R. Calder sealed this hall and let the engine keep the one thing it remembered best: the operator.',
-    'The echo was never the past. It was you, remembered. Every note in Calder\'s hand predicted you because Calder was the one doing the predicting.',
-    'You took the compass. So did Calder. The room only had to wait for you to choose the same way again.',
-    'The present opens. You step into it carrying a direction, which is more than Calder ever had.',
+    'تنفتح الحلقات كعين.',
+    'داخل المحرّك لا توجد آلة. هناك كرسيّ، ومعطف، وبوصلة صقلها إبهامٌ كان إبهامك.',
+    ...ENDING_SHARED,
+    'أخذتَ البوصلة. وكذلك فعل كالدر. لم يكن على الغرفة إلا أن تنتظرك حتى تختار الاختيار نفسه مرّة أخرى.',
+    'ينفتح الحاضر. تخطو إليه حاملًا اتجاهًا، وهذا أكثر ممّا امتلكه كالدر يومًا.',
   ],
   hourglass: [
-    'The rings open like an eye.',
-    'Inside the engine there is no machine. There is a chair, a coat, and an hourglass whose sand has fallen for seventy years.',
-    'Seventy years ago R. Calder sealed this hall and let the engine keep the one thing it remembered best: the operator.',
-    'The echo was never the past. It was you, remembered. Every note in Calder\'s hand predicted you because Calder was the one doing the predicting.',
-    'You took the hourglass. So did Calder. The room only had to wait for you to choose the same way again.',
-    'The present opens. You step into it carrying time, which is more than Calder ever had.',
+    'تنفتح الحلقات كعين.',
+    'داخل المحرّك لا توجد آلة. هناك كرسيّ، ومعطف، وساعة رملية ظلّ رملها يتساقط سبعين عامًا.',
+    ...ENDING_SHARED,
+    'أخذتَ الساعة الرملية. وكذلك فعل كالدر. لم يكن على الغرفة إلا أن تنتظرك حتى تختار الاختيار نفسه مرّة أخرى.',
+    'ينفتح الحاضر. تخطو إليه حاملًا الوقت، وهذا أكثر ممّا امتلكه كالدر يومًا.',
   ],
 };

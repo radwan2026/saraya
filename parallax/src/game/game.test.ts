@@ -153,7 +153,7 @@ describe('Puzzle C — impossible bridge', () => {
     s.engine.solved = true;
     const mid = { x: 0, z: (BRIDGE.z0 + BRIDGE.z1) / 2 };
     expect(isValidPosition(s, 'echo', mid.x, mid.z)).toBe(true);
-    expect(shiftBlockReason(s, 'present', mid.x, mid.z)).toMatch(/fall/);
+    expect(shiftBlockReason(s, 'present', mid.x, mid.z)).toMatch(/ستسقط/);
     s.bridge.anchored = true;
     expect(shiftBlockReason(s, 'present', mid.x, mid.z)).toBeNull();
   });
@@ -161,7 +161,7 @@ describe('Puzzle C — impossible bridge', () => {
     const s = createInitialState();
     s.engine.solved = true;
     s.bridge.anchored = true;
-    expect(shiftBlockReason(s, 'echo', 0, -15.05)).toMatch(/occupies/);
+    expect(shiftBlockReason(s, 'echo', 0, -15.05)).toMatch(/يشغل/);
   });
   it('the gate stays shut until the engine is calibrated', () => {
     const g = new GameLogic();
@@ -203,7 +203,7 @@ describe('Puzzle D — voice that arrived early', () => {
 describe('Puzzle E — final parallax', () => {
   it('the target sequence is the reverse of the learning order', () => {
     expect(Parallax.targetSequence(['shadow', 'engine', 'bridge', 'voice'])).toEqual(['wave', 'span', 'orbit', 'eye']);
-    expect(Parallax.targetSequence(['shadow', 'engine', 'bridge', 'voice']).map((g) => Parallax.GLYPH_MEANING[g]).join(' ')).toBe('I REMEMBER BEING YOU');
+    expect(Parallax.targetSequence(['shadow', 'engine', 'bridge', 'voice']).map((g) => Parallax.GLYPH_MEANING[g]).join(' ')).toBe('أنا أتذكّر أنّي كنتُ أنت');
   });
   it('the bearing depends on the first choice', () => {
     expect(Parallax.keptByRoomBearing('compass')).toBe(2);

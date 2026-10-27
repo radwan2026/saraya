@@ -6,7 +6,10 @@ import { $, esc } from './hud';
 import { glyphSvg, GLYPH_NAMES } from '../world/glyphs';
 import { RING_NAMES, STATIONS, stationLabel, canTurnRing, echoRings } from '../game/puzzles/engine';
 import { RECORDING, signatureOf, type Signature } from '../game/puzzles/voice';
-import { BEARING_NAMES, GLYPH_PALETTE } from '../game/puzzles/parallax';
+import { BEARING_FULL, BEARING_NAMES, GLYPH_PALETTE } from '../game/puzzles/parallax';
+import { KEEPSAKE_NAME } from '../game/texts';
+
+const RING_LABELS = ['الحلقة الخارجية', 'الحلقة الوسطى', 'الحلقة الداخلية'];
 import { describeSignature } from '../game/logic';
 
 export interface PanelDef {
@@ -61,6 +64,10 @@ export class Panels {
   }
 }
 
+function yours(k: GameState['keepsake']): string {
+  return k === 'compass' ? 'بوصلتك' : k === 'hourglass' ? 'ساعتك الرملية' : '';
+}
+
 export function sigHtml(sig: Signature | null): string {
   if (!sig) return '';
   const arrow = sig.contour === 'rising' ? '↗' : sig.contour === 'falling' ? '↘' : '→';
@@ -69,9 +76,9 @@ export function sigHtml(sig: Signature | null): string {
 
 export function readPanel(title: string, body: string, s: GameState): PanelDef {
   return {
-    eyebrow: s.timeline === 'echo' ? 'Echo · 1956' : 'Present · 2026',
+    eyebrow: s.timeline === 'echo' ? 'الصدى · 1956' : 'الحاضر · 2026',
     title,
-    render: () => `<span class="tag">${s.timeline === 'echo' ? 'Seen in the echo' : 'Seen in the present'}</span><p class="read">${esc(body)}</p>`,
+    render: () => `<span class="tag">${s.timeline === 'echo' ? 'شوهد في الصدى' : 'شوهد في الحاضر'}</span><p class="read">${esc(body)}</p>`,
   };
 }
 
@@ -86,28 +93,28 @@ export interface PanelHooks {
 export function enginePanel(h: PanelHooks): PanelDef {
   const L = h.logic;
   return {
-    eyebrow: 'Puzzle B · Memory Engine',
-    title: 'Engine console',
+    eyebrow: 'اللغز الثاني · محرّك الذاكرة',
+    title: 'لوحة المحرّك',
     render: () => {
       const s = L.state;
       const echo = s.timeline === 'echo';
       const rings = echo ? echoRings() : s.engine.rings;
-      let html = `<p>${echo ? 'In the echo the engine runs on its original calibration. Its controls are locked; the past cannot be moved.' : 'Three dials, one for each ring. Each step turns a ring one station clockwise or back.'}</p>`;
-      html += '<div class="rings">' + RING_NAMES.map((name, i) => {
+      let html = `<p>${echo ? 'في الصدى يعمل المحرّك على معايرته الأصلية. أدوات التحكّم مقفلة؛ لا يمكن تحريك الماضي.' : 'ثلاثة أقراص، واحد لكل حلقة. كل خطوة تُدير الحلقة محطّة واحدة باتجاه عقارب الساعة أو عكسه.'}</p>`;
+      html += '<div class="rings">' + RING_NAMES.map((_name, i) => {
         const hidden = echo && i === 2;
         const locked = !echo && !canTurnRing(i, s.engine.segmentInstalled);
         const dis = echo || s.engine.solved || locked ? 'disabled' : '';
-        return `<div class="ring-row"><div><b>${name[0].toUpperCase() + name.slice(1)} ring</b><small>${hidden ? 'Hidden behind the governor shield' : locked ? 'Missing segment: cannot turn' : i === 2 && !echo ? 'Marker scraped away; dial still reads' : 'Marker visible'}</small></div>
-          <button class="step" data-act="turn" data-i="${i}" data-d="-1" ${dis} aria-label="Turn ${name} ring back">◀</button>
+        return `<div class="ring-row"><div><b>${RING_LABELS[i]}</b><small>${hidden ? 'مخفيّة خلف درع الحاكم' : locked ? 'قطعة مفقودة: لا تدور' : i === 2 && !echo ? 'العلامة ممسوحة؛ القرص ما زال يقرأ' : 'العلامة ظاهرة'}</small></div>
+          <button class="step" data-act="turn" data-i="${i}" data-d="-1" ${dis} aria-label="أدِر ${RING_LABELS[i]} إلى الخلف">▶</button>
           <span class="station">${hidden ? '—' : stationLabel(rings[i])}</span>
-          <button class="step" data-act="turn" data-i="${i}" data-d="1" ${dis} aria-label="Turn ${name} ring forward">▶</button></div>`;
+          <button class="step" data-act="turn" data-i="${i}" data-d="1" ${dis} aria-label="أدِر ${RING_LABELS[i]} إلى الأمام">◀</button></div>`;
       }).join('') + '</div>';
       html += dialSvg(rings, echo);
       if (!echo && !s.engine.segmentInstalled) {
-        html += L.has('ring-segment') ? '<div class="row"><button class="btn primary" data-act="install">Fit the ring segment</button></div>' : '<div class="status">The outer ring has a gap where a segment should be.</div>';
+        html += L.has('ring-segment') ? '<div class="row"><button class="btn primary" data-act="install">ركّب قطعة الحلقة</button></div>' : '<div class="status">في الحلقة الخارجية فجوة حيث ينبغي أن تكون قطعة.</div>';
       }
-      if (!echo && !s.engine.solved) html += '<div class="row"><button class="btn primary" data-act="engage">Pull the calibration lever</button></div>';
-      if (s.engine.solved) html += '<div class="status good">Calibrated. The gate to the bridge is open.</div>';
+      if (!echo && !s.engine.solved) html += '<div class="row"><button class="btn primary" data-act="engage">اسحب ذراع المعايرة</button></div>';
+      if (s.engine.solved) html += '<div class="status good">تمّت المعايرة. بوّابة الجسر مفتوحة.</div>';
       return html;
     },
     on: (act, el) => {
@@ -125,7 +132,7 @@ export function enginePanel(h: PanelHooks): PanelDef {
 function dialSvg(rings: number[], echo: boolean): string {
   const col = echo ? '#ffb45e' : '#8ff0ff';
   const radii = [86, 64, 42];
-  let s = `<svg class="dial" viewBox="0 0 220 220" role="img" aria-label="Ring positions"><circle cx="110" cy="110" r="104" fill="none" stroke="#8a713f" stroke-width="1.5"/>`;
+  let s = `<svg class="dial" viewBox="0 0 220 220" role="img" aria-label="مواضع الحلقات"><circle cx="110" cy="110" r="104" fill="none" stroke="#8a713f" stroke-width="1.5"/>`;
   for (let k = 0; k < STATIONS; k++) {
     const a = (k / STATIONS) * Math.PI * 2 - Math.PI / 2;
     s += `<text x="${110 + Math.cos(a) * 100}" y="${113 + Math.sin(a) * 100}" fill="#c9a45c" font-size="10" text-anchor="middle" font-family="Georgia">${stationLabel(k)}</text>`;
@@ -146,34 +153,34 @@ function dialSvg(rings: number[], echo: boolean): string {
 export function voicePanel(h: PanelHooks, state: { playing: boolean; lit: number }): PanelDef {
   const L = h.logic;
   return {
-    eyebrow: 'Puzzle D · The voice that arrived early',
-    title: 'Recording console',
+    eyebrow: 'اللغز الرابع · الصوت الذي وصل مبكرًا',
+    title: 'لوحة التسجيل',
     render: () => {
       const s = L.state;
-      if (s.voice.solved) return '<div class="status good">The hall has answered the recording. The steering console is awake.</div><p>The reel has stopped. A wave is drawn on its label.</p>';
-      let html = '<p>A reel labelled <i>FOR WHOEVER COMES NEXT</i>. It holds five short sounds. Enter the sources in the order the reel plays them.</p>';
-      html += `<div class="row"><button class="btn primary" data-act="play" ${state.playing ? 'disabled' : ''}>${state.playing ? 'Playing…' : s.voice.heardRecording ? 'Play the recording again' : 'Play the recording'}</button></div>`;
-      html += '<div class="transcript" aria-label="Transcript of the recording">' + RECORDING.map((src, i) => {
+      if (s.voice.solved) return '<div class="status good">أجابت القاعة التسجيل. لوحة التوجيه مستيقظة.</div><p>توقّفت البكرة. على ملصقها رُسمت موجة.</p>';
+      let html = '<p>بكرة مكتوب عليها <i>«إلى من يأتي بعدي»</i>. تحمل خمسة أصوات قصيرة. أدخِل مصادرها بالترتيب الذي تعزفها به البكرة.</p>';
+      html += `<div class="row"><button class="btn primary" data-act="play" ${state.playing ? 'disabled' : ''}>${state.playing ? 'يُشغَّل…' : s.voice.heardRecording ? 'شغّل التسجيل مرّة أخرى' : 'شغّل التسجيل'}</button></div>`;
+      html += '<div class="transcript" aria-label="نصّ التسجيل">' + RECORDING.map((src, i) => {
         const sig = signatureOf(src, s.keepsake);
         const show = s.voice.heardRecording || state.lit >= i;
         return `<div class="tcell ${state.lit === i ? 'lit' : ''}"><span class="n">${i + 1}</span>${show ? sigHtml(sig) : ''}</div>`;
       }).join('') + '</div>';
       const sources = L.voiceSources();
-      html += '<span class="eyebrow">Known sounds</span><div class="sources">';
+      html += '<span class="eyebrow">الأصوات المعروفة</span><div class="sources">';
       html += sources.length
         ? sources.map((src) => {
             const sig = signatureOf(src, s.keepsake);
-            const name = src === 'keepsake' ? `Your ${s.keepsake}` : sig?.name ?? src;
+            const name = src === 'keepsake' ? yours(s.keepsake) : sig?.name ?? src;
             return `<button class="source" data-act="press" data-src="${src}"><span>${esc(name)}</span>${sigHtml(sig)}</button>`;
           }).join('')
-        : '<p class="empty">You have not listened to anything in the hall yet. Stand by a machine and listen. Some only run in the echo.</p>';
+        : '<p class="empty">لم تستمع إلى أي شيء في القاعة بعد. قِف بجانب آلة واستمع. بعضها لا يعمل إلا في الصدى.</p>';
       html += '</div>';
-      html += '<span class="eyebrow">Your answer</span><div class="slots">' + [0, 1, 2, 3, 4].map((i) => {
+      html += '<span class="eyebrow">إجابتك</span><div class="slots">' + [0, 1, 2, 3, 4].map((i) => {
         const src = s.voice.input[i];
         const sig = src ? signatureOf(src, s.keepsake) : null;
-        return `<span class="${src ? 'filled' : ''}">${src ? esc(src === 'keepsake' ? `Your ${s.keepsake}` : sig!.name) : i + 1}</span>`;
+        return `<span class="${src ? 'filled' : ''}">${src ? esc(src === 'keepsake' ? yours(s.keepsake) : sig!.name) : i + 1}</span>`;
       }).join('') + '</div>';
-      html += `<div class="row"><button class="btn small" data-act="clear" ${s.voice.input.length ? '' : 'disabled'}>Clear</button></div>`;
+      html += `<div class="row"><button class="btn small" data-act="clear" ${s.voice.input.length ? '' : 'disabled'}>امسح</button></div>`;
       return html;
     },
     on: (act, el) => {
@@ -200,26 +207,26 @@ export function voicePanel(h: PanelHooks, state: { playing: boolean; lit: number
 export function parallaxPanel(h: PanelHooks, ui: { slot: number }): PanelDef {
   const L = h.logic;
   return {
-    eyebrow: 'Puzzle E · The final parallax',
-    title: 'Steering console',
+    eyebrow: 'اللغز الخامس · البارالاكس الأخير',
+    title: 'لوحة التوجيه',
     render: () => {
       const s = L.state;
       const p = s.parallax;
-      let html = '<p>The console steers the engine across the chasm. A socket for the core, four symbol slots, a bearing wheel and one lever.</p>';
+      let html = '<p>توجّه هذه اللوحة المحرّك عبر الهوّة. تجويف للنواة، وأربع خانات للرموز، وعجلة اتجاه، وذراع واحدة.</p>';
       // core
-      html += '<span class="eyebrow">Core</span>';
+      html += '<span class="eyebrow">النواة</span>';
       html += p.coreInserted
-        ? `<div class="status good">Your ${esc(s.keepsake ?? '')} sits in the core.</div>`
+        ? `<div class="status good">${esc(s.keepsake ? KEEPSAKE_NAME[s.keepsake] : '')} في النواة.</div>`
         : s.keepsake && L.has(s.keepsake)
-          ? `<div class="row"><button class="btn" data-act="core">Seat the ${esc(s.keepsake)} in the core</button></div>`
-          : '<div class="status">The core is empty.</div>';
+          ? `<div class="row"><button class="btn" data-act="core">ضع ${esc(KEEPSAKE_NAME[s.keepsake])} في النواة</button></div>`
+          : '<div class="status">النواة فارغة.</div>';
       // symbols
-      html += '<span class="eyebrow">Symbols</span><div class="gslots">' + p.sequence.map((g, i) => `<button class="gslot ${ui.slot === i ? 'sel' : ''}" data-act="slot" data-i="${i}" aria-label="Slot ${i + 1}${g ? ': ' + GLYPH_NAMES[g] : ''}"><span class="n">${i + 1}</span>${g ? glyphSvg(g, 'glyph big') : ''}</button>`).join('') + '</div>';
+      html += '<span class="eyebrow">الرموز</span><div class="gslots">' + p.sequence.map((g, i) => `<button class="gslot ${ui.slot === i ? 'sel' : ''}" data-act="slot" data-i="${i}" aria-label="الخانة ${i + 1}${g ? ': ' + GLYPH_NAMES[g] : ''}"><span class="n">${i + 1}</span>${g ? glyphSvg(g, 'glyph big') : ''}</button>`).join('') + '</div>';
       html += '<div class="palette">' + GLYPH_PALETTE.map((g) => `<button data-act="glyph" data-g="${g}" aria-label="${GLYPH_NAMES[g]}" title="${GLYPH_NAMES[g]}">${glyphSvg(g)}</button>`).join('') + '</div>';
       // bearing
-      html += `<span class="eyebrow">Bearing</span><div class="bearing"><button class="step" data-act="bear" data-d="-1" aria-label="Turn engine anticlockwise">◀</button>${roseSvg(p.bearing)}<button class="step" data-act="bear" data-d="1" aria-label="Turn engine clockwise">▶</button></div>`;
-      html += `<p style="text-align:center">The engine faces <b>${BEARING_NAMES[p.bearing]}</b>${s.timeline === 'echo' ? ' — in the echo it will not be steered' : ''}.</p>`;
-      html += '<div class="row"><button class="btn primary" data-act="activate">Pull the parallax lever</button></div>';
+      html += `<span class="eyebrow">الاتجاه</span><div class="bearing" dir="ltr"><button class="step" data-act="bear" data-d="-1" aria-label="أدِر المحرّك عكس عقارب الساعة">↺</button>${roseSvg(p.bearing)}<button class="step" data-act="bear" data-d="1" aria-label="أدِر المحرّك باتجاه عقارب الساعة">↻</button></div>`;
+      html += `<p style="text-align:center">المحرّك يواجه <b>${BEARING_FULL[p.bearing]}</b>${s.timeline === 'echo' ? ' — في الصدى لا يقبل التوجيه' : ''}.</p>`;
+      html += '<div class="row"><button class="btn primary" data-act="activate">اسحب ذراع البارالاكس</button></div>';
       return html;
     },
     on: (act, el) => {
@@ -240,11 +247,11 @@ export function parallaxPanel(h: PanelHooks, ui: { slot: number }): PanelDef {
 }
 
 function roseSvg(bearing: number): string {
-  let s = '<svg class="rose" viewBox="0 0 160 160" role="img" aria-label="Bearing rose"><circle cx="80" cy="80" r="62" fill="none" stroke="#8a713f"/>';
+  let s = '<svg class="rose" viewBox="0 0 160 160" role="img" aria-label="وردة الاتجاهات"><circle cx="80" cy="80" r="62" fill="none" stroke="#8a713f"/>';
   BEARING_NAMES.forEach((n, i) => {
     const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
     const on = i === bearing;
-    s += `<text x="${80 + Math.cos(a) * 74}" y="${84 + Math.sin(a) * 74}" font-size="${on ? 13 : 10}" text-anchor="middle" fill="${on ? '#ffb45e' : '#c9a45c'}" font-family="Georgia">${n}</text>`;
+    s += `<text x="${80 + Math.cos(a) * 74}" y="${84 + Math.sin(a) * 74}" font-size="${on ? 13 : 10}" text-anchor="middle" fill="${on ? '#ffb45e' : '#c9a45c'}">${n}</text>`;
   });
   const a = (bearing / 8) * Math.PI * 2 - Math.PI / 2;
   s += `<line x1="80" y1="80" x2="${80 + Math.cos(a) * 54}" y2="${80 + Math.sin(a) * 54}" stroke="#8ff0ff" stroke-width="3" stroke-linecap="round"/><circle cx="80" cy="80" r="6" fill="#c9a45c"/></svg>`;

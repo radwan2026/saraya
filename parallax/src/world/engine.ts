@@ -7,7 +7,7 @@ import { POS } from '../game/layout';
 import { echoRings, stationLabel } from '../game/puzzles/engine';
 import { PARALLAX_INITIAL_BEARING } from '../game/puzzles/parallax';
 import type { GameState } from '../game/types';
-import { canvasTexture, textTexture } from './textures';
+import { canvasTexture, textTexture, AR_SERIF } from './textures';
 
 export interface EngineRig {
   root: THREE.Group;
@@ -236,7 +236,7 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
   statusMats.forEach((m, i) => ctx.mesh(new THREE.SphereGeometry(0.035, 12, 8), m, deckFrame, 0.95 + (i - 1) * 0.1, 0.08, -0.32, false));
   // vents and nameplate on the console body
   for (let k = 0; k < 7; k++) ctx.box(2.2, 0.025, 0.02, mats.darkMetal, con, 0, 0.25 + k * 0.07, 0.51, 0.004);
-  const plateTex = textTexture(['CALIBRATION'], { w: 512, h: 96, size: 54, color: '#e2c27a', bg: '#1a1611', font: 'Georgia, serif' });
+  const plateTex = textTexture(['المعايرة'], { w: 512, h: 96, size: 60, color: '#e2c27a', bg: '#1a1611' });
   ctx.mesh(new THREE.PlaneGeometry(0.9, 0.17), new THREE.MeshStandardMaterial({ map: plateTex, metalness: 0.5, roughness: 0.4 }), con, 0, 0.84, 0.511, false);
   ctx.animate((dt, t, s, e) => {
     const rings = e > 0.5 && !s.completed ? echoRings() : s.engine.rings;
@@ -272,21 +272,29 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
     g.strokeRect(12, 12, c.width - 24, c.height - 24);
     g.globalAlpha = 1;
     g.fillStyle = col;
-    g.font = '600 46px "Iowan Old Style", Georgia, serif';
-    g.textAlign = 'left';
-    g.fillText(echo ? 'MEMORY ENGINE — OPERATING 1956' : s.engine.solved ? 'MEMORY ENGINE — CALIBRATED' : 'MEMORY ENGINE — FAULT', 48, 86);
-    g.font = '38px ui-monospace, Menlo, Consolas, monospace';
-    const rows = echo
-      ? ['OUTER   V', 'MIDDLE  VII', 'INNER   ── shielded ──']
+    g.font = `700 50px ${AR_SERIF}`;
+    g.textAlign = 'right';
+    g.direction = 'rtl';
+    const right = c.width - 48;
+    g.fillText(echo ? 'محرّك الذاكرة — يعمل، 1956' : s.engine.solved ? 'محرّك الذاكرة — تمّت المعايرة' : 'محرّك الذاكرة — عطل', right, 90);
+    g.font = `44px ${AR_SERIF}`;
+    const rows: [string, string, string][] = echo
+      ? [['الخارجية', 'V', ''], ['الوسطى', 'VII', ''], ['الداخلية', '—', 'محجوبة خلف الدرع']]
       : [
-          `OUTER   ${stationLabel(s.engine.rings[0]).padEnd(5)}${s.engine.segmentInstalled ? '' : 'SEGMENT MISSING'}`,
-          `MIDDLE  ${stationLabel(s.engine.rings[1])}`,
-          `INNER   ${stationLabel(s.engine.rings[2]).padEnd(5)}marker lost`,
+          ['الخارجية', stationLabel(s.engine.rings[0]), s.engine.segmentInstalled ? '' : 'القطعة مفقودة'],
+          ['الوسطى', stationLabel(s.engine.rings[1]), ''],
+          ['الداخلية', stationLabel(s.engine.rings[2]), 'العلامة ممسوحة'],
         ];
-    rows.forEach((r, i) => g.fillText(r, 60, 190 + i * 82));
+    rows.forEach(([name, st, note], i) => {
+      const y = 196 + i * 86;
+      g.fillText(name, right - 12, y);
+      g.fillText(st, right - 300, y);
+      if (note) g.fillText(note, right - 440, y);
+    });
     holo.needsUpdate = true;
   };
-  ctx.interact('engine-console', [con], 3.2, { pos: new THREE.Vector3(0, 2.05, -3.4), look: new THREE.Vector3(0, 1.9, -6.1) });
+  // the close-up sits just behind the bezel so its lowest station plate never blocks the console
+  ctx.interact('engine-console', [con], 3.2, { pos: new THREE.Vector3(0.9, 2.2, -4.5), look: new THREE.Vector3(0, 1.55, -6.1) });
 
   // calibration plate on its stand
   const plaque = new THREE.Group();

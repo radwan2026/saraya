@@ -14,7 +14,7 @@ import { GLYPH_MEANING } from '../game/puzzles/parallax';
 import { POS } from '../game/layout';
 import { drawGlyph } from './glyphs';
 import { FRAME_Y } from './archive';
-import { canvasTexture } from './textures';
+import { AR_SERIF, canvasTexture } from './textures';
 
 export interface World {
   scene: THREE.Scene;
@@ -105,18 +105,20 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
   wordOrder.forEach((gid, i) => {
     const tex = canvasTexture(512, 256, (g, w, h) => {
       g.clearRect(0, 0, w, h);
-      drawGlyph(g, gid, 16, 64, 128, 'rgba(255,214,150,.9)', 6);
+      drawGlyph(g, gid, w - 144, 64, 128, 'rgba(255,214,150,.9)', 6);
       g.fillStyle = '#fff1d6';
       g.shadowColor = '#ffb45e';
       g.shadowBlur = 20;
-      g.font = '600 64px "Iowan Old Style", Palatino, Georgia, serif';
+      g.font = `700 76px ${AR_SERIF}`;
       g.textBaseline = 'middle';
-      g.fillText(GLYPH_MEANING[gid], 170, h / 2 + 4);
+      g.textAlign = 'right';
+      g.direction = 'rtl';
+      g.fillText(GLYPH_MEANING[gid], w - 170, h / 2 + 4);
     });
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
     const m = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.3), mat);
-    // an arc under the opened engine, read left to right from the north platform
-    m.position.set(4.6 - i * 3.05, -2.8 - (i === 1 || i === 2 ? 0.3 : 0), -2.4);
+    // an arc under the opened engine, read right to left from the north platform
+    m.position.set(-4.6 + i * 3.05, -2.8 - (i === 1 || i === 2 ? 0.3 : 0), -2.4);
     words.add(m);
     m.lookAt(new THREE.Vector3(0, 4, -18));
     wordMats.push(mat);

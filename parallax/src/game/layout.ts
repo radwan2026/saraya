@@ -132,11 +132,11 @@ export function moveWithCollision(
 export function shiftBlockReason(s: WorldView, target: Timeline, x: number, z: number): string | null {
   if (!isSupported(s, target, x, z)) {
     return target === 'present'
-      ? 'There is no floor here in the present. You would fall.'
-      : 'The echo has no floor here.';
+      ? 'لا أرضية هنا في الحاضر. ستسقط.'
+      : 'لا أرضية هنا في الصدى.';
   }
   if (isBlocked(s, target, x, z)) {
-    return target === 'echo' ? 'Something occupies this space in the echo.' : 'Something occupies this space in the present.';
+    return target === 'echo' ? 'شيءٌ ما يشغل هذا المكان في الصدى.' : 'شيءٌ ما يشغل هذا المكان في الحاضر.';
   }
   return null;
 }

@@ -9,7 +9,7 @@ import * as Bridge from './puzzles/bridge';
 import * as Voice from './puzzles/voice';
 import * as Parallax from './puzzles/parallax';
 import { NORTH_FLOOR, inRegion, shiftBlockReason } from './layout';
-import { KEEPSAKE_INFO, WRITINGS, nicheText, writing } from './texts';
+import { KEEPSAKE_INFO, KEEPSAKE_NAME, ROOM_KEPT_IT, WRITINGS, nicheText, writing } from './texts';
 
 type Listener = (e: GameEvent) => void;
 
@@ -90,14 +90,14 @@ export class GameLogic {
   // ---------------------------------------------------------------- onboarding
 
   chooseKeepsake(k: Keepsake): ActionResult {
-    if (this.state.keepsake) return { ok: false, message: 'The pedestal is empty now.' };
+    if (this.state.keepsake) return { ok: false, message: 'القاعدة فارغة الآن.' };
     this.state.keepsake = k;
     this.state.echoUnlocked = true;
     this.gain(k);
     this.emit({ type: 'keepsake', keepsake: k });
     const info = KEEPSAKE_INFO[k];
-    this.addJournal('keepsake', info.name, `I took the ${k}. ${info.desc} The other one dissolved into the air as if it had never been solid. My wrist is warm where the strap of something I cannot see should be. Q, a voice in my memory says.`);
-    this.say(`You took the ${k}. The room keeps the other.`, 'good');
+    this.addJournal('keepsake', info.name, `أخذتُ ${KEEPSAKE_NAME[k]}. ${info.desc} أمّا الأخرى فذابت في الهواء كأنها لم تكن صلبة قطّ. معصمي دافئ حيث ينبغي أن يكون حزام شيءٍ لا أراه. «Q»، يقول صوتٌ في ذاكرتي.`);
+    this.say(`أخذتَ ${KEEPSAKE_NAME[k]}. وستحتفظ الغرفة بالأخرى.`, 'good');
     return { ok: true };
   }
 
@@ -105,7 +105,7 @@ export class GameLogic {
 
   shift(): ActionResult {
     const s = this.state;
-    if (!s.echoUnlocked) return this.fail('Nothing answers. Not yet.');
+    if (!s.echoUnlocked) return this.fail('لا شيء يجيب. ليس بعد.');
     const target: Timeline = s.timeline === 'present' ? 'echo' : 'present';
     const reason = shiftBlockReason(s, target, s.player.x, s.player.z);
     if (reason) {
@@ -116,7 +116,7 @@ export class GameLogic {
     s.stats.shifts++;
     if (target === 'echo' && !s.flags.visitedEcho) {
       s.flags.visitedEcho = true;
-      this.addJournal('echo', 'The Echo', 'The hall exists twice. In the echo it is 1956: the lamps burn amber, the machines run, the paint is fresh. Whatever I move in one hall is moved in the other. Whatever was built in the old hall is not always still standing in mine.');
+      this.addJournal('echo', 'الصدى', 'القاعة موجودة مرّتين. في الصدى نحن في عام 1956: المصابيح تتّقد بلون كهرماني، والآلات تعمل، والطلاء جديد. ما أحرّكه في إحدى القاعتين يتحرّك في الأخرى. وما بُني في القاعة القديمة ليس دائمًا ما يزال قائمًا في قاعتي.');
     }
     this.emit({ type: 'timeline', timeline: target });
     this.checkShadow();
@@ -127,7 +127,7 @@ export class GameLogic {
 
   rotateSculpture(i: number): ActionResult {
     const s = this.state;
-    if (s.shadow.solved) return { ok: false, message: 'The plate is locked in place.' };
+    if (s.shadow.solved) return { ok: false, message: 'اللوح مُثبَّت في مكانه.' };
     s.shadow.rotations = Shadow.rotateSculpture(s.shadow.rotations, i);
     this.emit({ type: 'sculpture', index: i, rotation: s.shadow.rotations[i] });
     this.checkShadow();
@@ -140,18 +140,18 @@ export class GameLogic {
     s.shadow.solved = true;
     this.solved('shadow');
     this.emit({ type: 'shadow-solved' });
-    this.addJournal('glyph-eye', 'The first symbol', 'Wedge, disc, wedge: with the plates turned and the old lamp burning, the shadows closed the engravings into an eye. A compartment in the west wall slid open.', 'eye');
-    this.say('The shadows close the figures. Something in the west wall unlocks.', 'good');
+    this.addJournal('glyph-eye', 'الرمز الأول', 'إسفين، قرص، إسفين: حين أُديرت الألواح واتّقد المصباح القديم، أكملت الظلال النقوش فصارت عينًا. وانزلقت حجرة في الجدار الغربي وانفتحت.', 'eye');
+    this.say('تُكمل الظلال الأشكال. شيءٌ في الجدار الغربي ينفتح.', 'good');
   }
 
   takeSegment(): ActionResult {
     const s = this.state;
-    if (!s.shadow.solved) return this.fail('A seamless stone panel. It does not move.');
-    if (s.engine.segmentInstalled || this.has('ring-segment') || s.flags.segmentTaken) return { ok: false, message: 'The compartment is empty.' };
+    if (!s.shadow.solved) return this.fail('لوح حجري بلا أي فاصل. لا يتحرّك.');
+    if (s.engine.segmentInstalled || this.has('ring-segment') || s.flags.segmentTaken) return { ok: false, message: 'الحجرة فارغة.' };
     s.flags.segmentTaken = true;
     this.gain('ring-segment');
-    this.addJournal('segment', 'Ring segment', 'A curved bronze segment from the compartment, stamped OUTER — VIII. It matches the gap in the engine\'s outer ring.');
-    this.say('You take a curved bronze ring segment.', 'good');
+    this.addJournal('segment', 'قطعة الحلقة', 'قطعة برونزية مقوّسة من الحجرة، مختومة: «الخارجية — VIII». تطابق الفجوة في حلقة المحرّك الخارجية.');
+    this.say('تأخذ قطعة حلقة برونزية مقوّسة.', 'good');
     return { ok: true };
   }
 
@@ -159,21 +159,21 @@ export class GameLogic {
 
   installSegment(): ActionResult {
     const s = this.state;
-    if (s.engine.segmentInstalled) return { ok: false, message: 'The outer ring is already whole.' };
-    if (!this.has('ring-segment')) return this.fail('The outer ring has a gap. It cannot turn until something fills it.');
-    if (s.timeline !== 'present') return this.fail('In the echo the outer ring is already whole. The gap is in the present.');
+    if (s.engine.segmentInstalled) return { ok: false, message: 'الحلقة الخارجية مكتملة بالفعل.' };
+    if (!this.has('ring-segment')) return this.fail('في الحلقة الخارجية فجوة. لن تدور حتى يملأها شيء.');
+    if (s.timeline !== 'present') return this.fail('في الصدى الحلقة الخارجية مكتملة أصلًا. الفجوة في الحاضر.');
     this.lose('ring-segment');
     s.engine.segmentInstalled = true;
     this.emit({ type: 'segment-installed' });
-    this.say('The segment locks into the outer ring.', 'good');
+    this.say('تستقرّ القطعة في الحلقة الخارجية.', 'good');
     return { ok: true };
   }
 
   turnRing(index: number, dir: 1 | -1): ActionResult {
     const s = this.state;
-    if (s.engine.solved) return { ok: false, message: 'The rings are locked in calibration.' };
-    if (s.timeline !== 'present') return this.fail('The past cannot be moved. The echo engine runs as it always ran.');
-    if (!Engine.canTurnRing(index, s.engine.segmentInstalled)) return this.fail('The outer ring catches on its missing segment.');
+    if (s.engine.solved) return { ok: false, message: 'الحلقات مقفلة على المعايرة.' };
+    if (s.timeline !== 'present') return this.fail('لا يمكن تحريك الماضي. محرّك الصدى يعمل كما كان يعمل دائمًا.');
+    if (!Engine.canTurnRing(index, s.engine.segmentInstalled)) return this.fail('تعلق الحلقة الخارجية عند قطعتها المفقودة.');
     s.engine.rings = Engine.turnRing(s.engine.rings, index, dir);
     this.emit({ type: 'ring', index, station: s.engine.rings[index] });
     return { ok: true };
@@ -182,18 +182,18 @@ export class GameLogic {
   engageEngine(): ActionResult {
     const s = this.state;
     if (s.engine.solved) return { ok: false };
-    if (s.timeline !== 'present') return this.fail('The lever is locked in the echo. It belongs to the present.');
-    if (!s.engine.segmentInstalled) return this.fail('The engine coughs. The outer ring is not whole.');
+    if (s.timeline !== 'present') return this.fail('الذراع مقفلة في الصدى. إنها تنتمي إلى الحاضر.');
+    if (!s.engine.segmentInstalled) return this.fail('يسعل المحرّك. الحلقة الخارجية غير مكتملة.');
     s.engine.attempts++;
     if (!Engine.isEngineAligned(s.engine.rings)) {
       this.emit({ type: 'engine-rejected' });
-      return this.fail('The rings grind, shudder and fall back. The calibration is wrong.');
+      return this.fail('تصطكّ الحلقات وترتجف ثم ترتدّ. المعايرة خاطئة.');
     }
     s.engine.solved = true;
     this.solved('engine');
     this.emit({ type: 'engine-solved' });
-    this.addJournal('glyph-orbit', 'The second symbol', 'Outer V, middle VII, and the hidden inner ring at I: two stations each, exactly as the plate said. The engine woke. Its rings flashed a symbol of three nested circles, and the bridge gate unbolted.', 'orbit');
-    this.say('The rings lock. The gate bolts retract.', 'good');
+    this.addJournal('glyph-orbit', 'الرمز الثاني', 'الخارجية عند V، والوسطى عند VII، والداخلية المخفيّة عند I: محطّتان بين كل حلقة والتي تليها، تمامًا كما قالت اللوحة. استيقظ المحرّك، وومضت حلقاته برمز من ثلاث دوائر متداخلة، وانفكّت مزاليج بوّابة الجسر.', 'orbit');
+    this.say('تُقفل الحلقات. تنسحب مزاليج البوّابة.', 'good');
     return { ok: true };
   }
 
@@ -201,19 +201,19 @@ export class GameLogic {
 
   engageAnchor(): ActionResult {
     const s = this.state;
-    if (!s.engine.solved) return this.fail('The anchor has no power. Its cable runs up to the engine.');
+    if (!s.engine.solved) return this.fail('لا طاقة في المرساة. كابلها يصعد إلى المحرّك.');
     const out = Bridge.engageAnchor(s.timeline, s.bridge.anchored);
-    if (out === 'already') return { ok: false, message: 'The anchor is holding the span.' };
+    if (out === 'already') return { ok: false, message: 'المرساة تمسك الجسر.' };
     s.bridge.attempts++;
     if (out === 'nothing-to-hold') {
       this.emit({ type: 'anchor-failed' });
-      this.addJournal('anchor-ruin', 'The anchor', 'I engaged the anchor in the present. It locked onto the rubble and let go: there was nothing to hold. "It holds whatever is there."');
-      return this.fail('The anchor clamps onto empty air and releases. There is nothing here to hold.');
+      this.addJournal('anchor-ruin', 'المرساة', 'شغّلتُ المرساة في الحاضر. أطبقت على الركام ثم أفلتته: لم يكن هناك ما تمسكه. «إنها تمسك ما هو موجود».');
+      return this.fail('تُطبق المرساة على هواء فارغ ثم تُفلته. لا شيء هنا لتمسكه.');
     }
     s.bridge.anchored = true;
     this.emit({ type: 'anchored' });
-    this.addJournal('anchored', 'Anchored', 'In the echo the span is whole, so that is what the anchor held. Now the bridge exists in both halls. In the echo the quarantine field still blocks the far end. In the present it is dead.');
-    this.say('The anchor bites. The span shudders into both timelines.', 'good');
+    this.addJournal('anchored', 'تمّ الإرساء', 'في الصدى الجسر مكتمل، فأمسكته المرساة على تلك الحال. صار الجسر موجودًا في القاعتين. في الصدى ما زال حقل العزل يسدّ الطرف البعيد، أمّا في الحاضر فهو ميّت.');
+    this.say('تعضّ المرساة. يرتجف الجسر ويثبت في الزمنين.', 'good');
     return { ok: true };
   }
 
@@ -228,8 +228,8 @@ export class GameLogic {
       s.bridge.crossed = true;
       this.solved('bridge');
       this.emit({ type: 'bridge-crossed' });
-      this.addJournal('glyph-span', 'The third symbol', 'I walked across a bridge that fell decades ago. Its keystone carries a symbol: an arch over a line.', 'span');
-      this.say('You stand on the north platform. The keystone shows a third symbol.', 'good');
+      this.addJournal('glyph-span', 'الرمز الثالث', 'عبرتُ جسرًا سقط قبل عقود. يحمل حجر عقده رمزًا: قوسٌ فوق خط.', 'span');
+      this.say('تقف على المنصّة الشمالية. يُظهر حجر العقد رمزًا ثالثًا.', 'good');
     }
   }
 
@@ -239,21 +239,21 @@ export class GameLogic {
     const s = this.state;
     if (!Voice.canHear(source, s.timeline)) {
       const sig = Voice.SIGNATURES[source];
-      return this.fail(sig.timeline === 'echo' ? `The ${sig.name.toLowerCase()} is silent and rusted in the present.` : `In the echo the ${sig.name.toLowerCase()} is new and makes no sound.`);
+      return this.fail(sig.timeline === 'echo' ? `${sig.the} صامت وصدئ في الحاضر.` : `في الصدى ${sig.the} جديد ولا يُصدر صوتًا.`);
     }
     if (s.voice.registered.includes(source)) return { ok: true };
     s.voice.registered.push(source);
     const sig = Voice.SIGNATURES[source];
     this.emit({ type: 'source-registered', source });
-    this.addJournal(`sound-${source}`, `Sound: ${sig.name}`, `${describeSignature(sig)} Heard in the ${sig.timeline}.`);
+    this.addJournal(`sound-${source}`, `صوت: ${sig.name}`, `${describeSignature(sig)} سُمع في ${sig.timeline === 'echo' ? 'الصدى' : 'الحاضر'}.`);
     return { ok: true };
   }
 
   listenRecording(): ActionResult {
-    if (!this.state.bridge.crossed) return this.fail('The console is out of reach.');
+    if (!this.state.bridge.crossed) return this.fail('لوحة التحكّم بعيدة عن متناولك.');
     if (!this.state.voice.heardRecording) {
       this.state.voice.heardRecording = true;
-      this.addJournal('recording', 'The recording', 'A reel labelled CALDER — 1956 — "FOR WHOEVER COMES NEXT". Five sounds, one after another. The third is a sound I know from my own pocket.');
+      this.addJournal('recording', 'التسجيل', 'بكرة مكتوب عليها: كالدر — 1956 — «إلى من يأتي بعدي». خمسة أصوات، واحد تلو الآخر. الثالث صوتٌ أعرفه من جيبي.');
     }
     return { ok: true };
   }
@@ -268,8 +268,8 @@ export class GameLogic {
   pressVoice(source: SourceId): ActionResult {
     const s = this.state;
     if (s.voice.solved) return { ok: false };
-    if (!s.bridge.crossed) return this.fail('The console is out of reach.');
-    if (!this.voiceSources().includes(source)) return this.fail('The console does not know that sound yet. Listen to it first.');
+    if (!s.bridge.crossed) return this.fail('لوحة التحكّم بعيدة عن متناولك.');
+    if (!this.voiceSources().includes(source)) return this.fail('لا تعرف اللوحة هذا الصوت بعد. استمع إليه أوّلًا.');
     s.voice.input = [...s.voice.input, source];
     this.emit({ type: 'voice-input', input: s.voice.input });
     if (s.voice.input.length < Voice.RECORDING.length) return { ok: true };
@@ -278,14 +278,14 @@ export class GameLogic {
       s.voice.solved = true;
       this.solved('voice');
       this.emit({ type: 'voice-solved' });
-      this.addJournal('glyph-wave', 'The fourth symbol', 'The recording and the hall answered each other. The console drew a wave and the steering console beside it woke up. The voice on the reel knew my keepsake\'s sound seventy years before I picked it up.', 'wave');
-      this.say('The hall answers the recording. The steering console wakes.', 'good');
+      this.addJournal('glyph-wave', 'الرمز الرابع', 'تجاوب التسجيل والقاعة. رسمت اللوحة موجة، واستيقظت لوحة التوجيه بجانبها. الصوت على البكرة عرف صوت تذكاري قبل أن ألتقطه بسبعين عامًا.', 'wave');
+      this.say('تُجيب القاعة التسجيل. تستيقظ لوحة التوجيه.', 'good');
       return { ok: true };
     }
     const matched = Voice.matchedPrefix(s.voice.input);
     s.voice.input = [];
     this.emit({ type: 'voice-rejected', matched });
-    return this.fail(`The console accepts ${matched} of 5 and resets.`);
+    return this.fail(`تقبل اللوحة ${matched} من 5 ثم تُعيد الضبط.`);
   }
 
   clearVoice() {
@@ -297,13 +297,13 @@ export class GameLogic {
 
   insertCore(): ActionResult {
     const s = this.state;
-    if (!s.voice.solved) return this.fail('The steering console is dark.');
-    if (s.parallax.coreInserted) return { ok: false, message: 'The core already holds your keepsake.' };
-    if (!s.keepsake || !this.has(s.keepsake)) return this.fail('You have nothing to place in the core.');
+    if (!s.voice.solved) return this.fail('لوحة التوجيه مُظلمة.');
+    if (s.parallax.coreInserted) return { ok: false, message: 'النواة تحمل تذكارك بالفعل.' };
+    if (!s.keepsake || !this.has(s.keepsake)) return this.fail('ليس معك ما تضعه في النواة.');
     this.lose(s.keepsake);
     s.parallax.coreInserted = true;
     this.emit({ type: 'core-inserted' });
-    this.say(`The ${s.keepsake} settles into the core. The engine leans towards it.`, 'good');
+    this.say(`تستقرّ ${KEEPSAKE_NAME[s.keepsake]} في النواة. يميل المحرّك نحوها.`, 'good');
     return { ok: true };
   }
 
@@ -318,7 +318,7 @@ export class GameLogic {
   turnBearing(dir: 1 | -1): ActionResult {
     const s = this.state;
     if (!s.voice.solved || s.parallax.solved) return { ok: false };
-    if (s.timeline !== 'present') return this.fail('The echo engine will not be steered.');
+    if (s.timeline !== 'present') return this.fail('محرّك الصدى لا يقبل التوجيه.');
     s.parallax.bearing = (s.parallax.bearing + dir + Parallax.BEARINGS) % Parallax.BEARINGS;
     this.emit({ type: 'bearing', bearing: s.parallax.bearing });
     return { ok: true };
@@ -356,8 +356,9 @@ export class GameLogic {
     if (id === 'niche-west' || id === 'niche-east') {
       const side = id === 'niche-west' ? 'west' : 'east';
       const out = nicheText(side, t, s.keepsake);
-      if (t === 'echo' && s.keepsake && out.body.includes('The room kept it')) {
-        this.addJournal('kept', 'What the room kept', `In the echo, the keepsake I left behind sits in the ${side} niche. Seen from the engine it lies due ${side}.`);
+      if (t === 'echo' && s.keepsake && out.body.includes(ROOM_KEPT_IT)) {
+        const [adj, dir] = side === 'west' ? ['الغربية', 'الغرب'] : ['الشرقية', 'الشرق'];
+        this.addJournal('kept', 'ما احتفظت به الغرفة', `في الصدى، يرقد التذكار الذي تركتُه في الكوّة ${adj}. ومن موقع المحرّك يقع باتجاه ${dir} تمامًا.`);
       }
       return out;
     }
@@ -367,23 +368,23 @@ export class GameLogic {
     // Clues worth keeping are copied into the journal the first time they are read in the right timeline.
     const clue: Record<string, Timeline> = { archive: 'echo', calder: 'echo', enginePlaque: 'echo', finalPlaque: 'echo', shadowWall: 'present', engine: 'echo', arrival: 'echo', anchor: 'present' };
     if (clue[id] === t) this.addJournal(`read-${id}`, w.title, body);
-    if (id === 'finalPlaque' && t === 'present') this.addJournal('read-finalPlaque-present', `${w.title} (scratched)`, body);
+    if (id === 'finalPlaque' && t === 'present') this.addJournal('read-finalPlaque-present', `${w.title} (محفورة باليد)`, body);
     if (id === 'door') this.addJournal('read-door', 'The exit door', WRITINGS.door.present);
     return { title: w.title, body };
   }
 
   objective(): string {
     const s = this.state;
-    if (s.completed) return 'The present is open.';
-    if (!s.keepsake) return 'Take one of the keepsakes from the pedestal.';
-    if (!s.flags.visitedEcho) return 'Press Q to shift into the Echo.';
-    if (!s.shadow.solved) return 'Find what the archive lamp once revealed on the west wall.';
-    if (!s.engine.segmentInstalled) return s.flags.segmentTaken ? 'Fit the ring segment to the Memory Engine console.' : 'Take what the west wall was hiding.';
-    if (!s.engine.solved) return 'Restore the engine\'s original calibration.';
-    if (!s.bridge.anchored) return 'Find a way to keep the bridge standing.';
-    if (!s.bridge.crossed) return 'Cross the chasm.';
-    if (!s.voice.solved) return 'Match the recording on the north console.';
-    return 'Steer the engine and open the door.';
+    if (s.completed) return 'الحاضر مفتوح.';
+    if (!s.keepsake) return 'خُذ أحد التذكارين من القاعدة.';
+    if (!s.flags.visitedEcho) return 'اضغط Q للانتقال إلى الصدى.';
+    if (!s.shadow.solved) return 'اكتشف ما كان مصباح الأرشيف يكشفه على الجدار الغربي.';
+    if (!s.engine.segmentInstalled) return s.flags.segmentTaken ? 'ركّب قطعة الحلقة من لوحة محرّك الذاكرة.' : 'خُذ ما كان الجدار الغربي يخبّئه.';
+    if (!s.engine.solved) return 'أعِد المحرّك إلى معايرته الأصلية.';
+    if (!s.bridge.anchored) return 'جِد طريقة لإبقاء الجسر قائمًا.';
+    if (!s.bridge.crossed) return 'اعبُر الهوّة.';
+    if (!s.voice.solved) return 'طابِق التسجيل على لوحة التحكّم الشمالية.';
+    return 'وجِّه المحرّك وافتح الباب.';
   }
 
   /** Prompt and availability for every interactable. The world shows this; actions re-check it. */
@@ -391,38 +392,39 @@ export class GameLogic {
     const s = this.state;
     const t = s.timeline;
     if (id.startsWith('keepsake-')) {
-      if (s.keepsake) return { label: '', enabled: false, reason: 'Only dust remains.' };
-      return { label: `Take the ${id.slice(9)}`, enabled: true };
+      if (s.keepsake) return { label: '', enabled: false, reason: 'لم يبقَ إلا الغبار.' };
+      return { label: `خُذ ${KEEPSAKE_NAME[id.slice(9) as Keepsake]}`, enabled: true };
     }
     if (id.startsWith('sculpture-')) {
-      if (s.shadow.solved) return { label: 'Plate', enabled: false, reason: 'Locked in place' };
-      return { label: 'Turn the plate', enabled: true };
+      if (s.shadow.solved) return { label: 'لوح', enabled: false, reason: 'مُثبَّت في مكانه' };
+      return { label: 'أدِر اللوح', enabled: true };
     }
     if (id in MACHINE_IDS) {
       const src = MACHINE_IDS[id];
       const sig = Voice.SIGNATURES[src];
-      if (!Voice.canHear(src, t)) return { label: sig.name, enabled: false, reason: t === 'present' ? 'Rusted and silent' : 'New and silent' };
-      return { label: s.voice.registered.includes(src) ? `Listen to the ${sig.name.toLowerCase()} again` : `Listen to the ${sig.name.toLowerCase()}`, enabled: true };
+      if (!Voice.canHear(src, t)) return { label: sig.name, enabled: false, reason: t === 'present' ? 'صدئ وصامت' : 'جديد وصامت' };
+      return { label: s.voice.registered.includes(src) ? `استمع إلى ${sig.the} مرّة أخرى` : `استمع إلى ${sig.the}`, enabled: true };
     }
     switch (id) {
       case 'compartment':
-        if (!s.shadow.solved) return { label: 'Stone panel', enabled: true };
-        return s.flags.segmentTaken ? { label: 'Empty compartment', enabled: false, reason: 'Empty' } : { label: 'Take the ring segment', enabled: true };
+        if (!s.shadow.solved) return { label: 'لوح حجري', enabled: true };
+        return s.flags.segmentTaken ? { label: 'حجرة فارغة', enabled: false, reason: 'فارغة' } : { label: 'خُذ قطعة الحلقة', enabled: true };
       case 'engine-console':
-        return { label: 'Use the engine console', enabled: true };
+        return { label: 'استخدم لوحة المحرّك', enabled: true };
       case 'anchor':
-        return s.bridge.anchored ? { label: 'Phase anchor', enabled: false, reason: 'Holding the span' } : { label: 'Engage the phase anchor', enabled: true };
+        return s.bridge.anchored ? { label: 'مرساة الطور', enabled: false, reason: 'تمسك الجسر' } : { label: 'شغّل مرساة الطور', enabled: true };
       case 'voice-console':
-        return { label: 'Use the recording console', enabled: true };
+        return { label: 'استخدم لوحة التسجيل', enabled: true };
       case 'parallax-console':
-        return s.voice.solved ? { label: 'Use the steering console', enabled: true } : { label: 'Steering console', enabled: false, reason: 'Dark' };
+        return s.voice.solved ? { label: 'استخدم لوحة التوجيه', enabled: true } : { label: 'لوحة التوجيه', enabled: false, reason: 'مُظلمة' };
       default:
-        return { label: `Examine: ${(WRITINGS[id] && WRITINGS[id].title) || (id.startsWith('niche') ? 'niche' : id)}`, enabled: true };
+        return { label: `تفحّص: ${(WRITINGS[id] && WRITINGS[id].title) || (id.startsWith('niche') ? 'الكوّة' : id)}`, enabled: true };
     }
   }
 }
 
 export function describeSignature(sig: Voice.Signature): string {
-  const beats = sig.rhythm.map((b) => (b === 'S' ? 'short' : b === 'L' ? 'long' : 'one long hiss')).join(', ');
-  return `${sig.name}: ${beats}; pitch ${sig.contour}.`;
+  const beats = sig.rhythm.map((b) => (b === 'S' ? 'قصير' : b === 'L' ? 'طويل' : 'هسيس طويل واحد')).join('، ');
+  const pitch = sig.contour === 'rising' ? 'صاعدة' : sig.contour === 'falling' ? 'هابطة' : 'ثابتة';
+  return `${sig.name}: ${beats}؛ النغمة ${pitch}.`;
 }

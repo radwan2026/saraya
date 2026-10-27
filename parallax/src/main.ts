@@ -6,7 +6,7 @@ import { clearSave, createInitialState, loadGame, saveGame } from './game/state'
 import type { GameEvent, GameState, SourceId } from './game/types';
 import { POS, SPAWN } from './game/layout';
 import { RECORDING, SIGNATURES } from './game/puzzles/voice';
-import { ENDING } from './game/texts';
+import { ENDING, KEEPSAKE_INFO } from './game/texts';
 import { buildWorld, type World } from './world/world';
 import { createPipeline, detectQuality, type Pipeline } from './world/effects';
 import type { Quality } from './world/context';
@@ -76,16 +76,21 @@ class Game {
   async boot() {
     const forced = new URLSearchParams(location.search).get('quality');
     const quality: Quality = forced === 'low' || forced === 'medium' || forced === 'high' ? forced : this.settings.quality ?? detectQuality();
-    this.setLoad(0.15, 'Starting the renderer…');
+    this.setLoad(0.15, 'تشغيل محرّك العرض…');
     await frame();
+    // Textures in the world are drawn once, so the Arabic fonts must be ready first (offline: system fonts).
+    await Promise.race([
+      Promise.all(['400 48px Amiri', '700 48px Amiri', '400 16px "IBM Plex Sans Arabic"'].map((f) => document.fonts.load(f, 'بارالاكس'))).catch(() => {}),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
     try {
-      this.setLoad(0.35, 'Assembling the hall…');
+      this.setLoad(0.35, 'تجميع القاعة…');
       await frame();
       this.pipeline = createPipeline($('view') as HTMLCanvasElement, this.camera, quality, (renderer) => {
         this.world = buildWorld(renderer, quality);
         return this.world.scene;
       });
-      this.setLoad(0.7, 'Compiling materials…');
+      this.setLoad(0.7, 'تجهيز الخامات…');
       await frame();
       this.pipeline.renderer.compile(this.world.scene, this.camera);
     } catch (err) {
@@ -98,7 +103,7 @@ class Game {
     this.bindUi();
     this.director.reduceMotion = this.settings.reduceMotion;
     addEventListener('resize', () => this.pipeline.resize());
-    this.setLoad(1, 'Ready');
+    this.setLoad(1, 'جاهز');
     this.attach(this.logic);
     this.world.ctx.temporal.snap(this.logic.state);
     this.showMenu();
@@ -115,7 +120,7 @@ class Game {
   private showError(text: string) {
     $('loading').hidden = true;
     $('error').hidden = false;
-    $('errorText').textContent = `Your browser could not start the 3D renderer (${text}). Try the low quality mode, or a browser with WebGL enabled.`;
+    $('errorText').textContent = `تعذّر على متصفّحك تشغيل العرض ثلاثي الأبعاد (${text}). جرّب وضع الجودة المنخفضة، أو متصفّحًا يدعم WebGL.`;
     $('eRetry').onclick = () => {
       this.settings.quality = 'low';
       storeSettings(this.settings);
@@ -169,7 +174,7 @@ class Game {
     this.controller.setPose(saved.player.x, saved.player.z, saved.player.yaw, saved.player.pitch);
     $('menu').hidden = true;
     this.startPlay();
-    this.hud.toast('The hall remembers where you were.', 'info');
+    this.hud.toast('القاعة تتذكّر أين كنت.', 'info');
   }
 
   private startPlay() {
@@ -218,7 +223,7 @@ class Game {
         for (const name of ['ambient', 'south', 'pedestal', 'center', 'engine', 'north', 'door']) this.world.setSectionPower(name, 1);
         $('black').classList.remove('on');
         this.controller.setPose(sp.x, sp.z, sp.yaw, 0);
-        this.logic.addJournal('door', 'The exit door', 'A round door at the far end of the hall. Letters of light above it: YOU HAVE BEEN HERE BEFORE. ONLY THE PRESENT MAY LEAVE.');
+        this.logic.addJournal('door', 'باب الخروج', 'باب دائري في الطرف البعيد من القاعة. فوقه حروف من نور: لقد كنتَ هنا من قبل. وحدهُ الحاضرُ يستطيع المغادرة.');
         this.startPlay();
       },
     );
@@ -298,12 +303,12 @@ class Game {
     const secs = Math.floor((s.stats.playMs % 60000) / 1000);
     const stat = (k: string, v: string) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`;
     $('stats').innerHTML = [
-      stat('Time', `${mins}:${String(secs).padStart(2, '0')}`),
-      stat('Time shifts', String(s.stats.shifts)),
-      stat('Interactions', String(s.stats.interactions)),
-      stat('Wrong turns', String(s.stats.failures)),
-      stat('Clues found', String(s.journal.length)),
-      stat('Keepsake', s.keepsake ? s.keepsake[0].toUpperCase() + s.keepsake.slice(1) : '—'),
+      stat('الوقت', `${mins}:${String(secs).padStart(2, '0')}`),
+      stat('التنقّلات عبر الزمن', String(s.stats.shifts)),
+      stat('التفاعلات', String(s.stats.interactions)),
+      stat('المحاولات الخاطئة', String(s.stats.failures)),
+      stat('الأدلّة المكتشفة', String(s.journal.length)),
+      stat('التذكار', s.keepsake ? KEEPSAKE_INFO[s.keepsake].name : '—'),
     ].join('');
     saveGame(s);
     ($('cAgain') as HTMLButtonElement).focus();
@@ -531,7 +536,7 @@ class Game {
     this.addPulses(src, segs);
     if (this.settings.captions) {
       const sig = src === 'keepsake' ? null : SIGNATURES[src];
-      const text = sig ? describeSignature(sig) : `Your ${keepsake}`;
+      const text = sig ? describeSignature(sig) : keepsake ? `${KEEPSAKE_INFO[keepsake].name} في جيبك` : '';
       this.hud.caption(`[${text}]`);
       this.captionUntil = this.time + 3;
     }
@@ -551,7 +556,7 @@ class Game {
       const segs = this.audio.signature(src, this.logic.state.keepsake);
       if (this.settings.captions) {
         const sig = src === 'keepsake' ? null : SIGNATURES[src];
-        this.hud.caption(`[Recording ${i + 1}/5 — ${sig ? sig.rhythm.map((b) => (b === 'S' ? 'short' : 'long')).join(', ') : 'a sound from your pocket'}]`);
+        this.hud.caption(`[التسجيل ${i + 1}/5 — ${sig ? sig.rhythm.map((b) => (b === 'S' ? 'قصير' : 'طويل')).join('، ') : 'صوتٌ من جيبك'}]`);
         this.captionUntil = this.time + 2;
       }
       const dur = segs.length ? segs[segs.length - 1].end : 0.5;
@@ -721,11 +726,11 @@ class Game {
     const dist = Math.hypot(s.player.x - SPAWN.x, s.player.z - SPAWN.z);
     if (dist > 1.5) s.flags.moved = true;
     if (this.panels.open || this.overlay || this.controller.cinematic) return this.hud.hint('', null);
-    if (!touch && !this.controller.pointerLocked && !this.controller.dragLook && !s.flags.moved) return this.hud.hint('look', 'Click the view to look around.');
-    if (!s.flags.moved) return this.hud.hint('move', touch ? 'Drag on the left to walk, on the right to look.' : 'Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to walk.');
-    if (!s.flags.interacted && this.target) return this.hud.hint('interact', touch ? 'Tap <kbd>E</kbd> to interact.' : 'Press <kbd>E</kbd> to interact.');
-    if (s.keepsake && !s.flags.visitedEcho) return this.hud.hint('shift', touch ? 'Tap <kbd>Q</kbd> to shift into the Echo.' : 'Press <kbd>Q</kbd> to shift into the Echo.');
-    if (s.flags.visitedEcho && !s.flags.openedJournal && s.journal.length > 2) return this.hud.hint('journal', 'Your journal keeps every clue. Press <kbd>Tab</kbd> or <kbd>J</kbd>.');
+    if (!touch && !this.controller.pointerLocked && !this.controller.dragLook && !s.flags.moved) return this.hud.hint('look', 'انقر على المشهد لتتلفّت حولك.');
+    if (!s.flags.moved) return this.hud.hint('move', touch ? 'اسحب على اليسار للمشي، وعلى اليمين للنظر.' : 'استخدم <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> للمشي.');
+    if (!s.flags.interacted && this.target) return this.hud.hint('interact', touch ? 'المس <kbd>E</kbd> للتفاعل.' : 'اضغط <kbd>E</kbd> للتفاعل.');
+    if (s.keepsake && !s.flags.visitedEcho) return this.hud.hint('shift', touch ? 'المس <kbd>Q</kbd> للانتقال إلى الصدى.' : 'اضغط <kbd>Q</kbd> للانتقال إلى الصدى.');
+    if (s.flags.visitedEcho && !s.flags.openedJournal && s.journal.length > 2) return this.hud.hint('journal', 'دفترك يحفظ كل دليل. اضغط <kbd>Tab</kbd> أو <kbd>J</kbd>.');
     this.hud.hint('', null);
   }
 

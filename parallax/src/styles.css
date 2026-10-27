@@ -14,8 +14,8 @@
   --amber: #ffb45e;
   --danger: #ff7a66;
   --accent: var(--cyan);
-  --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --body: "Avenir Next", "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+  --display: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", "Times New Roman", serif;
+  --body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, "Geeza Pro", system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: dark;
 }
@@ -208,3 +208,26 @@ body.panel-open .toasts, body.panel-open .caption { left: calc((100vw - min(500p
   .panel, .toast, #ripple.go { animation: none; }
   .ending-lines p { transition: none; }
 }
+
+/* Arabic, right to left. Letter-spacing breaks the joins between Arabic letters, so it is removed
+   everywhere; panels stay on the right because the 3D view shifts left to make room for them. */
+html[dir="rtl"] *, html[dir="rtl"] *::before { letter-spacing: 0 !important; }
+.eyebrow { font-size: 12px; }
+.tl-name { font-size: 16px; }
+.tabs button { font-size: 14px; }
+.stats dt { font-size: 12px; }
+.tag { font-size: 12px; }
+.subtitle { font-style: normal; }
+.mark, .title { padding-left: 0; }
+.title { font-weight: 700; letter-spacing: 0; line-height: 1.25; }
+.latin { margin: -6px 0 4px; font-family: "Iowan Old Style", Palatino, Georgia, serif; letter-spacing: 0.5em !important; font-size: 13px; color: var(--muted); }
+.caption { font-family: var(--body); font-size: 14px; }
+.panel-body .read { line-height: 2; font-size: 19px; }
+.toast { border-left: 0; border-right: 2px solid var(--gold); }
+.status { border-left: 0; border-right: 2px solid var(--gold-dim); }
+.count { margin: 0 4px 0 0; }
+.source { text-align: right; }
+.sig { direction: ltr; }
+.sig .ct { margin-left: 6px; }
+.gslot .n { left: auto; right: 6px; }
+kbd, .tl-year, .station { direction: ltr; unicode-bidi: isolate; }

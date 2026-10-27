@@ -157,7 +157,7 @@ async function waitForServer() {
     await page.waitForSelector('#journal:not([hidden])', { timeout: 30000 });
     assert((await page.locator('#journalBody .entry').count()) >= 2, 'journal opens with Tab and lists clues');
     await page.click('#journalTabs [data-tab="items"]');
-    assert((await page.textContent('#journalBody')).includes('Brass compass'), 'items tab lists the keepsake');
+    assert((await page.textContent('#journalBody')).includes('بوصلة نحاسية'), 'items tab lists the keepsake');
     await page.keyboard.press('Tab');
     await page.waitForSelector('#journal', { state: 'hidden', timeout: 30000 });
     await ready();
