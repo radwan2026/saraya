@@ -57,6 +57,16 @@ export const WRITINGS: Record<string, Writing> = {
     present: 'YOU HAVE BEEN HERE BEFORE. ONLY THE PRESENT MAY LEAVE.',
     echo: 'In the echo the letters are not yet cut. The door is new, and closed.',
   },
+  honourBoard: {
+    title: 'Operators\' board',
+    present: 'A lacquered board, peeling. Six names and years, 1951 to 1956. The last line reads 1957 and a dash. The name for 1956 has been scratched out and rewritten by hand: R. CALDER.',
+    echo: 'OPERATORS OF THE MEMORY ENGINE. 1951 H. Abernethy, 1952 M. Oyelaran, 1953 S. Vanterpool, 1954 L. Kristiansen, 1955 T. Ibarra, 1956 R. Calder. The line for 1957 waits, blank.',
+  },
+  wallClock: {
+    title: 'Hall clock',
+    present: 'The clock above the entrance stopped at two minutes to twelve. Nobody wound it again.',
+    echo: 'The hall clock runs, ticking loudly enough to hear across the floor.',
+  },
   lamp: {
     title: 'Archive lamp',
     present: 'The archive lamp lies on the floor, its lens smashed. In the present it lights nothing.',

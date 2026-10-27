@@ -18,7 +18,7 @@ export const GradeShader = {
     uEcho: { value: 0 },
     uRipple: { value: 0 },
     uVignette: { value: 0.35 },
-    uGrain: { value: 0.035 },
+    uGrain: { value: 0.014 },
     uHeat: { value: 0 },
     uHeatPos: { value: new THREE.Vector2(0.5, 0.5) },
     uAspect: { value: 1 },
@@ -102,7 +102,7 @@ export function createPipeline(canvas: HTMLCanvasElement, camera: THREE.Perspect
   if (quality !== 'low') {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), quality === 'high' ? 0.55 : 0.45, 0.6, 0.82);
+    bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), quality === 'high' ? 0.42 : 0.36, 0.55, 0.86);
     composer.addPass(bloom);
     grade = new ShaderPass(GradeShader);
     composer.addPass(grade);

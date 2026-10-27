@@ -66,6 +66,8 @@ class Game {
   private glanceTimer = 0;
   private menuAngle = 0;
   private viewShift = 0;
+  private lastSecond = 0;
+  private steamClock = 0;
   /** Debug-only: speeds up simulated time for automated tests on slow software renderers. */
   timeScale = 1;
   private frameMs: number[] = [];
@@ -317,6 +319,8 @@ class Game {
         break;
       case 'timeline':
         this.audio.shift(e.timeline);
+        this.hud.caption(null); // a caption from the other timeline no longer applies
+        this.captionUntil = 0;
         this.ripple = 1;
         if (this.pipeline.quality === 'low' && !this.settings.reduceMotion) {
           const r = $('ripple');
@@ -472,6 +476,7 @@ class Game {
       default: {
         const r = L.read(id);
         if (!r.body) return;
+        this.audio.sfx('paper');
         this.openPanel(readPanel(r.title, r.body, L.state), it?.focus);
       }
     }
@@ -724,6 +729,29 @@ class Game {
     this.hud.hint('', null);
   }
 
+  /** Clock ticks and steam puffs in the echo, each with its synchronised sound. */
+  private ambientEvents(dt: number) {
+    const s = this.logic.state;
+    const d = this.world.details;
+    const sec = Math.floor(this.time);
+    if (sec !== this.lastSecond) {
+      this.lastSecond = sec;
+      if (s.timeline === 'echo') {
+        d.stepSecond();
+        this.audio.sfx('tick', d.clockPos);
+      }
+    }
+    this.steamClock += dt;
+    if (this.steamClock > 6.5) {
+      this.steamClock = 0;
+      const near = Math.hypot(d.turbineStack.x - s.player.x, d.turbineStack.z - s.player.z) < 18;
+      if (s.timeline === 'echo' && near) {
+        d.puff();
+        this.audio.sfx('steam', d.turbineStack);
+      }
+    }
+  }
+
   private autoEmit(dt: number) {
     // machines sound by themselves, in turn, when you are near and in their timeline
     this.emitClock += dt;
@@ -771,6 +799,7 @@ class Game {
       this.logic.tick(dt * 1000);
       this.controller.update(dt);
       this.autoEmit(dt);
+      this.ambientEvents(dt);
       if (this.glanceTimer > 0) {
         this.glanceTimer -= dt;
         if (this.glanceTimer <= 0) this.director.release(() => { if (!this.panels.open && this.mode === 'play') this.controller.cinematic = false; });
@@ -854,6 +883,15 @@ class Game {
       closePanel: () => this.panels.close(),
       skip: () => this.director.skip(),
       renderInfo: () => this.pipeline.renderer.info.render,
+      sceneStats: () => {
+        const r = this.pipeline.renderer;
+        r.info.autoReset = false;
+        r.info.reset();
+        r.render(this.world.scene, this.camera);
+        const out = { ...r.info.render, programs: r.info.programs?.length ?? 0, ...r.info.memory };
+        r.info.autoReset = true;
+        return out;
+      },
       frames: () => this.frameCount,
       frameMs: () => Math.round(this.frameMs.reduce((a, b) => a + b, 0) / Math.max(1, this.frameMs.length)),
       setTimeScale: (k: number) => (this.timeScale = k),

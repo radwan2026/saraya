@@ -231,19 +231,29 @@ export function buildArchitecture(ctx: BuildCtx) {
 
   // ---------------------------------------------------------------- conduits along the walls
   const conduitMats: THREE.ShaderMaterial[] = [];
+  // the low run breaks around the keepsake niches so it never passes through their pedestals
+  const runs = (y: number): [number, number][] => (y < 1 ? [[HALL.z0 + 0.5, POS.westNiche.z - 1.5], [POS.westNiche.z + 1.5, HALL.z1 - 0.5]] : [[HALL.z0 + 0.5, HALL.z1 - 0.5]]);
   for (const side of [-1, 1]) {
     for (const y of [0.55, 9.4]) {
       const cm = conduitMaterial();
       conduitMats.push(cm);
-      const len = HALL.z1 - HALL.z0 - 1;
-      const pipe = ctx.mesh(new THREE.CylinderGeometry(0.11, 0.11, len, 12, 1, true), mats.darkMetal, root, side * (HALL.x1 - 0.95), y, (HALL.z0 + HALL.z1) / 2, false);
-      pipe.rotation.x = Math.PI / 2;
-      const core = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, len, 8), cm);
-      core.position.copy(pipe.position);
-      core.rotation.x = Math.PI / 2;
-      core.position.x += side * -0.06;
-      root.add(core);
-      for (let z = HALL.z0 + 1; z < HALL.z1; z += 3) ctx.box(0.12, 0.34, 0.12, mats.gold, root, side * (HALL.x1 - 0.95), y, z, 0.02);
+      for (const [za, zb] of runs(y)) {
+        const len = zb - za;
+        const zc = (za + zb) / 2;
+        const pipe = ctx.mesh(new THREE.CylinderGeometry(0.11, 0.11, len, 12, 1, true), mats.darkMetal, root, side * (HALL.x1 - 0.95), y, zc, false);
+        pipe.rotation.x = Math.PI / 2;
+        const core = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, len, 8), cm);
+        core.position.copy(pipe.position);
+        core.rotation.x = Math.PI / 2;
+        core.position.x += side * -0.06;
+        root.add(core);
+        // end caps where the run stops
+        for (const zEnd of [za, zb]) {
+          const cap = ctx.mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.12, 14), mats.gold, root, side * (HALL.x1 - 0.95), y, zEnd, false);
+          cap.rotation.x = Math.PI / 2;
+        }
+        for (let z = za + 0.5; z < zb; z += 3) ctx.box(0.12, 0.34, 0.12, mats.gold, root, side * (HALL.x1 - 0.95), y, z, 0.02);
+      }
     }
   }
   ctx.animate((_dt, t, s, e) => {
@@ -302,18 +312,18 @@ export function buildArchitecture(ctx: BuildCtx) {
   temporal.blendLight(hemi, { intensity: 0.32, color: 0x6c8a9a }, { intensity: 0.5, color: 0xffd6a0 });
   ctx.section('ambient').lights.push(hemi);
 
-  const keySouth = new THREE.SpotLight(0x9fdcff, 900, 40, Math.PI / 4.2, 0.6, 1.6);
+  const keySouth = new THREE.SpotLight(0x9fdcff, 900, 40, Math.PI / 4.2, 0.9, 1.6);
   keySouth.position.set(-3, H - 0.6, 7);
   keySouth.target.position.set(-2, 0, 5);
   scene.add(keySouth, keySouth.target);
-  temporal.blendLight(keySouth, { intensity: 700, color: 0x9fdcff }, { intensity: 1100, color: 0xffc98a }, 0.5);
+  temporal.blendLight(keySouth, { intensity: 520, color: 0x9fdcff }, { intensity: 620, color: 0xffc98a }, 0.5);
   ctx.section('south').lights.push(keySouth);
 
   const keyNorth = new THREE.SpotLight(0x9fdcff, 900, 40, Math.PI / 4.2, 0.6, 1.6);
   keyNorth.position.set(4, H - 0.6, -19);
   keyNorth.target.position.set(1, 0, -19);
   scene.add(keyNorth, keyNorth.target);
-  temporal.blendLight(keyNorth, { intensity: 650, color: 0x8fd7ff }, { intensity: 1000, color: 0xffc98a }, 0.4);
+  temporal.blendLight(keyNorth, { intensity: 520, color: 0x8fd7ff }, { intensity: 650, color: 0xffc98a }, 0.4);
   ctx.section('north').lights.push(keyNorth);
 
   const sconceGeo = new THREE.SphereGeometry(0.16, 16, 12);

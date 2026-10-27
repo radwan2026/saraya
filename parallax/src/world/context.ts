@@ -45,7 +45,7 @@ export function createMaterials() {
     brushed,
     stains,
     stone: new THREE.MeshStandardMaterial({ map: stoneMap, bumpMap: stoneMap, bumpScale: 0.025, roughness: 0.82, metalness: 0.05, color: 0x9a9da1 }),
-    floor: new THREE.MeshStandardMaterial({ map: floorMap, roughness: 0.42, metalness: 0.35, color: 0xb9bcc0 }),
+    floor: new THREE.MeshStandardMaterial({ map: floorMap, roughness: 0.6, metalness: 0.3, color: 0xa9adb1 }),
     metal: new THREE.MeshStandardMaterial({ map: brushed, roughness: 0.38, metalness: 0.9, color: 0x9a9690 }),
     darkMetal: new THREE.MeshStandardMaterial({ map: brushed, roughness: 0.45, metalness: 0.85, color: 0x2b2d30 }),
     gold: new THREE.MeshStandardMaterial({ map: brushed, roughness: 0.32, metalness: 0.95, color: 0xb08d4a }),

@@ -7,7 +7,7 @@ import { POS } from '../game/layout';
 import { echoRings, stationLabel } from '../game/puzzles/engine';
 import { PARALLAX_INITIAL_BEARING } from '../game/puzzles/parallax';
 import type { GameState } from '../game/types';
-import { canvasTexture } from './textures';
+import { canvasTexture, textTexture } from './textures';
 
 export interface EngineRig {
   root: THREE.Group;
@@ -170,7 +170,7 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
     down.shadow.bias = -0.0005;
   }
   ctx.scene.add(down, down.target);
-  temporal.blendLight(down, { intensity: 900, color: 0xbfefff }, { intensity: 950, color: 0xffd49a }, 0.3);
+  temporal.blendLight(down, { intensity: 420, color: 0xbfefff }, { intensity: 480, color: 0xffd49a }, 0.3);
   ctx.section('engine').lights.push(down);
 
   ctx.interact('engine', [rings[0], rings[1], rings[2], shield], 16, { pos: new THREE.Vector3(0, 4.2, 1.8), look: new THREE.Vector3(0, 7.2, -4) });
@@ -194,6 +194,63 @@ export function buildEngine(ctx: BuildCtx): EngineRig {
   ctx.mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.55, 10), mats.metal, lever, 0, 0.27, 0);
   ctx.mesh(new THREE.SphereGeometry(0.08, 16, 12), ctx.mats.emerald, lever, 0, 0.55, 0, false);
   temporal.register({ id: 'engine-lever', object: lever, speed: 3, resolve: (s) => ({ rotation: [s.engine.solved ? 0.9 : -0.5, 0, 0] }) });
+
+  // gauges on the deck, one per ring; their needles follow the ring stations
+  const gaugeTex = canvasTexture(256, 256, (g, w) => {
+    const c = w / 2;
+    g.fillStyle = '#e9dfc6'; g.beginPath(); g.arc(c, c, c - 6, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#2a2116'; g.lineWidth = 3;
+    for (let k = 0; k < 8; k++) {
+      const a = (k / 8) * Math.PI * 2 - Math.PI / 2;
+      g.beginPath(); g.moveTo(c + Math.cos(a) * (c - 18), c + Math.sin(a) * (c - 18)); g.lineTo(c + Math.cos(a) * (c - 40), c + Math.sin(a) * (c - 40)); g.stroke();
+      g.fillStyle = '#2a2116'; g.font = 'bold 26px Georgia'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(stationLabel(k), c + Math.cos(a) * (c - 62), c + Math.sin(a) * (c - 62));
+    }
+    g.strokeStyle = '#b08d4a'; g.lineWidth = 10; g.beginPath(); g.arc(c, c, c - 6, 0, Math.PI * 2); g.stroke();
+  });
+  const gaugeMat = new THREE.MeshStandardMaterial({ map: gaugeTex, roughness: 0.5, emissive: 0xffe3b0, emissiveMap: gaugeTex, emissiveIntensity: 0.05 });
+  temporal.blendMaterial(gaugeMat, { color: 0x77735f, emissiveIntensity: 0.02 }, { color: 0xffffff, emissiveIntensity: 0.25 });
+  const deckFrame = new THREE.Group();
+  deckFrame.position.set(0, 1.2, 0.1);
+  deckFrame.rotation.x = -0.45;
+  con.add(deckFrame);
+  const gaugeNeedles: THREE.Object3D[] = [];
+  for (let i = 0; i < 3; i++) {
+    const x = -0.8 + i * 0.8;
+    ctx.mesh(new THREE.CircleGeometry(0.17, 40), gaugeMat, deckFrame, x, 0.075, -0.2, false).rotation.x = -Math.PI / 2;
+    ctx.mesh(new THREE.TorusGeometry(0.175, 0.018, 8, 40), mats.gold, deckFrame, x, 0.075, -0.2, false).rotation.x = Math.PI / 2;
+    const pivot = new THREE.Group();
+    pivot.position.set(x, 0.085, -0.2);
+    deckFrame.add(pivot);
+    const nd = ctx.box(0.012, 0.004, 0.14, new THREE.MeshStandardMaterial({ color: 0x8b1d1d }), pivot, 0, 0, -0.06, 0);
+    nd.castShadow = false;
+    gaugeNeedles.push(pivot);
+    // toggle switches under each knob
+    for (let k = 0; k < 3; k++) {
+      const sw = ctx.box(0.025, 0.025, 0.06, mats.metal, deckFrame, x - 0.12 + k * 0.12, 0.09, 0.3, 0.005);
+      sw.rotation.x = k === 1 ? 0.5 : -0.5;
+    }
+  }
+  // status lamps: amber when idle, red when faulted, green when calibrated
+  const statusMats = [0, 1, 2].map(() => new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0xff3b2f, emissiveIntensity: 1 }));
+  statusMats.forEach((m, i) => ctx.mesh(new THREE.SphereGeometry(0.035, 12, 8), m, deckFrame, 0.95 + (i - 1) * 0.1, 0.08, -0.32, false));
+  // vents and nameplate on the console body
+  for (let k = 0; k < 7; k++) ctx.box(2.2, 0.025, 0.02, mats.darkMetal, con, 0, 0.25 + k * 0.07, 0.51, 0.004);
+  const plateTex = textTexture(['CALIBRATION'], { w: 512, h: 96, size: 54, color: '#e2c27a', bg: '#1a1611', font: 'Georgia, serif' });
+  ctx.mesh(new THREE.PlaneGeometry(0.9, 0.17), new THREE.MeshStandardMaterial({ map: plateTex, metalness: 0.5, roughness: 0.4 }), con, 0, 0.84, 0.511, false);
+  ctx.animate((dt, t, s, e) => {
+    const rings = e > 0.5 && !s.completed ? echoRings() : s.engine.rings;
+    gaugeNeedles.forEach((p, i) => {
+      const target = -(rings[i] / 8) * Math.PI * 2 + (e > 0.5 ? 0 : Math.sin(t * 7 + i) * 0.02);
+      p.rotation.y += (target - p.rotation.y) * Math.min(1, dt * 6);
+    });
+    statusMats.forEach((m, i) => {
+      const ok = s.engine.solved || e > 0.5;
+      m.emissive.setHex(ok ? 0x37e69b : !s.engine.segmentInstalled && i === 0 ? 0xff3b2f : 0xffb45e);
+      const blink = !ok && i === 0 ? (Math.sin(t * 5) > 0 ? 1.6 : 0.1) : 1.2;
+      m.emissiveIntensity = blink;
+    });
+  });
 
   // holographic readout floating above the console
   const holo = canvasTexture(1024, 512, () => {}, {});

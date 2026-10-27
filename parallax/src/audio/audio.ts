@@ -384,7 +384,7 @@ export class AudioEngine {
 
   // ---------------------------------------------------------------- effects
 
-  sfx(name: 'click' | 'interact' | 'fail' | 'discover' | 'solve' | 'pickup' | 'plate' | 'ring' | 'clank' | 'anchor' | 'anchorFail' | 'door' | 'locks' | 'footstep' | 'ui', pos?: THREE.Vector3) {
+  sfx(name: 'click' | 'interact' | 'fail' | 'discover' | 'solve' | 'pickup' | 'plate' | 'ring' | 'clank' | 'anchor' | 'anchorFail' | 'door' | 'locks' | 'footstep' | 'ui' | 'tick' | 'steam' | 'paper', pos?: THREE.Vector3) {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
     const d = this.out(pos);
@@ -440,6 +440,17 @@ export class AudioEngine {
         this.noiseHit(d, t, 6, 0.4, 'lowpass', 240, 90, 1, 1.2);
         this.tone(d, 'sine', 36, 30, t, 6, 0.35, 1);
         for (let i = 0; i < 4; i++) this.metal(d, t + 0.8 + i * 0.9, 80 + i * 6, 0.25);
+        break;
+      case 'tick':
+        this.noiseHit(d, t, 0.05, 0.22, 'bandpass', 2600, 2600, 6, 0.002);
+        this.tone(d, 'sine', 1760, 1700, t, 0.04, 0.03, 0.002);
+        break;
+      case 'steam':
+        this.noiseHit(d, t, 2.6, 0.16, 'highpass', 2400, 5200, 0.7, 0.25);
+        this.noiseHit(d, t, 1.2, 0.06, 'lowpass', 400, 200, 1, 0.05);
+        break;
+      case 'paper':
+        for (let i = 0; i < 3; i++) this.noiseHit(d, t + i * 0.07, 0.12, 0.08, 'bandpass', 3000 + i * 600, 1800, 1.2, 0.01);
         break;
       case 'footstep':
         this.noiseHit(d, t, 0.12, 0.06, 'lowpass', 500 + Math.random() * 200, 200, 1, 0.003);

@@ -8,6 +8,7 @@ import { buildEngine, type EngineRig } from './engine';
 import { buildArchive, type ArchiveRig } from './archive';
 import { buildBridge } from './bridge';
 import { buildNorth, type NorthRig } from './north';
+import { buildDetails, type DetailsRig } from './details';
 import type { GameState, GlyphId } from '../game/types';
 import { GLYPH_MEANING } from '../game/puzzles/parallax';
 import { POS } from '../game/layout';
@@ -22,6 +23,7 @@ export interface World {
   archive: ArchiveRig;
   north: NorthRig;
   door: DoorRig;
+  details: DetailsRig;
   interactables: Map<string, Interactable>;
   update: (dt: number, time: number, s: GameState) => void;
   pick: (raycaster: THREE.Raycaster) => { id: string; distance: number } | null;
@@ -44,6 +46,7 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
   const archive = buildArchive(ctx);
   buildBridge(ctx);
   const north = buildNorth(ctx);
+  const details = buildDetails(ctx);
 
   // the archive wall frames are examined as one object
   const wallProbe = new THREE.Mesh(new THREE.BoxGeometry(0.2, 2.2, 6), new THREE.MeshBasicMaterial({ visible: false }));
@@ -175,6 +178,7 @@ export function buildWorld(renderer: THREE.WebGLRenderer, quality: Quality): Wor
     archive,
     north,
     door,
+    details,
     interactables: ctx.interactables,
     update,
     pick: (raycaster) => {

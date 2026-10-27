@@ -54,6 +54,19 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
   fan.position.set(0, 1.3, 0);
   fan.rotation.x = Math.PI / 2;
   turbine.add(fan);
+  const fins = new THREE.InstancedMesh(new THREE.BoxGeometry(0.06, 1.4, 0.22), mats.darkMetal, 18);
+  const fm = new THREE.Matrix4();
+  for (let k = 0; k < 18; k++) {
+    const a = (k / 18) * Math.PI * 2;
+    fm.compose(new THREE.Vector3(Math.cos(a) * 1.12, 1.25, Math.sin(a) * 1.12), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, -a, 0)), new THREE.Vector3(1, 1, 1));
+    fins.setMatrixAt(k, fm);
+  }
+  turbine.add(fins);
+  ctx.mesh(new THREE.CylinderGeometry(1.1, 1.15, 0.18, 40), mats.darkMetal, turbine, 0, 2.24, 0);
+  ctx.mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.6, 20), rusty, turbine, 0.45, 2.6, 0.3);
+  ctx.mesh(new THREE.TorusGeometry(0.23, 0.04, 8, 20), mats.gold, turbine, 0.45, 2.9, 0.3).rotation.x = Math.PI / 2;
+  const feed = ctx.mesh(new THREE.CylinderGeometry(0.16, 0.16, 3.4, 14), rusty, turbine, -2.3, 1.0, -0.2, false);
+  feed.rotation.z = Math.PI / 2;
   const turbineLamp = lampFor('turbine', PALETTE.amber);
   ctx.mesh(new THREE.SphereGeometry(0.14, 16, 12), turbineLamp, turbine, 0, 2.45, 0, false);
   ctx.animate((dt, _t, _s, e) => { fan.rotation.z += dt * (e * 9 + pulses.turbine * 14); });
@@ -88,28 +101,47 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
   const drip = new THREE.Group();
   drip.position.set(dp.x, 0, dp.z);
   scene.add(drip);
-  for (const [x, r] of [[-0.6, 0.16], [0, 0.22], [0.55, 0.14]] as const) ctx.mesh(new THREE.CylinderGeometry(r, r, 6, 16), rusty, drip, x, 3, -0.6);
-  ctx.mesh(new THREE.TorusGeometry(0.22, 0.05, 8, 24), mats.gold, drip, 0, 2.6, -0.6).rotation.x = Math.PI / 2;
-  const crack = ctx.box(0.05, 0.3, 0.05, new THREE.MeshStandardMaterial({ color: 0x050505 }), drip, 0.2, 2.4, -0.42, 0.01);
+  // three pipes run floor to ceiling against the north wall, braced to it, joined by a manifold
+  const PZ = -2.05;
+  for (const [x, r] of [[-0.6, 0.16], [0, 0.22], [0.55, 0.14]] as const) {
+    ctx.mesh(new THREE.CylinderGeometry(r, r, 16, 16), rusty, drip, x, 8, PZ, false);
+    for (let y = 1.2; y < 15; y += 3.2) {
+      ctx.mesh(new THREE.CylinderGeometry(r + 0.05, r + 0.05, 0.08, 16), mats.gold, drip, x, y, PZ, false);
+      ctx.box(0.06, 0.08, 0.32, mats.darkMetal, drip, x, y + 0.12, PZ - 0.2, 0.01);
+    }
+  }
+  const manifold = ctx.mesh(new THREE.CylinderGeometry(0.13, 0.13, 2.2, 14), rusty, drip, 0.5, 3.4, PZ + 0.02, false);
+  manifold.rotation.z = Math.PI / 2;
+  ctx.mesh(new THREE.SphereGeometry(0.17, 14, 10), mats.gold, drip, 1.6, 3.4, PZ + 0.02, false);
+  // valve wheel on the main pipe
+  const valve = new THREE.Group();
+  valve.position.set(0, 1.35, PZ + 0.32);
+  drip.add(valve);
+  ctx.mesh(new THREE.TorusGeometry(0.2, 0.025, 8, 28), mats.gold, valve, 0, 0, 0, false);
+  for (let k = 0; k < 3; k++) ctx.box(0.4, 0.025, 0.025, mats.gold, valve, 0, 0, 0, 0.005).rotation.z = (k * Math.PI) / 3;
+  ctx.mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.2, 8), mats.metal, valve, 0, 0, -0.1, false).rotation.x = Math.PI / 2;
+  const crack = ctx.box(0.05, 0.3, 0.05, new THREE.MeshStandardMaterial({ color: 0x050505 }), drip, 0, 2.4, PZ + 0.22, 0.01);
   temporal.register({ id: 'pipe-crack', object: crack, resolve: (_s, t) => ({ visible: t === 'present' }) });
   const water = new THREE.MeshStandardMaterial({ color: 0x5fa8b0, roughness: 0.05, metalness: 0.2, transparent: true, opacity: 0.8 });
   const drops: THREE.Mesh[] = [];
   for (let i = 0; i < 4; i++) {
-    const d = ctx.mesh(new THREE.SphereGeometry(0.035, 8, 6), water, drip, 0.2, 2.3, -0.4, false);
+    const d = ctx.mesh(new THREE.SphereGeometry(0.035, 8, 6), water, drip, 0, 2.3, PZ + 0.26, false);
     d.scale.y = 1.6;
     drops.push(d);
   }
-  const puddle = ctx.mesh(new THREE.CircleGeometry(0.7, 32), new THREE.MeshStandardMaterial({ color: 0x0a1416, roughness: 0.02, metalness: 0.9, transparent: true, opacity: 0.85 }), drip, 0.2, 0.012, -0.2, false);
+  const puddle = ctx.mesh(new THREE.CircleGeometry(0.7, 32), new THREE.MeshStandardMaterial({ color: 0x0a1416, roughness: 0.02, metalness: 0.9, transparent: true, opacity: 0.85 }), drip, 0, 0.012, -1.35, false);
   puddle.rotation.x = -Math.PI / 2;
   temporal.register({ id: 'puddle', object: puddle, resolve: (_s, t) => ({ visible: t === 'present' }) });
   const dripLamp = lampFor('drip', PALETTE.cyan);
-  ctx.mesh(new THREE.SphereGeometry(0.1, 16, 12), dripLamp, drip, 0.2, 2.75, -0.38, false);
+  ctx.mesh(new THREE.SphereGeometry(0.1, 16, 12), dripLamp, drip, 0.42, 2.8, PZ + 0.2, false);
+  ctx.box(0.06, 0.06, 0.3, mats.darkMetal, drip, 0.42, 2.72, PZ + 0.08, 0.01);
   const dripState = drops.map((_, i) => ({ y: 2.3, v: 0, delay: i * 0.4, active: false }));
   ctx.animate((dt, _t, s) => {
     const present = s.timeline === 'present';
     dripState.forEach((d, i) => {
       if (!present) { drops[i].visible = false; return; }
       if (!d.active && pulses.drip > 0.85) { d.active = true; d.y = 2.3; d.v = 0; }
+      drops[i].position.z = PZ + 0.26 + (2.3 - d.y) * 0.12;
       if (d.active) {
         d.v += 9.8 * dt;
         d.y -= d.v * dt;
@@ -119,7 +151,7 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
       drops[i].position.y = d.y + i * 0.02;
     });
   });
-  hitBox(drip, 1.8, 3.2, 1.6, 0, -0.2);
+  hitBox(drip, 1.8, 3.2, 2.2, 0, -1.1);
   ctx.interact('machine-drip', [drip], 3.2);
 
   // ---------------------------------------------------------------- arcing relay (present)
@@ -128,8 +160,30 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
   relay.position.set(rp.x, 0, rp.z);
   scene.add(relay);
   ctx.box(1.3, 2.2, 0.7, rusty, relay, 0, 1.1, -0.3, 0.04);
+  ctx.box(1.4, 0.12, 0.8, mats.darkMetal, relay, 0, 2.26, -0.3, 0.03);
+  ctx.box(1.4, 0.16, 0.8, mats.darkMetal, relay, 0, 0.08, -0.3, 0.03);
+  // glazed contact window with three hinged arms
   ctx.box(1.1, 0.9, 0.05, mats.obsidian, relay, 0, 1.55, 0.06, 0.01);
-  for (let i = 0; i < 3; i++) ctx.box(0.08, 0.3, 0.08, mats.gold, relay, -0.35 + i * 0.35, 1.55, 0.12, 0.01);
+  for (let i = 0; i < 3; i++) {
+    ctx.box(0.08, 0.3, 0.08, mats.gold, relay, -0.35 + i * 0.35, 1.55, 0.12, 0.01);
+    const arm = ctx.box(0.04, 0.28, 0.04, mats.metal, relay, -0.35 + i * 0.35 + 0.08, 1.72, 0.14, 0.005);
+    arm.rotation.z = -0.5;
+  }
+  const glass = ctx.mesh(new THREE.PlaneGeometry(1.0, 0.8), mats.glass, relay, 0, 1.55, 0.2, false);
+  glass.renderOrder = 3;
+  for (const [w, h, x, y] of [[1.15, 0.06, 0, 2.0], [1.15, 0.06, 0, 1.1], [0.06, 0.95, -0.56, 1.55], [0.06, 0.95, 0.56, 1.55]] as const) ctx.box(w, h, 0.06, mats.gold, relay, x, y, 0.2, 0.01);
+  // cooling fins down both flanks
+  for (const sx of [-1, 1]) for (let k = 0; k < 8; k++) ctx.box(0.12, 0.05, 0.6, mats.darkMetal, relay, sx * 0.72, 0.5 + k * 0.2, -0.3, 0.005);
+  // warning plate
+  const warnTex = canvasTexture(256, 96, (g, w, h) => {
+    for (let x = -h; x < w + h; x += 32) { g.fillStyle = '#d8a81e'; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 16, 0); g.lineTo(x + 16 - h, h); g.lineTo(x - h, h); g.fill(); g.fillStyle = '#141414'; g.beginPath(); g.moveTo(x + 16, 0); g.lineTo(x + 32, 0); g.lineTo(x + 32 - h, h); g.lineTo(x + 16 - h, h); g.fill(); }
+    g.fillStyle = '#141414'; g.fillRect(24, 24, w - 48, h - 48);
+    g.fillStyle = '#e8e2d0'; g.font = '700 30px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('2000 V', w / 2, h / 2 + 1);
+  });
+  ctx.mesh(new THREE.PlaneGeometry(0.6, 0.22), new THREE.MeshStandardMaterial({ map: warnTex, roughness: 0.6 }), relay, 0, 0.75, 0.06, false);
+  // conduit from the cabinet up into the ceiling
+  ctx.mesh(new THREE.CylinderGeometry(0.09, 0.09, 13.7, 12), mats.darkMetal, relay, 0.4, 9.15, -0.5, false);
+  ctx.mesh(new THREE.CylinderGeometry(0.06, 0.06, 13.7, 10), mats.darkMetal, relay, 0.15, 9.15, -0.55, false);
   const sparkMat = new THREE.PointsMaterial({ color: 0xbfefff, size: 0.05, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
   const sparkGeo = new THREE.BufferGeometry();
   const sparkCount = 40;
@@ -152,7 +206,7 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
     sparkGeo.attributes.position.needsUpdate = true;
     sparkMat.opacity = p;
   });
-  hitBox(relay, 1.5, 2.4, 1.2, 0, -0.2);
+  hitBox(relay, 1.6, 2.4, 1.2, 0, -0.2);
   ctx.interact('machine-relay', [relay], 3.2);
 
   // ---------------------------------------------------------------- recording console
@@ -165,11 +219,24 @@ export function buildNorth(ctx: BuildCtx): NorthRig {
   ctx.box(1.2, 0.5, 0.12, mats.obsidian, vc, 0, 1.3, -0.3, 0.03);
   const reels: THREE.Mesh[] = [];
   for (const s of [-1, 1]) {
-    const reel = ctx.mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 24), mats.metal, vc, s * 0.3, 1.38, -0.22);
-    reel.rotation.x = Math.PI / 2;
+    const reel = ctx.mesh(gearGeometry(36, 0.2, 0.03, 0.18), mats.metal, vc, s * 0.3, 1.38, -0.22);
     reels.push(reel);
+    ctx.mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.035, 24).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x2a1d14, roughness: 0.6 }), vc, s * 0.3, 1.38, -0.21, false);
+  }
+  ctx.box(0.62, 0.012, 0.012, new THREE.MeshStandardMaterial({ color: 0x2a1d14 }), vc, 0, 1.27, -0.2, 0);
+  for (const s of [-1, 1]) {
+    ctx.mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.06, 10).rotateX(Math.PI / 2), mats.gold, vc, s * 0.1, 1.24, -0.2, false);
+  }
+  const vuMat = new THREE.MeshStandardMaterial({ color: 0x110a04, emissive: PALETTE.amber, emissiveIntensity: 0.25, map: canvasTexture(128, 64, (g, w, h) => { g.fillStyle = '#f2e3c2'; g.fillRect(0, 0, w, h); g.strokeStyle = '#3a2a14'; g.lineWidth = 3; g.beginPath(); g.arc(w / 2, h + 20, 70, Math.PI * 1.2, Math.PI * 1.8); g.stroke(); g.fillStyle = '#9b1d1d'; g.fillRect(w * 0.72, 12, 16, 6); }) });
+  const needles: THREE.Mesh[] = [];
+  for (const s of [-1, 1]) {
+    ctx.mesh(new THREE.PlaneGeometry(0.22, 0.11), vuMat, vc, s * 0.36, 1.05, 0.08, false).rotation.x = -0.45;
+    const n = ctx.box(0.006, 0.08, 0.004, new THREE.MeshStandardMaterial({ color: 0x111111 }), vc, s * 0.36, 1.03, 0.1, 0);
+    n.rotation.x = -0.45;
+    needles.push(n);
   }
   const playing = { value: false };
+  ctx.animate((_dt, t) => { needles.forEach((n, i) => (n.rotation.z = playing.value ? Math.sin(t * (9 + i * 3)) * 0.5 - 0.1 : -0.7)); });
   ctx.animate((dt) => { if (playing.value) reels.forEach((r, i) => (r.rotation.y += dt * (3 + i))); });
   const voiceHolo = canvasTexture(1024, 384, (g, w, h) => {
     g.clearRect(0, 0, w, h);
