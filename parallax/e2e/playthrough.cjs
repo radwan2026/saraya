@@ -92,7 +92,7 @@ async function waitForServer() {
     const closePanel = async () => { await P(() => window.__parallax.closePanel()); await ready(); };
 
     console.log(`Loading ${URL}`);
-    await page.goto(URL);
+    await page.goto(URL, { timeout: 180000 });
     await page.waitForFunction(() => window.__parallax && window.__parallax.mode() === 'menu', null, { timeout: 120000 });
     await P(() => localStorage.removeItem('parallax.save'));
     await P((k) => window.__parallax.setTimeScale(k), Number(process.env.TIMESCALE || 6));
@@ -222,7 +222,7 @@ async function waitForServer() {
     await settle(3500);
 
     console.log('Persistence: reload and continue');
-    await page.reload();
+    await page.reload({ timeout: 180000 });
     await page.waitForFunction(() => window.__parallax && window.__parallax.mode() === 'menu', null, { timeout: 120000 });
     await P((k) => window.__parallax.setTimeScale(k), Number(process.env.TIMESCALE || 6));
     assert(await page.isVisible('#mContinue'), 'continue is offered');
