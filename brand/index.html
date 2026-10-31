@@ -42,7 +42,9 @@ svg.mark{display:block}
 .nav ul::-webkit-scrollbar{display:none}
 .nav a{color:var(--charcoal);text-decoration:none;font-size:14px;font-weight:500;padding:6px 12px;border-radius:999px;white-space:nowrap}
 .nav a:hover{background:var(--mint);color:var(--forest)}
-@media (max-width:800px){.nav ul{display:none}}
+.nav .dl{background:var(--forest);color:#fff;font-weight:700;padding:8px 16px}
+.nav .dl:hover{background:var(--green);color:var(--forest)}
+@media (max-width:800px){.nav ul{display:none}.nav .dl{margin-inline-start:auto}}
 
 /* ---------- Cover ---------- */
 .cover{position:relative;min-height:92vh;background:var(--forest);color:#fff;overflow:hidden;display:flex;align-items:center}
@@ -375,6 +377,7 @@ footer svg.fs{position:absolute;inset-inline-start:-80px;top:-60px;width:520px;o
       <li><a href="#apps">التطبيقات</a></li>
       <li><a href="#voice">النبرة</a></li>
     </ul>
+    <a class="dl" href="SADAD-Brand-Guidelines.pdf" download>تحميل PDF ↓</a>
   </div>
 </nav>
 
