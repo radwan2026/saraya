@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js",
-    "reset-password": "node reset-password.js"
+    "reset-password": "node reset-password.js",
+    "build:offline": "node scripts/build-offline.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -18,5 +19,8 @@
     "express": "^5.3.0",
     "nodemailer": "^10.1.0",
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
   }
 }
