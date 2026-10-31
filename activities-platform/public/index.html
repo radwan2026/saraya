@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لجنة الأنشطة — شركة المدار الجديد</title>
+  <meta name="description" content="منصة لجنة الأنشطة بشركة المدار الجديد: متابعة المشاركات الخارجية والبطولات، الفرق والمنتخبات الممثلة للشركة، سجل المواهب، وتجهيز المشاركين ودعمهم.">
+  <meta name="theme-color" content="#14532d">
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container hbar">
+      <a class="brand" href="#/">
+        <img src="/assets/emblem.png" alt="شعار لجنة الأنشطة">
+        <div><span data-setting="committeeName">لجنة الأنشطة</span><small data-setting="companyName">شركة المدار الجديد</small></div>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-label="القائمة">☰</button>
+      <nav class="nav" id="nav">
+        <a href="#/">الرئيسية</a>
+        <a href="#/activities">المشاركات الخارجية</a>
+        <a href="#/teams">الفرق والمنتخبات</a>
+        <a href="#/talents">سجل المواهب</a>
+        <a href="#/achievements">الإنجازات</a>
+        <a href="#/card">بطاقة المشارك</a>
+        <a href="#/news">الأخبار</a>
+        <a href="#/quiz">المسابقة</a>
+        <a href="#/polls">التصويت</a>
+        <a href="#/committee">اللجنة</a>
+        <a href="#/docs/charter">الميثاق</a>
+        <a href="#/complaints">الدعم والشكاوى</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app"><div class="loading"><div class="spinner"></div>جاري التحميل…</div></main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="cols">
+        <div>
+          <div class="flex"><img src="/assets/emblem.png" alt="" style="width:64px;background:#fff;border-radius:14px;padding:4px"><h4 style="margin:0"><span data-setting="committeeName">لجنة الأنشطة</span> — <span data-setting="companyName">شركة المدار الجديد</span></h4></div>
+          <p data-setting="tagline"></p>
+          <div class="social" id="footerSocial"></div>
+        </div>
+        <div class="links">
+          <h4>روابط سريعة</h4>
+          <a href="#/activities?status=open">الترشح لتمثيل الشركة</a>
+          <a href="#/talents">القيد في سجل المواهب</a>
+          <a href="#/card">إصدار بطاقة المشارك</a>
+          <a href="#/docs/charter">الميثاق الرياضي الاجتماعي الثقافي</a>
+          <a href="#/docs/bylaws">اللائحة التنظيمية</a>
+        </div>
+        <div class="links">
+          <h4>تواصل مع اللجنة</h4>
+          <div id="footerContact"></div>
+          <a href="#/complaints">طلب دعم أو شكوى</a>
+          <a href="/admin" rel="nofollow">دخول أعضاء اللجنة</a>
+        </div>
+      </div>
+      <div class="copy">© <span id="year"></span> <span data-setting="committeeName">لجنة الأنشطة</span> — <span data-setting="companyName">شركة المدار الجديد</span>. جميع الحقوق محفوظة.</div>
+    </div>
+  </footer>
+
+  <script src="/common.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
