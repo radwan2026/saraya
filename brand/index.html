@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل هوية سداد</title>
+<meta name="description" content="دليل الهوية البصرية لعلامة سداد: الشعار، الألوان، الخطوط، العناصر الجرافيكية والتطبيقات.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#80B95A;      /* أخضر سداد — الأساسي */
+  --signal:#5DC23B;     /* أخضر الإشارة — للتطبيقات والمنتجات */
+  --forest:#1F3319;     /* أخضر الغابة — الداكن */
+  --charcoal:#535353;   /* الفحمي — كلمة SADAD */
+  --mint:#E7F2DE;       /* النعناعي — خلفيات فاتحة */
+  --paper:#F6F8F3;      /* الورقي */
+  --white:#FFFFFF;
+  --ink:#1C1F1A;
+  --muted:#6B7266;
+  --line:#DCE3D5;
+  --danger:#D8453B;
+  --ar:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  --en:"Open Sans","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --wrap:1200px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ar);color:var(--ink);background:var(--paper);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+.en{font-family:var(--en);direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+svg.mark{display:block}
+
+/* ---------- Navigation ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(246,248,243,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.nav img{height:30px;width:auto}
+.nav ul{display:flex;gap:4px;list-style:none;margin-inline-start:auto;overflow-x:auto;scrollbar-width:none}
+.nav ul::-webkit-scrollbar{display:none}
+.nav a{color:var(--charcoal);text-decoration:none;font-size:14px;font-weight:500;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.nav a:hover{background:var(--mint);color:var(--forest)}
+@media (max-width:800px){.nav ul{display:none}}
+
+/* ---------- Cover ---------- */
+.cover{position:relative;min-height:92vh;background:var(--forest);color:#fff;overflow:hidden;display:flex;align-items:center}
+.cover .shards{position:absolute;inset:0;pointer-events:none}
+.cover .giant{position:absolute;left:-4%;bottom:-16%;width:min(52vw,720px);opacity:1}
+@media (max-width:800px){.cover .giant{opacity:.18;width:90vw}}
+.cover .wrap{position:relative;z-index:2;width:100%}
+.cover .kicker{display:inline-flex;gap:10px;align-items:center;font-size:14px;letter-spacing:.04em;color:var(--green);font-weight:500;border:1px solid rgba(128,185,90,.4);padding:6px 14px;border-radius:999px}
+.cover h1{font-size:clamp(48px,9vw,128px);line-height:1.05;font-weight:700;margin:28px 0 16px}
+.cover h1 span{color:var(--green)}
+.cover p.lead{font-size:clamp(18px,2vw,22px);max-width:560px;color:rgba(255,255,255,.78);font-weight:300}
+.cover .logo{width:min(320px,70vw);margin-bottom:8px}
+.cover .meta{display:flex;gap:40px;margin-top:56px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.6)}
+.cover .meta b{display:block;color:#fff;font-size:16px;font-weight:500}
+
+/* ---------- Sections ---------- */
+section.block{padding:120px 0;position:relative}
+@media (max-width:700px){section.block{padding:72px 0}}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:12px 32px;align-items:end;margin-bottom:56px}
+.sec-num{font-family:var(--en);font-weight:800;font-size:clamp(64px,10vw,140px);line-height:.8;color:var(--green);letter-spacing:-.04em}
+.sec-head h2{font-size:clamp(32px,4.5vw,56px);line-height:1.15;font-weight:700}
+.sec-head .sub{grid-column:1/-1;max-width:720px;color:var(--muted);font-size:18px}
+.dark{background:var(--forest);color:#fff}
+.dark .sec-head .sub{color:rgba(255,255,255,.7)}
+.mintbg{background:var(--mint)}
+.whitebg{background:#fff}
+.label{font-size:13px;font-weight:700;color:var(--green);letter-spacing:.06em;margin-bottom:8px;display:block}
+.dark .label{color:var(--green)}
+h3{font-size:24px;line-height:1.35;margin-bottom:10px}
+p+p{margin-top:12px}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:24px;padding:32px;border:1px solid var(--line)}
+.dark .card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+.caption{font-size:14px;color:var(--muted);margin-top:12px}
+.dark .caption{color:rgba(255,255,255,.6)}
+
+/* ---------- Index ---------- */
+.toc{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.toc a{background:#fff;padding:28px 24px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:20px;min-height:150px;transition:.25s}
+.toc a:hover{background:var(--forest);color:#fff}
+.toc a b{font-family:var(--en);font-size:15px;color:var(--green)}
+.toc a span{font-size:20px;font-weight:700;margin-top:auto}
+@media (max-width:900px){.toc{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- Brand essence ---------- */
+.manifesto{font-size:clamp(28px,4vw,48px);line-height:1.4;font-weight:700;max-width:960px}
+.manifesto em{font-style:normal;color:var(--green)}
+.pillars{margin-top:64px}
+.pillar{padding:36px 32px;border-radius:24px;background:#fff;border:1px solid var(--line);position:relative;overflow:hidden}
+.pillar .ico{width:64px;height:64px;border-radius:18px;background:var(--green);display:grid;place-items:center;margin-bottom:28px}
+.pillar .ico svg{width:34px;height:34px;stroke:#fff}
+.pillar h3{font-size:28px}
+.pillar .bgnum{position:absolute;inset-inline-end:20px;top:6px;font-family:var(--en);font-weight:800;font-size:96px;color:var(--mint);line-height:1}
+
+/* ---------- Logo ---------- */
+.logo-hero{background:#fff;border-radius:32px;border:1px solid var(--line);padding:clamp(40px,8vw,110px);display:grid;place-items:center}
+.logo-hero img{width:min(560px,100%)}
+.anatomy{position:relative;background:#fff;border-radius:32px;border:1px solid var(--line);padding:64px 40px;margin-top:24px}
+.anatomy .row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.anatomy .row div{border-top:3px solid var(--green);padding-top:14px}
+.anatomy .row b{font-family:var(--en);color:var(--green);font-size:14px}
+@media (max-width:700px){.anatomy .row{grid-template-columns:1fr}}
+.anatomy-figure{display:flex;justify-content:center;align-items:center;gap:0;position:relative}
+.anatomy-figure img{width:min(520px,100%)}
+
+.meaning{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;margin-top:24px;align-items:stretch}
+@media (max-width:900px){.meaning{grid-template-columns:1fr}}
+.meaning .stage{background:var(--forest);border-radius:32px;padding:48px;display:grid;place-items:center;position:relative;overflow:hidden;min-height:420px}
+.meaning .stage svg{width:min(300px,70%)}
+.meaning ol{list-style:none;counter-reset:m;display:grid;gap:16px}
+.meaning li{counter-increment:m;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 24px 24px 24px;display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start}
+.meaning li::before{content:counter(m);font-family:var(--en);font-weight:800;width:48px;height:48px;border-radius:14px;background:var(--mint);color:var(--forest);display:grid;place-items:center;font-size:20px}
+.meaning li b{display:block;font-size:18px;margin-bottom:4px}
+
+/* clear space */
+.clear{display:grid;grid-template-columns:1.3fr 1fr;gap:24px}
+@media (max-width:900px){.clear{grid-template-columns:1fr}}
+.clear-box{background:#fff;border:1px solid var(--line);border-radius:32px;padding:48px;display:grid;place-items:center}
+.cs{position:relative;padding:calc(var(--x)*1px);outline:2px dashed rgba(128,185,90,.7);outline-offset:0;--x:56;background:repeating-linear-gradient(45deg,rgba(128,185,90,.10) 0 6px,transparent 6px 12px)}
+.cs .inner{background:#fff;outline:1px solid var(--green)}
+.cs img{width:min(320px,52vw)}
+.cs .x{position:absolute;width:calc(var(--x)*1px);height:calc(var(--x)*1px);display:grid;place-items:center;font-family:var(--en);font-weight:700;color:var(--forest);font-size:18px}
+.cs .x.t{top:0;left:50%;transform:translateX(-50%)}
+.cs .x.b{bottom:0;left:50%;transform:translateX(-50%)}
+.cs .x.l{left:0;top:50%;transform:translateY(-50%)}
+.cs .x.r{right:0;top:50%;transform:translateY(-50%)}
+@media (max-width:600px){.cs{--x:30}.cs .x{font-size:13px}}
+.minsize{display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap;margin-top:24px}
+.minsize figure{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.minsize figcaption{font-size:13px;color:var(--muted)}
+
+/* versions */
+.version{border-radius:28px;min-height:280px;display:grid;place-items:center;padding:40px;position:relative;overflow:hidden}
+.version img{width:min(300px,80%)}
+.version .tag{position:absolute;bottom:16px;inset-inline-start:20px;font-size:13px;font-weight:500;padding:4px 12px;border-radius:999px;background:rgba(0,0,0,.08)}
+.v-white{background:#fff;border:1px solid var(--line)}
+.v-green{background:var(--green)}
+.v-green .tag{color:var(--forest);background:rgba(255,255,255,.4)}
+.v-forest{background:var(--forest)}
+.v-forest .tag,.v-photo .tag{color:#fff;background:rgba(255,255,255,.15)}
+.v-signal{background:var(--signal)}
+.v-signal .tag{color:var(--forest);background:rgba(255,255,255,.4)}
+.v-photo{background:url(assets/billboard.webp) 82% 70%/260% auto}
+.v-photo::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(31,51,25,.85),rgba(31,51,25,.55))}
+.v-photo img{position:relative}
+.symbols{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:24px}
+.symbols div{aspect-ratio:1;border-radius:28px;display:grid;place-items:center}
+.symbols svg{width:42%}
+@media (max-width:700px){.symbols{grid-template-columns:repeat(2,1fr)}}
+
+/* misuse */
+.misuse{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media (max-width:900px){.misuse{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.misuse{grid-template-columns:1fr}}
+.misuse figure{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.misuse .pv{height:200px;display:grid;place-items:center;position:relative;overflow:hidden}
+.misuse .pv img{width:200px}
+.misuse .pv::after{content:"";position:absolute;top:14px;inset-inline-end:14px;width:32px;height:32px;border-radius:50%;background:var(--danger) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center/18px no-repeat}
+.misuse figcaption{padding:16px 20px;font-weight:500;border-top:1px solid var(--line);font-size:15px}
+.m1 img{transform:scaleX(1.6)}
+.m2 img{transform:rotate(-18deg)}
+.m3 img{filter:hue-rotate(160deg) saturate(1.6)}
+.m4 img{filter:drop-shadow(8px 10px 4px rgba(0,0,0,.45))}
+.misuse .m5 .pv{background:repeating-linear-gradient(135deg,#7cc35b 0 18px,#e9f45c 18px 36px,#4aa2d8 36px 54px)}
+.m6 .swap{display:flex;align-items:center;gap:12px;flex-direction:row-reverse}
+.m6 .swap svg{width:56px}
+.m6 .swap span{font-family:var(--en);font-weight:800;color:var(--charcoal);font-size:34px}
+
+/* ---------- Colors ---------- */
+.palette{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:auto auto;gap:24px}
+@media (max-width:900px){.palette{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.palette{grid-template-columns:1fr}}
+.sw{border-radius:28px;padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.sw.big{grid-row:span 2;min-height:540px}
+@media (max-width:900px){.sw.big{grid-column:1/-1;grid-row:auto;min-height:360px}}
+.sw h3{font-size:28px;margin:0}
+.sw .role{font-size:14px;opacity:.75}
+.sw dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-family:var(--en);font-size:14px;direction:ltr;text-align:left}
+.sw dt{opacity:.6}
+.sw dd{font-weight:600}
+.sw.light{border:1px solid var(--line)}
+.sw .copy{position:absolute;top:24px;inset-inline-end:24px;border:0;cursor:pointer;font:500 13px var(--ar);padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.25);color:inherit}
+.sw.light .copy{background:rgba(0,0,0,.06)}
+.ratio{display:flex;height:80px;border-radius:20px;overflow:hidden;margin-top:24px;border:1px solid var(--line)}
+.ratio div{display:flex;align-items:flex-end;padding:10px 14px;font-family:var(--en);font-weight:700;font-size:14px}
+.combos{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}
+@media (max-width:800px){.combos{grid-template-columns:repeat(2,1fr)}}
+.combos div{border-radius:20px;padding:24px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.combos b{font-size:26px;font-weight:700;line-height:1.2}
+.combos small{font-family:var(--en);font-size:12px;font-weight:600;opacity:.85}
+
+/* ---------- Typography ---------- */
+.type-hero{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:900px){.type-hero{grid-template-columns:1fr}}
+.font-card{border-radius:32px;padding:48px;min-height:440px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.font-card .glyph{font-size:clamp(120px,16vw,200px);line-height:1;font-weight:700}
+.font-card .name{font-size:28px;font-weight:700}
+.font-card .alpha{font-size:22px;letter-spacing:.02em;opacity:.8;word-break:break-word}
+.fc-ar{background:var(--forest);color:#fff}
+.fc-ar .glyph{color:var(--green)}
+.fc-en{background:#fff;border:1px solid var(--line)}
+.fc-en .glyph{font-family:var(--en);color:var(--charcoal);direction:ltr;text-align:left}
+.fc-en .name,.fc-en .alpha{font-family:var(--en);direction:ltr;text-align:left}
+.scale{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:32px;overflow:hidden}
+.scale .r{display:grid;grid-template-columns:180px 1fr;gap:24px;padding:24px 40px;border-bottom:1px solid var(--line);align-items:center}
+.scale .r:last-child{border:0}
+.scale .meta{font-size:13px;color:var(--muted);font-family:var(--en);direction:ltr;text-align:right}
+.scale .meta b{display:block;color:var(--ink);font-family:var(--ar);font-size:15px;direction:rtl}
+@media (max-width:640px){.scale .r{grid-template-columns:1fr;padding:20px}.scale .meta{text-align:right}}
+.weights{display:flex;gap:16px;flex-wrap:wrap;margin-top:24px}
+.weights div{flex:1;min-width:140px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}
+.weights b{font-size:40px;display:block;line-height:1.2}
+.weights small{color:var(--muted)}
+
+/* ---------- Graphic elements ---------- */
+.ge-hero{border-radius:32px;overflow:hidden;position:relative;min-height:460px;background:#fff;border:1px solid var(--line)}
+.ge-hero svg{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1)}
+.ge-hero .txt{position:relative;z-index:2;padding:56px;max-width:520px}
+.ge-hero .txt h3{font-size:clamp(32px,4vw,52px);line-height:1.2}
+.ge-hero .txt h3 span{color:var(--green)}
+@media (max-width:700px){.ge-hero .txt{padding:32px}.ge-hero{min-height:520px}}
+.ge-rules{margin-top:24px}
+.ge-rules .card svg{width:100%;height:160px;margin-bottom:20px;border-radius:16px;background:var(--paper)}
+.patterns{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+@media (max-width:800px){.patterns{grid-template-columns:1fr}}
+.patterns div{aspect-ratio:4/3;border-radius:28px;overflow:hidden}
+.patterns svg{width:100%;height:100%;display:block}
+
+/* ---------- Icons ---------- */
+.icons{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+@media (max-width:900px){.icons{grid-template-columns:repeat(3,1fr)}}
+.icons div{background:#fff;border:1px solid var(--line);border-radius:24px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:14px;font-weight:500}
+.icons svg{width:48px;height:48px;stroke:var(--forest);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.icons div:nth-child(1){background:var(--green);border-color:var(--green);color:#fff}
+.icons div:nth-child(1) svg{stroke:#fff}
+.icon-spec{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}
+@media (max-width:800px){.icon-spec{grid-template-columns:repeat(2,1fr)}}
+.icon-spec div{border-top:3px solid var(--green);padding-top:12px}
+.icon-spec b{font-family:var(--en);font-size:28px;display:block}
+
+/* ---------- Photography ---------- */
+.photo-hero{border-radius:32px;overflow:hidden;position:relative}
+.photo-hero img{width:100%;aspect-ratio:16/8;object-fit:cover;transform:scale(1.9);transform-origin:76% 48%}
+.photo-dos{margin-top:24px}
+.do,.dont{border-radius:24px;padding:32px}
+.do{background:var(--mint)}
+.dont{background:#fff;border:1px solid var(--line)}
+.do h3::before,.dont h3::before{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;margin-inline-end:10px;font-size:16px;color:#fff;vertical-align:middle}
+.do h3::before{content:"✓";background:var(--green)}
+.dont h3::before{content:"✕";background:var(--danger)}
+.do ul,.dont ul{list-style:none;display:grid;gap:10px;margin-top:16px}
+.do li,.dont li{padding-inline-start:20px;position:relative}
+.do li::before,.dont li::before{content:"";position:absolute;inset-inline-start:0;top:.75em;width:8px;height:8px;background:currentColor;opacity:.35;transform:rotate(45deg)}
+
+/* ---------- Applications ---------- */
+.apps{display:grid;grid-template-columns:repeat(6,1fr);gap:24px}
+.apps figure{border-radius:28px;overflow:hidden;background:#fff;border:1px solid var(--line);position:relative}
+.apps figure img{width:100%;height:100%;object-fit:cover}
+.apps figcaption{position:absolute;bottom:16px;inset-inline-start:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);padding:6px 14px;border-radius:999px;font-size:14px;font-weight:700}
+.a-bill{grid-column:span 6;aspect-ratio:16/8}
+.a-third{grid-column:span 2;aspect-ratio:4/3}
+.a-half{grid-column:span 3;aspect-ratio:16/10}
+@media (max-width:800px){.a-third,.a-half{grid-column:span 6}}
+
+/* Digital mockups */
+.mock-row{display:grid;grid-template-columns:1fr 1.4fr;gap:24px;margin-top:24px}
+@media (max-width:900px){.mock-row{grid-template-columns:1fr}}
+.phone-stage{background:var(--forest);border-radius:28px;display:grid;place-items:center;padding:48px 24px;position:relative;overflow:hidden}
+.phone{width:260px;aspect-ratio:9/19;background:#fff;border-radius:40px;border:10px solid #111;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:36px 20px 24px;box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.phone .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:80px;height:20px;background:#111;border-radius:999px}
+.phone img.l{width:110px;margin-top:8px}
+.phone .ok{width:96px;height:96px;border-radius:50%;background:var(--green);display:grid;place-items:center;margin:36px 0 16px;box-shadow:0 0 0 14px var(--mint)}
+.phone .ok svg{width:48px;stroke:#fff;stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.phone h4{font-size:22px}
+.phone .amt{font-family:var(--en);font-weight:800;font-size:32px;color:var(--forest);margin:6px 0 2px}
+.phone .amt small{font-size:14px;color:var(--muted);font-weight:600}
+.phone .det{width:100%;margin-top:auto;background:var(--paper);border-radius:16px;padding:14px;font-size:12px;display:grid;gap:6px}
+.phone .det div{display:flex;justify-content:space-between}
+.phone .det span{color:var(--muted)}
+.phone .btn{width:100%;margin-top:12px;background:var(--forest);color:#fff;text-align:center;border-radius:14px;padding:12px;font-weight:700;font-size:14px}
+.cards-stage{background:var(--mint);border-radius:28px;padding:48px 32px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+.bcard{width:330px;max-width:100%;aspect-ratio:1.75;border-radius:16px;box-shadow:0 20px 40px rgba(31,51,25,.18);position:relative;overflow:hidden}
+.bcard.front{background:var(--forest);display:grid;place-items:center}
+.bcard.front img{width:62%}
+.bcard.front svg.sh{position:absolute;inset:0;width:100%;height:100%}
+.bcard.back{background:#fff;padding:24px 26px;display:flex;flex-direction:column;justify-content:space-between}
+.bcard.back .n{font-weight:700;font-size:19px}
+.bcard.back .t{font-size:13px;color:var(--green);font-weight:500}
+.bcard.back .c{font-family:var(--en);font-size:11.5px;color:var(--charcoal);direction:ltr;text-align:right;line-height:1.7}
+.bcard.back svg{position:absolute;top:22px;left:22px;width:34px}
+.bcard.back .strip{position:absolute;bottom:0;left:0;width:38%;height:8px;background:var(--green);clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+
+.social{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+@media (max-width:800px){.social{grid-template-columns:1fr}}
+.post{aspect-ratio:1;border-radius:28px;overflow:hidden;position:relative;padding:32px;display:flex;flex-direction:column;justify-content:space-between}
+.post svg.bg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.post>*{position:relative;z-index:1}
+.post .pl{width:120px}
+.post h4{font-size:clamp(26px,3vw,36px);line-height:1.25;font-weight:700}
+.post .chip{align-self:flex-start;background:var(--forest);color:#fff;font-size:13px;padding:6px 14px;border-radius:999px;font-weight:500}
+.p1{background:var(--green);color:var(--forest)}
+.p2{background:var(--forest);color:#fff}
+.p2 h4 span{color:var(--green)}
+.p3{background:#fff;border:1px solid var(--line)}
+.p3 h4 span{color:var(--green)}
+.p3 .big{font-family:var(--en);font-weight:800;font-size:96px;line-height:1;color:var(--forest)}
+
+/* ---------- Voice ---------- */
+.voice{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media (max-width:900px){.voice{grid-template-columns:1fr}}
+.voice .card h3{font-size:30px;color:var(--green)}
+.voice .card .is{font-weight:700;margin-top:16px}
+.voice .card .not{color:rgba(255,255,255,.55);text-decoration:line-through;text-decoration-color:var(--danger)}
+.lines{margin-top:24px;display:grid;gap:12px}
+.line{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.line{grid-template-columns:1fr}}
+.line div{padding:20px 24px;border-radius:18px;font-size:17px}
+.line .y{background:var(--green);color:var(--forest);font-weight:700}
+.line .n{background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12)}
+.line small{display:block;font-size:12px;font-weight:500;opacity:.75;margin-bottom:4px}
+
+/* ---------- Footer ---------- */
+footer{background:var(--forest);color:#fff;padding:96px 0 40px;position:relative;overflow:hidden}
+footer .big{font-size:clamp(40px,7vw,96px);font-weight:700;line-height:1.1}
+footer .big span{color:var(--green)}
+footer .bottom{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:80px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);font-size:14px;color:rgba(255,255,255,.6)}
+footer .bottom img{height:36px;width:auto}
+footer svg.fs{position:absolute;inset-inline-start:-80px;top:-60px;width:520px;opacity:.12}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media print{.nav{display:none}.rv{opacity:1;transform:none}section.block,.cover{break-inside:avoid-page;break-before:page}}
+.toast{position:fixed;bottom:24px;left:50%;opacity:0;transform:translate(-50%,120px);background:var(--forest);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;transition:.3s;z-index:99}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- رمز سداد كمتّجه قابل للتلوين -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 191 209">
+      <polygon points="0,41 0,110 43,110 142,209 142,70 191,118 191,49 142,0 142,68 93,21 93,90 43,41"/>
+    </symbol>
+    <!-- الشظية: القطعة اليمنى من الرمز، أساس العناصر الجرافيكية -->
+    <symbol id="shard" viewBox="0 0 49 118">
+      <polygon points="0,0 49,49 49,118 0,69"/>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="nav">
+  <div class="wrap">
+    <img src="assets/logo.png" alt="سداد">
+    <ul>
+      <li><a href="#essence">الجوهر</a></li>
+      <li><a href="#logo">الشعار</a></li>
+      <li><a href="#color">الألوان</a></li>
+      <li><a href="#type">الخطوط</a></li>
+      <li><a href="#graphics">العناصر</a></li>
+      <li><a href="#icons">الأيقونات</a></li>
+      <li><a href="#photo">التصوير</a></li>
+      <li><a href="#apps">التطبيقات</a></li>
+      <li><a href="#voice">النبرة</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============ COVER ============ -->
+<header class="cover">
+  <svg class="shards" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="#80B95A">
+      <polygon points="1440,0 1440,520 1180,260 1180,0" opacity=".07"/>
+      <polygon points="1240,120 1440,320 1440,620 1240,420" opacity=".14"/>
+      <polygon points="1060,520 1260,720 1260,900 1060,900" opacity=".1"/>
+    </g>
+  </svg>
+  <svg class="mark giant" viewBox="0 0 191 209" aria-hidden="true"><use href="#mark" fill="#80B95A"/></svg>
+  <div class="wrap">
+    <img class="logo" src="assets/logo-white.png" alt="سداد SADAD">
+    <div style="margin-top:40px"><span class="kicker">● دليل الهوية البصرية — الإصدار 1.0</span></div>
+    <h1>دفع أسهل<br><span>لحياة أسرع</span></h1>
+    <p class="lead">المرجع الكامل لاستخدام علامة سداد: الشعار والألوان والخطوط والعناصر الجرافيكية، وكيف تظهر العلامة في كل مكان وبكل ثقة.</p>
+    <div class="meta">
+      <div><b>الإصدار</b>1.0 — 2026</div>
+      <div><b>الاستخدام</b>داخلي وللشركاء</div>
+      <div><b>الأقسام</b>10 أقسام</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ INDEX ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="toc rv">
+      <a href="#essence"><b>01</b><span>جوهر العلامة</span></a>
+      <a href="#logo"><b>02</b><span>الشعار</span></a>
+      <a href="#color"><b>03</b><span>الألوان</span></a>
+      <a href="#type"><b>04</b><span>الخطوط</span></a>
+      <a href="#graphics"><b>05</b><span>العناصر الجرافيكية</span></a>
+      <a href="#icons"><b>06</b><span>الأيقونات</span></a>
+      <a href="#photo"><b>07</b><span>التصوير</span></a>
+      <a href="#apps"><b>08</b><span>التطبيقات</span></a>
+      <a href="#voice"><b>09</b><span>نبرة الصوت</span></a>
+      <a href="#misuse"><b>10</b><span>الاستخدام الخاطئ</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 ESSENCE ============ -->
+<section class="block whitebg" id="essence">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">01</div>
+      <h2>جوهر العلامة</h2>
+      <p class="sub">سداد ليست مجرد وسيلة دفع؛ إنها اللحظة التي يتحوّل فيها الالتزام إلى راحة. كل عنصر في هويتنا يخدم فكرة واحدة: الحركة إلى الأمام.</p>
+    </div>
+    <p class="manifesto rv">نؤمن أن الدفع يجب أن يكون <em>لحظة</em> لا خطوة. سريعٌ كالنبض، <em>آمنٌ</em> كالوعد، وحاضرٌ <em>في كل مكان</em> يذهب إليه الناس.</p>
+
+    <div class="grid g3 pillars">
+      <div class="pillar rv">
+        <span class="bgnum">1</span>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="12" r="8"/><path d="M14 8v4l2.5 2"/><path d="M2 8h3M1 12h3M2 16h3"/></svg></div>
+        <h3>سريع</h3>
+        <p>نختصر الطريق بين النية والإتمام. لا انتظار، لا تعقيد — عملية تنتهي قبل أن تبدأ.</p>
+      </div>
+      <div class="pillar rv">
+        <span class="bgnum">2</span>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <h3>آمن</h3>
+        <p>الثقة هي العملة الحقيقية. نحمي كل معاملة كما لو كانت الوحيدة، بشفافية ووضوح.</p>
+      </div>
+      <div class="pillar rv">
+        <span class="bgnum">3</span>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <h3>في كل مكان</h3>
+        <p>من المتجر إلى الشاشة إلى الشارع — سداد حاضرة حيثما يحتاجها الناس، بنفس التجربة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 LOGO ============ -->
+<section class="block" id="logo">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">02</div>
+      <h2>الشعار</h2>
+      <p class="sub">الشعار هو توقيعنا. يتكوّن من الرمز والاسم العربي والاسم اللاتيني، ويجب أن يُستخدم دائماً من الملفات الأصلية دون أي تعديل.</p>
+    </div>
+
+    <div class="logo-hero rv"><img src="assets/logo.png" alt="شعار سداد الرئيسي"></div>
+
+    <div class="anatomy rv">
+      <span class="label">تشريح الشعار</span>
+      <h3>ثلاثة عناصر، وحدة واحدة</h3>
+      <div class="row">
+        <div><b>A — الرمز</b><h3 style="font-size:20px;margin-top:6px">علامة الحركة</h3><p>ثلاث كتل مائلة تتصاعد معاً، يمكن استخدامها منفردة كأيقونة للتطبيق ووسائل التواصل والمنتجات.</p></div>
+        <div><b>B — الاسم العربي</b><h3 style="font-size:20px;margin-top:6px">«سداد»</h3><p>خط هندسي بخطوط مستقيمة وزوايا قائمة يعكس الدقة والوضوح. يُكتب بأخضر سداد.</p></div>
+        <div><b>C — الاسم اللاتيني</b><h3 style="font-size:20px;margin-top:6px">SADAD</h3><p>حروف كبيرة عريضة باللون الفحمي، توازن الأخضر وتمنح الشعار ثباتاً ومرجعية دولية.</p></div>
+      </div>
+    </div>
+
+    <div class="meaning">
+      <div class="stage rv">
+        <svg class="shards" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">
+          <g fill="#80B95A" opacity=".08"><polygon points="460,0 600,140 600,420 460,280"/><polygon points="0,200 120,320 120,420 0,420"/></g>
+        </svg>
+        <svg class="mark" viewBox="0 0 191 209" style="position:relative"><use href="#mark" fill="#80B95A"/></svg>
+      </div>
+      <ol>
+        <li class="rv"><div><b>الصعود والتقدّم</b>تتدرّج الكتل الثلاث من اليسار إلى اليمين كأعمدة نمو تتصاعد — تعبير عن تقدّم مستمر.</div></li>
+        <li class="rv"><div><b>علامة الإتمام</b>الشكل الأيسر يرسم علامة «صح» مكسورة: إشارة إلى العملية التي تمّت بنجاح.</div></li>
+        <li class="rv"><div><b>حرف السين</b>تتراصّ الكتل كأسنان حرف «س» — الحرف الأول من سداد — في صياغة هندسية حديثة.</div></li>
+        <li class="rv"><div><b>زاوية 45°</b>كل الحواف المائلة بزاوية 45° ثابتة، وهي الزاوية التي تُبنى عليها كل العناصر الجرافيكية.</div></li>
+      </ol>
+    </div>
+
+    <!-- Clear space -->
+    <div style="margin-top:96px" class="rv">
+      <span class="label">المساحة الآمنة والحجم الأدنى</span>
+      <h3 style="font-size:32px">امنح الشعار مساحة للتنفّس</h3>
+      <p style="max-width:720px;color:var(--muted)">المساحة الآمنة حول الشعار تساوي <b>X</b>، وهي عرض الكتلة اليمنى من الرمز. لا يدخل هذه المساحة أي نص أو صورة أو عنصر جرافيكي.</p>
+    </div>
+    <div class="clear" style="margin-top:32px">
+      <div class="clear-box rv">
+        <div class="cs">
+          <span class="x t">X</span><span class="x b">X</span><span class="x l">X</span><span class="x r">X</span>
+          <div class="inner"><img src="assets/logo.png" alt=""></div>
+        </div>
+      </div>
+      <div class="card rv">
+        <span class="label">الحجم الأدنى</span>
+        <h3>الوضوح قبل كل شيء</h3>
+        <p>لا يُصغَّر الشعار الكامل عن الأحجام التالية. عند الحاجة لأحجام أصغر، استخدم الرمز منفرداً.</p>
+        <div class="minsize">
+          <figure><img src="assets/logo.png" alt="" style="width:120px"><figcaption>رقمي: 120px عرض</figcaption></figure>
+          <figure><img src="assets/logo.png" alt="" style="width:90px"><figcaption>طباعة: 30mm عرض</figcaption></figure>
+          <figure><svg class="mark" viewBox="0 0 191 209" style="width:24px"><use href="#mark" fill="#80B95A"/></svg><figcaption>الرمز: 24px</figcaption></figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- Versions -->
+    <div style="margin-top:96px" class="rv">
+      <span class="label">نسخ الشعار</span>
+      <h3 style="font-size:32px">النسخة المناسبة لكل خلفية</h3>
+      <p style="max-width:720px;color:var(--muted)">النسخة الأساسية الملوّنة هي الخيار الأول دائماً. على الخلفيات الخضراء والداكنة والصور، استخدم النسخ أحادية اللون لضمان التباين.</p>
+    </div>
+    <div class="grid g3" style="margin-top:32px">
+      <div class="version v-white rv"><img src="assets/logo.png" alt=""><span class="tag">الأساسية — على الأبيض</span></div>
+      <div class="version v-green rv"><img src="assets/logo-dark.png" alt=""><span class="tag">داكنة — على أخضر سداد</span></div>
+      <div class="version v-forest rv"><img src="assets/logo-white.png" alt=""><span class="tag">بيضاء — على أخضر الغابة</span></div>
+      <div class="version v-signal rv"><img src="assets/logo-dark.png" alt=""><span class="tag">داكنة — على أخضر الإشارة</span></div>
+      <div class="version v-photo rv"><img src="assets/logo-white.png" alt=""><span class="tag">بيضاء — على الصور مع طبقة داكنة</span></div>
+      <div class="version v-white rv" style="background:var(--paper)"><img src="assets/logo-dark.png" alt=""><span class="tag">أحادية — للطباعة بلون واحد</span></div>
+    </div>
+    <div class="symbols">
+      <div class="rv" style="background:#fff;border:1px solid var(--line)"><svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#80B95A"/></svg></div>
+      <div class="rv" style="background:var(--forest)"><svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#80B95A"/></svg></div>
+      <div class="rv" style="background:var(--signal)"><svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#1F3319"/></svg></div>
+      <div class="rv" style="background:var(--green);border-radius:28%"><svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#fff"/></svg></div>
+    </div>
+    <p class="caption">الرمز منفرداً — للأيقونات، صور الحسابات، المنتجات الترويجية والمساحات الصغيرة.</p>
+  </div>
+</section>
+
+<!-- ============ 03 COLOR ============ -->
+<section class="block whitebg" id="color">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">03</div>
+      <h2>الألوان</h2>
+      <p class="sub">الأخضر هو صوتنا الأعلى. لوحة الألوان مبنية حول أخضر سداد، يدعمه أخضر غامق للعمق، وفحمي للنصوص، ودرجات فاتحة للمساحات.</p>
+    </div>
+
+    <div class="palette">
+      <div class="sw big rv" style="background:var(--green);color:var(--forest)">
+        <button class="copy" data-hex="#80B95A">نسخ</button>
+        <div><span class="role">اللون الأساسي</span><h3>أخضر سداد</h3></div>
+        <svg class="mark" viewBox="0 0 191 209" style="width:44%;align-self:center;opacity:.9"><use href="#mark" fill="#1F3319"/></svg>
+        <dl><dt>HEX</dt><dd>#80B95A</dd><dt>RGB</dt><dd>128 185 90</dd><dt>CMYK</dt><dd>52 0 78 0</dd><dt>PMS</dt><dd>368 C (أقرب)</dd></dl>
+      </div>
+      <div class="sw rv" style="background:var(--forest);color:#fff">
+        <button class="copy" data-hex="#1F3319">نسخ</button>
+        <div><span class="role">الداكن الأساسي</span><h3>أخضر الغابة</h3></div>
+        <dl><dt>HEX</dt><dd>#1F3319</dd><dt>RGB</dt><dd>31 51 25</dd><dt>CMYK</dt><dd>75 45 90 65</dd></dl>
+      </div>
+      <div class="sw rv" style="background:var(--signal);color:var(--forest)">
+        <button class="copy" data-hex="#5DC23B">نسخ</button>
+        <div><span class="role">للمنتجات والحملات</span><h3>أخضر الإشارة</h3></div>
+        <dl><dt>HEX</dt><dd>#5DC23B</dd><dt>RGB</dt><dd>93 194 59</dd><dt>CMYK</dt><dd>60 0 95 0</dd></dl>
+      </div>
+      <div class="sw rv" style="background:var(--charcoal);color:#fff">
+        <button class="copy" data-hex="#535353">نسخ</button>
+        <div><span class="role">النصوص والاسم اللاتيني</span><h3>الفحمي</h3></div>
+        <dl><dt>HEX</dt><dd>#535353</dd><dt>RGB</dt><dd>83 83 83</dd><dt>CMYK</dt><dd>0 0 0 80</dd></dl>
+      </div>
+      <div class="sw light rv" style="background:var(--mint);color:var(--forest)">
+        <button class="copy" data-hex="#E7F2DE">نسخ</button>
+        <div><span class="role">الخلفيات الفاتحة</span><h3>النعناعي</h3></div>
+        <dl><dt>HEX</dt><dd>#E7F2DE</dd><dt>RGB</dt><dd>231 242 222</dd><dt>CMYK</dt><dd>8 0 12 0</dd></dl>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:64px">
+      <span class="label">نسبة الاستخدام</span>
+      <h3>توازن يحافظ على الهوية</h3>
+      <p style="color:var(--muted)">الأبيض والمساحات الفاتحة تمنح الأخضر قوته. لا يتجاوز الأخضر ثلث التصميم إلا في المواد الترويجية والمنتجات.</p>
+      <div class="ratio">
+        <div style="flex:45;background:#fff">أبيض 45%</div>
+        <div style="flex:25;background:var(--green);color:var(--forest)">25%</div>
+        <div style="flex:15;background:var(--forest);color:#fff">15%</div>
+        <div style="flex:10;background:var(--mint);color:var(--forest)">10%</div>
+        <div style="flex:5;background:var(--charcoal);color:#fff"></div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:64px">
+      <span class="label">التراكيب المعتمدة</span>
+      <h3>تباين مدروس للنصوص</h3>
+    </div>
+    <div class="combos">
+      <div class="rv" style="background:#fff;border:1px solid var(--line);color:var(--forest)"><b>دفع أسهل</b><small>Forest on White · AAA</small></div>
+      <div class="rv" style="background:var(--forest);color:var(--green)"><b>لحياة أسرع</b><small style="color:#fff">Green on Forest · AA</small></div>
+      <div class="rv" style="background:var(--green);color:var(--forest)"><b>في كل مكان</b><small>Forest on Green · AA</small></div>
+      <div class="rv" style="background:var(--mint);color:var(--charcoal)"><b>وبكل ثقة</b><small>Charcoal on Mint · AA</small></div>
+    </div>
+    <p class="caption">تجنّب كتابة نص أبيض صغير على أخضر سداد؛ التباين غير كافٍ للنصوص أقل من 24px.</p>
+  </div>
+</section>
+
+<!-- ============ 04 TYPE ============ -->
+<section class="block" id="type">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">04</div>
+      <h2>الخطوط</h2>
+      <p class="sub">خطوط واضحة وحديثة تتناغم مع هندسة الشعار. خط عربي واحد وخط لاتيني واحد يكفيان لكل الاستخدامات.</p>
+    </div>
+
+    <div class="type-hero">
+      <div class="font-card fc-ar rv">
+        <div><span class="label">الخط العربي الأساسي</span><div class="name">IBM Plex Sans Arabic</div></div>
+        <div class="glyph">سـد</div>
+        <div class="alpha">أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن هـ و ي<br>٠١٢٣٤٥٦٧٨٩</div>
+      </div>
+      <div class="font-card fc-en rv">
+        <div><span class="label" style="text-align:right;display:block">الخط اللاتيني الأساسي</span><div class="name">Open Sans</div></div>
+        <div class="glyph">Aa</div>
+        <div class="alpha">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz 0123456789</div>
+      </div>
+    </div>
+
+    <div class="weights">
+      <div class="rv"><b style="font-weight:300">سداد</b><small>Light 300 — نصوص تمهيدية</small></div>
+      <div class="rv"><b style="font-weight:400">سداد</b><small>Regular 400 — النص الأساسي</small></div>
+      <div class="rv"><b style="font-weight:500">سداد</b><small>Medium 500 — الأزرار والتسميات</small></div>
+      <div class="rv"><b style="font-weight:700">سداد</b><small>Bold 700 — العناوين</small></div>
+    </div>
+
+    <div class="scale rv">
+      <div class="r"><div class="meta"><b>عنوان رئيسي</b>Bold · 72 / 1.1</div><div style="font-size:clamp(36px,6vw,72px);font-weight:700;line-height:1.1">دفع أسهل</div></div>
+      <div class="r"><div class="meta"><b>عنوان فرعي</b>Bold · 40 / 1.25</div><div style="font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.25;color:var(--green)">لحياة أسرع</div></div>
+      <div class="r"><div class="meta"><b>عنوان قسم</b>Medium · 24 / 1.4</div><div style="font-size:24px;font-weight:500">ادفع فواتيرك في ثوانٍ، من أي مكان</div></div>
+      <div class="r"><div class="meta"><b>نص أساسي</b>Regular · 17 / 1.75</div><div style="font-size:17px;color:var(--charcoal)">سداد تجعل الدفع جزءاً طبيعياً من يومك. اختر الفاتورة، أكّد، وانتهى الأمر — بأمان تام وبدون أي رسوم خفية.</div></div>
+      <div class="r"><div class="meta"><b>ملاحظة</b>Regular · 13 / 1.6</div><div style="font-size:13px;color:var(--muted)">* تخضع الخدمة للشروط والأحكام. متاحة على مدار الساعة.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 GRAPHICS ============ -->
+<section class="block whitebg" id="graphics">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">05</div>
+      <h2>العناصر الجرافيكية</h2>
+      <p class="sub">«الشظايا» — أشكال متوازية الأضلاع مستخرجة من الرمز بزاوية 45°. تخلق إحساساً بالسرعة والاتجاه، وتقود العين نحو الرسالة أو المنتج.</p>
+    </div>
+
+    <div class="ge-hero rv">
+      <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g fill="#80B95A">
+          <polygon points="420,460 640,240 640,460"/>
+          <polygon points="560,0 760,0 760,260 560,460 560,200" opacity=".25"/>
+          <polygon points="700,60 860,-100 860,300 700,460" />
+          <polygon points="860,120 1040,-60 1040,460 860,460" opacity=".55"/>
+          <polygon points="1040,0 1200,0 1200,460 1040,460 1040,160" fill="#1F3319"/>
+        </g>
+      </svg>
+      <div class="txt">
+        <span class="label">المبدأ</span>
+        <h3>الشظايا تقود <span>العين</span><br>نحو الرسالة</h3>
+        <p style="color:var(--muted);margin-top:12px">تُوضع الشظايا دائماً على حافة التصميم وتتجه للأعلى بزاوية 45°، كما في لوحة الحملة الإعلانية، ولا تغطي النص أو الوجوه.</p>
+      </div>
+    </div>
+
+    <div class="grid g3 ge-rules">
+      <div class="card rv">
+        <svg viewBox="0 0 300 160" aria-hidden="true"><g fill="#80B95A"><polygon points="170,160 230,100 230,160"/><polygon points="230,100 300,30 300,160 230,160"/></g><line x1="150" y1="20" x2="150" y2="140" stroke="#DCE3D5" stroke-dasharray="4 4"/></svg>
+        <h3>45° فقط</h3><p>كل الحواف المائلة بزاوية 45° تماماً، متوافقة مع زوايا الرمز.</p>
+      </div>
+      <div class="card rv">
+        <svg viewBox="0 0 300 160" aria-hidden="true"><rect x="0" y="0" width="300" height="160" fill="#F6F8F3"/><g fill="#80B95A"><polygon points="200,160 260,100 260,160"/><polygon points="240,40 300,-20 300,160 240,160" opacity=".5"/></g><rect x="24" y="44" width="120" height="14" rx="4" fill="#1F3319"/><rect x="24" y="68" width="90" height="10" rx="4" fill="#DCE3D5"/><rect x="24" y="86" width="100" height="10" rx="4" fill="#DCE3D5"/></svg>
+        <h3>من الحافة</h3><p>تنطلق الشظايا من حافة الإطار، وتترك مساحة النص نظيفة.</p>
+      </div>
+      <div class="card rv">
+        <svg viewBox="0 0 300 160" aria-hidden="true"><g fill="#80B95A"><polygon points="110,160 170,100 170,160" opacity=".3"/><polygon points="170,100 230,40 230,160 170,160" opacity=".6"/><polygon points="230,40 300,-30 300,160 230,160"/></g></svg>
+        <h3>طبقات شفافة</h3><p>يمكن تدرّج الشفافية (100٪، 60٪، 30٪) لإضافة عمق دون ألوان جديدة.</p>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:64px"><span class="label">الأنماط</span><h3>نقش الرمز</h3><p style="color:var(--muted)">للتغليف والخلفيات والمواد المطبوعة. يُستخدم بتباين منخفض كي لا ينافس الشعار.</p></div>
+    <div class="patterns">
+      <div class="rv">
+        <svg viewBox="0 0 400 300" aria-hidden="true"><defs><pattern id="p1" width="60" height="66" patternUnits="userSpaceOnUse"><use href="#mark" x="15" y="15" width="30" height="33" fill="#1F3319" opacity=".18"/></pattern></defs><rect width="400" height="300" fill="#80B95A"/><rect width="400" height="300" fill="url(#p1)"/></svg>
+      </div>
+      <div class="rv">
+        <svg viewBox="0 0 400 300" aria-hidden="true"><defs><pattern id="p2" width="40" height="96" patternUnits="userSpaceOnUse"><use href="#shard" x="8" y="8" width="24" height="58" fill="#80B95A" opacity=".35"/><use href="#shard" x="-12" y="56" width="24" height="58" fill="#80B95A" opacity=".2"/><use href="#shard" x="28" y="56" width="24" height="58" fill="#80B95A" opacity=".2"/></pattern></defs><rect width="400" height="300" fill="#1F3319"/><rect width="400" height="300" fill="url(#p2)"/></svg>
+      </div>
+      <div class="rv">
+        <svg viewBox="0 0 400 300" aria-hidden="true"><defs><pattern id="p3" width="90" height="98" patternUnits="userSpaceOnUse"><use href="#mark" x="20" y="20" width="45" height="49" fill="#80B95A" opacity=".35"/></pattern></defs><rect width="400" height="300" fill="#E7F2DE"/><rect width="400" height="300" fill="url(#p3)"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 ICONS ============ -->
+<section class="block" id="icons">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">06</div>
+      <h2>الأيقونات</h2>
+      <p class="sub">أيقونات خطية بسيطة بسماكة موحّدة وزوايا مستديرة. تشرح ولا تزيّن، وتُرفق دائماً بكلمة قصيرة.</p>
+    </div>
+    <div class="icons">
+      <div class="rv"><svg viewBox="0 0 24 24"><circle cx="14" cy="12" r="8"/><path d="M14 8v4l2.5 2M2 8h3M1 12h3M2 16h3"/></svg>سريع</div>
+      <div class="rv"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>آمن</div>
+      <div class="rv"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>في كل مكان</div>
+      <div class="rv"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg>التطبيق</div>
+      <div class="rv"><svg viewBox="0 0 24 24"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>الفواتير</div>
+      <div class="rv"><svg viewBox="0 0 24 24"><path d="M5 9a7 7 0 0114 0M8 12a4 4 0 018 0"/><circle cx="12" cy="15" r="1.5"/><path d="M12 17v4"/></svg>دفع لاتلامسي</div>
+    </div>
+    <div class="icon-spec">
+      <div class="rv"><b>24px</b>شبكة التصميم الأساسية</div>
+      <div class="rv"><b>2px</b>سماكة الخط الموحّدة</div>
+      <div class="rv"><b>Round</b>نهايات وزوايا مستديرة</div>
+      <div class="rv"><b>2</b>لونان فقط: الغابة أو الأبيض</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 PHOTO ============ -->
+<section class="block whitebg" id="photo">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">07</div>
+      <h2>التصوير</h2>
+      <p class="sub">صور حقيقية لأناس حقيقيين في لحظات يومية. الضوء طبيعي، والحركة حاضرة، ولحظة الدفع هي البطل.</p>
+    </div>
+    <div class="photo-hero rv"><img src="assets/billboard.webp" alt="لوحة إعلانية لحملة سداد"></div>
+    <div class="grid g2 photo-dos">
+      <div class="do rv">
+        <h3>افعل</h3>
+        <ul>
+          <li>التقط لحظة الدفع: اليد، الهاتف، جهاز نقاط البيع.</li>
+          <li>ضوء طبيعي دافئ وألوان نقية وخلفيات هادئة.</li>
+          <li>زوايا علوية ومائلة توحي بالحركة والسرعة.</li>
+          <li>أدخل أخضر سداد بشكل طبيعي في الملابس أو المكان.</li>
+        </ul>
+      </div>
+      <div class="dont rv">
+        <h3>لا تفعل</h3>
+        <ul>
+          <li>صور مخزنة مصطنعة بابتسامات مبالغ فيها.</li>
+          <li>فلاتر قوية أو ألوان باهتة أو تشبّع زائد.</li>
+          <li>خلفيات مزدحمة تنافس الشعار أو الرسالة.</li>
+          <li>إظهار بيانات بطاقات أو أرقام حسابات حقيقية.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 APPLICATIONS ============ -->
+<section class="block" id="apps">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">08</div>
+      <h2>التطبيقات</h2>
+      <p class="sub">كيف تعيش العلامة في العالم الحقيقي: من اللوحات الإعلانية إلى المنتجات الترويجية والشاشات الرقمية.</p>
+    </div>
+
+    <div class="apps">
+      <figure class="a-bill rv"><img src="assets/billboard.webp" alt=""><figcaption>اللوحات الإعلانية الخارجية</figcaption></figure>
+      <figure class="a-third rv"><img src="assets/tshirt.webp" alt=""><figcaption>زي الفريق</figcaption></figure>
+      <figure class="a-third rv"><img src="assets/cap.webp" alt=""><figcaption>القبعات</figcaption></figure>
+      <figure class="a-third rv"><img src="assets/powerbank.webp" alt=""><figcaption>الهدايا الترويجية</figcaption></figure>
+    </div>
+    <p class="caption">على المنتجات: الرمز منفرداً بأخضر الغابة على الأبيض أو أخضر الإشارة، في المنتصف وبمساحة كافية.</p>
+
+    <div class="mock-row">
+      <div class="phone-stage rv">
+        <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true"><g fill="#80B95A"><polygon points="260,600 400,460 400,600" opacity=".9"/><polygon points="300,0 400,0 400,340 300,440 300,100" opacity=".18"/><polygon points="0,380 90,470 90,600 0,600" opacity=".12"/></g></svg>
+        <div class="phone">
+          <span class="notch"></span>
+          <img class="l" src="assets/logo.png" alt="">
+          <div class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <h4>تم الدفع بنجاح</h4>
+          <div class="amt"><span class="en">245.00</span> <small>ر.س</small></div>
+          <div style="font-size:12px;color:var(--muted)">فاتورة الكهرباء</div>
+          <div class="det">
+            <div><span>المرجع</span><b class="en">SD-48213</b></div>
+            <div><span>الوقت</span><b>الآن</b></div>
+          </div>
+          <div class="btn">تم</div>
+        </div>
+      </div>
+      <div class="cards-stage rv">
+        <div class="bcard front">
+          <svg class="sh" viewBox="0 0 330 189" preserveAspectRatio="none" aria-hidden="true"><g fill="#80B95A"><polygon points="250,189 330,109 330,189"/><polygon points="290,0 330,0 330,60 290,100" opacity=".3"/></g></svg>
+          <img src="assets/logo-white.png" alt="">
+        </div>
+        <div class="bcard back">
+          <svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#80B95A"/></svg>
+          <div><div class="n">اسم الموظف</div><div class="t">المسمّى الوظيفي</div></div>
+          <div class="c">+966 5X XXX XXXX<br>name@company.sa<br>www.example.sa</div>
+          <span class="strip"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="social">
+      <div class="post p1 rv">
+        <svg class="bg" viewBox="0 0 400 400" aria-hidden="true"><g fill="#1F3319"><polygon points="0,400 0,260 140,400" opacity=".9"/><polygon points="0,-20 80,60 80,320 0,240" opacity=".15"/></g></svg>
+        <img class="pl" src="assets/logo-dark.png" alt="">
+        <h4>ادفع فاتورتك<br>قبل أن تبرد قهوتك.</h4>
+        <span class="chip">حمّل التطبيق</span>
+      </div>
+      <div class="post p2 rv">
+        <svg class="bg" viewBox="0 0 400 400" aria-hidden="true"><g fill="#80B95A"><polygon points="260,400 400,260 400,400" opacity=".9"/></g><g transform="translate(36 236) scale(.6)"><use href="#mark" width="191" height="209" fill="#80B95A"/></g></svg>
+        <img class="pl" src="assets/logo-white.png" alt="">
+        <h4>آمن.<br>سريع.<br><span>في كل مكان.</span></h4>
+        <span></span>
+      </div>
+      <div class="post p3 rv">
+        <svg class="bg" viewBox="0 0 400 400" aria-hidden="true"><g fill="#80B95A"><polygon points="0,400 0,280 120,400"/><polygon points="0,120 60,180 60,380 0,320" opacity=".35"/></g></svg>
+        <img class="pl" src="assets/logo.png" alt="">
+        <div><div class="big">3<span style="font-size:40px">ث</span></div><h4>كل ما تحتاجه<br>لإتمام <span>الدفع</span></h4></div>
+        <span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 VOICE ============ -->
+<section class="block dark" id="voice">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">09</div>
+      <h2>نبرة الصوت</h2>
+      <p class="sub">نتحدث كصديق خبير: قريب وواثق ومختصر. نقول ما نعنيه بأقل الكلمات.</p>
+    </div>
+    <div class="voice">
+      <div class="card rv"><h3>واضح</h3><p>جمل قصيرة وكلمات مألوفة، فعل واحد لكل رسالة.</p><p class="is">مباشر</p><p class="not">معقّد أو تقني</p></div>
+      <div class="card rv"><h3>واثق</h3><p>نتحدث بثقة مبنية على الأفعال، لا على المبالغات.</p><p class="is">مطمئن</p><p class="not">متعالٍ أو مبالغ</p></div>
+      <div class="card rv"><h3>قريب</h3><p>دافئ وإنساني، نخاطب الناس بلغة يومهم.</p><p class="is">ودود</p><p class="not">رسمي جامد أو عامّي مبتذل</p></div>
+    </div>
+    <div class="lines">
+      <div class="line rv"><div class="y"><small>نقول</small>تم الدفع. فاتورتك مسدّدة ✓</div><div class="n"><small>بدلاً من</small>تمت معالجة عملية السداد الخاصة بكم بنجاح وفقاً للإجراءات.</div></div>
+      <div class="line rv"><div class="y"><small>نقول</small>ادفع في ثوانٍ، من أي مكان.</div><div class="n"><small>بدلاً من</small>الحل الثوري الأفضل والأسرع على الإطلاق في عالم المدفوعات!!!</div></div>
+      <div class="line rv"><div class="y"><small>نقول</small>لم تكتمل العملية. جرّب مرة أخرى.</div><div class="n"><small>بدلاً من</small>خطأ 0x402: فشل التحقق من المعاملة.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 MISUSE ============ -->
+<section class="block whitebg" id="misuse">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">10</div>
+      <h2>الاستخدام الخاطئ</h2>
+      <p class="sub">قوة العلامة في ثباتها. أي تعديل على الشعار — مهما بدا بسيطاً — يُضعف التعرّف عليه.</p>
+    </div>
+    <div class="misuse">
+      <figure class="rv m1"><div class="pv"><img src="assets/logo.png" alt=""></div><figcaption>لا تمطّ الشعار أو تغيّر نسبه</figcaption></figure>
+      <figure class="rv m2"><div class="pv"><img src="assets/logo.png" alt=""></div><figcaption>لا تُدِر الشعار أو تُمِله</figcaption></figure>
+      <figure class="rv m3"><div class="pv"><img src="assets/logo.png" alt=""></div><figcaption>لا تغيّر ألوان الشعار</figcaption></figure>
+      <figure class="rv m4"><div class="pv"><img src="assets/logo.png" alt=""></div><figcaption>لا تضف ظلالاً أو تأثيرات</figcaption></figure>
+      <figure class="rv m5"><div class="pv"><img src="assets/logo.png" alt=""></div><figcaption>لا تضعه على خلفية مزدحمة</figcaption></figure>
+      <figure class="rv m6"><div class="pv"><div class="swap"><svg class="mark" viewBox="0 0 191 209"><use href="#mark" fill="#80B95A"/></svg><span>SADAD</span></div></div><figcaption>لا تُعِد ترتيب عناصر الشعار</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <svg class="mark fs" viewBox="0 0 191 209" aria-hidden="true"><use href="#mark" fill="#80B95A"/></svg>
+  <div class="wrap" style="position:relative">
+    <p class="big">في كل مكان..<br><span>وبكل ثقة.</span></p>
+    <p style="margin-top:24px;max-width:560px;color:rgba(255,255,255,.7)">لأي استفسار حول استخدام العلامة أو للحصول على الملفات الأصلية، تواصل مع فريق الهوية والتسويق.</p>
+    <div class="bottom">
+      <img src="assets/logo-white.png" alt="سداد">
+      <span>دليل الهوية البصرية · الإصدار 1.0 · 2026</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">تم النسخ</div>
+
+<script>
+// ظهور تدريجي عند التمرير
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+// نسخ رموز الألوان
+const toast = document.getElementById('toast');
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(b.dataset.hex); toast.textContent = 'تم نسخ ' + b.dataset.hex; }
+  catch { toast.textContent = b.dataset.hex; }
+  toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1600);
+}));
+</script>
+</body>
+</html>
