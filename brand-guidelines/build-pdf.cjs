@@ -1,4 +1,4 @@
-// Regenerate the PDF: from brand-guidelines/, wrap index.html into _p.html (doctype + <meta charset=utf-8> + body) then run: node build-pdf.js
+// Regenerate the PDF: from brand-guidelines/, wrap index.html into _p.html (doctype + <meta charset=utf-8> + body) then run: node build-pdf.cjs
 const {chromium}=require('playwright');const path=require('path');
 (async()=>{const W=1600,H=1131;const b=await chromium.launch();const p=await b.newPage({viewport:{width:W,height:H}});
 await p.goto('file://'+path.resolve('_p.html'),{waitUntil:'networkidle'});
