@@ -1,0 +1,599 @@
+<title>دليل هوية سداد</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: RTL brand book — a lit "night vault" of chapters; each chapter opens on a big glowing index + title, content laid on glass panels. Single dark world by choice (the brand lives on midnight navy). */
+:root{
+  color-scheme: dark;
+  --abyss:#020B18;      /* page ground */
+  --midnight:#061A33;   /* panels */
+  --navy:#0A2A52;       /* raised surfaces */
+  --royal:#0B5BD3;      /* primary blue */
+  --electric:#1E9BFF;   /* signal blue */
+  --cyan:#16D3EE;       /* accent / glow */
+  --aqua:#7BF1FF;       /* highlight */
+  --silver:#E7EEF6;     /* ribbon white */
+  --steel:#8FA6C2;      /* muted text */
+  --line:rgba(123,241,255,.14);
+  --glass:rgba(16,58,108,.32);
+  --danger:#FF5A6E; --ok:#2EE6A6;
+  --display:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --body:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:18px;
+  --glow:0 0 0 1px var(--line),0 20px 60px -20px rgba(22,211,238,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--abyss);color:var(--silver);font-family:var(--body);font-size:16px;line-height:1.75;direction:rtl;
+  background-image:radial-gradient(1200px 700px at 85% -10%,rgba(11,91,211,.35),transparent 60%),radial-gradient(900px 600px at 0% 40%,rgba(22,211,238,.10),transparent 60%);
+  background-attachment:fixed}
+.wrap{max-width:1180px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
+p{margin:0;max-width:65ch}
+img{max-width:100%;display:block}
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.eyebrow{font-family:var(--display);font-size:.8rem;letter-spacing:.08em;color:var(--cyan);font-weight:500}
+a{color:var(--aqua)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:6px}
+
+/* Top nav */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:rgba(2,11,24,.85)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(2,11,24,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
+.nav .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.15rem;flex:none}
+.nav .brand img{width:34px;height:34px;border-radius:9px;mix-blend-mode:screen}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav ul::-webkit-scrollbar{display:none}
+.nav a{display:block;white-space:nowrap;text-decoration:none;color:var(--steel);font-size:.88rem;padding:6px 12px;border-radius:999px;transition:.2s}
+.nav a:hover{color:var(--silver);background:var(--glass)}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:32px;padding-block:56px 64px}
+.hero h1{font-size:clamp(3.4rem,10vw,7.5rem);font-weight:700;letter-spacing:-.01em;line-height:1.05;
+  background:linear-gradient(180deg,#fff 30%,#9fdcff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1 span{display:block;font-size:.34em;font-weight:400;color:var(--cyan);-webkit-text-fill-color:var(--cyan);letter-spacing:0;margin-top:.4em}
+.hero .lede{font-size:1.15rem;color:var(--steel);margin-top:22px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.chip{font-size:.8rem;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:var(--silver)}
+.hero-logo{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.hero-logo img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(closest-side,#000 72%,transparent 100%);mask-image:radial-gradient(closest-side,#000 72%,transparent 100%);animation:float 7s ease-in-out infinite}
+.hero-logo::before{content:"";position:absolute;inset:8%;border-radius:50%;border:1px solid rgba(123,241,255,.18);box-shadow:0 0 120px rgba(22,211,238,.25) inset}
+.hero-logo::after{content:"";position:absolute;inset:-2%;border-radius:50%;border:1px dashed rgba(123,241,255,.12);animation:spin 60s linear infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Chapters */
+section.ch{padding-block:88px;border-bottom:1px solid var(--line);scroll-margin-top:60px}
+.ch-head{display:grid;grid-template-columns:auto 1fr;gap:8px 28px;align-items:end;margin-bottom:44px}
+.ch-num{font-family:var(--display);font-weight:200;font-size:clamp(4rem,9vw,7rem);line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(123,241,255,.55);grid-row:span 2}
+.ch-head h2{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:700}
+.ch-head p{color:var(--steel);font-size:1.05rem}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.panel{background:linear-gradient(160deg,rgba(14,52,98,.55),rgba(6,26,51,.7));border:1px solid var(--line);border-radius:var(--r);padding:26px;min-width:0}
+.panel h3{font-size:1.15rem;margin-bottom:8px}
+.panel p{color:var(--steel);font-size:.95rem}
+.cap{font-size:.82rem;color:var(--steel);margin-top:12px}
+
+/* Story */
+.manifest{font-family:var(--display);font-size:clamp(1.5rem,3.2vw,2.35rem);font-weight:500;line-height:1.55;max-width:30ch}
+.manifest em{font-style:normal;color:var(--cyan)}
+.value{display:flex;flex-direction:column;gap:14px}
+.value .ico{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(123,241,255,.35);background:radial-gradient(circle at 50% 30%,rgba(30,155,255,.35),rgba(6,26,51,.4));box-shadow:0 0 24px rgba(22,211,238,.25)}
+.value svg{width:26px;height:26px;stroke:var(--aqua);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Logo anatomy */
+.anatomy{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.anat-fig{position:relative;border-radius:var(--r);overflow:hidden;background:#020d1c;border:1px solid var(--line);aspect-ratio:1}
+.anat-fig img{width:100%;height:100%;object-fit:cover}
+.pin{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--abyss);border:1.5px solid var(--aqua);color:var(--aqua);font-family:var(--mono);font-size:.82rem;display:grid;place-items:center;box-shadow:0 0 0 6px rgba(22,211,238,.15),0 0 18px rgba(22,211,238,.6);transform:translate(-50%,-50%)}
+.parts{display:grid;gap:14px;list-style:none;margin:0;padding:0}
+.parts li{display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;padding:16px 18px;border-radius:14px;background:var(--glass);border:1px solid var(--line)}
+.parts b{font-family:var(--mono);color:var(--abyss);background:var(--aqua);border-radius:50%;width:30px;height:30px;display:grid;place-items:center;font-size:.82rem}
+.parts h4{font-size:1rem}
+.parts p{font-size:.9rem;color:var(--steel)}
+
+/* Lockups */
+.lockup{display:flex;flex-direction:column;gap:14px}
+.stage{border-radius:var(--r);border:1px solid var(--line);display:grid;place-items:center;padding:28px;min-height:280px;position:relative;overflow:hidden}
+.stage.dark{background:radial-gradient(circle at 50% 35%,#0b2b55,#020b18 70%)}
+.stage.deep{background:linear-gradient(135deg,#041a3a,#0B5BD3)}
+.stage.light{background:#F3F7FC}
+.stage .blend{mix-blend-mode:screen}
+.h-lock{display:flex;align-items:center;gap:18px}
+.h-lock img{width:110px;height:110px;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(closest-side,#000 75%,transparent);mask-image:radial-gradient(closest-side,#000 75%,transparent)}
+.wm{font-family:var(--display);font-weight:700;font-size:3.4rem;line-height:1;color:var(--silver)}
+.wm small{display:block;font-size:.95rem;font-weight:500;color:var(--cyan);margin-top:10px;letter-spacing:.02em}
+.stage.light .wm{color:#071A33}
+.stage.light .wm small{color:#0B5BD3}
+.tag{position:absolute;top:12px;inset-inline-start:12px;font-size:.72rem;padding:3px 10px;border-radius:999px;background:rgba(2,11,24,.6);border:1px solid var(--line);color:var(--steel)}
+.stage.light .tag{background:#fff;color:#4a5d78;border-color:#d8e2ee}
+
+/* Clear space */
+.clear{position:relative;display:grid;place-items:center;aspect-ratio:1;background:#020d1c;border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
+.clear .box{position:relative;width:62%;aspect-ratio:1;outline:1.5px dashed rgba(123,241,255,.55);outline-offset:0}
+.clear .box img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen}
+.clear .zone{position:absolute;inset:-18%;border:1.5px solid rgba(30,155,255,.6);background:repeating-linear-gradient(45deg,rgba(30,155,255,.10) 0 6px,transparent 6px 12px);border-radius:4px;z-index:0}
+.clear .box img{position:relative;z-index:1}
+.clear .x{position:absolute;font-family:var(--mono);font-size:.8rem;color:var(--aqua);background:var(--abyss);padding:0 6px;border-radius:4px;z-index:2}
+.sizes{display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.sizes img{mix-blend-mode:screen;border-radius:6px}
+.sizes figcaption{font-family:var(--mono);font-size:.78rem;color:var(--steel)}
+
+/* Misuse */
+.dont{display:flex;flex-direction:column;gap:10px}
+.dont .stage{min-height:0;aspect-ratio:1;padding:18px}
+.dont img{width:70%;mix-blend-mode:screen}
+.dont .stage::after{content:"";position:absolute;inset:0;background:linear-gradient(to top left,transparent calc(50% - 1.5px),var(--danger) calc(50% - 1px),var(--danger) calc(50% + 1px),transparent calc(50% + 1.5px));opacity:.85}
+.dont p{font-size:.88rem;color:var(--silver);display:flex;gap:8px;align-items:flex-start}
+.dont p::before{content:"✕";color:var(--danger);font-weight:700}
+.d-stretch img{transform:scaleX(1.45)}
+.d-rotate img{transform:rotate(-22deg)}
+.d-color img{filter:hue-rotate(150deg) saturate(1.6)}
+.d-busy{background:repeating-conic-gradient(#ff8a00 0 15deg,#e0136b 15deg 30deg)!important}
+.d-busy img{mix-blend-mode:normal}
+.d-outline img{filter:drop-shadow(0 0 0 #fff) drop-shadow(4px 4px 0 #ff2bd6) drop-shadow(-4px -4px 0 #ffe600)}
+.d-crop img{width:150%;max-width:none;transform:translate(-18%,20%)}
+.d-low img{opacity:.25}
+.d-light{background:#F3F7FC!important}
+.d-light img{mix-blend-mode:normal}
+
+/* Colors */
+.swatches{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:auto auto;gap:16px}
+.sw{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.sw .chipc{min-height:150px;padding:18px;display:flex;align-items:flex-end;font-family:var(--display);font-weight:600;font-size:1.25rem}
+.sw.big .chipc{min-height:260px;font-size:1.8rem}
+.sw .data{background:var(--midnight);padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:2px 14px;font-size:.8rem}
+.sw .data dt{color:var(--steel)}
+.sw .data dd{margin:0;font-family:var(--mono);direction:ltr;text-align:left;color:var(--silver)}
+.sw .role{grid-column:1/-1;color:var(--cyan);font-family:var(--display);font-size:.82rem;margin-bottom:6px}
+.copy{cursor:pointer;background:none;border:0;padding:0;font:inherit;color:inherit}
+.copy:hover{color:var(--aqua)}
+.ratio{display:flex;height:64px;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:28px}
+.ratio div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.8rem;min-width:0;overflow:hidden}
+.grads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.grad{border-radius:var(--r);height:150px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid var(--line)}
+.grad b{font-family:var(--display);font-size:1rem}
+.grad span{font-family:var(--mono);font-size:.72rem;opacity:.85;direction:ltr;text-align:right}
+
+/* Type */
+.type-hero{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.specimen{font-family:var(--display);font-size:clamp(5rem,13vw,9.5rem);font-weight:700;line-height:1;background:linear-gradient(180deg,#fff,#5fd8f5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.specimen.b{font-family:var(--body);font-weight:400;background:linear-gradient(180deg,#e7eef6,#8fa6c2);-webkit-background-clip:text;background-clip:text}
+.alpha{font-size:1.4rem;letter-spacing:.06em;color:var(--steel);margin-top:12px;word-break:break-all}
+.weights{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.85rem;color:var(--steel)}
+.scale{margin-top:28px;display:grid;gap:0}
+.scale .row{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline;padding:16px 0;border-top:1px solid var(--line)}
+.scale .row:last-child{border-bottom:1px solid var(--line)}
+.scale .meta{font-family:var(--mono);font-size:.75rem;color:var(--steel);direction:ltr;text-align:right}
+.scale .s{min-width:0;overflow-wrap:anywhere}
+
+/* Icons */
+.icons{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.tile{aspect-ratio:1;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,rgba(30,155,255,.18),rgba(6,26,51,.6));border:1px solid rgba(123,241,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px -14px rgba(22,211,238,.5);transition:transform .25s,box-shadow .25s;min-width:0}
+.tile:hover{transform:translateY(-4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 40px -12px rgba(22,211,238,.7)}
+.tile svg{width:38%;height:auto;stroke:var(--aqua);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(22,211,238,.6))}
+.tile span{font-size:.82rem;color:var(--silver);text-align:center}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+.rule{padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--glass)}
+.rule .k{font-family:var(--mono);color:var(--aqua);font-size:1.25rem;direction:ltr;text-align:right}
+.rule .v{font-size:.82rem;color:var(--steel)}
+
+/* Graphic elements */
+.ge{position:relative;height:260px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#031024}
+.orbit{position:absolute;border-radius:50%;border:2px solid rgba(123,241,255,.8);box-shadow:0 0 18px rgba(22,211,238,.9),inset 0 0 18px rgba(22,211,238,.5)}
+.wave{position:absolute;inset:auto -10% -40% -10%;height:80%;border-radius:50% 50% 0 0;background:linear-gradient(90deg,rgba(22,211,238,.0),rgba(22,211,238,.55),rgba(11,91,211,.3));filter:blur(1px)}
+.wave.w2{inset:auto -20% -55% 10%;background:linear-gradient(90deg,rgba(11,91,211,.5),rgba(123,241,255,.35));transform:rotate(-6deg)}
+.glass-demo{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:58%;padding:18px 20px;border-radius:18px;background:rgba(16,58,108,.38);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(123,241,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.glass-demo small{color:var(--steel);font-size:.75rem}
+.glass-demo div{font-family:var(--display);font-weight:700;font-size:1.6rem}
+.glass-demo .btn{display:inline-block;margin-top:10px;font-size:.8rem;padding:6px 16px;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--electric));color:#03142a;font-weight:600}
+.blobs{position:absolute;inset:0;background:radial-gradient(circle at 25% 40%,rgba(22,211,238,.7),transparent 30%),radial-gradient(circle at 75% 60%,rgba(11,91,211,.8),transparent 35%)}
+
+/* Voice */
+.voice{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+.slogans{display:grid;gap:14px}
+.slogan{padding:22px 24px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(90deg,rgba(22,211,238,.10),rgba(6,26,51,.3))}
+.slogan .q{font-family:var(--display);font-size:clamp(1.3rem,2.6vw,1.8rem);font-weight:600}
+.slogan .q em{font-style:normal;color:var(--cyan)}
+.slogan .u{font-size:.8rem;color:var(--steel);margin-top:4px}
+.dd{display:grid;gap:12px}
+.dd .say{padding:14px 16px;border-radius:12px;font-size:.92rem;border:1px solid}
+.dd .yes{border-color:rgba(46,230,166,.4);background:rgba(46,230,166,.07)}
+.dd .no{border-color:rgba(255,90,110,.4);background:rgba(255,90,110,.07);color:var(--steel)}
+.dd .say b{display:block;font-family:var(--display);font-size:.78rem;margin-bottom:4px}
+.dd .yes b{color:var(--ok)} .dd .no b{color:var(--danger)}
+
+/* UI components */
+.ui{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.balance{padding:22px;border-radius:22px;background:linear-gradient(140deg,#0e3a74,#071d3d 70%);border:1px solid rgba(123,241,255,.35);box-shadow:0 0 40px -10px rgba(22,211,238,.45);position:relative;overflow:hidden}
+.balance img{position:absolute;left:-24px;bottom:-24px;width:120px;opacity:.55;mix-blend-mode:screen}
+.balance small{color:var(--steel);font-size:.82rem}
+.balance .amt{font-family:var(--display);font-weight:700;font-size:2rem;margin-top:4px;direction:ltr;text-align:right}
+.balance .amt span{font-size:.9rem;color:var(--aqua);margin-left:6px}
+.btns{display:flex;flex-direction:column;gap:12px}
+.b1,.b2,.b3{font-family:var(--display);font-size:.95rem;border-radius:999px;padding:13px 22px;text-align:center;font-weight:600;border:0}
+.b1{background:linear-gradient(90deg,var(--cyan),var(--electric));color:#03142a;box-shadow:0 0 24px rgba(22,211,238,.5)}
+.b2{background:transparent;color:var(--silver);border:1px solid rgba(123,241,255,.45)}
+.b3{background:var(--glass);color:var(--steel)}
+.qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.qa div{aspect-ratio:1;border-radius:14px;background:var(--glass);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.72rem;color:var(--steel)}
+.qa svg{width:22px;stroke:var(--aqua);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Applications */
+.apps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.app{margin:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--midnight);position:relative}
+.app img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.app:hover img{transform:scale(1.03)}
+.app figcaption{position:absolute;inset:auto 0 0 0;padding:40px 18px 14px;background:linear-gradient(transparent,rgba(2,11,24,.92));font-size:.85rem}
+.app figcaption b{display:block;font-family:var(--display);font-size:1rem}
+.a-wide{grid-column:span 6;aspect-ratio:1344/752}
+.a-half{grid-column:span 3;aspect-ratio:1344/752}
+
+/* Footer */
+footer{padding-block:64px 80px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+footer .f-brand{display:flex;align-items:center;gap:14px}
+footer img{width:64px;mix-blend-mode:screen}
+footer small{color:var(--steel)}
+
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--navy);border:1px solid var(--aqua);color:var(--silver);padding:8px 18px;border-radius:999px;font-size:.85rem;transition:.25s;z-index:20}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .hero .wrap,.anatomy,.type-hero,.voice{grid-template-columns:1fr}
+  .hero-logo{max-width:380px;grid-row:1}
+  .g4,.rules{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3,.ui,.grads{grid-template-columns:1fr 1fr}
+  .icons{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .swatches{grid-template-columns:1fr 1fr}
+  .sw.big{grid-column:1/-1}
+  .a-half{grid-column:span 6}
+}
+@media (max-width:600px){
+  section.ch{padding-block:60px}
+  .g2,.g3,.ui,.grads{grid-template-columns:1fr}
+  .g4.dontg{grid-template-columns:1fr 1fr}
+  .ch-head{grid-template-columns:1fr}
+  .ch-num{grid-row:auto}
+  .scale .row{grid-template-columns:1fr;gap:4px}
+  .scale .meta{text-align:right}
+  .wm{font-size:2.5rem}
+  .h-lock img{width:80px;height:80px}
+}
+</style>
+
+<nav class="nav" aria-label="فصول الدليل">
+  <div class="wrap">
+    <div class="brand"><img src="assets/logo-symbol.webp" alt="">سداد</div>
+    <ul>
+      <li><a href="#story">القصة</a></li>
+      <li><a href="#logo">الشعار</a></li>
+      <li><a href="#usage">الاستخدام</a></li>
+      <li><a href="#color">الألوان</a></li>
+      <li><a href="#type">الخطوط</a></li>
+      <li><a href="#icons">الأيقونات</a></li>
+      <li><a href="#graphics">العناصر</a></li>
+      <li><a href="#voice">النبرة</a></li>
+      <li><a href="#ui">الواجهات</a></li>
+      <li><a href="#apps">التطبيقات</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">دليل الهوية البصرية · الإصدار 1.0 · 2026</div>
+      <h1>سداد<span>المحفظة المالية</span></h1>
+      <p class="lede">المرجع الرسمي لكل من يصمّم أو يكتب أو يبني باسم سداد: الشعار، الألوان، الخطوط، الأيقونات، نبرة الصوت، وطريقة ظهور العلامة على الشاشة واللوحة والقميص.</p>
+      <div class="meta">
+        <span class="chip">أسهل</span><span class="chip">أسرع</span><span class="chip">أكثر أماناً</span>
+      </div>
+    </div>
+    <div class="hero-logo"><img src="assets/logo-hero.webp" alt="رمز سداد: شريط فضي على شكل حرف S يلتف حول هاتف وبطاقة دفع"></div>
+  </div>
+</header>
+
+<main>
+<!-- 01 Story -->
+<section class="ch" id="story">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">01</span><h2>جوهر العلامة</h2><p>لماذا وُجدت سداد، ولمن تتحدث.</p></div>
+    <div class="grid g2" style="align-items:center;margin-bottom:40px">
+      <p class="manifest">نؤمن أن دفع الفاتورة لا يجب أن يكون <em>مهمة</em>. سداد تجمع <em>كل معاملاتك المالية</em> في محفظة واحدة، تُنجزها بلمسة، في أي وقت ومن أي مكان.</p>
+      <div class="grid" style="gap:14px">
+        <div class="panel"><h3>الرؤية</h3><p>أن تكون سداد المحفظة الأولى التي يفتحها الناس لكل التزام مالي يومي.</p></div>
+        <div class="panel"><h3>المهمة</h3><p>تحويل الفواتير والرسوم والتحويلات إلى تجربة رقمية واحدة: واضحة، فورية، ومحمية.</p></div>
+        <div class="panel"><h3>الوعد</h3><p>أسهل .. أسرع .. أكثر أماناً.</p></div>
+      </div>
+    </div>
+    <div class="grid g4">
+      <div class="panel value"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.3 8.3-8 9-4.7-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div><h3>آمن وموثوق</h3><p>الثقة أساس كل معاملة. نحمي بيانات العميل وأمواله ونقول ذلك بوضوح.</p></div>
+      <div class="panel value"><div class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div><h3>سريع وسهل</h3><p>أقل عدد ممكن من الخطوات. كل شاشة تخدم مهمة واحدة.</p></div>
+      <div class="panel value"><div class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></div><h3>في أي وقت ومن أي مكان</h3><p>المحفظة في جيبك على مدار الساعة، بلا طوابير ولا مواعيد.</p></div>
+      <div class="panel value"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg></div><h3>متعدد الخدمات</h3><p>كهرباء، مياه، اتصالات، رسوم حكومية وتعليمية، من مكان واحد.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 Logo -->
+<section class="ch" id="logo">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">02</span><h2>الشعار</h2><p>رمز واحد يحكي القصة كاملة: الهاتف، البطاقة، الدفع اللاتلامسي، وحرف S الذي يربطها.</p></div>
+    <div class="anatomy">
+      <div class="anat-fig">
+        <img src="assets/logo-symbol.webp" alt="رمز سداد مع نقاط ترقيم لمكوناته">
+        <span class="pin" style="left:30%;top:22%">1</span>
+        <span class="pin" style="left:72%;top:12%">2</span>
+        <span class="pin" style="left:38%;top:47%">3</span>
+        <span class="pin" style="left:22%;top:80%">4</span>
+      </div>
+      <ul class="parts">
+        <li><b>1</b><div><h4>شريط S الفضي</h4><p>الحرف الأول من «سداد» بالإنجليزية. شريط ينثني بانسيابية ليحتضن الهاتف والبطاقة، رمزاً للحماية والاتصال.</p></div></li>
+        <li><b>2</b><div><h4>الهاتف</h4><p>القناة الرقمية. حوافه المضيئة بالسماوي هي مصدر الضوء في كل تصاميم العلامة.</p></div></li>
+        <li><b>3</b><div><h4>موجات الدفع اللاتلامسي</h4><p>ثلاثة أقواس تعبّر عن الدفع الفوري بلمسة. تتكرر كعنصر جرافيكي مستقل.</p></div></li>
+        <li><b>4</b><div><h4>البطاقة والشريحة</h4><p>بطاقة بتدرّج سماوي وشريحة فضية، تمثّل المحفظة المالية والقيمة الملموسة.</p></div></li>
+      </ul>
+    </div>
+
+    <h3 style="margin:56px 0 20px;font-size:1.4rem">صيغ الشعار</h3>
+    <div class="grid g3">
+      <div class="lockup">
+        <div class="stage dark"><span class="tag">الرمز وحده</span><img class="blend" src="assets/logo-symbol.webp" alt="رمز سداد" style="width:200px;-webkit-mask-image:radial-gradient(closest-side,#000 75%,transparent);mask-image:radial-gradient(closest-side,#000 75%,transparent)"></div>
+        <p class="cap">أيقونة التطبيق، الأختام، الملابس، والمساحات الصغيرة.</p>
+      </div>
+      <div class="lockup">
+        <div class="stage dark"><span class="tag">الصيغة العمودية</span><img src="assets/lockup-splash.webp" alt="رمز سداد فوق كلمة سداد" style="width:190px;border-radius:12px"></div>
+        <p class="cap">شاشة البداية، الملصقات العمودية، والغلاف.</p>
+      </div>
+      <div class="lockup">
+        <div class="stage deep"><span class="tag">الصيغة الأفقية</span><div class="h-lock"><img src="assets/logo-symbol.webp" alt=""><div class="wm">سداد<small>المحفظة المالية</small></div></div></div>
+        <p class="cap">اللوحات الإعلانية، الترويسة، وتذييل البريد.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 Usage -->
+<section class="ch" id="usage">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">03</span><h2>قواعد الاستخدام</h2><p>مساحة الحماية، أصغر مقاس، وما يُمنع منعاً باتاً.</p></div>
+    <div class="grid g2">
+      <div class="panel">
+        <h3>مساحة الحماية</h3>
+        <p>اترك حول الرمز مساحة فارغة لا تقل عن <b class="mono">X</b>، حيث <b class="mono">X</b> = عرض الشريحة × 2. لا يدخل هذه المساحة نص أو صورة أو حافة.</p>
+        <div class="clear" style="margin-top:20px">
+          <div class="box"><div class="zone"></div><img src="assets/logo-symbol.webp" alt="الرمز داخل مساحة الحماية"></div>
+          <span class="x" style="top:7%;left:50%;transform:translateX(-50%)">X</span>
+          <span class="x" style="bottom:7%;left:50%;transform:translateX(-50%)">X</span>
+          <span class="x" style="left:7%;top:50%;transform:translateY(-50%)">X</span>
+          <span class="x" style="right:7%;top:50%;transform:translateY(-50%)">X</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>أصغر مقاس</h3>
+        <p>تحت هذه المقاسات تختفي الموجات والشريحة. استخدم عندها الرمز المبسّط بلون واحد.</p>
+        <div class="sizes" style="margin-top:28px">
+          <figure><img src="assets/logo-symbol.webp" alt="" width="120" height="120"><figcaption>120px · 30mm</figcaption></figure>
+          <figure><img src="assets/logo-symbol.webp" alt="" width="64" height="64"><figcaption>64px · 16mm</figcaption></figure>
+          <figure><img src="assets/logo-symbol.webp" alt="" width="40" height="40"><figcaption>40px · 10mm</figcaption></figure>
+          <figure><img src="assets/logo-symbol.webp" alt="" width="24" height="24"><figcaption>24px الحد الأدنى</figcaption></figure>
+        </div>
+        <h3 style="margin-top:36px">الخلفيات المعتمدة</h3>
+        <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px">
+          <div style="aspect-ratio:1;border-radius:12px;background:#020B18;display:grid;place-items:center;border:1px solid var(--line)"><img src="assets/logo-symbol.webp" alt="" style="width:70%;mix-blend-mode:screen"></div>
+          <div style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#061A33,#0B5BD3);display:grid;place-items:center;border:1px solid var(--line)"><img src="assets/logo-symbol.webp" alt="" style="width:70%;mix-blend-mode:screen"></div>
+          <div style="aspect-ratio:1;border-radius:12px;background:#F3F7FC;display:grid;place-items:center"><img src="assets/logo-on-white.webp" alt="الرمز مطبوعاً على قماش أبيض" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></div>
+        </div>
+        <p class="cap">الأفضلية للخلفيات الداكنة حيث يظهر توهّج الرمز. على الأبيض يُستخدم الرمز بلا توهّج خارجي.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:56px 0 20px;font-size:1.4rem">لا تفعل</h3>
+    <div class="grid g4 dontg">
+      <div class="dont"><div class="stage dark d-stretch"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تمطّ الرمز أو تضغطه.</p></div>
+      <div class="dont"><div class="stage dark d-rotate"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تُدِر الرمز عن وضعه القائم.</p></div>
+      <div class="dont"><div class="stage dark d-color"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تغيّر ألوان الرمز.</p></div>
+      <div class="dont"><div class="stage d-busy"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تضعه على خلفيات مزدحمة أو صاخبة.</p></div>
+      <div class="dont"><div class="stage dark d-outline"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تضف ظلالاً أو حدوداً ملوّنة.</p></div>
+      <div class="dont"><div class="stage dark d-crop"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تقصّ أجزاءً من الرمز.</p></div>
+      <div class="dont"><div class="stage dark d-low"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تخفّض شفافيته فيضيع.</p></div>
+      <div class="dont"><div class="stage d-light"><img src="assets/logo-symbol.webp" alt=""></div><p>لا تضع النسخة ذات الخلفية الداكنة على الأبيض.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 Color -->
+<section class="ch" id="color">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">04</span><h2>الألوان</h2><p>ليلٌ عميق يضيئه السماوي. الكحلي يحمل الثقة، والسماوي يحمل الحركة. اضغط أي قيمة لنسخها.</p></div>
+    <div class="swatches">
+      <div class="sw big" style="grid-row:span 2">
+        <div class="chipc" style="background:radial-gradient(circle at 70% 20%,#0A2A52,#020B18 70%)">كحلي الليل</div>
+        <dl class="data"><dt class="role">أساسي · الخلفيات</dt><dt>HEX</dt><dd><button class="copy">#020B18</button></dd><dt>RGB</dt><dd>2 · 11 · 24</dd><dt>CMYK</dt><dd>92 · 54 · 0 · 91</dd></dl>
+      </div>
+      <div class="sw"><div class="chipc" style="background:#16D3EE;color:#03142a">سماوي سداد</div>
+        <dl class="data"><dt class="role">لون التمييز · التوهّج</dt><dt>HEX</dt><dd><button class="copy">#16D3EE</button></dd><dt>RGB</dt><dd>22 · 211 · 238</dd><dt>CMYK</dt><dd>91 · 11 · 0 · 7</dd></dl></div>
+      <div class="sw"><div class="chipc" style="background:#0B5BD3">أزرق ملكي</div>
+        <dl class="data"><dt class="role">ثانوي · التدرّجات</dt><dt>HEX</dt><dd><button class="copy">#0B5BD3</button></dd><dt>RGB</dt><dd>11 · 91 · 211</dd><dt>CMYK</dt><dd>95 · 57 · 0 · 17</dd></dl></div>
+      <div class="sw"><div class="chipc" style="background:#E7EEF6;color:#071A33">فضي الشريط</div>
+        <dl class="data"><dt class="role">النصوص الرئيسية</dt><dt>HEX</dt><dd><button class="copy">#E7EEF6</button></dd><dt>RGB</dt><dd>231 · 238 · 246</dd><dt>CMYK</dt><dd>6 · 3 · 0 · 4</dd></dl></div>
+      <div class="sw"><div class="chipc" style="background:#0A2A52">كحلي الأسطح</div>
+        <dl class="data"><dt class="role">البطاقات والأزرار</dt><dt>HEX</dt><dd><button class="copy">#0A2A52</button></dd><dt>RGB</dt><dd>10 · 42 · 82</dd><dt>CMYK</dt><dd>88 · 49 · 0 · 68</dd></dl></div>
+    </div>
+    <div class="ratio" aria-label="نسب استخدام الألوان">
+      <div style="flex:60;background:#020B18">60% كحلي الليل</div>
+      <div style="flex:20;background:#0A2A52">20% أسطح</div>
+      <div style="flex:10;background:#0B5BD3">10%</div>
+      <div style="flex:7;background:#16D3EE;color:#03142a">7%</div>
+      <div style="flex:3;background:#E7EEF6;color:#071A33"></div>
+    </div>
+    <p class="cap">قاعدة التوازن: الكحلي يغلب، والسماوي قليل ومقصود، يُستخدم للنقطة التي تريد أن يراها العميل أولاً.</p>
+    <div class="grads">
+      <div class="grad" style="background:linear-gradient(135deg,#7BF1FF,#16D3EE 40%,#1E9BFF)"><b style="color:#03142a">تدرّج الحركة</b><span style="color:#03142a">#7BF1FF → #16D3EE → #1E9BFF</span></div>
+      <div class="grad" style="background:linear-gradient(160deg,#0B5BD3,#061A33 75%)"><b>تدرّج العمق</b><span>#0B5BD3 → #061A33</span></div>
+      <div class="grad" style="background:radial-gradient(circle at 50% 110%,#16D3EE,#0B5BD3 35%,#020B18 75%)"><b>توهّج الأفق</b><span>radial · #16D3EE / #0B5BD3 / #020B18</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 Type -->
+<section class="ch" id="type">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">05</span><h2>الخطوط</h2><p>خط هندسي عريض للعناوين يشبه حروف الشعار المستديرة، وخط نصي واضح للمحتوى والأرقام.</p></div>
+    <div class="type-hero">
+      <div class="panel">
+        <div class="eyebrow">العناوين · Readex Pro</div>
+        <div class="specimen">سداد</div>
+        <div class="alpha" style="font-family:var(--display)">ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي</div>
+        <div class="weights" style="font-family:var(--display)"><span style="font-weight:300">خفيف 300</span><span style="font-weight:500">متوسط 500</span><span style="font-weight:600">نصف عريض 600</span><span style="font-weight:700">عريض 700</span></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">النصوص · IBM Plex Sans Arabic</div>
+        <div class="specimen b">محفظة</div>
+        <div class="alpha">٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩ · 0 1 2 3 4 5 6 7 8 9</div>
+        <div class="weights"><span style="font-weight:300">خفيف 300</span><span style="font-weight:400">عادي 400</span><span style="font-weight:500">متوسط 500</span><span style="font-weight:600">نصف عريض 600</span></div>
+      </div>
+    </div>
+    <div class="scale">
+      <div class="row"><div class="meta">Display · 56/64 · 700</div><div class="s" style="font-family:var(--display);font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.15">كل معاملاتك في مكان واحد</div></div>
+      <div class="row"><div class="meta">H1 · 36/44 · 700</div><div class="s" style="font-family:var(--display);font-size:clamp(1.6rem,3.5vw,2.25rem);font-weight:700">ادفع الآن بكل سهولة</div></div>
+      <div class="row"><div class="meta">H2 · 24/32 · 600</div><div class="s" style="font-family:var(--display);font-size:1.5rem;font-weight:600">سداد الفواتير</div></div>
+      <div class="row"><div class="meta">Body · 16/28 · 400</div><div class="s">ادفع فواتير الكهرباء والمياه والاتصالات والرسوم الحكومية من محفظة واحدة، وتابع كل عملية لحظة بلحظة.</div></div>
+      <div class="row"><div class="meta">Amount · 32 · 700 · tabular</div><div class="s mono" style="font-family:var(--display);font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:right">SAR 4,750.00</div></div>
+      <div class="row"><div class="meta">Caption · 13/20 · 400</div><div class="s" style="font-size:.8rem;color:var(--steel)">آخر تحديث للرصيد قبل دقيقة</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 Icons -->
+<section class="ch" id="icons">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">06</span><h2>الأيقونات</h2><p>أيقونات خطية رفيعة بلون سماوي متوهّج، داخل بلاطات زجاجية مستديرة الزوايا. نفس الأسلوب في التطبيق والإعلان.</p></div>
+    <div class="icons">
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0012 3z"/></svg><span>الكهرباء</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/></svg><span>المياه</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0120 0M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span>الإنترنت</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span>شحن الجوال</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M4 9h16M6 9v8M10 9v8M14 9v8M18 9v8M3 20h18"/></svg><span>الرسوم الحكومية</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></svg><span>التعليم</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.3 8.3-8 9-4.7-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span>التأمين</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M3 12h3l3 3h4a2 2 0 000-4h-3M3 19h11l7-5a2 2 0 00-2.5-3L14 13"/><path d="M15 3.5a2 2 0 013 0 2 2 0 013 2.6L18 9l-3-2.9a2 2 0 010-2.6z"/></svg><span>التبرعات</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg><span>إرسال</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>استلام</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg><span>البطاقات</span></div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h5"/></svg><span>الفواتير</span></div>
+    </div>
+    <div class="rules">
+      <div class="rule"><div class="k">24 × 24</div><div class="v">شبكة الرسم الأساسية</div></div>
+      <div class="rule"><div class="k">1.6 – 1.8px</div><div class="v">سماكة الخط، أطراف مستديرة</div></div>
+      <div class="rule"><div class="k">20px</div><div class="v">انحناء زوايا البلاطة</div></div>
+      <div class="rule"><div class="k">#7BF1FF</div><div class="v">لون الأيقونة مع توهّج 6px</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 Graphics -->
+<section class="ch" id="graphics">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">07</span><h2>العناصر الجرافيكية</h2><p>الضوء هو العنصر الأساسي. أربعة عناصر تكفي لبناء أي تصميم لسداد.</p></div>
+    <div class="grid g2">
+      <div><div class="ge"><div class="orbit" style="width:130%;height:70%;left:-15%;top:22%;transform:rotate(-8deg)"></div><div class="orbit" style="width:90%;height:46%;left:5%;top:30%;transform:rotate(-8deg);opacity:.5"></div><img src="assets/logo-symbol.webp" alt="" style="position:absolute;width:44%;left:28%;top:8%;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(closest-side,#000 70%,transparent);mask-image:radial-gradient(closest-side,#000 70%,transparent)"></div><h3 style="margin-top:14px;font-size:1.05rem">مدار الضوء</h3><p class="cap" style="margin-top:4px">حلقة مضيئة تدور حول المنتج أو الرمز، تُشعر بالحركة والاتصال.</p></div>
+      <div><div class="ge"><div class="wave"></div><div class="wave w2"></div></div><h3 style="margin-top:14px;font-size:1.05rem">موجة الأفق</h3><p class="cap" style="margin-top:4px">منحنى سماوي في أسفل التصميم يرسو عليه المحتوى، كما في الإعلانات واللوحات.</p></div>
+      <div><div class="ge"><div class="blobs"></div><div class="glass-demo"><small>رصيد المحفظة</small><div class="mono" style="text-align:right">SAR 4,750.00</div><span class="btn">+ إيداع رصيد</span></div></div><h3 style="margin-top:14px;font-size:1.05rem">الزجاج المضيء</h3><p class="cap" style="margin-top:4px">أسطح شبه شفافة بحد سماوي رفيع وضبابية خلفية. للبطاقات والحاويات.</p></div>
+      <div><div class="ge" style="display:grid;place-items:center"><svg viewBox="0 0 200 120" width="70%" aria-hidden="true" style="overflow:visible"><g fill="none" stroke-linecap="round" stroke-width="10" style="filter:drop-shadow(0 0 10px #16D3EE)"><path d="M70 85 a20 20 0 0 1 20 -30" stroke="#16D3EE"/><path d="M70 85 a45 45 0 0 1 45 -55" stroke="#1E9BFF"/><path d="M70 85 a70 70 0 0 1 70 -78" stroke="#0B5BD3"/></g></svg></div><h3 style="margin-top:14px;font-size:1.05rem">موجات الدفع</h3><p class="cap" style="margin-top:4px">الأقواس الثلاثة من الرمز، تُستخدم وحدها لتأكيد الدفع الفوري ونجاح العملية.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 Voice -->
+<section class="ch" id="voice">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">08</span><h2>نبرة الصوت</h2><p>نتكلم كصديق يفهم في المال: واضح، قصير، مطمئن. لا مصطلحات بنكية بلا داعٍ.</p></div>
+    <div class="voice">
+      <div class="slogans">
+        <div class="slogan"><div class="q">كل معاملاتك المالية <em>في مكان واحد</em></div><div class="u">الشعار الرئيسي · الإعلانات الكبرى</div></div>
+        <div class="slogan"><div class="q">أسهل .. أسرع .. <em>أكثر أماناً</em></div><div class="u">الوعد · شاشة البداية وتحت الشعار</div></div>
+        <div class="slogan"><div class="q">ادفع الآن <em>بكل سهولة</em></div><div class="u">دعوة للفعل · اللوحات والأزرار</div></div>
+        <div class="slogan"><div class="q">سداد .. <em>لمحفظة مالية أسهل لحياتك</em></div><div class="u">السطر التعريفي · الوصف في المتاجر</div></div>
+      </div>
+      <div class="dd">
+        <div class="say yes"><b>✓ قل</b>تم دفع فاتورة الكهرباء. الرصيد المتبقي 4,580 ريال.</div>
+        <div class="say no"><b>✕ لا تقل</b>تمت معالجة عملية السداد رقم 88213 بنجاح وفق الإجراءات المعتمدة.</div>
+        <div class="say yes"><b>✓ قل</b>رصيدك لا يكفي. أضف 50 ريال لإتمام الدفع.</div>
+        <div class="say no"><b>✕ لا تقل</b>خطأ 402: فشل العملية.</div>
+        <div class="say yes"><b>✓ قل</b>ابدأ الآن</div>
+        <div class="say no"><b>✕ لا تقل</b>اضغط هنا للمتابعة إلى الخطوة التالية</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 UI -->
+<section class="ch" id="ui">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">09</span><h2>مكوّنات الواجهة</h2><p>كيف تُترجم الهوية داخل التطبيق: بطاقة الرصيد، الأزرار، والوصول السريع.</p></div>
+    <div class="ui">
+      <div class="panel">
+        <div class="eyebrow" style="margin-bottom:14px">بطاقة الرصيد</div>
+        <div class="balance"><img src="assets/logo-symbol.webp" alt=""><small>رصيد المحفظة</small><div class="amt">4,750.00<span>SAR</span></div><span class="b1" style="display:inline-block;margin-top:14px;padding:8px 18px;font-size:.85rem">+ إيداع رصيد</span></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow" style="margin-bottom:14px">الأزرار</div>
+        <div class="btns"><span class="b1">ابدأ الآن</span><span class="b2">تسجيل الدخول</span><span class="b3">لاحقاً</span></div>
+        <p class="cap">الأساسي بتدرّج الحركة وتوهّج. زر أساسي واحد فقط في كل شاشة.</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow" style="margin-bottom:2px">الوصول السريع</div>
+        <div class="qa">
+          <div><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg>الفواتير</div>
+          <div><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg>دفع</div>
+          <div><svg viewBox="0 0 24 24"><path d="M12 4v12M6 11l6 6 6-6"/></svg>استلام</div>
+          <div><svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>إرسال</div>
+        </div>
+        <p class="cap">الحواف 14px، والمسافة بين العناصر 10px على شبكة 8pt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 Applications -->
+<section class="ch" id="apps">
+  <div class="wrap">
+    <div class="ch-head"><span class="ch-num">10</span><h2>التطبيقات</h2><p>العلامة في العالم الحقيقي: على الشاشة، في الإعلان، في الشارع، وعلى الفريق.</p></div>
+    <div class="apps">
+      <figure class="app a-wide"><img src="assets/app-screens.webp" alt="ثلاث شاشات من تطبيق سداد: البداية، الرئيسية، وسداد الفواتير"><figcaption><b>تطبيق الجوال</b>شاشة البداية، الرئيسية مع بطاقة الرصيد، وقائمة الخدمات.</figcaption></figure>
+      <figure class="app a-half"><img src="assets/ad-banner.webp" alt="بنر إعلاني لسداد يعرض الهاتف والمحفظة والخدمات"><figcaption><b>البنر الرقمي</b>مدار الضوء وبلاطات الخدمات حول المنتج.</figcaption></figure>
+      <figure class="app a-half"><img src="assets/billboard.webp" alt="لوحة إعلانية خارجية لسداد في الشارع"><figcaption><b>اللوحة الخارجية</b>الرمز يساراً، الرسالة يميناً، وروابط المتاجر أسفل.</figcaption></figure>
+      <figure class="app a-wide"><img src="assets/merch-tshirts.webp" alt="قميصان أبيض وكحلي عليهما رمز سداد على الصدر"><figcaption><b>الملابس والهدايا</b>الرمز وحده على الصدر الأيسر، بعرض 8–10 سم، على الأبيض أو الكحلي.</figcaption></figure>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand"><img src="assets/logo-symbol.webp" alt=""><div><div style="font-family:var(--display);font-weight:700;font-size:1.4rem">سداد</div><small>دليل الهوية البصرية · الإصدار 1.0</small></div></div>
+    <small>لأي استخدام خارج هذا الدليل، راجع فريق العلامة قبل النشر.</small>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status">تم النسخ</div>
+
+<script>
+const toast=document.getElementById('toast');let t;
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.textContent.trim();
+  const done=()=>{toast.textContent='تم نسخ '+v;toast.classList.add('on');clearTimeout(t);t=setTimeout(()=>toast.classList.remove('on'),1600)};
+  try{navigator.clipboard.writeText(v).then(done,()=>{const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r);done()})}catch(e){done()}
+}));
+</script>
