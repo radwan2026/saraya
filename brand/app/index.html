@@ -9,13 +9,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-@font-face{font-family:"Dinar One";src:url(../assets/fonts/GE-Dinar-One-Medium.otf) format("opentype");font-weight:100 599;font-display:swap;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+00AB,U+00BB,U+200C-200F}
-@font-face{font-family:"Dinar One";src:url(../assets/fonts/DinarOne-Bold.otf) format("opentype");font-weight:600 900;font-display:swap;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+00AB,U+00BB,U+200C-200F}
+@font-face{font-family:"Dinar One";src:url(../assets/fonts/GE-Dinar-One-Medium.woff) format("woff");font-weight:100 599;font-display:swap}
+@font-face{font-family:"Dinar One";src:url(../assets/fonts/DinarOne-Bold.woff) format("woff");font-weight:600 900;font-display:swap}
 :root{
   --green:#80B95A; --signal:#5DC23B; --forest:#1F3319; --charcoal:#535353;
   --mint:#E7F2DE; --paper:#F6F8F3; --ink:#1C1F1A; --muted:#6B7266; --line:#E3E8DD;
   --danger:#D8453B; --amber:#E9A23B;
-  --font:"Dinar One","Open Sans",system-ui,sans-serif;
+  --font:"Open Sans","Dinar One",system-ui,sans-serif;
   --en:"Open Sans","Dinar One",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -35,7 +35,7 @@ input{font:inherit;color:inherit}
 .panel .lead{color:var(--muted);font-size:17px;line-height:1.8}
 .now{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;position:relative;overflow:hidden}
 .now::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:5px;background:var(--green)}
-.now small{color:var(--green);font-weight:700;font-size:13px;letter-spacing:.04em}
+.now small{color:var(--green);font-weight:700;font-size:13px}
 .now h2{font-size:22px;margin:6px 0 8px}
 .now p{color:var(--muted);line-height:1.8;font-size:15px}
 .now ul{margin-top:10px;padding-inline-start:18px;color:var(--charcoal);font-size:14px;line-height:1.9}
@@ -146,7 +146,7 @@ input{font:inherit;color:inherit}
 .balance .eye{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.35);display:grid;place-items:center}
 .balance .eye .ic{width:20px;height:20px}
 .balance .amt{font:800 34px var(--en);margin:6px 0 2px;direction:ltr;text-align:right;position:relative;letter-spacing:-.5px}
-.balance .amt small{font:700 16px var(--font);margin-left:6px}
+.balance .amt small{letter-spacing:0;font:700 16px var(--font);margin-left:6px}
 .balance .wid{font-size:13px;opacity:.85;position:relative}
 .balance .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;position:relative}
 .balance .acts button{height:44px;border-radius:14px;background:#fff;color:var(--forest);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px}
@@ -209,7 +209,7 @@ input{font:inherit;color:inherit}
 .amount-view .to{display:inline-flex;align-items:center;gap:8px;background:var(--paper);padding:6px 14px 6px 6px;border-radius:999px;font-size:14px}
 .amount-view .to .avatar{width:30px;height:30px;border-radius:50%;font-size:13px}
 .amount-view .big{font:800 46px var(--en);direction:ltr;margin-top:22px;letter-spacing:-1px;min-height:62px}
-.amount-view .big small{font:700 20px var(--font);color:var(--muted);margin-left:8px}
+.amount-view .big small{letter-spacing:0;font:700 20px var(--font);color:var(--muted);margin-left:8px}
 .amount-view .bal{color:var(--muted);font-size:14px;margin-top:4px}
 .amount-view .bal.err{color:var(--danger)}
 .preset{display:flex;gap:8px;justify-content:center;margin:14px 0 4px}
