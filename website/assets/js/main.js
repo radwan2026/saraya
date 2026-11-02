@@ -66,7 +66,7 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const f = new FormData(e.target);
   const body = `الاسم: ${f.get('name')}\nالهاتف: ${f.get('phone')}\nالبريد: ${f.get('email')}\nالخدمة: ${f.get('service')}\n\n${f.get('message')}`;
-  window.location.href = `mailto:info@vanguard.com?subject=${encodeURIComponent('طلب من الموقع - ' + (f.get('service') || 'استفسار'))}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:Info@vanguard.ly?subject=${encodeURIComponent('طلب من الموقع - ' + (f.get('service') || 'استفسار'))}&body=${encodeURIComponent(body)}`;
   document.getElementById('formNote').textContent = 'شكراً لتواصلك! سيتم فتح بريدك لإرسال الرسالة.';
 });
 
