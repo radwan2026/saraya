@@ -353,6 +353,8 @@ export function createApp(store, cfg, { log = console } = {}) {
   });
 
   // ================= الملفات الثابتة والأخطاء =================
+  // ملف ربط تطبيق الأندرويد (APK / Google Play) بالموقع: ضع assetlinks.json في public/.well-known/
+  app.use('/.well-known', express.static(path.join(PUBLIC_DIR, '.well-known'), { dotfiles: 'allow' }));
   app.use(express.static(PUBLIC_DIR));
   app.use('/api', (_req, _res, next) => next(new HttpError(404, 'NOT_FOUND', 'غير موجود')));
   // eslint-disable-next-line no-unused-vars
