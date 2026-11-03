@@ -1,7 +1,9 @@
+import { fileURLToPath } from 'node:url';
+
 // إعدادات تطبيق ختمي. يمكن تغيير معظمها من لوحة الإدارة (/admin.html) دون إعادة تشغيل.
 export const config = {
   port: Number(process.env.PORT || 3000),
-  dataDir: process.env.KHATMI_DATA_DIR || new URL('./data', import.meta.url).pathname,
+  dataDir: process.env.KHATMI_DATA_DIR || fileURLToPath(new URL('./data', import.meta.url)),
   // كلمة مرور لوحة الإدارة — غيّرها قبل التشغيل الفعلي!
   adminPassword: process.env.ADMIN_PASSWORD || 'admin1234',
   // سر توقيع الجلسات — غيّره قبل التشغيل الفعلي!
