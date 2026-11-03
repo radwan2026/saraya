@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>ختمي | لوحة الإدارة</title>
+  <link rel="icon" href="img/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+    .stat b { display: block; font-size: 1.6rem; color: var(--yellow); direction: ltr; text-align: start; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: start; vertical-align: middle; }
+    th { color: var(--muted); font-weight: 600; }
+    .tbl { overflow-x: auto; }
+    td .btn { padding: 5px 10px; font-size: .82rem; }
+    td input { width: 80px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 5px; }
+    .settings { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0 14px; }
+    fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+    legend { color: var(--yellow); padding: 0 6px; }
+  </style>
+</head>
+<body>
+  <section id="login" class="screen auth">
+    <img src="img/logo-full.png" alt="ختمي" class="auth-logo">
+    <form class="card auth-card" id="login-form">
+      <h2>لوحة الإدارة</h2>
+      <label class="field"><span>كلمة المرور</span><input type="password" name="password" required></label>
+      <p class="error" id="login-err" hidden></p>
+      <button class="btn primary block">دخول</button>
+    </form>
+  </section>
+
+  <div id="panel" hidden>
+    <header class="topbar">
+      <div class="brand"><img src="img/icon-192.png" alt=""><strong>ختمي — الإدارة</strong></div>
+      <div class="top-actions"><button class="chip ghost" id="reload">تحديث</button><button class="chip ghost" id="out">خروج</button></div>
+    </header>
+    <main>
+      <div class="stats" id="stats"></div>
+
+      <div class="card">
+        <h2>طلبات شحن المحفظة</h2>
+        <p class="hint">تحقق من وصول التحويل إلى رقم الاستقبال ثم اضغط «اعتماد». يمكنك تعديل المبلغ المستلم فعلياً قبل الاعتماد.</p>
+        <div class="tbl"><table id="topups"></table></div>
+      </div>
+
+      <div class="card">
+        <h2>الإعدادات والأسعار</h2>
+        <form id="settings-form">
+          <div class="settings">
+            <label class="field"><span>سعر الحرف (د.ل)</span><input name="pricePerLetter" type="number" step="0.001" min="0"></label>
+            <label class="field"><span>رسوم الأيقونة المدمجة (د.ل)</span><input name="iconFee" type="number" step="0.001" min="0"></label>
+            <label class="field"><span>رسوم شعار العميل (د.ل)</span><input name="logoFee" type="number" step="0.001" min="0"></label>
+            <label class="field"><span>الحد الأدنى للسعر (د.ل)</span><input name="minPrice" type="number" step="0.001" min="0"></label>
+          </div>
+          <div id="carrier-settings"></div>
+          <p class="error" id="set-err" hidden></p>
+          <button class="btn primary">حفظ الإعدادات</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>المستخدمون</h2>
+        <div class="tbl"><table id="users"></table></div>
+      </div>
+
+      <div class="card">
+        <h2>آخر الطلبات</h2>
+        <div class="tbl"><table id="orders"></table></div>
+      </div>
+
+      <div class="card">
+        <h2>رسائل SMS الواردة (Webhook)</h2>
+        <div class="tbl"><table id="sms"></table></div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+  <script src="admin.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>ختمي | My seal</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="img/icon-192.png">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ============ شاشة الدخول ============ -->
+  <section id="auth-screen" class="screen auth" hidden>
+    <img src="img/logo-full.png" alt="ختمي My seal" class="auth-logo">
+    <p class="tagline" data-i18n="tagline"></p>
+    <div class="card auth-card">
+      <div class="seg" id="auth-tabs">
+        <button type="button" data-tab="login" class="active" data-i18n="login"></button>
+        <button type="button" data-tab="register" data-i18n="register"></button>
+      </div>
+      <form id="auth-form" autocomplete="on">
+        <label class="field reg-only" hidden><span data-i18n="fullName"></span><input name="name" maxlength="60" autocomplete="name"></label>
+        <label class="field"><span data-i18n="phone"></span>
+          <input name="phone" type="tel" inputmode="numeric" dir="ltr" placeholder="09XXXXXXXX" required autocomplete="tel">
+        </label>
+        <label class="field"><span data-i18n="password"></span><input name="password" type="password" minlength="6" required autocomplete="current-password"></label>
+        <p class="error" id="auth-error" hidden></p>
+        <button class="btn primary block" type="submit" id="auth-submit" data-i18n="login"></button>
+      </form>
+    </div>
+    <button type="button" class="link lang-toggle" data-i18n="switchLang"></button>
+  </section>
+
+  <!-- ============ التطبيق ============ -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand"><img src="img/icon-192.png" alt=""><strong data-i18n="appName"></strong></div>
+      <nav class="tabs" id="tabs">
+        <button type="button" data-view="studio" class="active"><span class="ico">✦</span><span data-i18n="navStudio"></span></button>
+        <button type="button" data-view="wallet"><span class="ico">◈</span><span data-i18n="navWallet"></span></button>
+        <button type="button" data-view="orders"><span class="ico">▣</span><span data-i18n="navOrders"></span></button>
+      </nav>
+      <div class="top-actions">
+        <button type="button" class="chip balance" id="balance-chip" data-view="wallet">0.000 <small data-i18n="lyd"></small></button>
+        <button type="button" class="chip ghost lang-toggle" data-i18n="langShort"></button>
+        <button type="button" class="chip ghost" id="logout" data-i18n="logout"></button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ الاستوديو ============ -->
+      <section id="view-studio" class="view">
+        <div class="studio">
+          <div class="col-form">
+            <div class="card">
+              <h2><span class="num">1</span><span data-i18n="stepData"></span></h2>
+              <div class="row2">
+                <div>
+                  <span class="lbl" data-i18n="sealType"></span>
+                  <div class="seg" id="in-kind">
+                    <button type="button" data-v="company" class="active" data-i18n="company"></button>
+                    <button type="button" data-v="personal" data-i18n="personal"></button>
+                  </div>
+                </div>
+                <div>
+                  <span class="lbl" data-i18n="language"></span>
+                  <div class="seg" id="in-lang">
+                    <button type="button" data-v="ar" class="active">عربي</button>
+                    <button type="button" data-v="en">English</button>
+                    <button type="button" data-v="both" data-i18n="both"></button>
+                  </div>
+                </div>
+              </div>
+              <label class="field" id="f-nameAr"><span data-i18n="nameAr"></span><input id="in-nameAr" dir="rtl" maxlength="60"></label>
+              <label class="field" id="f-nameEn" hidden><span data-i18n="nameEn"></span><input id="in-nameEn" dir="ltr" maxlength="60"></label>
+              <label class="field"><span data-i18n="taglineLbl"></span><input id="in-tagline" maxlength="60"></label>
+              <div class="row2">
+                <label class="field"><span data-i18n="city"></span><input id="in-city" maxlength="30"></label>
+                <label class="field"><span data-i18n="extraLbl"></span><input id="in-extra" maxlength="60"></label>
+              </div>
+              <div class="logo-up">
+                <span class="lbl" data-i18n="logo"></span>
+                <div class="logo-row">
+                  <label class="btn outline small"><input type="file" id="in-logo" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden><span data-i18n="uploadLogo"></span></label>
+                  <img id="logo-thumb" alt="" hidden>
+                  <button type="button" class="link" id="logo-remove" hidden data-i18n="remove"></button>
+                </div>
+                <div id="logo-opts" hidden>
+                  <div class="seg small" id="logo-mode">
+                    <button type="button" data-v="ink" class="active" data-i18n="logoInk"></button>
+                    <button type="button" data-v="original" data-i18n="logoOriginal"></button>
+                  </div>
+                  <label class="range" id="logo-thr-wrap"><span data-i18n="logoThreshold"></span><input type="range" id="logo-thr" min="40" max="240" value="170"></label>
+                </div>
+              </div>
+              <label class="field"><span data-i18n="styleNotes"></span><input id="in-style" maxlength="120" data-i18n-ph="styleNotesPh"></label>
+              <div class="actions">
+                <button type="button" class="btn primary" id="btn-ai"><span>✨</span> <span data-i18n="aiDesign"></span></button>
+                <button type="button" class="btn outline" id="btn-manual" data-i18n="manualDesign"></button>
+              </div>
+              <p class="hint" id="ai-hint"></p>
+            </div>
+
+            <div class="card" id="gallery-card" hidden>
+              <h2><span class="num">2</span><span data-i18n="stepPick"></span> <small id="gallery-src" class="badge"></small></h2>
+              <div class="gallery" id="gallery"></div>
+            </div>
+
+            <div class="card" id="editor-card">
+              <h2><span class="num">3</span><span data-i18n="stepEdit"></span></h2>
+              <div id="edit-order-banner" class="banner" hidden>
+                <span data-i18n="editingOrder"></span>
+                <button type="button" class="link" id="cancel-edit-order" data-i18n="cancel"></button>
+              </div>
+
+              <span class="lbl" data-i18n="shape"></span>
+              <div class="chips" id="ed-shape"></div>
+
+              <div class="row2">
+                <label class="range"><span><span data-i18n="width"></span> <b id="ed-w-val"></b></span><input type="range" id="ed-w" min="20" max="100" step="1"></label>
+                <label class="range" id="ed-h-wrap"><span><span data-i18n="height"></span> <b id="ed-h-val"></b></span><input type="range" id="ed-h" min="15" max="100" step="1"></label>
+              </div>
+
+              <span class="lbl" data-i18n="ink"></span>
+              <div class="swatches" id="ed-ink"></div>
+
+              <span class="lbl" data-i18n="border"></span>
+              <div class="chips" id="ed-border"></div>
+
+              <div class="row2">
+                <label class="field"><span data-i18n="fontAr"></span><select id="ed-fontAr"></select></label>
+                <label class="field"><span data-i18n="fontEn"></span><select id="ed-fontEn"></select></label>
+              </div>
+
+              <span class="lbl" data-i18n="iconLbl"></span>
+              <div class="chips" id="ed-icon"></div>
+
+              <span class="lbl" data-i18n="separator"></span>
+              <div class="chips" id="ed-sep"></div>
+
+              <div class="texts">
+                <label class="field"><span id="lbl-top"></span><input id="ed-top" maxlength="60"></label>
+                <label class="field"><span id="lbl-bottom"></span><input id="ed-bottom" maxlength="60"></label>
+                <label class="field"><span id="lbl-center"></span><input id="ed-center" maxlength="60"></label>
+                <label class="field"><span id="lbl-extra"></span><input id="ed-extra" maxlength="60"></label>
+              </div>
+
+              <div class="row2">
+                <label class="range"><span data-i18n="textScale"></span><input type="range" id="ed-scale" min="0.6" max="1.4" step="0.02"></label>
+                <label class="range"><span data-i18n="spacing"></span><input type="range" id="ed-spacing" min="0" max="1" step="0.05"></label>
+              </div>
+              <label class="check"><input type="checkbox" id="ed-ring"> <span data-i18n="innerRing"></span></label>
+            </div>
+          </div>
+
+          <aside class="col-preview">
+            <div class="card preview-card">
+              <div class="preview-head">
+                <h2 data-i18n="livePreview"></h2>
+                <label class="check small"><input type="checkbox" id="pv-real"> <span data-i18n="realInk"></span></label>
+              </div>
+              <div class="paper" id="paper"><div id="preview" class="preview"></div><div class="spinner" id="pv-spin" hidden></div></div>
+              <div class="price" id="price"></div>
+              <button type="button" class="btn primary block big" id="btn-buy"></button>
+              <button type="button" class="btn outline block" id="btn-save-order" hidden data-i18n="saveFree"></button>
+              <p class="hint center" data-i18n="formatsHint"></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ المحفظة ============ -->
+      <section id="view-wallet" class="view" hidden>
+        <div class="wallet-grid">
+          <div class="card wallet-balance">
+            <span data-i18n="walletBalance"></span>
+            <div class="big-num" id="w-balance">0.000</div>
+            <small data-i18n="lydLong"></small>
+          </div>
+          <div class="card">
+            <h2 data-i18n="topupTitle"></h2>
+            <p class="hint" data-i18n="topupHint"></p>
+            <form id="topup-form">
+              <span class="lbl" data-i18n="carrier"></span>
+              <div class="carriers" id="carriers"></div>
+              <label class="field"><span data-i18n="senderPhone"></span><input id="tp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="09XXXXXXXX" required></label>
+              <span class="lbl" data-i18n="amount"></span>
+              <div class="chips" id="tp-quick"></div>
+              <label class="field"><input id="tp-amount" type="number" inputmode="decimal" min="1" step="1" dir="ltr" required></label>
+              <p class="hint" id="tp-credit"></p>
+              <p class="error" id="tp-error" hidden></p>
+              <button class="btn primary block" type="submit" data-i18n="topupSubmit"></button>
+            </form>
+          </div>
+          <div class="card" id="tp-instructions" hidden></div>
+          <div class="card">
+            <h2 data-i18n="topupRequests"></h2>
+            <div id="tp-list" class="list"></div>
+          </div>
+          <div class="card">
+            <h2 data-i18n="transactions"></h2>
+            <div id="tx-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ أختامي ============ -->
+      <section id="view-orders" class="view" hidden>
+        <div class="card">
+          <h2 data-i18n="myOrders"></h2>
+          <div id="orders" class="orders"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============ نافذة منبثقة ============ -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-box">
+      <button type="button" class="modal-x" id="modal-x" aria-label="close">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="ink-real" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.6 1.25" result="holes"/>
+      <feComposite in="SourceGraphic" in2="holes" operator="in" result="grain"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" result="warp"/>
+      <feDisplacementMap in="grain" in2="warp" scale="3"/>
+    </filter>
+  </svg>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
