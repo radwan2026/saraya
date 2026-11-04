@@ -1,0 +1,388 @@
+<title>LPTIC Booth Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: a working studio sheet — 3D viewport beside a numbered spec list that matches the markers in the scene. */
+:root{
+  --bg:#f4f6fa; --panel:#ffffff; --ink:#0f1f38; --muted:#5b6678; --line:#dbe2ec;
+  --navy:#14336b; --accent:#1f5fbf; --chip:#e8eef8; --stage:#e9edf3;
+  --display:"Cairo","IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic","Cairo","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --panel:#121c30; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a;
+  --navy:#8fb0ea; --accent:#6ea0f0; --chip:#1b2840; --stage:#18233a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --panel:#121c30; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a;
+  --navy:#8fb0ea; --accent:#6ea0f0; --chip:#1b2840; --stage:#18233a; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:1400px;margin:0 auto;padding-block:24px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+header h1{font-family:var(--display);font-weight:800;font-size:clamp(22px,3vw,32px);line-height:1.25;margin:0;color:var(--navy);text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.tabs{display:flex;gap:6px;background:var(--chip);padding:5px;border-radius:12px}
+.tabs button{font:600 15px var(--display);border:0;background:transparent;color:var(--muted);padding:8px 16px;border-radius:9px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tabs button:focus-visible,.tool:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative;background:var(--stage);border:1px solid var(--line);border-radius:14px;overflow:hidden;aspect-ratio:16/10;max-width:100%}
+@media (max-width:600px){.stage{aspect-ratio:4/5}}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.labels{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--panel);
+  font:800 13px var(--display);display:grid;place-items:center;border:2px solid var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.pin.hl{background:#d97a1a;transform:translate(-50%,-50%) scale(1.25)}
+.tools{position:absolute;top:10px;inset-inline-start:10px;display:flex;flex-wrap:wrap;gap:6px}
+.tool{font:600 13px var(--display);border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 11px;border-radius:8px;cursor:pointer}
+.tool[aria-pressed="true"]{background:var(--navy);color:var(--panel);border-color:var(--navy)}
+.hint{position:absolute;bottom:10px;inset-inline-end:12px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--panel) 80%,transparent);padding:3px 8px;border-radius:6px}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font:600 15px var(--display)}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;min-width:0}
+aside h2{font:800 18px var(--display);margin:0;color:var(--navy)}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.meta span{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:13px;font-variant-numeric:tabular-nums}
+.custom{display:grid;gap:10px;padding:12px;border:1px dashed var(--line);border-radius:10px}
+.custom label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.custom select{font:500 15px var(--body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.swatches button{width:28px;height:28px;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.swatches input{width:34px;height:30px;border:0;background:none;padding:0;cursor:pointer}
+ol.spec{list-style:none;margin:0;padding:0;display:grid}
+ol.spec li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:4px 10px;padding:9px 4px;border-top:1px solid var(--line);cursor:default;border-radius:6px}
+ol.spec li:hover,ol.spec li.hl{background:var(--chip)}
+ol.spec .n{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--panel);font:800 12px var(--display);display:grid;place-items:center;font-variant-numeric:tabular-nums}
+ol.spec b{font:700 15px var(--display)}
+ol.spec small{grid-column:2;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+</style>
+
+<div class="wrap" dir="rtl">
+  <header>
+    <div>
+      <h1 id="title">تصميم جناح الشركة القابضة للاتصالات</h1>
+      <p>معرض وملتقى ليبيا للتقنية والاتصالات · مدينة التقنية 2026 · جناح 58</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="نوع الجناح">
+      <button role="tab" id="tab-holding" aria-selected="true">جناح القابضة</button>
+      <button role="tab" id="tab-sub" aria-selected="false">جناح الشركات التابعة</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="stage" id="stage">
+      <div class="loading" id="loading">جارٍ تحميل النموذج ثلاثي الأبعاد…</div>
+      <div class="labels" id="labels"></div>
+      <div class="tools">
+        <button class="tool" data-view="persp" aria-pressed="true">منظور</button>
+        <button class="tool" data-view="front" aria-pressed="false">أمامي</button>
+        <button class="tool" data-view="top" aria-pressed="false">علوي</button>
+        <button class="tool" id="spin" aria-pressed="false">دوران تلقائي</button>
+        <button class="tool" id="pins" aria-pressed="true">الأرقام</button>
+      </div>
+      <div class="hint">اسحب للتدوير · مرّر للتكبير</div>
+    </div>
+
+    <aside>
+      <div>
+        <h2 id="specTitle">مكونات جناح القابضة</h2>
+        <div class="meta" id="meta"></div>
+      </div>
+      <div class="custom" id="custom" hidden>
+        <label for="company">الشركة
+          <select id="company"></select>
+        </label>
+        <div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px">لون الهوية (يُستبدل بلون الشركة المعتمد)</div>
+          <div class="swatches" id="swatches"></div>
+        </div>
+      </div>
+      <ol class="spec" id="spec"></ol>
+      <p class="note">تصوّر مفاهيمي؛ الأبعاد إرشادية وتُعتمد من مقاول التنفيذ وإدارة المعرض. الشعارات الرسمية تُضاف في مرحلة التصميم التنفيذي.</p>
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(async function(){
+const T = THREE;
+const stage = document.getElementById('stage');
+const labelsEl = document.getElementById('labels');
+try { await Promise.all([document.fonts.load('800 80px Cairo'), document.fonts.load('700 80px Cairo')]); } catch(e){}
+
+/* ---------- data ---------- */
+const COMPANIES = ['ليبيانا','المدار الجديد','الجيل الجديد','ليبيا للاتصالات والتقنية','الأكاديمية الليبية','البنية','الاتصالات الدولية','هاتف ليبيا','بريد ليبيا'];
+const SWATCHES = ['#1f5fbf','#0e8a6a','#c2410c','#7c3aed','#b91c1c','#0f766e','#a16207','#334155'];
+const state = { mode:'holding', company:COMPANIES[0], accent:SWATCHES[0], view:'persp', spin:false, pins:true };
+
+const SPECS = {
+  holding: { title:'مكونات جناح القابضة', meta:['14 × 6.6 م','92 م²','جناح جزيرة · 4 واجهات','ارتفاع 4.6 م'], items:[
+    {n:1,name:'الهالة العلوية المعلّقة',size:'13 × 5.8 م · ارتفاع التعليق 4.6 م · قماش مشدود مطبوع',pos:[0,5.2,2.9]},
+    {n:2,name:'البرج المركزي وشعار القابضة',size:'4.5 × 2.2 م · ارتفاع 4.2 م · مخزن خلفي 6 م²',pos:[-1.5,4.3,-1.1]},
+    {n:3,name:'شاشة LED الرئيسية',size:'4 × 2.25 م · دقة P2.5 · محتوى تعريفي بالمجموعة',pos:[-1.5,2.0,-1.0]},
+    {n:4,name:'غرفة الاجتماعات الزجاجية',size:'3 × 3.2 م · طاولة و6 مقاعد · زجاج بشريط معتم',pos:[-5.25,2.9,-1.4]},
+    {n:5,name:'طاولة العرض التفاعلية',size:'قطر 1.6 م · شاشة لمس لخريطة شركات المجموعة',pos:[0.2,1.3,1.4]},
+    {n:6,name:'منصّات التجارب التقنية',size:'4 وحدات · 0.6 × 1.9 م · 5G / IoT / AI / VR',pos:[-5.3,2.2,2.4]},
+    {n:7,name:'مكتب الاستقبال',size:'2.6 × 0.7 م · ارتفاع 1.05 م · واجهة مضيئة',pos:[4.6,1.5,2.3]},
+    {n:8,name:'ركن الضيافة VIP',size:'أريكة وكرسيان وطاولة قهوة · نحو 9 م²',pos:[5.0,1.4,-1.6]},
+  ]},
+  sub: { title:'مكونات جناح الشركة التابعة', meta:['9.4 × 4 م','37.6 م²','قالب موحّد','ارتفاع 3.6 م'], items:[
+    {n:1,name:'لوحة الاسم العلوية',size:'9.4 × 0.6 م · ارتفاع 3–3.6 م · إضاءة خلفية',pos:[0,3.9,-1.9]},
+    {n:2,name:'الجدار الخلفي الموحّد',size:'9.4 × 3 م · طباعة بلون هوية الشركة',pos:[3.2,2.3,-1.9]},
+    {n:3,name:'شاشة LED',size:'2.8 × 1.6 م · عرض الخدمات والعروض',pos:[-1.8,2.6,-1.8]},
+    {n:4,name:'جداران جانبيان',size:'2 × 2.5 م لكلّ جانب · فاصل عن الجناح المجاور',pos:[-4.6,2.7,-1]},
+    {n:5,name:'طاولتا عرض المنتجات',size:'1.2 × 0.6 م · أجهزة وباقات للتجربة',pos:[-1.5,1.6,0.8]},
+    {n:6,name:'مكتب الاستقبال وخدمة العملاء',size:'2 × 0.6 م · ارتفاع 1.05 م',pos:[2.4,1.5,1.3]},
+    {n:7,name:'ركن الجلوس',size:'كرسيان وطاولة · لمقابلة العملاء',pos:[3.4,1.2,-0.8]},
+    {n:8,name:'حامل المطبوعات',size:'0.4 × 1.5 م · كتيّبات وعروض',pos:[4.3,1.9,1.5]},
+  ]},
+};
+
+/* ---------- three setup ---------- */
+const renderer = new T.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+renderer.outputEncoding = T.sRGBEncoding;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+stage.prepend(renderer.domElement);
+document.getElementById('loading').remove();
+
+const scene = new T.Scene();
+const camera = new T.PerspectiveCamera(40, 1.6, 0.1, 200);
+const controls = new T.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.maxPolarAngle = Math.PI/2 - 0.03; controls.minDistance = 4; controls.maxDistance = 40;
+
+scene.add(new T.HemisphereLight(0xffffff, 0x9aa3b5, 0.75));
+const sun = new T.DirectionalLight(0xffffff, 0.85);
+sun.position.set(8, 14, 10); sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera, {left:-14,right:14,top:14,bottom:-14,near:1,far:50}); sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+function themeBg(){ const c = getComputedStyle(document.documentElement).getPropertyValue('--stage').trim() || '#e9edf3'; scene.background = new T.Color(c); scene.fog = new T.Fog(c, 30, 70); }
+themeBg();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeBg);
+new MutationObserver(themeBg).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+// hall floor
+const hall = new T.Mesh(new T.PlaneGeometry(80,60), new T.MeshStandardMaterial({color:0xc9ced8, roughness:.95}));
+hall.rotation.x = -Math.PI/2; hall.receiveShadow = true; scene.add(hall);
+const grid = new T.GridHelper(80, 80, 0xb3bac7, 0xbec4cf); grid.position.y = 0.002; scene.add(grid);
+
+/* ---------- helpers ---------- */
+const M = (color, o={}) => new T.MeshStandardMaterial(Object.assign({color, roughness:.55, metalness:0}, o));
+const glass = () => new T.MeshStandardMaterial({color:0xcfe6f7, transparent:true, opacity:.22, roughness:.05, metalness:.1, depthWrite:false});
+function add(g, mesh, x, y, z){ mesh.position.set(x,y,z); mesh.castShadow = true; mesh.receiveShadow = true; g.add(mesh); return mesh; }
+function box(g, w,h,d, m, x,y,z){ return add(g, new T.Mesh(new T.BoxGeometry(w,h,d), m), x, y+h/2, z); }
+function cyl(g, rt,rb,h, m, x,y,z, seg=32){ return add(g, new T.Mesh(new T.CylinderGeometry(rt,rb,h,seg), m), x, y+h/2, z); }
+function texMat(tex, o={}){ return new T.MeshStandardMaterial(Object.assign({map:tex, roughness:.6}, o)); }
+
+function textTex(w, h, draw){
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d'); draw(x, w, h);
+  const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+}
+function centered(x, w, h, lines){ // lines: [{t, size, weight, color, dy, font}]
+  x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'rtl';
+  lines.forEach(l => { x.font = `${l.weight||800} ${l.size}px ${l.font||'Cairo, sans-serif'}`; x.fillStyle = l.color; x.fillText(l.t, w/2, h/2 + (l.dy||0)); });
+}
+function shade(hex, f){ const c = new T.Color(hex); const h = {}; c.getHSL(h); c.setHSL(h.h, h.s, Math.max(0, Math.min(1, h.l*f))); return '#'+c.getHexString(); }
+
+function person(g, x, z, col, rot=0){
+  const p = new T.Group();
+  cyl(p, .2,.17,.85, M(0x2b3445), 0,0,0, 16);
+  cyl(p, .23,.2,.6, M(col), 0,.85,0, 16);
+  add(p, new T.Mesh(new T.SphereGeometry(.13, 20, 16), M(0xc9a27e)), 0, 1.6, 0);
+  p.position.set(x,0,z); p.rotation.y = rot; g.add(p);
+}
+function plant(g, x, z){ cyl(g, .25,.2,.5, M(0xf2f2f2), x,0,z); add(g, new T.Mesh(new T.IcosahedronGeometry(.42,1), M(0x3f7d4f,{flatShading:true})), x,.95,z); }
+function chair(g, x, z, rot, col){
+  const c = new T.Group(); box(c,.5,.45,.5,M(col),0,0,0); box(c,.5,.45,.1,M(col),0,.45,-.2);
+  c.position.set(x,0,z); c.rotation.y = rot; g.add(c);
+}
+
+/* ---------- Holding pavilion 14 x 6.6 ---------- */
+function buildHolding(){
+  const g = new T.Group(); const navy = 0x14336b, white = M(0xf5f7fb), navyM = M(navy);
+  box(g, 14, .1, 6.6, M(0xe4e8ef, {roughness:.35}), 0,0,0);
+  box(g, 13.4, .012, .5, navyM, 0,.1,2.95);             // front inlay
+  box(g, 6, .012, 2.2, M(0xcfd8e8), 0.5,.1,1.4);          // carpet under table
+
+  // core tower with LED
+  const core = box(g, 4.5, 3.6, 2.2, white, -1.5,.1,-2.2);
+  const led = textTex(1600, 900, (x,w,h)=>{
+    const gr = x.createLinearGradient(0,0,w,h); gr.addColorStop(0,'#0b1d45'); gr.addColorStop(1,'#1f5fbf'); x.fillStyle = gr; x.fillRect(0,0,w,h);
+    x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; for(let i=0;i<12;i++){x.beginPath();x.arc(w*.82,h*.5,60+i*55,0,Math.PI*2);x.stroke();}
+    centered(x,w,h,[{t:'LPTIC Holding',size:120,color:'#fff',dy:-150},{t:'الشركة القابضة للاتصالات',size:96,color:'#fff',dy:20},{t:'مدينة التقنية 2026',size:60,weight:600,color:'#bcd3ff',dy:170}]);
+  });
+  box(g, 4, 2.25, .06, texMat(led, {emissive:0xffffff, emissiveMap:led, emissiveIntensity:.55}), -1.5,.9,-1.08);
+  const logoTex = textTex(1800, 320, (x,w,h)=>{ x.fillStyle='#14336b'; x.fillRect(0,0,w,h); centered(x,w,h,[{t:'LPTIC  ·  القابضة للاتصالات',size:150,color:'#fff'}]); });
+  const logoM = texMat(logoTex,{emissive:0xffffff,emissiveMap:logoTex,emissiveIntensity:.25});
+  box(g, 4.5, .8, 2.2, [navyM,navyM,navyM,navyM,logoM,logoM], -1.5,3.7,-2.2);
+
+  // overhead halo
+  const haloTex = textTex(2600, 180, (x,w,h)=>{ x.fillStyle='#14336b'; x.fillRect(0,0,w,h); x.fillStyle='#1f5fbf'; x.fillRect(0,h-22,w,22);
+    centered(x,w,h,[{t:'الشركة القابضة للاتصالات  ·  LPTIC Holding  ·  شركات المجموعة',size:96,color:'#fff',dy:-8}]); });
+  const haloSide = textTex(1200, 180, (x,w,h)=>{ x.fillStyle='#14336b'; x.fillRect(0,0,w,h); x.fillStyle='#1f5fbf'; x.fillRect(0,h-22,w,22); centered(x,w,h,[{t:'LPTIC',size:110,color:'#fff',dy:-8}]); });
+  const hM = texMat(haloTex), sM = texMat(haloSide), hy = 4.6, hh = .9;
+  box(g, 13, hh, .08, [navyM,navyM,navyM,navyM,hM,navyM], 0,hy,2.9);
+  box(g, 13, hh, .08, [navyM,navyM,navyM,navyM,navyM,hM], 0,hy,-2.9);
+  box(g, .08, hh, 5.8, [sM,navyM,navyM,navyM,navyM,navyM], 6.5,hy,0);
+  box(g, .08, hh, 5.8, [navyM,sM,navyM,navyM,navyM,navyM], -6.5,hy,0);
+  for (const [cx,cz] of [[-6.5,2.9],[6.5,2.9],[-6.5,-2.9],[6.5,-2.9],[0,2.9],[0,-2.9]]) cyl(g,.008,.008,3, M(0x666666), cx,hy+hh,cz,6);
+
+  // glass meeting room
+  const gx = -5.25, gz = -1.4, gw = 3, gd = 3.2, gh = 2.6;
+  box(g, gw, .02, gd, M(0xdfe6f1), gx,.1,gz);
+  const gm = glass();
+  box(g, gw, gh, .03, gm, gx,.1,gz+gd/2); box(g, .03, gh, gd, gm, gx+gw/2,.1,gz); box(g, .03, gh, gd, gm, gx-gw/2,.1,gz); box(g, gw, gh, .03, white, gx,.1,gz-gd/2);
+  const band = textTex(900, 90, (x,w,h)=>{ x.fillStyle='rgba(255,255,255,.92)'; x.fillRect(0,0,w,h); centered(x,w,h,[{t:'قاعة الاجتماعات',size:56,color:'#14336b'}]); });
+  box(g, gw-.1, .3, .035, [gm,gm,gm,gm,texMat(band,{transparent:true}),gm], gx,1.25,gz+gd/2+.01);
+  box(g, gw, .08, gd, M(0xffffff), gx,2.7,gz); // ceiling frame
+  box(g, 1.8, .05, .9, M(0xf2f2f2), gx,.82,gz); cyl(g,.06,.06,.72,M(0x888888),gx,.1,gz,8);
+  [[-.6,.7],[0,.7],[.6,.7],[-.6,-.7],[0,-.7],[.6,-.7]].forEach(([dx,dz])=>chair(g, gx+dx, gz+dz, dz>0?Math.PI:0, 0x2b3445));
+
+  // interactive table
+  cyl(g, .8, .8, .08, texMat(textTex(512,512,(x,w,h)=>{ const gr=x.createRadialGradient(w/2,h/2,10,w/2,h/2,w/2); gr.addColorStop(0,'#3d82e6'); gr.addColorStop(1,'#0b1d45'); x.fillStyle=gr; x.fillRect(0,0,w,h);
+    x.fillStyle='#fff'; for(let i=0;i<9;i++){ const a=i/9*Math.PI*2; x.beginPath(); x.arc(w/2+Math.cos(a)*150,h/2+Math.sin(a)*150,18,0,7); x.fill(); x.strokeStyle='rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(w/2,h/2); x.lineTo(w/2+Math.cos(a)*150,h/2+Math.sin(a)*150); x.stroke(); }
+    x.beginPath(); x.arc(w/2,h/2,40,0,7); x.fill(); }),{emissive:0xffffff,emissiveIntensity:.35, emissiveMap:null}), 0.2,.85,1.4, 48);
+  cyl(g, .55, .65, .78, white, 0.2,.1,1.4, 48);
+
+  // demo totems
+  const topics = ['5G','IoT','AI','VR'];
+  topics.forEach((t,i)=>{ const x0 = -6.2 + i*1.05, z0 = 2.35;
+    const st = textTex(300,520,(x,w,h)=>{ const gr=x.createLinearGradient(0,0,0,h); gr.addColorStop(0,'#1f5fbf'); gr.addColorStop(1,'#0b1d45'); x.fillStyle=gr; x.fillRect(0,0,w,h); centered(x,w,h,[{t,size:120,color:'#fff',font:'Cairo, sans-serif',dy:-40},{t:'جرّب الآن',size:44,weight:700,color:'#bcd3ff',dy:90}]); });
+    box(g, .6, 1.9, .3, white, x0,.1,z0);
+    box(g, .5, .9, .02, texMat(st,{emissive:0xffffff,emissiveMap:st,emissiveIntensity:.4}), x0,.95,z0+.16);
+  });
+
+  // reception
+  const rTex = textTex(1000, 400, (x,w,h)=>{ x.fillStyle='#14336b'; x.fillRect(0,0,w,h); x.fillStyle='#1f5fbf'; x.fillRect(0,h-40,w,40); centered(x,w,h,[{t:'الاستقبال',size:110,color:'#fff',dy:-30},{t:'Reception',size:60,weight:600,color:'#bcd3ff',dy:70}]); });
+  box(g, 2.6, 1.05, .7, [white,white,white,white,texMat(rTex,{emissive:0xffffff,emissiveMap:rTex,emissiveIntensity:.2}),white], 4.6,.1,2.3);
+  box(g, 2.8, .05, .8, M(0xffffff,{roughness:.2}), 4.6,1.15,2.3);
+  // lounge
+  box(g, 2.2, .45, .85, M(0x14336b), 5.4,.1,-2.6); box(g, 2.2, .45, .2, M(0x14336b), 5.4,.55,-2.95);
+  chair(g, 4.0, -1.3, Math.PI/2+.4, 0x1f5fbf); chair(g, 6.4, -1.0, -Math.PI/2-.4, 0x1f5fbf);
+  cyl(g, .45,.45,.4, white, 5.3,.1,-1.5);
+  box(g, 3.5, .012, 2.6, M(0xd5dce8), 5.3,.1,-1.9);
+  // subsidiary logo wall behind lounge (on core side)
+  const wallTex = textTex(1400, 700, (x,w,h)=>{ x.fillStyle='#f5f7fb'; x.fillRect(0,0,w,h); centered(x,w,h,[{t:'شركات المجموعة',size:70,color:'#14336b',dy:-250}]);
+    const names = COMPANIES; x.font='700 40px Cairo, sans-serif'; x.textAlign='center'; x.direction='rtl';
+    names.forEach((n,i)=>{ const cx = 240 + (i%3)*460, cy = 230 + Math.floor(i/3)*150; x.fillStyle='#e3eaf6'; x.beginPath(); x.roundRect ? x.roundRect(cx-200,cy-50,400,100,18) : x.rect(cx-200,cy-50,400,100); x.fill(); x.fillStyle='#14336b'; x.fillText(n,cx,cy+4); }); });
+  box(g, .15, 2.6, 3.0, [M(0xf5f7fb),texMat(wallTex),white,white,white,white], 0.78,.1,-1.75);
+
+  plant(g,-6.6,-3.0+.3); plant(g,6.6,2.9); plant(g,2.6,-3.0);
+  person(g, 3.6, 3.4, 0x1f5fbf, Math.PI); person(g, 4.7, 1.6, 0xffffff, 0); person(g,-0.6,2.2,0xd97a1a,.6); person(g,-5.6,3.3,0x6b7280,2.6); person(g,1.0,0.9,0x0e8a6a,-2.4);
+  return g;
+}
+
+/* ---------- Subsidiary template 9.4 x 4 ---------- */
+function buildSub(name, accent){
+  const g = new T.Group(); const white = M(0xf7f8fb), acc = M(accent), dark = shade(accent,.55);
+  box(g, 9.4, .08, 4, M(0xe7eaf0,{roughness:.35}), 0,0,0);
+  box(g, 9.4, .01, .35, acc, 0,.08,1.82);
+  // back wall
+  const wallTex = textTex(2400, 760, (x,w,h)=>{ x.fillStyle='#f7f8fb'; x.fillRect(0,0,w,h);
+    x.fillStyle=accent; x.beginPath(); x.moveTo(w*.62,0); x.lineTo(w,0); x.lineTo(w,h); x.lineTo(w*.48,h); x.closePath(); x.fill();
+    x.fillStyle=dark; x.beginPath(); x.moveTo(w*.78,0); x.lineTo(w,0); x.lineTo(w,h); x.lineTo(w*.68,h); x.closePath(); x.fill();
+    x.textAlign='center'; x.direction='rtl'; x.fillStyle='#fff'; x.font='800 120px Cairo, sans-serif'; x.fillText(name, w*.8, h*.46);
+    x.font='600 54px Cairo, sans-serif'; x.fillText('عضو في مجموعة الشركة القابضة للاتصالات', w*.8, h*.62); });
+  box(g, 9.4, 3, .15, [white,white,white,white,texMat(wallTex),white], 0,.08,-1.92);
+  // header sign
+  const hTex = textTex(2400, 160, (x,w,h)=>{ x.fillStyle=dark; x.fillRect(0,0,w,h); x.fillStyle=accent; x.fillRect(0,h-20,w,20); centered(x,w,h,[{t:name,size:100,color:'#fff',dy:-6}]); });
+  const hM = M(dark);
+  box(g, 9.4, .6, .3, [hM,hM,hM,hM,texMat(hTex,{emissive:0xffffff,emissiveMap:hTex,emissiveIntensity:.25}),hM], 0,3.08,-1.85);
+  // side walls
+  box(g, .12, 2.5, 2, white, -4.64,.08,-1); box(g, .12, 2.5, 2, white, 4.64,.08,-1);
+  box(g, .125, .25, 2, acc, -4.64,2.58,-1); box(g, .125, .25, 2, acc, 4.64,2.58,-1);
+  // LED
+  const led = textTex(1280, 720, (x,w,h)=>{ const gr=x.createLinearGradient(0,0,w,h); gr.addColorStop(0,dark); gr.addColorStop(1,accent); x.fillStyle=gr; x.fillRect(0,0,w,h);
+    centered(x,w,h,[{t:name,size:110,color:'#fff',dy:-60},{t:'خدماتنا · عروضنا · حلولنا',size:56,weight:600,color:'rgba(255,255,255,.85)',dy:70}]); });
+  box(g, 2.8, 1.6, .06, texMat(led,{emissive:0xffffff,emissiveMap:led,emissiveIntensity:.5}), -1.8,1.1,-1.82);
+  // product tables
+  [-2.6,-0.6].forEach(x0=>{ box(g, 1.2, .9, .6, white, x0,.08,.8); box(g,1.25,.04,.65,acc,x0,.98,.8);
+    box(g,.25,.02,.35,M(0x111827),x0-.3,1.02,.8); box(g,.18,.02,.3,M(0x111827),x0+.25,1.02,.8); });
+  // reception
+  const rTex = textTex(800, 400, (x,w,h)=>{ x.fillStyle=accent; x.fillRect(0,0,w,h); centered(x,w,h,[{t:name,size: name.length>14?62:84,color:'#fff',dy:-20},{t:'خدمة العملاء',size:48,weight:600,color:'rgba(255,255,255,.85)',dy:80}]); });
+  box(g, 2, 1.05, .6, [white,white,white,white,texMat(rTex),white], 2.4,.08,1.3);
+  box(g, 2.15, .05, .7, M(0xffffff,{roughness:.2}), 2.4,1.13,1.3);
+  // seating
+  chair(g, 2.8, -0.9, .5, accent); chair(g, 4.0, -0.9, -.5, accent); cyl(g,.35,.35,.45,white,3.4,.08,-.3);
+  // brochure stand
+  box(g, .4, 1.5, .3, acc, 4.3,.08,1.5); for(let i=0;i<3;i++) box(g,.32,.25,.03,white,4.3,.5+i*.35,1.67);
+  plant(g,-4.2,1.6);
+  person(g, 2.4, 2.1, 0x6b7280, Math.PI); person(g, 2.6, .55, accent, 0); person(g,-1.6,1.6,0x0f1f38,Math.PI-.3); person(g,-2.9,1.5,0xd97a1a,Math.PI+.4);
+  return g;
+}
+
+/* ---------- views, labels, UI ---------- */
+let booth = null, pinEls = [], target = null;
+const VIEWS = {
+  holding:{persp:[[11,7.5,12],[0,1.3,0]], front:[[0,2.6,15],[0,2,0]], top:[[0,19,0.01],[0,0,0]]},
+  sub:{persp:[[8,5.5,9],[0,1.3,0]], front:[[0,2.2,11],[0,1.7,0]], top:[[0,13,0.01],[0,0,0]]},
+};
+function setView(v, instant){
+  state.view = v; const [p,t] = VIEWS[state.mode][v];
+  target = {p:new T.Vector3(...p), t:new T.Vector3(...t)};
+  if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(target.p); controls.target.copy(target.t); target = null; }
+  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.view===v)));
+}
+function dispose(o){ o.traverse(m=>{ if(m.geometry) m.geometry.dispose(); const ms = Array.isArray(m.material)?m.material:[m.material]; ms.forEach(mt=>{ if(!mt) return; if(mt.map) mt.map.dispose(); mt.dispose(); }); }); }
+function render(){
+  if (booth){ scene.remove(booth); dispose(booth); }
+  booth = state.mode==='holding' ? buildHolding() : buildSub(state.company, state.accent);
+  scene.add(booth);
+  const S = SPECS[state.mode];
+  document.getElementById('title').textContent = state.mode==='holding' ? 'تصميم جناح الشركة القابضة للاتصالات' : 'تصميم جناح موحّد للشركات التابعة — ' + state.company;
+  document.getElementById('specTitle').textContent = S.title;
+  document.getElementById('meta').innerHTML = S.meta.map(m=>`<span>${m}</span>`).join('');
+  const spec = document.getElementById('spec');
+  spec.innerHTML = S.items.map(i=>`<li data-n="${i.n}"><span class="n">${i.n}</span><b>${i.name}</b><small>${i.size}</small></li>`).join('');
+  labelsEl.innerHTML = ''; pinEls = S.items.map(i=>{ const d = document.createElement('div'); d.className='pin'; d.textContent=i.n; labelsEl.appendChild(d); return {el:d, v:new T.Vector3(...i.pos), n:i.n}; });
+  spec.querySelectorAll('li').forEach(li=>{
+    li.addEventListener('mouseenter',()=>hl(li.dataset.n,true)); li.addEventListener('mouseleave',()=>hl(li.dataset.n,false)); });
+  document.getElementById('custom').hidden = state.mode!=='sub';
+}
+function hl(n,on){ pinEls.forEach(p=>p.el.classList.toggle('hl', on && String(p.n)===String(n))); document.querySelectorAll('#spec li').forEach(li=>li.classList.toggle('hl', on && li.dataset.n===String(n))); }
+
+function resize(){ const r = stage.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width/r.height; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage); resize();
+
+const tmp = new T.Vector3();
+function loop(){
+  requestAnimationFrame(loop);
+  if (target){ camera.position.lerp(target.p, .12); controls.target.lerp(target.t, .12); if (camera.position.distanceTo(target.p) < .02){ camera.position.copy(target.p); controls.target.copy(target.t); target=null; } }
+  controls.autoRotate = state.spin; controls.autoRotateSpeed = 1.2; controls.update();
+  renderer.render(scene, camera);
+  const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
+  pinEls.forEach(p=>{ tmp.copy(p.v).project(camera); const vis = state.pins && tmp.z < 1 && Math.abs(tmp.x)<1.05 && Math.abs(tmp.y)<1.05;
+    p.el.hidden = !vis; if (vis){ p.el.style.left = ((tmp.x+1)/2*w)+'px'; p.el.style.top = ((1-tmp.y)/2*h)+'px'; } });
+}
+
+// UI wiring
+const tabs = {holding:document.getElementById('tab-holding'), sub:document.getElementById('tab-sub')};
+function setMode(m){ state.mode = m; Object.entries(tabs).forEach(([k,b])=>b.setAttribute('aria-selected', String(k===m))); render(); setView('persp', true); try{ localStorage.setItem('booth-mode', m); }catch(e){} }
+tabs.holding.onclick = ()=>setMode('holding'); tabs.sub.onclick = ()=>setMode('sub');
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+document.getElementById('spin').onclick = e=>{ state.spin=!state.spin; e.currentTarget.setAttribute('aria-pressed', String(state.spin)); };
+document.getElementById('pins').onclick = e=>{ state.pins=!state.pins; e.currentTarget.setAttribute('aria-pressed', String(state.pins)); };
+const sel = document.getElementById('company'); sel.innerHTML = COMPANIES.map(c=>`<option>${c}</option>`).join('');
+sel.onchange = ()=>{ state.company = sel.value; render(); };
+const sw = document.getElementById('swatches');
+function drawSwatches(){ sw.innerHTML = SWATCHES.map(c=>`<button style="background:${c}" aria-label="لون ${c}" aria-pressed="${c===state.accent}" data-c="${c}"></button>`).join('') + `<input type="color" id="accent" aria-label="لون مخصص" value="${state.accent}">`;
+  sw.querySelectorAll('button').forEach(b=>b.onclick=()=>{ state.accent=b.dataset.c; drawSwatches(); render(); });
+  document.getElementById('accent').oninput = e=>{ state.accent = e.target.value; render(); }; }
+drawSwatches();
+
+let start = 'holding'; try{ start = localStorage.getItem('booth-mode') || 'holding'; }catch(e){}
+setMode(start==='sub'?'sub':'holding');
+loop();
+})();
+</script>
