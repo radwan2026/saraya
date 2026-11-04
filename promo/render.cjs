@@ -23,7 +23,7 @@ const mode = process.argv[2] || 'beats';
   if (mode === 'beats' || mode === 'frames') {
     const dir = path.join(OUT, mode); fs.mkdirSync(dir, { recursive: true });
     const ts = mode === 'beats'
-      ? Array.from({ length: 30 }, (_, b) => b * 0.5 + 0.34)
+      ? Array.from({ length: 32 }, (_, b) => b * 0.625 + 0.42)
       : process.argv[3].split(',').map(Number);
     for (let i = 0; i < ts.length; i++) {
       fs.writeFileSync(path.join(dir, `f${String(i).padStart(2, '0')}_${ts[i].toFixed(3)}.png`), await shot(ts[i]));
@@ -37,7 +37,7 @@ const mode = process.argv[2] || 'beats';
       '-vf', "tmix=frames=3,select='eq(mod(n\\,3)\\,2)',setpts=N/60/TB",
       '-r', '60', '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-pix_fmt', 'yuv420p', path.join(OUT, 'video.mp4')],
       { stdio: ['pipe', 'inherit', 'inherit'] });
-    const F = 15 * 60;
+    const F = 20 * 60;
     for (let k = 0; k < F; k++) {
       for (let j = 0; j < 3; j++) {
         const buf = await shot(k / 60 + (j - 1) / 180, 'jpeg');
