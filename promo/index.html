@@ -31,7 +31,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0A0A0A
    15s · 120 BPM · every style is a pure function of t.
    ========================================================= */
 const NS='http://www.w3.org/2000/svg';
-const COL={O:'#FF4A1C',B:'#2C46FF',Y:'#FFC814',K:'#0A0A0A',W:'#F5F3EE'};
+const COL={O:'#8E44FF',B:'#2C46FF',Y:'#FFC814',K:'#0A0A0A',W:'#F5F3EE'};
 const {O,B,Y,K,W}=COL;
 const BPM=96, SPD=BPM/120;            // scene is authored at 120 BPM, played back at 96
 const DUR=16, REAL=DUR/SPD, DT=1/240, KB=0.0045*SPD; // 16 scene-s = 20 real seconds
@@ -134,7 +134,7 @@ function dotSt(i,t){
   return s;
 }
 const WT=[2.0,2.5,3.0,3.25,3.5], WOUT=[2.5,3.0,3.25,3.5,3.75];
-const WORDS=['علوم','تقنية','هندسة','فنون','رياضيات'], WC=[O,B,Y,O,B], WTC=[K,W,K,K,W];
+const WORDS=['علوم','تقنية','هندسة','فنون','رياضيات'], WC=[O,B,Y,O,B], WTC=[W,W,K,W,W];
 function wordIdx(t){let k=0;for(let j=0;j<5;j++)if(t>=WT[j])k=j;return k;}
 function blockGeom(t){
   const g=eo(P(t,2.0,.32)),s=eio(P(t,3.75,.25));
@@ -316,7 +316,7 @@ W6.forEach((w,j)=>reg(mkMask(dom,w,{fs:230,dy:-.05}),t=>{
    ========================================================= */
 const p3b=div(dom,'p3d');p3b.style.perspective='2200px';
 const world2=div(p3b,'w3d');
-const BC=[O,B,Y,O,B], LET=['S','T','E','A','M'], LC=[K,W,K,K,W];
+const BC=[O,B,Y,O,B], LET=['S','T','E','A','M'], LC=[W,W,K,W,W];
 const SUB=['علوم','تقنية','هندسة','فنون','رياضيات'];
 const cards=[0,1,2,3,4].map(i=>{
   const c=div(world2,'w3d');c.style.left=c.style.top='0px';
@@ -371,7 +371,7 @@ const tName=reg(mkMask(tgrp,'أكاديمية ستيم',{fs:92,wt:900,dy:-.05}),
   if(t<14)return null;return {x:960,y:712,w:900,h:130,oy:L(130,0,eo(P(t,14.0,.32))),col:W};
 },'m');
 const tUrl=reg(mkMask(tgrp,'steamacademy.ly',{fs:46,wt:700,dir:'ltr'}),t=>{
-  if(t<14.5)return null;return {x:960,y:808,w:600,h:70,oy:L(70,0,eo(P(t,14.5,.32))),col:O};
+  if(t<14.5)return null;return {x:960,y:808,w:600,h:70,oy:L(70,0,eo(P(t,14.5,.32))),col:mix(O,W,.3)};
 },'m');
 /* beat 30: underline shimmer — a white segment travels right-to-left across the five bars */
 const shim=reg(div(dom),t=>{
