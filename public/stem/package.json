@@ -1,0 +1,9 @@
+{
+  "name": "stem-simulation",
+  "version": "1.0.0",
+  "description": "منصة محاكاة STEM تعليمية للأطفال — لا تحتاج أي مكتبات (npm install غير ضروري)",
+  "scripts": {
+    "start": "node serve.js"
+  },
+  "license": "MIT"
+}
