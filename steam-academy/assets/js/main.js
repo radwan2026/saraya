@@ -51,6 +51,7 @@
           <div class="topbar-links">
             <a href="${C.links.joinTeam}">انضم إلى فريقنا</a>
             <a href="${C.links.profile}">الصفحة الشخصية</a>
+            <a href="${C.links.login}">تسجيل الدخول</a>
           </div>
         </div>
       </div>
@@ -64,6 +65,7 @@
             ${navLink("index.html", "الرئيسية", "home")}
             ${navLink("courses.html", "الدورات التدريبية", "courses")}
             <a href="stemo.html" class="nav-stemo${page === "stemo" ? " active" : ""}"><span class="dot"></span>ستيمو للبرمجة</a>
+            ${navLink("videos.html", "الفيديوهات", "videos")}
             <div class="nav-drop">
               <button type="button" aria-haspopup="true" aria-expanded="false">الألعاب ${ICON.chev}</button>
               <div class="drop-menu">${gamesMenu}</div>
@@ -123,6 +125,7 @@
               <ul>
                 <li><a href="courses.html">الدورات التدريبية</a></li>
                 <li><a href="stemo.html">منصة ستيمو للبرمجة</a></li>
+                <li><a href="videos.html">معرض الفيديو</a></li>
                 <li><a href="index.html#games">الألعاب التعليمية</a></li>
                 <li><a href="${C.links.codeOrg}" target="_blank" rel="noopener">منصة Code.org</a></li>
               </ul>
@@ -430,6 +433,130 @@
       </div>`).join("");
   }
 
+  /* ---------------- معرض الفيديو ---------------- */
+  // يحوّل أي رابط إلى { kind, embed, thumb } — يدعم يوتيوب وفيميو وفيسبوك وجوجل درايف والملفات المباشرة
+  function parseVideo(url) {
+    const u = String(url || "").trim();
+    let m;
+    if ((m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/))) {
+      return { kind: "youtube", embed: `https://www.youtube-nocookie.com/embed/${m[1]}?autoplay=1&rel=0&modestbranding=1`, thumb: `https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg` };
+    }
+    if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) {
+      return { kind: "vimeo", embed: `https://player.vimeo.com/video/${m[1]}?autoplay=1`, thumb: `https://vumbnail.com/${m[1]}.jpg` };
+    }
+    if (/facebook\.com|fb\.watch/.test(u)) {
+      return { kind: "facebook", embed: `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false&autoplay=true`, thumb: "" };
+    }
+    if ((m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/))) {
+      return { kind: "drive", embed: `https://drive.google.com/file/d/${m[1]}/preview`, thumb: `https://drive.google.com/thumbnail?id=${m[1]}&sz=w640` };
+    }
+    return { kind: "file", embed: u, thumb: "" };
+  }
+
+  const VIDEO_KIND_LABEL = { youtube: "YouTube", vimeo: "Vimeo", facebook: "Facebook", drive: "Drive", file: "فيديو" };
+
+  async function loadVideos() {
+    const V = C.videos || {};
+    const list = (V.list || []).filter((v) => v && v.url).map((v) => ({ ...v, ...parseVideo(v.url), thumb: v.poster || parseVideo(v.url).thumb }));
+    if (V.wpMedia) {
+      try {
+        const media = await getJSON(`${C.wpBase}/wp-json/wp/v2/media?media_type=video&per_page=50&_fields=id,title,source_url,date`);
+        media.forEach((m) => {
+          if (list.some((v) => v.url === m.source_url)) return;
+          list.push({ title: decode(m.title?.rendered) || "فيديو", url: m.source_url, category: "من الأكاديمية", kind: "file", embed: m.source_url, thumb: "" });
+        });
+      } catch { /* لا بأس: نكتفي بالقائمة اليدوية */ }
+    }
+    return list;
+  }
+
+  function videoCard(v, i) {
+    const thumb = v.thumb
+      ? `<img src="${esc(v.thumb)}" alt="" loading="lazy" onerror="this.remove()">`
+      : v.kind === "file" ? `<video src="${esc(v.embed)}#t=1" preload="metadata" muted playsinline tabindex="-1"></video>` : "";
+    return `
+      <article class="video-card card reveal">
+        <button type="button" class="video-thumb" data-video="${i}" aria-label="تشغيل: ${esc(v.title)}">
+          ${thumb}
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" fill="currentColor"/></svg></span>
+          <span class="badge">${esc(VIDEO_KIND_LABEL[v.kind])}</span>
+        </button>
+        <div class="video-body">
+          ${v.category ? `<span class="video-cat">${esc(v.category)}</span>` : ""}
+          <h3>${esc(v.title || "فيديو")}</h3>
+          ${v.desc ? `<p>${esc(v.desc)}</p>` : ""}
+        </div>
+      </article>`;
+  }
+
+  function ensureVideoModal() {
+    let dlg = $("#video-modal");
+    if (dlg) return dlg;
+    dlg = document.createElement("dialog");
+    dlg.id = "video-modal";
+    dlg.className = "video-modal";
+    dlg.innerHTML = `
+      <div class="video-modal-inner">
+        <div class="video-modal-head"><h3></h3><button type="button" class="video-close" aria-label="إغلاق">${ICON.close}</button></div>
+        <div class="video-frame"></div>
+      </div>`;
+    document.body.appendChild(dlg);
+    const close = () => dlg.close();
+    $(".video-close", dlg).addEventListener("click", close);
+    dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });
+    dlg.addEventListener("close", () => { $(".video-frame", dlg).innerHTML = ""; document.body.style.overflow = ""; });
+    return dlg;
+  }
+
+  function openVideo(v) {
+    const dlg = ensureVideoModal();
+    $("h3", dlg).textContent = v.title || "";
+    $(".video-frame", dlg).innerHTML = v.kind === "file"
+      ? `<video src="${esc(v.embed)}" controls autoplay playsinline ${v.thumb ? `poster="${esc(v.thumb)}"` : ""}></video>`
+      : `<iframe src="${esc(v.embed)}" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    document.body.style.overflow = "hidden";
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
+
+  async function renderVideos() {
+    const grid = $("[data-videos]");
+    if (!grid) return;
+    const isHome = grid.dataset.home !== undefined;
+    const section = grid.closest("section");
+    grid.innerHTML = '<div class="card skeleton" style="min-height:260px"></div>'.repeat(3);
+
+    const videos = await loadVideos();
+    if (!videos.length) {
+      if (isHome) { section?.remove(); return; } // لا نعرض قسماً فارغاً في الرئيسية
+      grid.innerHTML = `<div class="empty"><div style="font-size:48px">🎬</div><p>فيديوهات جديدة قريباً — تابعونا!</p></div>`;
+      return;
+    }
+
+    const filtersEl = $("[data-video-filters]");
+    let cat = "الكل";
+    const draw = () => {
+      let list = videos.map((v, i) => [v, i]).filter(([v]) => cat === "الكل" || v.category === cat);
+      if (isHome) list = list.slice(0, C.videos?.homeLimit || 6);
+      grid.innerHTML = list.map(([v, i]) => videoCard(v, i)).join("");
+      $$("[data-video]", grid).forEach((b) => b.addEventListener("click", () => openVideo(videos[Number(b.dataset.video)])));
+      observeReveal(grid);
+    };
+    if (filtersEl) {
+      const cats = ["الكل", ...new Set(videos.map((v) => v.category).filter(Boolean))];
+      if (cats.length > 2) {
+        filtersEl.innerHTML = cats.map((c) => `<button class="chip" type="button" aria-pressed="${c === cat}">${esc(c)}</button>`).join("");
+        $$(".chip", filtersEl).forEach((b, i) => b.addEventListener("click", () => {
+          cat = cats[i];
+          $$(".chip", filtersEl).forEach((x, j) => x.setAttribute("aria-pressed", j === i));
+          draw();
+        }));
+      }
+    }
+    const more = $("[data-videos-more]");
+    if (more && videos.length > (C.videos?.homeLimit || 6)) more.hidden = false;
+    draw();
+  }
+
   /* ---------------- نموذج التواصل ---------------- */
   function initContact() {
     const f = $("#contact-form");
@@ -498,4 +625,5 @@
   initCounters();
   renderCourses();
   renderLeaderboards();
+  renderVideos();
 })();

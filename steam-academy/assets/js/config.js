@@ -23,6 +23,24 @@ window.STEAM_CONFIG = {
     image2: "assets/img/stemo-2.webp",
   },
 
+  // ===== معرض الفيديو =====
+  // طريقتان لإضافة الفيديوهات:
+  //  1) بالتحميل: ارفع الفيديو إلى «الوسائط» في لوحة ووردبريس فيظهر هنا تلقائياً (wpMedia: true)،
+  //     أو ضع ملف الفيديو داخل مجلد assets/videos وأضف سطراً له في القائمة أدناه.
+  //  2) برابط: أضف سطراً في القائمة أدناه برابط من يوتيوب / فيميو / فيسبوك / جوجل درايف / أو رابط ملف mp4 مباشر.
+  videos: {
+    wpMedia: true, // جلب الفيديوهات المرفوعة إلى مكتبة وسائط ووردبريس تلقائياً
+    homeLimit: 6,  // عدد الفيديوهات في الصفحة الرئيسية
+    list: [
+      // أمثلة — انسخ السطر وعدّل القيم:
+      // { title: "جولة داخل أكاديمية ستيم", url: "https://www.youtube.com/watch?v=XXXXXXXXXXX", category: "عن الأكاديمية" },
+      // { title: "تجربة المصعد الهيدروليكي", url: "assets/videos/hydraulic-lift.mp4", poster: "assets/videos/hydraulic-lift.jpg", category: "تجارب علمية" },
+      // { title: "شرح منصة ستيمو", url: "https://vimeo.com/123456789", category: "ستيمو" },
+      // { title: "مشاركة طلابنا", url: "https://www.facebook.com/watch/?v=1234567890", category: "فعاليات" },
+      // { title: "ورشة الروبوتات", url: "https://drive.google.com/file/d/FILE_ID/view", category: "روبوتات" },
+    ],
+  },
+
   // بيانات التواصل — نموذج «راسلنا» يفتح بريد المستخدم مُعبّأً مسبقاً
   contact: {
     email: "info@steamacademy.ly",
