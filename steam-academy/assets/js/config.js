@@ -36,6 +36,7 @@ window.STEAM_CONFIG = {
       { url: "https://www.youtube.com/watch?v=EqTITL74Y7I", category: "عن الأكاديمية" },
       { url: "https://www.youtube.com/watch?v=tEuGt1ung7s", category: "عن الأكاديمية" },
       { url: "https://www.youtube.com/watch?v=K1-D31fdmrw", category: "عن الأكاديمية" },
+      { url: "https://www.youtube.com/watch?v=LIjmm62gwzQ", category: "عن الأكاديمية" },
 
       // أمثلة — انسخ السطر وعدّل القيم:
       // { title: "جولة داخل أكاديمية ستيم", url: "https://www.youtube.com/watch?v=XXXXXXXXXXX", category: "عن الأكاديمية" },
