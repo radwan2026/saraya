@@ -32,6 +32,11 @@ window.STEAM_CONFIG = {
     wpMedia: true, // جلب الفيديوهات المرفوعة إلى مكتبة وسائط ووردبريس تلقائياً
     homeLimit: 6,  // عدد الفيديوهات في الصفحة الرئيسية
     list: [
+      // (العنوان اختياري — إن تُرك فارغاً يُجلب عنوان الفيديو من يوتيوب/فيميو تلقائياً)
+      { url: "https://www.youtube.com/watch?v=EqTITL74Y7I", category: "عن الأكاديمية" },
+      { url: "https://www.youtube.com/watch?v=tEuGt1ung7s", category: "عن الأكاديمية" },
+      { url: "https://www.youtube.com/watch?v=K1-D31fdmrw", category: "عن الأكاديمية" },
+
       // أمثلة — انسخ السطر وعدّل القيم:
       // { title: "جولة داخل أكاديمية ستيم", url: "https://www.youtube.com/watch?v=XXXXXXXXXXX", category: "عن الأكاديمية" },
       // { title: "تجربة المصعد الهيدروليكي", url: "assets/videos/hydraulic-lift.mp4", poster: "assets/videos/hydraulic-lift.jpg", category: "تجارب علمية" },

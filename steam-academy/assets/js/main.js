@@ -467,6 +467,14 @@
         });
       } catch { /* لا بأس: نكتفي بالقائمة اليدوية */ }
     }
+    // جلب العناوين الناقصة تلقائياً (يوتيوب/فيميو) عبر noembed الذي يسمح بالطلب من المتصفح
+    await Promise.all(list.filter((v) => !v.title && (v.kind === "youtube" || v.kind === "vimeo")).map(async (v) => {
+      try {
+        const d = await getJSON(`https://noembed.com/embed?url=${encodeURIComponent(v.url)}`, 6000);
+        if (d && d.title) v.title = d.title;
+      } catch { /* نستخدم العنوان الافتراضي */ }
+    }));
+    list.forEach((v) => { if (!v.title) v.title = "فيديو من أكاديمية ستيم"; });
     return list;
   }
 
