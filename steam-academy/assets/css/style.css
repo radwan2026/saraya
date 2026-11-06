@@ -584,6 +584,68 @@ p { margin: 0; }
 @media (max-width: 960px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .video-grid, .howto { grid-template-columns: 1fr; } }
 
+
+/* ---------- المؤثرات الحركية للخلفية (الرئيسية) ---------- */
+.fx-layer { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.has-fx .page-bg::after { opacity: .08; }
+.fx-canvas { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity .3s linear; }
+.fx-orb { position: absolute; border-radius: 50%; will-change: transform; background: radial-gradient(closest-side, var(--oc), transparent); }
+.fx-orb-1 { width: 520px; height: 520px; --oc: rgba(209,79,160,.55); top: -160px; right: -120px; animation: orb1 22s ease-in-out infinite alternate; opacity: .35; }
+.fx-orb-2 { width: 460px; height: 460px; --oc: rgba(91,108,255,.5); top: 30%; left: -180px; animation: orb2 26s ease-in-out infinite alternate; opacity: .3; }
+.fx-orb-3 { width: 380px; height: 380px; --oc: rgba(56,189,248,.4); bottom: -160px; right: 25%; animation: orb3 30s ease-in-out infinite alternate; opacity: .18; }
+@keyframes orb1 { to { transform: translate(-220px, 160px) scale(1.15); } }
+@keyframes orb2 { to { transform: translate(260px, -120px) scale(.9); } }
+@keyframes orb3 { to { transform: translate(-200px, -140px) scale(1.2); } }
+.fx-spot {
+  position: absolute; top: 0; left: 0; width: 600px; height: 600px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, rgba(201,168,255,.16), rgba(209,79,160,.06) 40%, transparent 70%);
+  transition: opacity .4s; will-change: transform;
+}
+
+.fx-symbols { position: absolute; inset: 0; pointer-events: none; transition: transform .6s cubic-bezier(.2,.7,.2,1); z-index: 0; }
+.hero .container { position: relative; z-index: 1; }
+.fx-sym {
+  position: absolute; display: block; opacity: .5;
+  filter: drop-shadow(0 0 10px currentColor);
+  animation: symFloat var(--d) ease-in-out var(--delay) infinite;
+}
+.fx-sym svg { width: 100%; height: auto; }
+@keyframes symFloat {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(calc(14px * var(--r)), -22px) rotate(calc(12deg * var(--r))); }
+  66%  { transform: translate(calc(-10px * var(--r)), 12px) rotate(calc(-8deg * var(--r))); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* بريق متحرك على النص المتدرّج */
+.has-fx .grad-text { background-size: 220% 100%; animation: shimmer-text 6s ease-in-out infinite; background-image: linear-gradient(90deg, #d14fa0, #9b4fd1, #5b6cff, #38bdf8, #9b4fd1, #d14fa0); }
+@keyframes shimmer-text { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+/* توهّج نابض حول صورة الهيرو */
+.has-fx .hero-frame { animation: frameGlow 5s ease-in-out infinite; }
+@keyframes frameGlow {
+  0%, 100% { box-shadow: 0 0 0 1px var(--line-strong), 0 18px 60px -18px rgba(155,79,209,.55); }
+  50% { box-shadow: 0 0 0 1px rgba(56,189,248,.45), 0 24px 80px -14px rgba(56,189,248,.5); }
+}
+
+/* البطاقات: لمعة عند المرور */
+.has-fx .card { position: relative; }
+.has-fx .pillar::after, .has-fx .course::after, .has-fx .video-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.09) 50%, transparent 65%);
+  background-size: 250% 100%; background-position: 130% 0; transition: background-position .8s ease;
+}
+.has-fx .pillar:hover::after, .has-fx .course:hover::after, .has-fx .video-card:hover::after { background-position: -30% 0; }
+
+@media (max-width: 760px) {
+  .fx-orb-1 { width: 320px; height: 320px; }
+  .fx-orb-2 { width: 300px; height: 300px; }
+  .fx-orb-3 { display: none; }
+  .fx-sym { opacity: .32; }
+  .fx-sym:nth-child(n+6) { display: none; }
+  .fx-spot { display: none; }
+}
+
 /* ==========================================================
    الاستجابة
    ========================================================== */
