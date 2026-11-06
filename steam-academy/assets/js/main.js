@@ -72,14 +72,31 @@
             </div>
             ${navLink(page === "home" ? "#about" : "index.html#about", "من نحن", "about")}
             ${navLink(page === "home" ? "#contact" : "index.html#contact", "اتصل بنا", "contact")}
+            <a class="nav-login" href="${C.links.login}">${ICON.user} تسجيل الدخول</a>
           </nav>
           <div class="header-cta">
-            <a class="btn btn-ghost btn-sm" href="${C.links.login}">${ICON.user} تسجيل الدخول</a>
             <a class="btn btn-primary btn-sm" href="courses.html">سجّل طفلك الآن</a>
             <button class="menu-toggle" type="button" aria-label="فتح القائمة" aria-controls="main-nav" aria-expanded="false">${ICON.menu}</button>
           </div>
         </div>
       </header>`;
+
+    // طيّ القائمة تلقائياً إن لم تتسع عناصرها بجانب الشعار والأزرار (يعتمد على عرض الخط الفعلي في جهاز الزائر)
+    const headerEl = $(".header", el);
+    const fitNav = () => {
+      const navEl = $("#main-nav", el);
+      if (navEl.classList.contains("open")) return;
+      headerEl.classList.remove("nav-collapsed");
+      if (getComputedStyle(navEl).display === "none") return; // الشاشات الصغيرة: الطيّ عبر CSS
+      const box = $(".container", headerEl);
+      const used = $(".brand", headerEl).offsetWidth + navEl.scrollWidth + $(".header-cta", headerEl).offsetWidth;
+      const gap = 32;
+      if (used + gap > box.clientWidth - 40) headerEl.classList.add("nav-collapsed");
+    };
+    fitNav();
+    window.addEventListener("resize", fitNav, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNav);
+    window.addEventListener("load", fitNav);
 
     const toggle = $(".menu-toggle", el);
     const nav = $("#main-nav", el);

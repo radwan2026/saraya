@@ -123,7 +123,7 @@ p { margin: 0; }
   border-bottom: 1px solid var(--line);
 }
 .header .container { display: flex; align-items: center; justify-content: space-between; min-height: 76px; gap: 16px; }
-.brand { display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .brand img { width: 46px; height: 46px; filter: drop-shadow(0 4px 12px rgba(209,79,160,.45)); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
 .brand-text strong { white-space: nowrap; font-family: var(--font-head); font-size: 19px; font-weight: 800; }
@@ -139,6 +139,9 @@ p { margin: 0; }
 .nav > a:hover, .nav-drop > button:hover, .nav > a.active { color: #fff; background: rgba(255,255,255,.07); }
 .nav > a.active { box-shadow: inset 0 -2px 0 var(--magenta-400); }
 .nav-stemo { color: var(--cyan) !important; }
+.nav > a.nav-login { display: none; }
+.nav.open > a.nav-login { display: inline-flex; margin-top: 6px; border-top: 1px solid var(--line); border-radius: 0; padding-top: 16px; color: var(--gold-soft); }
+.nav-login svg { width: 18px; height: 18px; }
 .nav-stemo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
 
 .nav-drop { position: relative; }
@@ -154,7 +157,7 @@ p { margin: 0; }
 .drop-menu a { display: block; padding: 8px 12px; border-radius: 10px; color: var(--text-2); font-size: 15px; }
 .drop-menu a:hover { background: rgba(255,255,255,.07); color: #fff; }
 
-.header-cta { display: flex; gap: 10px; align-items: center; }
+.header-cta { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 .menu-toggle {
   display: none; width: 46px; height: 46px; border-radius: 14px; border: 0; cursor: pointer;
   background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px var(--line-strong);
@@ -673,6 +676,19 @@ p { margin: 0; }
   .nav.open .drop-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; display: none; margin-top: 4px; }
   .nav.open .nav-drop.open .drop-menu { display: block; }
 }
+
+/* القائمة المطويّة: تُفعَّل من السكربت حين لا تتسع عناصر القائمة بجانب الشعار (حسب الخط الفعلي) */
+.header.nav-collapsed .nav, .header.nav-collapsed .header-cta .btn-ghost { display: none; }
+.header.nav-collapsed .menu-toggle { display: inline-flex; }
+.header.nav-collapsed .nav.open {
+    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+    position: absolute; top: 100%; inset-inline: 0; padding: 14px 20px 22px;
+    background: var(--ink-800); border-bottom: 1px solid var(--line-strong); box-shadow: var(--shadow);
+    max-height: calc(100vh - 76px); overflow-y: auto;
+  }
+.header.nav-collapsed .nav.open > a, .header.nav-collapsed .nav.open .nav-drop > button { width: 100%; justify-content: flex-start; padding: 12px 14px; }
+.header.nav-collapsed .nav.open .drop-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; display: none; margin-top: 4px; }
+.header.nav-collapsed .nav.open .nav-drop.open .drop-menu { display: block; }
 
 @media (max-width: 960px) {
 
