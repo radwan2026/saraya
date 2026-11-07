@@ -89,7 +89,7 @@ window.STEAM_CONFIG = {
         id: "planet-race",
         title: "سباق الكواكب",
         emoji: "🪐",
-        desc: "لعبة تعليمية من أكاديمية ستيم في عالم الكواكب والمجموعة الشمسية.",
+        desc: "انطلق بصاروخك من الأرض في سباق مثير بين كواكب المجموعة الشمسية، وتعرّف على المريخ وزحل وأسرار الفضاء.",
         cover: "games/planet-race/cover.webp",
         url: "games/planet-race/index.html",
         download: "",          // (اختياري) مسار ملف التحميل بعد الشراء
@@ -100,7 +100,7 @@ window.STEAM_CONFIG = {
         id: "forest-of-life",
         title: "غابة الحياة",
         emoji: "🌳",
-        desc: "لعبة تعليمية من أكاديمية ستيم في عالم الغابة والكائنات الحية.",
+        desc: "«نزرع اليوم لنحيا غداً»: ازرع، ووفّر الماء، وحافظ على التربة والحيوانات، واكتشف دورة الحياة والتوازن البيئي.",
         cover: "games/forest-of-life/cover.webp",
         url: "games/forest-of-life/index.html",
         download: "",
