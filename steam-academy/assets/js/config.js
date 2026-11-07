@@ -79,6 +79,65 @@ window.STEAM_CONFIG = {
     ],
   },
 
+  // ===== ألعاب ستيم (قسم ربحي) =====
+  // لإضافة لعبة: ضع ملفاتها في مجلد games/<المعرّف>/ ثم أضف كائناً في القائمة أدناه (راجع games/README.md).
+  games: {
+    defaultPreviewMinutes: 3,   // مدة التجربة المجانية لكل لعبة قبل أن تُقفل (يمكن تغييرها لكل لعبة)
+    currency: "د.ل",
+    list: [
+      {
+        id: "planet-race",
+        title: "سباق الكواكب",
+        emoji: "🪐",
+        desc: "لعبة تعليمية من أكاديمية ستيم في عالم الكواكب والمجموعة الشمسية.",
+        cover: "games/planet-race/cover.webp",
+        url: "games/planet-race/index.html",
+        download: "",          // (اختياري) مسار ملف التحميل بعد الشراء
+        price: 20,
+        ages: "8–12", category: "فلك",
+      },
+      {
+        id: "forest-of-life",
+        title: "غابة الحياة",
+        emoji: "🌳",
+        desc: "لعبة تعليمية من أكاديمية ستيم في عالم الغابة والكائنات الحية.",
+        cover: "games/forest-of-life/cover.webp",
+        url: "games/forest-of-life/index.html",
+        download: "",
+        price: 25,
+        ages: "8–12", category: "أحياء",
+      },
+
+      // مثال لإضافة لعبة جديدة مستقبلاً:
+      // {
+      //   id: "water-cycle",                         // معرّف فريد بالإنجليزية (اسم مجلد اللعبة)
+      //   title: "رحلة قطرة الماء",
+      //   desc: "لعبة مغامرات يتعلّم فيها الطفل دورة الماء في الطبيعة.",
+      //   cover: "games/water-cycle/cover.webp",     // صورة الغلاف
+      //   url: "games/water-cycle/index.html",       // ملف تشغيل اللعبة
+      //   download: "games/water-cycle/water-cycle.zip", // (اختياري) ملف التحميل بعد الشراء
+      //   price: 15,
+      //   ages: "8–12", category: "علوم", previewMinutes: 3,
+      // },
+    ],
+    // أكواد فتح الألعاب — تُولَّد من games/codes.html ثم يُلصق سطرها هنا (تُحفظ بصمة الكود فقط)
+    codes: [
+      // { hash: "....", game: "water-cycle", name: "اسم المشتري" },
+    ],
+  },
+
+  // ===== الدفع بالتحويل المصرفي =====
+  payments: {
+    bankAccount: "LY19006027000002004554046",
+    bankName: "",        // (اختياري) اسم المصرف
+    accountHolder: "",   // (اختياري) اسم صاحب الحساب
+    receiptEmail: "k.gammo@steamacademy.ly",
+    // خدمة إرسال النموذج مع صورة الحوالة إلى البريد أعلاه.
+    // FormSubmit مجانية وتدعم المرفقات؛ أول إرسال يصل للبريد رسالة «تفعيل» يجب الضغط عليها مرة واحدة.
+    formEndpoint: "https://formsubmit.co/k.gammo@steamacademy.ly",
+    maxReceiptMB: 5,
+  },
+
   // بيانات التواصل — نموذج «راسلنا» يفتح بريد المستخدم مُعبّأً مسبقاً
   contact: {
     email: "info@steamacademy.ly",

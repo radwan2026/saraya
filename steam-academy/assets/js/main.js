@@ -19,21 +19,6 @@
   };
   window.STEAM_ICON = ICON;
 
-  const GAMES = [
-    { title: "لعبة المؤمن الصغير", ic: "🌙", desc: "قصص تفاعلية من سيرة الخلفاء الراشدين بأسلوب ممتع يناسب الأطفال.",
-      items: [
-        ["أبوبكر الصديق", "https://steamacademy.ly/wp/wp-content/uploads/moamen/abu_bakr_lesson.html"],
-        ["عمر بن الخطاب", "https://steamacademy.ly/wp/wp-content/uploads/moamen/omar_ibn_khattab_lesson.html"],
-        ["عثمان بن عفان", "https://steamacademy.ly/wp/wp-content/uploads/moamen/uthman_ibn_affan_lesson.html"],
-        ["علي بن أبي طالب", "https://steamacademy.ly/wp/wp-content/uploads/moamen/ali_ibn_abi_talib_lesson.html"],
-      ] },
-    { title: "المحقق الصغير", ic: "🔍", desc: "ألغاز علمية ومحاكاة تفاعلية تنمّي التفكير الناقد وحل المشكلات.",
-      items: [
-        ["سر النباتات الذابلة", "https://steamacademy.ly/wp/wp-content/uploads/game2026/simulation.html"],
-        ["لغز سر الماء المختفي", "https://steamacademy.ly/wp/wp-content/uploads/game2026/2.html"],
-      ] },
-  ];
-  window.STEAM_GAMES = GAMES;
 
   /* ---------------- الهيدر والفوتر ---------------- */
   function navLink(href, label, key) {
@@ -43,7 +28,6 @@
   function renderHeader() {
     const el = $("#site-header");
     if (!el) return;
-    const gamesMenu = GAMES.map((g) => `<h5>${g.ic} ${g.title}</h5>` + g.items.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join("")).join("");
     el.innerHTML = `
       <div class="topbar">
         <div class="container">
@@ -72,10 +56,7 @@
               </div>
             </div>
             ${navLink("videos.html", "الفيديوهات", "videos")}
-            <div class="nav-drop">
-              <button type="button" aria-haspopup="true" aria-expanded="false">الألعاب ${ICON.chev}</button>
-              <div class="drop-menu">${gamesMenu}</div>
-            </div>
+            ${navLink("games.html", "ألعاب ستيم", "games")}
             ${navLink(page === "home" ? "#about" : "index.html#about", "من نحن", "about")}
             ${navLink(page === "home" ? "#contact" : "index.html#contact", "اتصل بنا", "contact")}
             <a class="nav-login" href="${C.links.login}">${ICON.user} تسجيل الدخول</a>
@@ -150,7 +131,7 @@
                 <li><a href="stemo.html">منصة ستيمو للبرمجة</a></li>
                 <li><a href="simulation.html">منصة محاكاة ستيم</a></li>
                 <li><a href="videos.html">معرض الفيديو</a></li>
-                <li><a href="index.html#games">الألعاب التعليمية</a></li>
+                <li><a href="games.html">ألعاب ستيم</a></li>
                 <li><a href="${C.links.codeOrg}" target="_blank" rel="noopener">منصة Code.org</a></li>
               </ul>
             </div>
@@ -447,14 +428,10 @@
   /* ---------------- الألعاب ---------------- */
   function renderGames() {
     const el = $("[data-games]");
-    if (!el) return;
-    el.innerHTML = GAMES.map((g) => `
-      <div class="game card reveal">
-        <div class="ic">${g.ic}</div>
-        <h3>${g.title}</h3>
-        <p>${g.desc}</p>
-        <div class="game-links">${g.items.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t}<span>العب الآن ←</span></a>`).join("")}</div>
-      </div>`).join("");
+    if (!el || !window.STEAM_GAMES_STORE) return;
+    const n = window.STEAM_GAMES_STORE.renderGrid(el, 3);
+    const more = $("[data-games-more]");
+    if (more) more.hidden = n === 0;
   }
 
   /* ---------------- معرض الفيديو ---------------- */

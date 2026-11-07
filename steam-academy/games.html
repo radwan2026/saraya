@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ألعاب ستيم | أكاديمية ستيم لإثراء العلوم</title>
+  <meta name="description" content="ألعاب ستيم التعليمية من أكاديمية ستيم: جرّب كل لعبة مجاناً ثم اشترِها لتلعب بلا حدود وتحمّلها.">
+  <meta name="theme-color" content="#0c0a26">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="games">
+  <div class="page-bg" aria-hidden="true"></div>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="crumbs" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>/</span><span>ألعاب ستيم</span></nav>
+        <h1>ألعاب <span class="grad-text">ستيم</span> 🎮</h1>
+        <p>ألعاب تعليمية ممتعة من تصميم أكاديمية ستيم. جرّب أي لعبة مجاناً لبضع دقائق، وإن أعجبتك اشترِها لتلعبها بلا حدود وتحمّلها.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:20px">
+      <div class="container">
+        <div class="games-grid" data-games-store></div>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="container">
+        <div class="section-head reveal"><span class="kicker">طريقة الشراء</span><h2>أربع خطوات بسيطة</h2></div>
+        <div class="why">
+          <div class="why-item card reveal"><div class="n">01</div><h3>▶ جرّب مجاناً</h3><p>العب أي لعبة لبضع دقائق دون تسجيل لتتعرّف عليها.</p></div>
+          <div class="why-item card reveal"><div class="n">02</div><h3>🏦 حوّل القيمة</h3><p>حوّل سعر اللعبة إلى حساب الأكاديمية المصرفي الظاهر في نافذة الشراء.</p></div>
+          <div class="why-item card reveal"><div class="n">03</div><h3>📎 ارفع الحوالة</h3><p>ارفع صورة الحوالة مع اسمك وبريدك، فتصل مباشرة إلى بريد الأكاديمية.</p></div>
+          <div class="why-item card reveal"><div class="n">04</div><h3>🔑 استلم الكود</h3><p>بعد التحقق يصلك كود الفتح على بريدك — أدخله لتلعب وتحمّل اللعبة.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2>هل وصلك كود فتح لعبة؟</h2>
+          <p>افتح صفحة اللعبة واضغط «لدي كود فتح»، أو اضغط «اشترِ الآن» وأدخله في الخطوة الأخيرة.</p>
+          <div class="hero-actions"><a class="btn btn-ghost" href="index.html#contact">تواصل معنا لأي استفسار</a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/games-store.js"></script>
+  <script>
+    STEAM_GAMES_STORE.renderGrid(document.querySelector("[data-games-store]"));
+    STEAM_GAMES_STORE.sentNotice();
+  </script>
+</body>
+</html>

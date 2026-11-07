@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="../">
+  <title>ألعاب ستيم | أكاديمية ستيم لإثراء العلوم</title>
+  <meta name="theme-color" content="#0c0a26">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="games">
+  <div class="page-bg" aria-hidden="true"></div>
+  <div id="site-header"></div>
+
+  <main class="section" style="padding-top:36px">
+    <div class="container">
+      <nav class="crumbs" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>/</span><a href="games.html">ألعاب ستيم</a><span>/</span><span data-g-title>…</span></nav>
+
+      <div class="player-head">
+        <div>
+          <h1 data-g-title style="font-size:clamp(26px,3.6vw,40px);font-weight:900;margin:8px 0 4px">…</h1>
+          <p class="muted" data-g-desc></p>
+        </div>
+        <div class="player-actions" data-g-actions></div>
+      </div>
+
+      <div class="player card" data-player>
+        <div class="player-bar">
+          <div class="timer" data-timer hidden>
+            <span>⏳ التجربة المجانية: <b data-left dir="ltr">--:--</b></span>
+            <div class="timer-track"><div class="timer-fill" data-fill></div></div>
+          </div>
+          <div class="owned-tag" data-owned hidden>✓ اللعبة مملوكة لك — العب بلا حدود</div>
+          <button class="btn btn-ghost btn-sm" type="button" data-fs>⛶ ملء الشاشة</button>
+        </div>
+        <div class="player-stage">
+          <iframe data-frame title="اللعبة" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+          <div class="player-lock" data-lock hidden>
+            <div class="lock-card">
+              <div style="font-size:54px">🔒</div>
+              <h2>انتهت التجربة المجانية</h2>
+              <p>أعجبتك اللعبة؟ اشترِها الآن لتكمل اللعب بلا حدود وتحمّلها.</p>
+              <div class="hero-actions" style="justify-content:center;margin-top:18px">
+                <button class="btn btn-gold" type="button" data-buy-now>اشترِ اللعبة — <span data-price></span></button>
+                <button class="btn btn-ghost" type="button" data-have-code>لدي كود فتح</button>
+              </div>
+            </div>
+          </div>
+          <div class="player-missing" data-missing hidden>
+            <div class="lock-card"><div style="font-size:54px">🎮</div><h2>اللعبة غير موجودة</h2><p>ربما تغيّر رابطها. تصفّح باقي الألعاب.</p><a class="btn btn-primary" href="games.html" style="margin-top:14px">ألعاب ستيم</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-buy card">
+        <h2>كيف أشتري اللعبة؟</h2>
+        <ol>
+          <li><b>جرّب مجاناً</b> لبضع دقائق.</li>
+          <li><b>حوّل القيمة</b> إلى حساب الأكاديمية المصرفي.</li>
+          <li><b>ارفع صورة الحوالة</b> من نافذة الشراء.</li>
+          <li><b>يصلك كود الفتح</b> على بريدك بعد التحقق — أدخله لتلعب وتحمّل اللعبة.</li>
+        </ol>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/games-store.js"></script>
+  <script>
+  (function () {
+    const S = window.STEAM_GAMES_STORE;
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => Array.from(document.querySelectorAll(s));
+    const id = new URLSearchParams(location.search).get("id");
+    const g = S.get(id);
+    const frame = $("[data-frame]");
+    S.sentNotice();
+
+    if (!g) { $$("[data-g-title]").forEach((e) => (e.textContent = "لعبة غير موجودة")); $("[data-missing]").hidden = false; frame.remove(); return; }
+
+    document.title = `${g.title} | ألعاب ستيم`;
+    $$("[data-g-title]").forEach((e) => (e.textContent = g.title));
+    $("[data-g-desc]").textContent = g.desc || "";
+    $("[data-price]").textContent = S.price(g);
+
+    const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    let timer = null, pending = 0;
+
+    function renderActions() {
+      const own = S.owned(g.id);
+      $("[data-g-actions]").innerHTML = own
+        ? (g.download ? `<a class="btn btn-gold" href="${S.esc(S.abs(g.download))}" download>⬇ تحميل اللعبة</a>` : "")
+        : `<span class="gprice big">${S.esc(S.price(g))}</span><button class="btn btn-gold" type="button" data-buy-top>اشترِ اللعبة</button>`;
+      const b = $("[data-buy-top]"); if (b) b.onclick = buy;
+    }
+
+    function lock() {
+      clearInterval(timer); flush();
+      frame.src = "about:blank";
+      frame.classList.add("locked");
+      $("[data-lock]").hidden = false;
+      $("[data-left]").textContent = "00:00";
+      $("[data-fill]").style.width = "0%";
+    }
+
+    function unlockFull() {
+      clearInterval(timer);
+      $("[data-lock]").hidden = true;
+      $("[data-timer]").hidden = true;
+      $("[data-owned]").hidden = false;
+      frame.classList.remove("locked");
+      frame.src = S.abs(g.url);
+      renderActions();
+    }
+
+    function flush() { if (pending > 0) { S.addUsed(g.id, pending); pending = 0; } }
+
+    function startPreview() {
+      const total = S.previewSec(g);
+      $("[data-timer]").hidden = false;
+      const paint = () => {
+        const left = Math.max(0, S.leftSec(g) - pending);
+        $("[data-left]").textContent = fmt(left);
+        $("[data-fill]").style.width = (100 * left / total) + "%";
+        $("[data-timer]").classList.toggle("low", left <= 30);
+        return left;
+      };
+      if (paint() <= 0) return lock();
+      frame.src = S.abs(g.url);
+      timer = setInterval(() => {
+        if (document.hidden) return;          // لا يُحتسب الوقت والتبويب مخفي
+        pending++;
+        if (pending >= 5) flush();
+        if (paint() <= 0) lock();
+      }, 1000);
+      addEventListener("pagehide", flush);
+      document.addEventListener("visibilitychange", flush);
+    }
+
+    function buy() { S.openBuy(g.id, { onUnlock: unlockFull }); }
+    $("[data-buy-now]").onclick = buy;
+    $("[data-have-code]").onclick = () => { buy(); setTimeout(() => document.querySelector(".buy-modal .redeem-form input")?.focus(), 200); };
+    $("[data-fs]").onclick = () => { const st = $(".player-stage"); (st.requestFullscreen || st.webkitRequestFullscreen || (() => {})).call(st); };
+
+    renderActions();
+    // إن لم تُرفع ملفات اللعبة بعد: نعرض «قريباً» ولا نبدأ عدّاد التجربة
+    fetch(S.abs(g.url), { method: "HEAD", cache: "no-store" })
+      .then((r) => { if (!r.ok) throw 0; })
+      .then(() => { if (S.owned(g.id)) unlockFull(); else startPreview(); })
+      .catch(() => {
+        frame.remove();
+        const m = $("[data-missing]");
+        m.querySelector("h2").textContent = "اللعبة قيد الإطلاق 🚀";
+        m.querySelector("p").textContent = "ستكون متاحة للتجربة قريباً جداً. يمكنك شراؤها مسبقاً من الآن.";
+        m.hidden = false;
+      });
+  })();
+  </script>
+</body>
+</html>
