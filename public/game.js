@@ -360,7 +360,13 @@
   socket.on('connect', () => $('conn').classList.add('hidden'));
   socket.on('disconnect', () => $('conn').classList.remove('hidden'));
 
+  // إذا غيّر المضيف اللعبة النشطة وكانت هذه الشاشة هي "/" ننتقل تلقائياً
+  socket.on('activeGame', (g) => {
+    if ((location.pathname === '/' || location.pathname === '/index.html') && g.active !== 'redlight') location.reload();
+  });
+
   socket.on('state', (s) => {
+    if (s.kind && s.kind !== 'redlight') return;
     const prev = state;
     // لعبة جديدة => امسح لاعبي اللعبة السابقة
     if (prev && prev.gameNumber !== s.gameNumber) {
@@ -376,10 +382,12 @@
     updateTimer();
   });
 
-  socket.on('join', (p) => { showCard(p, 'join'); sfx.join(); });
-  socket.on('numberChanged', (p) => showCard(p, 'changed'));
+  const mine = () => state && (!state.kind || state.kind === 'redlight');
+  socket.on('join', (p) => { if (mine()) { showCard(p, 'join'); sfx.join(); } });
+  socket.on('numberChanged', (p) => { if (mine()) showCard(p, 'changed'); });
 
   socket.on('roundResult', (r) => {
+    if (!mine() || !r.eliminated) return;
     if (r.eliminated.length) setTimeout(sfx.out, 150);
     if (r.advanced.length) setTimeout(sfx.step, 300);
     // إظهار "+N" فوق كل لاعب تقدّم

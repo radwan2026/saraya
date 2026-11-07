@@ -95,6 +95,7 @@ export class Game extends EventEmitter {
 
   snapshot() {
     return {
+      kind: 'redlight',
       phase: this.phase,
       phaseEndsAt: this.phaseEndsAt,
       serverNow: this.now(),

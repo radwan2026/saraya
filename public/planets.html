@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>سباق الكواكب — STEAM Games</title>
+  <link rel="preload" href="/assets/fonts/JannatLT-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/planets.css">
+</head>
+<body>
+  <!-- المسرح بحجم ثابت 1080×1920 ويتم تكبيره/تصغيره ليناسب النافذة -->
+  <div id="stage">
+    <canvas id="space" width="1080" height="1920"></canvas>
+
+    <!-- الشريط العلوي -->
+    <header class="top">
+      <div class="brand">
+        <div class="logo"><span>G</span></div>
+        <div class="brand-txt">
+          <small>STEAM Games</small>
+          <b>سباق الكواكب</b>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><small>الجولة</small><b id="round">0</b></div>
+        <div class="stat"><small>الروّاد</small><b id="count">0</b></div>
+        <div class="stat goal"><small>الهدف</small><b id="goal">9</b></div>
+      </div>
+    </header>
+
+    <!-- معلومة علمية -->
+    <div id="fact" class="fact hidden">
+      <div class="fact-icon">🔭</div>
+      <div class="fact-body">
+        <small>هل تعلم؟</small>
+        <p id="factText"></p>
+      </div>
+    </div>
+
+    <div id="timer" class="timer hidden"><span>0</span><small>ثانية</small></div>
+    <div id="windowBadge" class="window-badge hidden"><small>نافذة الإطلاق</small><b>?</b></div>
+
+    <div id="banner" class="banner">اكتب رقماً للانضمام</div>
+
+    <!-- السباق -->
+    <section class="race">
+      <h3><span>🏁 سباق الروّاد</span><em id="raceGoal">أول من يجمع 9 نقاط يفوز</em></h3>
+      <ol id="race"></ol>
+    </section>
+
+    <!-- بطاقات الانضمام + التعليمات -->
+    <footer class="bottom">
+      <div id="cards" class="cards"></div>
+      <div class="howto">
+        <div class="howto-main">اكتب رقم مسار من <b id="minN">1</b> إلى <b id="maxN">10</b> لتطلق صاروخك!</div>
+        <div class="howto-rule">🪐 الكوكب يتحرك — صوّب إلى حيث <b>سيكون</b> &nbsp;•&nbsp; ☀️ احذر الشمس! &nbsp;•&nbsp; هبوط = <b class="good">3</b> &nbsp; مرور قريب = <b class="good">1</b></div>
+      </div>
+    </footer>
+
+    <!-- شاشة الفوز -->
+    <div id="winner" class="overlay hidden">
+      <canvas id="confetti" width="1080" height="1920"></canvas>
+      <div class="win-box">
+        <div class="crown">🚀</div>
+        <div class="win-avatar"><img id="winAvatar" alt=""></div>
+        <div class="win-label">بطل الفضاء!</div>
+        <div id="winName" class="win-name"></div>
+        <div id="winUser" class="win-user"></div>
+        <div id="winInfo" class="win-info"></div>
+      </div>
+    </div>
+
+    <!-- لا يوجد فائز -->
+    <div id="gameover" class="overlay dark hidden">
+      <div class="go-box">
+        <div class="go-icon">🌌</div>
+        <div class="go-title">ضاعت كل الصواريخ!</div>
+        <div class="go-sub">لم يسجّل أحد نقاطاً — رحلة جديدة قريباً</div>
+      </div>
+    </div>
+
+    <div id="conn" class="conn hidden">جارٍ الاتصال بالخادم...</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/planets.js"></script>
+</body>
+</html>

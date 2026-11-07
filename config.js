@@ -18,6 +18,10 @@ export default {
   // تشغيل وضع التجربة تلقائياً عند بدء الخادم (لاعبون وهميون بدون بث)
   demo: false,
 
+  // اللعبة النشطة عند التشغيل: 'redlight' (الضوء الأحمر) أو 'planets' (سباق الكواكب — قسم STEAM Games)
+  // يمكن تغييرها من لوحة التحكم أو من سطر الأوامر: npm start -- --game=planets
+  activeGame: 'redlight',
+
   game: {
     // عدد الخطوات حتى خط النهاية
     trackLength: 25,
@@ -52,6 +56,27 @@ export default {
     gameOverSeconds: 8,   // عندما يخرج الجميع بدون فائز
 
     // بدء اللعبة تلقائياً (إذا false تبدأ فقط من زر لوحة التحكم)
+    autoStart: true,
+  },
+
+  // ---------------- سباق الكواكب (STEAM Games) ----------------
+  // كل متابع يكتب رقم مسار من 1 إلى 10 = اتجاه إطلاق صاروخه من الأرض.
+  // جاذبية الشمس تحني المسارات والكوكب الهدف يتحرك في مداره، فمن يصوّب حيث «سيكون» الكوكب يهبط عليه.
+  planets: {
+    minNumber: 1,
+    maxNumber: 10,
+    targetScore: 9,     // أول من يجمع هذه النقاط يفوز
+    maxRounds: 10,      // بعدها يفوز صاحب أعلى نقاط
+    landingPoints: 3,   // نقاط الهبوط على الكوكب
+    flybyPoints: 1,     // نقاط المرور القريب من الكوكب
+    minPlayers: 2,
+    maxPlayers: 200,
+    allowLateJoin: true, // لا يوجد إقصاء، فيمكن الانضمام أثناء التصويب
+    lobbySeconds: 25,
+    chooseSeconds: 12,   // وقت التصويب قبل الإطلاق
+    resultSeconds: 7,
+    winnerSeconds: 12,
+    gameOverSeconds: 8,
     autoStart: true,
   },
 

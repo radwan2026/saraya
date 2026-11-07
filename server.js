@@ -6,6 +6,8 @@ import { Server } from 'socket.io';
 
 import config from './config.js';
 import { Game } from './src/game.js';
+import { PlanetsGame } from './src/planets.js';
+import { GAMES, catalog } from './src/catalog.js';
 import { TikTokSource } from './src/tiktok.js';
 import { DemoBots } from './src/demo.js';
 
@@ -23,18 +25,32 @@ const PORT = Number(args.port || process.env.PORT || config.port || 3000);
 const USERNAME = String(args.user || process.env.TIKTOK_USERNAME || config.tiktokUsername || '').replace(/^@/, '');
 const SIGN_KEY = String(args.key || process.env.SIGN_API_KEY || config.signApiKey || '');
 const DEMO = Boolean(args.demo || process.env.DEMO === '1' || config.demo);
+const START_GAME = String(args.game || process.env.GAME || config.activeGame || 'redlight');
 
 // ------------------------------------------------------------------
 // الخادم
 // ------------------------------------------------------------------
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/admin', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+const PUBLIC = path.join(__dirname, 'public');
+// الصفحة الرئيسية "/" تعرض اللعبة النشطة حالياً (رابط ثابت لـ OBS / LIVE Studio)
+app.get(['/', '/index.html'], (_req, res) => res.sendFile(path.join(PUBLIC, GAMES[activeId].page)));
+app.get('/redlight', (_req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
+app.get('/planets', (_req, res) => res.sendFile(path.join(PUBLIC, 'planets.html')));
+app.get('/games', (_req, res) => res.sendFile(path.join(PUBLIC, 'games.html')));
+app.get('/admin', (_req, res) => res.sendFile(path.join(PUBLIC, 'admin.html')));
+app.get('/api/games', (_req, res) => res.json({ active: activeId, sections: catalog() }));
+app.use(express.static(PUBLIC, { index: false }));
 
 const server = http.createServer(app);
 const io = new Server(server);
 
-const game = new Game(config.game);
+const ENGINES = {
+  redlight: () => new Game(config.game),
+  planets: () => new PlanetsGame(config.planets),
+};
+
+let activeId = GAMES[START_GAME] ? START_GAME : 'redlight';
+let game = ENGINES[activeId]();
 const tiktok = new TikTokSource({ signApiKey: SIGN_KEY });
 const commentLog = [];
 
@@ -50,9 +66,30 @@ function handleComment(user, text, source) {
 const bots = new DemoBots(game, (user, text) => handleComment(user, text, 'demo'), config.demoBots);
 
 // بث أحداث اللعبة لكل الصفحات المتصلة
-for (const ev of ['state', 'join', 'numberChanged', 'roundResult', 'winner']) {
-  game.on(ev, (payload) => io.emit(ev, payload));
+function wireGame(g) {
+  for (const ev of ['state', 'join', 'numberChanged', 'roundResult', 'winner']) {
+    g.on(ev, (payload) => io.emit(ev, payload));
+  }
 }
+wireGame(game);
+
+const gameInfo = () => ({ active: activeId, title: GAMES[activeId].title, section: GAMES[activeId].section });
+
+/** تبديل اللعبة النشطة: تُغلق اللعبة الحالية وتبدأ الجديدة، وتنتقل الشاشات المفتوحة تلقائياً */
+function switchGame(id) {
+  if (!ENGINES[id] || id === activeId) return false;
+  const old = game;
+  activeId = id;
+  game = ENGINES[id]();
+  wireGame(game);
+  bots.setGame(game);
+  old.destroy();
+  console.log(`[Games] اللعبة النشطة الآن: ${GAMES[id].title}`);
+  io.emit('activeGame', gameInfo());
+  io.emit('state', game.snapshot());
+  return true;
+}
+
 tiktok.on('status', (s) => {
   console.log(`[TikTok] ${s.message}`);
   io.emit('tiktokStatus', s);
@@ -62,12 +99,14 @@ tiktok.on('comment', ({ user, text }) => handleComment(user, text, 'tiktok'));
 const demoStatus = () => ({ running: bots.running });
 
 io.on('connection', (socket) => {
+  socket.emit('activeGame', gameInfo());
   socket.emit('state', game.snapshot());
   socket.emit('tiktokStatus', tiktok.status());
   socket.emit('demoStatus', demoStatus());
   socket.emit('commentLog', commentLog);
 
   // ---- أوامر لوحة التحكم ----
+  socket.on('admin:setGame', (id) => switchGame(String(id)));
   socket.on('admin:start', () => game.start());
   socket.on('admin:skip', () => game.skip());
   socket.on('admin:reset', () => game.resetToLobby());
@@ -90,9 +129,11 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   const base = `http://localhost:${PORT}`;
   console.log('==============================================');
-  console.log(' لعبة الضوء الأحمر / الضوء الأخضر — تيك توك لايف');
+  console.log(' ألعاب تيك توك لايف التفاعلية');
   console.log('==============================================');
+  console.log(` اللعبة النشطة: ${GAMES[activeId].title}`);
   console.log(` شاشة اللعبة (للـ OBS / LIVE Studio): ${base}/`);
+  console.log(` مكتبة الألعاب (STEAM Games):        ${base}/games`);
   console.log(` لوحة التحكم:                        ${base}/admin`);
   console.log('');
   if (DEMO) {

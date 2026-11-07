@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مكتبة الألعاب — G GAME</title>
+  <style>
+    @font-face { font-family: 'Jannat LT'; src: url('/assets/fonts/JannatLT-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Jannat LT'; src: url('/assets/fonts/JannatLT-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: swap; }
+    :root {
+      --g1: #19b97a; --g2: #3fcf6e; --lime: #b5ef6a; --deep: #0e6b46;
+      --bg: #f3fbf5; --card: #ffffff; --ink: #0d2b1e; --muted: #5d7a6b; --line: #d8eedf;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #07140e; --card: #0f2219; --ink: #eafff2; --muted: #93b8a3; --line: #1d3a2b; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jannat LT', 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 30px; }
+    .logo { width: 84px; height: 84px; flex: none; position: relative; }
+    .logo img { width: 100%; height: 100%; object-fit: contain; }
+    .logo .fallback {
+      width: 100%; height: 100%; border-radius: 26px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(140deg, var(--lime), var(--g2) 35%, var(--g1) 70%, var(--deep));
+      box-shadow: 0 7px 0 var(--deep); color: #fff; font: 900 60px/1 'Arial Black', sans-serif;
+    }
+    .game-chip {
+      display: inline-block; padding: 6px 16px 5px; border-radius: 12px; color: #fff; direction: ltr;
+      font: 900 20px/1.2 'Arial Black', Arial, sans-serif; letter-spacing: 2px;
+      background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 4px 0 var(--deep);
+    }
+    header h1 { font-size: 34px; font-weight: 900; margin-top: 6px; }
+    header p { color: var(--muted); font-size: 17px; }
+    .admin-link { margin-inline-start: auto; color: var(--g1); font-weight: 700; text-decoration: none; border: 2px solid var(--g1); padding: 8px 16px; border-radius: 12px; }
+
+    .section { margin-top: 34px; }
+    .section-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+    .section-head h2 { font-size: 28px; font-weight: 900; }
+    .section-head.steam h2 { direction: ltr; font-family: 'Arial Black', Arial, sans-serif; letter-spacing: 1px; color: var(--g1); }
+    .section-head p { color: var(--muted); font-size: 16px; }
+    .steam-letters { display: inline-flex; gap: 4px; direction: ltr; }
+    .steam-letters span { width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font: 900 16px Arial, sans-serif; color: #fff; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+    .game {
+      background: var(--card); border: 2px solid var(--line); border-radius: 24px; overflow: hidden;
+      display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s;
+    }
+    .game:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(14,107,70,.18); }
+    .game.active { border-color: var(--g1); box-shadow: 0 0 0 4px rgba(25,185,122,.25); }
+    .cover { height: 170px; position: relative; display: flex; align-items: center; justify-content: center; font-size: 86px; }
+    .cover.planets { background: radial-gradient(circle at 50% 55%, #ffd23f 0 22px, rgba(255,160,40,.4) 23px 40px, transparent 41px), radial-gradient(circle at 70% 30%, rgba(63,207,110,.35), transparent 50%), linear-gradient(160deg, #071233, #030817); }
+    .cover.redlight { background: linear-gradient(160deg, #1a7a3e, #a01818); }
+    .cover .badge { position: absolute; top: 12px; right: 12px; background: var(--lime); color: #06331f; font-size: 14px; font-weight: 900; padding: 4px 12px; border-radius: 99px; }
+    .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .body h3 { font-size: 24px; font-weight: 900; display: flex; justify-content: space-between; gap: 8px; }
+    .body h3 small { font-size: 14px; color: var(--muted); font-weight: 700; border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; align-self: center; }
+    .body p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tags span { font-size: 14px; padding: 3px 10px; border-radius: 99px; background: rgba(25,185,122,.12); color: var(--g1); font-weight: 700; }
+    .learn { font-size: 15px; }
+    .learn b { color: var(--g1); }
+    .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; }
+    .actions button, .actions a {
+      flex: 1; text-align: center; padding: 11px 10px 9px; border-radius: 14px; font: 700 16px 'Jannat LT', sans-serif; cursor: pointer; text-decoration: none; border: 0;
+    }
+    .play { background: linear-gradient(180deg, var(--g2), var(--g1)); color: #fff; box-shadow: 0 4px 0 var(--deep); }
+    .play:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--deep); }
+    .play[disabled] { opacity: .7; cursor: default; }
+    .open { background: transparent; color: var(--g1); border: 2px solid var(--g1) !important; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; padding: 12px 22px; border-radius: 14px; font-weight: 700; opacity: 0; transition: opacity .3s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <!-- ضع ملف شعارك هنا: public/assets/logo.png -->
+        <img src="/assets/logo.png" alt="G GAME" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'fallback',textContent:'G'}))">
+      </div>
+      <div>
+        <span class="game-chip">GAME</span>
+        <h1>مكتبة الألعاب التفاعلية</h1>
+        <p>اختر لعبة لتصبح هي الظاهرة على شاشة البث المباشر</p>
+      </div>
+      <a class="admin-link" href="/admin">لوحة التحكم ⚙</a>
+    </header>
+
+    <div id="sections"></div>
+  </div>
+  <div id="toast" class="toast"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const STEAM = { S: ['#19b97a', 'علوم'], T: ['#4363d8', 'تقنية'], E: ['#f58231', 'هندسة'], A: ['#e6194b', 'فنون'], M: ['#911eb4', 'رياضيات'] };
+    const socket = io();
+    let active = null;
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function render(data) {
+      const root = document.getElementById('sections');
+      root.textContent = '';
+      for (const sec of data.sections) {
+        const s = el('section', 'section');
+        const head = el('div', `section-head ${sec.id}`);
+        head.append(el('h2', '', sec.title));
+        if (sec.id === 'steam') {
+          const letters = el('span', 'steam-letters');
+          for (const [k, [c, label]] of Object.entries(STEAM)) { const l = el('span', '', k); l.style.background = c; l.title = label; letters.append(l); }
+          head.append(letters);
+        }
+        head.append(el('p', '', sec.subtitle));
+        const grid = el('div', 'grid');
+        for (const g of sec.games) {
+          const card = el('article', `game ${g.id === active ? 'active' : ''}`);
+          card.dataset.id = g.id;
+          const cover = el('div', `cover ${g.id}`, g.emoji);
+          if (g.id === active) cover.append(el('span', 'badge', 'نشطة الآن'));
+          const body = el('div', 'body');
+          const h = el('h3', '', g.title); h.append(el('small', '', `العمر ${g.ages}`));
+          const tags = el('div', 'tags');
+          for (const t of g.tags) tags.append(el('span', '', t));
+          for (const k of g.steam) { const t = el('span', '', `${k} • ${STEAM[k][1]}`); tags.append(t); }
+          const learn = el('div', 'learn'); learn.append(el('b', '', 'يتعلّم الطفل: '), document.createTextNode(g.learn.join('، ')));
+          const actions = el('div', 'actions');
+          const play = el('button', 'play', g.id === active ? '✔ على شاشة البث' : '▶ اعرضها على البث');
+          play.disabled = g.id === active;
+          play.onclick = () => { socket.emit('admin:setGame', g.id); toast(`تم تفعيل «${g.title}»`); };
+          const open = el('a', 'open', 'معاينة');
+          open.href = `/${g.id}`; open.target = '_blank';
+          actions.append(play, open);
+          body.append(h, el('p', '', g.description), tags, learn, actions);
+          card.append(cover, body);
+          grid.append(card);
+        }
+        s.append(head, grid);
+        root.append(s);
+      }
+    }
+
+    let data = null;
+    fetch('/api/games').then((r) => r.json()).then((d) => { data = d; active = active || d.active; render(data); });
+    socket.on('activeGame', (g) => { active = g.active; if (data) render(data); });
+  </script>
+</body>
+</html>

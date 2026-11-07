@@ -41,8 +41,13 @@
   </style>
 </head>
 <body>
-  <h1>🎮 لوحة تحكم لعبة الضوء الأحمر / الأخضر</h1>
+  <h1>🎮 لوحة التحكم — <span id="gameTitle">...</span> <a href="/games" style="font-size:15px">مكتبة الألعاب ↗</a></h1>
   <main>
+    <section style="grid-column: 1 / -1">
+      <h2>اللعبة النشطة</h2>
+      <div class="row" id="gamePicker"></div>
+      <p class="muted">تغيير اللعبة يبدأ جولة جديدة، وتنتقل شاشة البث (<code>/</code>) إليها تلقائياً.</p>
+    </section>
     <section>
       <h2>اتصال تيك توك لايف</h2>
       <div class="row">
@@ -61,7 +66,7 @@
         <span>المرحلة</span><b id="phase">-</b>
         <span>الجولة</span><b id="round">0</b>
         <span>اللاعبون (أحياء/الكل)</span><b id="counts">0/0</b>
-        <span>آخر رقم للدمية</span><b id="doll">-</b>
+        <span id="dollLabel">آخر رقم للدمية</span><b id="doll">-</b>
       </div>
       <div class="row">
         <button class="primary" id="start">▶ ابدأ اللعبة الآن</button>
@@ -98,7 +103,7 @@
       <h2>اللاعبون</h2>
       <div class="scroll">
         <table>
-          <thead><tr><th>#</th><th>الاسم</th><th>الحساب</th><th>الرقم</th><th>الموقع</th><th>الحالة</th></tr></thead>
+          <thead><tr><th>#</th><th>الاسم</th><th>الحساب</th><th id="thNum">الرقم</th><th id="thPos">الموقع</th><th>الحالة</th></tr></thead>
           <tbody id="players"></tbody>
         </table>
       </div>
@@ -112,6 +117,32 @@
     const $ = (id) => document.getElementById(id);
     const socket = io();
     const PHASES = { lobby: 'الردهة (انضمام)', choosing: 'الضوء الأخضر (اختيار)', doll: 'الدمية تلتفت', result: 'نتيجة الجولة', winner: 'شاشة الفوز', gameover: 'خرج الجميع' };
+    const PLANET_PHASES = { lobby: 'الردهة (انضمام)', choosing: 'التصويب (اختيار المسار)', flight: 'الصواريخ تطير', result: 'نتيجة الجولة', winner: 'شاشة الفوز', gameover: 'لا يوجد فائز' };
+    const OUTCOMES = { landed: '✅ هبط', flyby: '✨ مرّ قريباً', burned: '🔥 احترق', lost: '🌌 ضاع' };
+
+    let activeGame = null;
+    fetch('/api/games').then((r) => r.json()).then((data) => {
+      const picker = $('gamePicker');
+      for (const sec of data.sections) {
+        for (const g of sec.games) {
+          const b = document.createElement('button');
+          b.dataset.id = g.id;
+          b.textContent = `${g.emoji} ${g.title} — ${sec.title}`;
+          b.onclick = () => socket.emit('admin:setGame', g.id);
+          picker.appendChild(b);
+        }
+      }
+      markActive();
+    });
+    function markActive() {
+      for (const b of document.querySelectorAll('#gamePicker button')) b.className = b.dataset.id === activeGame ? 'primary' : '';
+    }
+    socket.on('activeGame', (g) => {
+      activeGame = g.active;
+      $('gameTitle').textContent = g.title;
+      document.title = `لوحة التحكم — ${g.title}`;
+      markActive();
+    });
     const RESULTS = { joined: 'انضم', changed: 'غيّر رقمه', ignored: 'تجاهل', closed: 'الانضمام مغلق', full: 'ممتلئ', eliminated: 'خارج اللعبة' };
     const TT = { idle: 'غير متصل', connecting: 'جارٍ الاتصال', connected: 'متصل', error: 'خطأ' };
 
@@ -158,6 +189,9 @@
     });
 
     socket.on('state', (s) => {
+      if (s.kind === 'planets') return renderPlanets(s);
+      $('dollLabel').textContent = 'آخر رقم للدمية';
+      $('thNum').textContent = 'الرقم'; $('thPos').textContent = 'الموقع';
       $('phase').textContent = PHASES[s.phase] || s.phase;
       $('round').textContent = s.round;
       $('counts').textContent = `${s.aliveCount}/${s.players.length}`;
@@ -174,6 +208,25 @@
         ? s.history.map((w) => `🏆 ${w.nickname} (@${w.uniqueId}) — ${w.rounds} جولات`).join('  •  ')
         : 'لا يوجد بعد';
     });
+
+    function renderPlanets(s) {
+      $('phase').textContent = PLANET_PHASES[s.phase] || s.phase;
+      $('round').textContent = `${s.round}/${s.maxRounds}${s.planet ? ` — الهدف: ${s.planet.name}` : ''}`;
+      $('counts').textContent = `${s.players.length}/${s.players.length}`;
+      $('dollLabel').textContent = 'نافذة الإطلاق (تظهر بعد الرحلة)';
+      $('doll').textContent = s.launchWindow ?? '-';
+      $('thNum').textContent = 'المسار'; $('thPos').textContent = 'النقاط';
+      const rows = [...s.players].sort((a, b) => b.score - a.score || a.order - b.order).map((p) => {
+        const tr = document.createElement('tr');
+        const cells = [p.order, p.nickname, '@' + p.uniqueId, p.number, `${p.score}/${s.targetScore}`, OUTCOMES[p.lastOutcome] || 'جاهز'];
+        cells.forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 1) td.className = 'n'; tr.appendChild(td); });
+        return tr;
+      });
+      $('players').replaceChildren(...rows);
+      $('history').textContent = s.history.length
+        ? s.history.map((w) => `🚀 ${w.nickname} (@${w.uniqueId}) — ${w.score} نقطة`).join('  •  ')
+        : 'لا يوجد بعد';
+    }
   </script>
 </body>
 </html>
