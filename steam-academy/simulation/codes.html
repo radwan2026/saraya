@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>توليد أكواد التفعيل | محاكاة ستيم</title>
+  <link rel="icon" href="../assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    main { max-width: 760px; margin: 0 auto; padding: 48px 16px 80px; }
+    .panel { padding: 28px; margin-top: 22px; }
+    .out { margin-top: 18px; display: none; }
+    .out.show { display: block; }
+    .code-big { direction: ltr; font-family: ui-monospace, monospace; font-size: clamp(22px, 5vw, 34px); font-weight: 800; letter-spacing: .08em; text-align: center; padding: 18px; border-radius: 16px; background: rgba(255,216,74,.12); color: var(--gold-soft); box-shadow: inset 0 0 0 1px rgba(255,216,74,.4); word-break: break-all; }
+    pre { direction: ltr; text-align: left; white-space: pre-wrap; word-break: break-all; background: rgba(0,0,0,.35); padding: 14px; border-radius: 12px; font-size: 13.5px; color: #bfe9ff; margin: 8px 0 0; }
+    .row-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .muted { color: var(--text-3); font-size: 14.5px; }
+    ol.steps { color: var(--text-2); padding-inline-start: 20px; display: grid; gap: 6px; }
+    .warn { margin-top: 12px; padding: 12px 16px; border-radius: 12px; background: rgba(209,79,160,.12); color: #ffc4e6; font-size: 14.5px; }
+  </style>
+</head>
+<body>
+  <div class="page-bg" aria-hidden="true"></div>
+  <main>
+    <a class="brand" href="../index.html"><img src="../assets/img/logo-mark.png" alt="" width="46" height="46"><span class="brand-text"><strong>أكاديمية ستيم</strong><span>ADMIN · ACTIVATION CODES</span></span></a>
+
+    <div class="card panel">
+      <h1 style="font-size:28px">توليد كود تفعيل لطالب</h1>
+      <p class="muted" style="margin-top:6px">صفحة خاصة بإدارة الأكاديمية (غير ظاهرة في القوائم ولا في محركات البحث).</p>
+      <ol class="steps" style="margin-top:14px">
+        <li>بعد تأكيد اشتراك الطالب ودفعه، اكتب اسمه واختر مدة الاشتراك.</li>
+        <li>اضغط «توليد» وأرسل <b>الكود</b> للطالب (واتساب أو بريد).</li>
+        <li>انسخ <b>السطر البرمجي</b> وألصقه داخل <code>codes: [ ]</code> في الملف <code>assets/js/config.js</code> ثم ارفع الملف للموقع.</li>
+      </ol>
+
+      <form id="gen" class="form" style="padding:0;margin-top:20px">
+        <div class="row">
+          <div class="field"><label for="g-name">اسم الطالب</label><input id="g-name" required placeholder="مثال: ليان محمد"></div>
+          <div class="field"><label for="g-plan">مدة الاشتراك</label>
+            <select id="g-plan">
+              <option value="30">شهر واحد</option>
+              <option value="92" selected>فصل دراسي (3 أشهر)</option>
+              <option value="183">6 أشهر</option>
+              <option value="365">سنة كاملة</option>
+              <option value="custom">تاريخ مخصص…</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="g-date-wrap" hidden><label for="g-date">تاريخ الانتهاء</label><input id="g-date" type="date" dir="ltr"></div>
+        <button class="btn btn-primary" type="submit">توليد كود جديد</button>
+      </form>
+
+      <div class="out" id="out">
+        <p class="muted">الكود — أرسله للطالب:</p>
+        <div class="code-big" id="o-code"></div>
+        <p class="muted" style="margin-top:14px">السطر البرمجي — ألصقه في <code>codes: [ ]</code> داخل <code>config.js</code>:</p>
+        <pre id="o-line"></pre>
+        <div class="row-btns">
+          <button class="btn btn-gold btn-sm" type="button" data-copy="o-code">نسخ الكود</button>
+          <button class="btn btn-ghost btn-sm" type="button" data-copy="o-line">نسخ السطر البرمجي</button>
+          <button class="btn btn-ghost btn-sm" type="button" id="o-wa">رسالة جاهزة للطالب</button>
+        </div>
+        <div class="warn">⚠️ هذه الصفحة لا تحفظ الكود في أي مكان. انسخه الآن — لا يمكن استرجاعه لاحقاً من السطر البرمجي.</div>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <h2 style="font-size:22px">فحص كود موجود</h2>
+      <p class="muted" style="margin-top:6px">للتأكد هل الكود مضاف للقائمة وصالح.</p>
+      <form id="chk" class="form" style="padding:0;margin-top:14px">
+        <div class="field"><label for="c-code">الكود</label><input id="c-code" dir="ltr" placeholder="STEAM-XXXX-XXXX" required></div>
+        <button class="btn btn-ghost" type="submit">فحص</button>
+        <p class="form-note" id="c-out" role="status"></p>
+      </form>
+      <p class="muted">لإلغاء اشتراك طالب: احذف سطره من <code>codes</code> في <code>config.js</code> — يُقفل حسابه تلقائياً عند فتح المنصة.</p>
+    </div>
+  </main>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/access.js"></script>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // بدون الأحرف المتشابهة (O/0, I/1)
+    const rand = (n) => Array.from(crypto.getRandomValues(new Uint32Array(n)), (x) => ALPHA[x % ALPHA.length]).join("");
+    const iso = (d) => d.toISOString().slice(0, 10);
+
+    $("g-plan").addEventListener("change", (e) => { $("g-date-wrap").hidden = e.target.value !== "custom"; });
+    $("g-date").value = iso(new Date(Date.now() + 92 * 864e5));
+
+    let last = null;
+    $("gen").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = $("g-name").value.trim();
+      const plan = $("g-plan").value;
+      const expires = plan === "custom" ? $("g-date").value : iso(new Date(Date.now() + Number(plan) * 864e5));
+      if (!name || !expires) return;
+      const code = `STEAM-${rand(4)}-${rand(4)}-${rand(4)}`;
+      const hash = await STEAM_ACCESS.sha256(STEAM_ACCESS.normalize(code));
+      const line = `{ hash: "${hash}", name: ${JSON.stringify(name)}, expires: "${expires}" },`;
+      $("o-code").textContent = code;
+      $("o-line").textContent = line;
+      $("out").classList.add("show");
+      last = { code, name, expires };
+    });
+
+    document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($(b.dataset.copy).textContent); const t = b.textContent; b.textContent = "✓ تم النسخ"; setTimeout(() => (b.textContent = t), 1400); } catch { alert("انسخ النص يدوياً"); }
+    }));
+
+    $("o-wa").addEventListener("click", async () => {
+      if (!last) return;
+      const site = location.href.replace(/simulation\/codes\.html.*$/, "simulation/index.html");
+      const msg = `مرحباً ${last.name} 👋\nتم تفعيل اشتراكك في منصة «محاكاة ستيم» من أكاديمية ستيم 🎉\n\nكود التفعيل: ${last.code}\nصالح حتى: ${last.expires}\n\nافتح المنصة: ${site}\nثم اضغط «لدي كود تفعيل» وأدخل الكود.`;
+      try { await navigator.clipboard.writeText(msg); $("o-wa").textContent = "✓ نُسخت الرسالة"; } catch { alert(msg); }
+    });
+
+    $("chk").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const hash = await STEAM_ACCESS.sha256(STEAM_ACCESS.normalize($("c-code").value));
+      const entry = (STEAM_CONFIG.simulation.codes || []).find((c) => c.hash === hash);
+      const out = $("c-out");
+      if (!entry) { out.style.color = "#fb7185"; out.textContent = "✗ الكود غير موجود في القائمة (أو لم يُرفع ملف config.js المحدّث بعد)."; return; }
+      const expired = Date.now() > new Date(entry.expires + "T23:59:59").getTime();
+      out.style.color = expired ? "#fbbf24" : "";
+      out.textContent = expired ? `⚠ الكود للطالب «${entry.name}» منتهٍ منذ ${entry.expires}.` : `✓ كود صالح للطالب «${entry.name}» حتى ${entry.expires}.`;
+    });
+  })();
+  </script>
+</body>
+</html>

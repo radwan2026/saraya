@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>منصة محاكاة ستيم | أكاديمية ستيم لإثراء العلوم</title>
+  <meta name="description" content="محاكاة ستيم: منصة تفاعلية للأطفال 8–12 سنة يركّبون فيها اختراعات علمية ويشغّلونها ويختبرون فهمهم — 10 دروس في الفيزياء والهيدروليك والإلكترونيات والفلك والروبوتات. اشترك أونلاين.">
+  <meta name="theme-color" content="#0c0a26">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- أنماط مشاهد المحاكاة (لرسم صور الدروس) ثم أنماط الأكاديمية -->
+  <link rel="stylesheet" href="simulation/css/styles.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="simulation">
+  <div class="page-bg" aria-hidden="true"></div>
+  <div id="site-header"></div>
+
+  <main>
+    <!-- ============ الهيرو ============ -->
+    <section class="hero sim-hero">
+      <div class="container">
+        <div class="reveal">
+          <span class="eyebrow"><span class="pulse"></span> منصة جديدة من أكاديمية ستيم</span>
+          <h1>محاكاة ستيم:<br><span class="grad-text">ركّب، شغّل،</span> <span class="gold-text">واختبر!</span></h1>
+          <p class="hero-lead">مختبر علوم افتراضي للأطفال من 8 إلى 12 سنة: يجمع الطفل قطع الاختراع بيديه على طاولة العمل، ثم يشغّله ويشاهده يتحرك، ثم يختبر فهمه ويجمع النقاط والنجوم.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="simulation/index.html" data-sim-app>🚀 جرّب مجاناً الآن</a>
+            <a class="btn btn-gold" href="#subscribe">⭐ اشترك أونلاين</a>
+            <a class="btn btn-ghost" href="#activate">🔑 لدي كود تفعيل</a>
+          </div>
+          <div class="hero-trust">
+            <div><strong data-sim-count>10</strong><span>دروس تفاعلية</span></div>
+            <div><strong data-sim-free>3</strong><span>دروس مجانية للتجربة</span></div>
+            <div><strong dir="ltr">8–12</strong><span>سنة</span></div>
+          </div>
+        </div>
+        <div class="sim-collage reveal" aria-hidden="true">
+          <img class="c1" src="simulation/img/propeller-car.webp" alt="" width="400" height="300">
+          <img class="c2" src="simulation/img/hydraulic-lift.webp" alt="" width="400" height="300">
+          <img class="c3" src="simulation/img/solar-system.webp" alt="" width="400" height="300">
+          <div class="float-chip chip-a"><span class="ic" style="background:rgba(255,216,74,.18)">⭐</span><span><bdi dir="ltr">+50 XP</bdi><small>إجابة من أول محاولة</small></span></div>
+          <div class="float-chip chip-b"><span class="ic" style="background:rgba(52,211,153,.18)">⚡</span><span>تشغيل المحاكاة<small>شاهد الطاقة تتحرك</small></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ كيف تعمل ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">كيف يتعلّم الطفل؟</span>
+          <h2>ثلاث مراحل في كل درس</h2>
+          <p>نفس طريقة العالِم والمهندس: يبني، يجرّب، ثم يفسّر ما حدث.</p>
+        </div>
+        <div class="levels">
+          <div class="level level-1 card reveal"><span class="num">1</span><span class="age">🧩 التجميع</span><h3>ركّب اختراعك</h3><p>يسحب الطفل القطع من «صندوق القطع» ويثبّتها في مكانها الصحيح على طاولة العمل — بالفأرة أو باللمس على التابلت.</p></div>
+          <div class="level level-2 card reveal"><span class="num">2</span><span class="age">⚡ المحاكاة</span><h3>شغّل وشاهد</h3><p>زر «تشغيل» يُحيي المجسّم: مراوح تدور، مكابس ترتفع، مدارات تدور، مع شريط سرعة وسلسلة «رحلة الطاقة».</p></div>
+          <div class="level level-3 card reveal"><span class="num">3</span><span class="age">🏆 الاختبار</span><h3>اختبر فهمك</h3><p>أسئلة اختيار من متعدد عن الدرس؛ كل إجابة صحيحة تضيف نقاط خبرة ونجوماً مع احتفال بالقصاصات الملونة.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الدروس ============ -->
+    <section class="section" id="lessons">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">المنهج</span>
+          <h2>اختراعات حقيقية يبنيها طفلك</h2>
+          <p>أول <span data-sim-free>3</span> دروس مجانية تماماً — وباقي الدروس تُفتح بالاشتراك.</p>
+        </div>
+        <div class="sim-lessons" data-sim-lessons></div>
+      </div>
+    </section>
+
+    <!-- ============ المميزات ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">مميزات المنصة</span>
+          <h2>صُمّمت ليحب الطفل العلوم</h2>
+        </div>
+        <div class="features">
+          <div class="feature card reveal"><div class="ic">🖐️</div><h3>تعلّم باللمس والسحب</h3><p>سحب وإفلات بالفأرة، أو سحب ونقر باللمس على الأجهزة اللوحية — مريح للأيدي الصغيرة.</p></div>
+          <div class="feature card reveal"><div class="ic">⚙️</div><h3>محاكاة حيّة</h3><p>حركات واقعية للمراوح والمحركات والمكابس والمدارات، مع التحكم في السرعة.</p></div>
+          <div class="feature card reveal"><div class="ic">🔋</div><h3>رحلة الطاقة</h3><p>سلسلة مرئية توضّح كيف تنتقل الطاقة من البطارية إلى المحرك إلى الحركة.</p></div>
+          <div class="feature card reveal"><div class="ic">⭐</div><h3>نقاط ومستويات ونجوم</h3><p>نقاط خبرة لكل مرحلة، ومستوى جديد كل 250 نقطة، ونجوم للإجابات من أول محاولة.</p></div>
+          <div class="feature card reveal"><div class="ic">🌐</div><h3>عربي و English</h3><p>المنصة ثنائية اللغة بالكامل — يتنقّل الطفل بين العربية والإنجليزية بضغطة زر.</p></div>
+          <div class="feature card reveal"><div class="ic">💾</div><h3>يحفظ التقدّم تلقائياً</h3><p>يكمل الطفل من حيث توقف، بلا تثبيت برامج — يكفي متصفح على الكمبيوتر أو التابلت.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ النقاط ============ -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="xp-band card reveal">
+          <div>
+            <span class="kicker">نظام التحفيز</span>
+            <h2>كل خطوة لها مكافأة</h2>
+            <p>النقاط تُمنح مرة واحدة لكل خطوة، وكل 250 نقطة = مستوى جديد: من «مبتدئ فضولي» حتى «أسطورة ستيم».</p>
+          </div>
+          <ul class="xp-list">
+            <li><span>🧩 إكمال التجميع</span><b>+30 XP</b></li>
+            <li><span>⚡ تشغيل المحاكاة</span><b>+20 XP</b></li>
+            <li><span>⭐ إجابة صحيحة من أول محاولة</span><b>+50 XP</b></li>
+            <li><span>💪 إجابة صحيحة بعد محاولة</span><b>+20 XP</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الباقات والاشتراك ============ -->
+    <section class="section" id="subscribe">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">الاشتراك أونلاين</span>
+          <h2>اختر الباقة المناسبة <span class="grad-text">وابدأ اليوم</span></h2>
+          <p>سجّل طفلك من هنا خلال دقيقة. بعد تأكيد الاشتراك يصلك <b>كود تفعيل</b> يفتح جميع الدروس.</p>
+        </div>
+        <div class="plans" data-sim-plans></div>
+
+        <div class="subscribe-wrap">
+          <form class="form card reveal" id="subscribe-form">
+            <h3 class="form-title">📝 طلب اشتراك طالب</h3>
+            <div class="row">
+              <div class="field"><label for="s-student">اسم الطالب</label><input id="s-student" name="student" required autocomplete="off"></div>
+              <div class="field"><label for="s-age">العمر</label>
+                <select id="s-age" name="age" required>
+                  <option value="" disabled selected>اختر</option>
+                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field"><label for="s-guardian">اسم ولي الأمر</label><input id="s-guardian" name="guardian" required autocomplete="name"></div>
+              <div class="field"><label for="s-phone">رقم الهاتف (واتساب)</label><input id="s-phone" name="phone" type="tel" required dir="ltr" autocomplete="tel" placeholder="+218 9X XXX XXXX"></div>
+            </div>
+            <div class="row">
+              <div class="field"><label for="s-email">البريد الإلكتروني (اختياري)</label><input id="s-email" name="email" type="email" dir="ltr" autocomplete="email"></div>
+              <div class="field"><label for="s-city">المدينة</label><input id="s-city" name="city" autocomplete="address-level2"></div>
+            </div>
+            <div class="row">
+              <div class="field"><label for="s-plan">الباقة</label><select id="s-plan" name="plan" required></select></div>
+              <div class="field"><label for="s-school">المدرسة (اختياري)</label><input id="s-school" name="school"></div>
+            </div>
+            <div class="field"><label for="s-notes">ملاحظات</label><textarea id="s-notes" name="notes" style="min-height:80px"></textarea></div>
+            <label class="consent"><input type="checkbox" required> أنا ولي أمر الطالب وأوافق على تسجيله في المنصة وتواصل الأكاديمية معي بخصوص الاشتراك.</label>
+            <button class="btn btn-gold" type="submit">إرسال طلب الاشتراك</button>
+            <p class="form-note" role="status"></p>
+          </form>
+
+          <div class="card subscribe-done" id="subscribe-done" hidden>
+            <div style="font-size:52px">🎉</div>
+            <h3>تم استلام طلبك!</h3>
+            <p>رقم الطلب: <b dir="ltr" data-req-id></b></p>
+            <p data-req-via></p>
+            <p class="pay" data-pay-note></p>
+            <p>إلى أن يصلك الكود، يمكن لطفلك البدء بالدروس المجانية الآن.</p>
+            <div class="hero-actions" style="justify-content:center">
+              <a class="btn btn-primary" href="simulation/index.html" data-sim-app>ابدأ الدروس المجانية</a>
+              <button class="btn btn-ghost" type="button" id="subscribe-again">طلب لطالب آخر</button>
+            </div>
+          </div>
+
+          <aside class="card activate-box reveal" id="activate">
+            <h3>🔑 لديك كود تفعيل؟</h3>
+            <p>أدخل الكود الذي وصلك من الأكاديمية لفتح جميع الدروس على هذا الجهاز.</p>
+            <div class="access-status" data-access-status></div>
+            <form class="form" id="activate-form" style="padding:0;margin-top:14px">
+              <div class="field"><label for="a-code" class="sr-only">كود التفعيل</label><input id="a-code" dir="ltr" placeholder="STEAM-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" style="text-align:center;letter-spacing:.08em;text-transform:uppercase;font-weight:800" required></div>
+              <button class="btn btn-primary" type="submit">تفعيل الاشتراك</button>
+              <p class="form-note" role="status"></p>
+            </form>
+            <ol class="steps-mini">
+              <li>أرسل طلب الاشتراك.</li>
+              <li>تتواصل معك الأكاديمية لتأكيد الدفع.</li>
+              <li>يصلك كود التفعيل على واتساب.</li>
+              <li>أدخل الكود هنا أو داخل المنصة — وانطلق!</li>
+            </ol>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ أسئلة ============ -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="section-head reveal"><span class="kicker">أسئلة شائعة</span><h2>كل ما تريد معرفته</h2></div>
+        <div class="faq">
+          <details class="card reveal"><summary>هل أحتاج لتثبيت برنامج؟</summary><p>لا. المنصة تعمل من المتصفح مباشرة على الكمبيوتر أو التابلت، وتحتاج اتصالاً بالإنترنت.</p></details>
+          <details class="card reveal"><summary>ما الفئة العمرية المناسبة؟</summary><p>صُمّمت للأطفال من 8 إلى 12 سنة، ويستمتع بها الأصغر سناً بمساعدة ولي الأمر.</p></details>
+          <details class="card reveal"><summary>هل يمكن استخدام الكود على أكثر من جهاز؟</summary><p>نعم، أدخل نفس الكود على أي جهاز يستخدمه طفلك. يُحفظ تقدّم الطفل على كل جهاز على حدة.</p></details>
+          <details class="card reveal"><summary>ماذا يحدث عند انتهاء الاشتراك؟</summary><p>تبقى الدروس المجانية متاحة، وتُقفل باقي الدروس حتى تجديد الاشتراك والحصول على كود جديد.</p></details>
+          <details class="card reveal"><summary>هل يوجد اشتراك للمدارس؟</summary><p>نعم، باقة المدارس توفّر أكواداً لجميع طلاب الفصل مع تدريب المعلم. اختر «باقة المدارس» في النموذج أو <a href="index.html#contact" style="color:var(--violet-300)">تواصل معنا</a>.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2>جاهز لتجربة أول اختراع؟ 🚗💨</h2>
+          <p>ابدأ الآن بالعربة المروحية — مجاناً وبدون تسجيل.</p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="simulation/index.html" data-sim-app>ادخل منصة المحاكاة</a>
+            <a class="btn btn-ghost" href="#subscribe">اشترك أونلاين</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/access.js"></script>
+  <script src="simulation/js/lessons.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/simulation-page.js"></script>
+</body>
+</html>

@@ -64,7 +64,13 @@
           <nav class="nav" id="main-nav" aria-label="القائمة الرئيسية">
             ${navLink("index.html", "الرئيسية", "home")}
             ${navLink("courses.html", "الدورات التدريبية", "courses")}
-            <a href="stemo.html" class="nav-stemo${page === "stemo" ? " active" : ""}"><span class="dot"></span>ستيمو للبرمجة</a>
+            <div class="nav-drop">
+              <button type="button" class="nav-stemo${page === "stemo" || page === "simulation" ? " active" : ""}" aria-haspopup="true" aria-expanded="false"><span class="dot"></span>منصاتنا ${ICON.chev}</button>
+              <div class="drop-menu platforms-menu">
+                <a href="stemo.html"><span class="pm-ic" style="background:linear-gradient(135deg,#5b6cff,#38bdf8)">🤖</span><span><b>ستيمو للبرمجة</b><small>برمجة وروبوتات بالأوامر المرئية · <bdi dir="ltr">7–16</bdi></small></span></a>
+                <a href="simulation.html"><span class="pm-ic" style="background:linear-gradient(135deg,#ffd84a,#e0b40a)">🧪</span><span><b>محاكاة ستيم <em>جديد</em></b><small>ركّب وشغّل واختبر اختراعات علمية · <bdi dir="ltr">8–12</bdi></small></span></a>
+              </div>
+            </div>
             ${navLink("videos.html", "الفيديوهات", "videos")}
             <div class="nav-drop">
               <button type="button" aria-haspopup="true" aria-expanded="false">الألعاب ${ICON.chev}</button>
@@ -142,6 +148,7 @@
               <ul>
                 <li><a href="courses.html">الدورات التدريبية</a></li>
                 <li><a href="stemo.html">منصة ستيمو للبرمجة</a></li>
+                <li><a href="simulation.html">منصة محاكاة ستيم</a></li>
                 <li><a href="videos.html">معرض الفيديو</a></li>
                 <li><a href="index.html#games">الألعاب التعليمية</a></li>
                 <li><a href="${C.links.codeOrg}" target="_blank" rel="noopener">منصة Code.org</a></li>
@@ -256,7 +263,7 @@
             <h2>منصة <span style="color:var(--cyan)">ستيمو</span> لتعليم البرمجة والروبوتات</h2>
             <p class="lead">منصة تفاعلية مدعومة بالذكاء الاصطناعي من أكاديمية ستيم، يتعلّم فيها طفلك البرمجة بسحب وإفلات أوامر ملوّنة لتحريك الروبوت «ستيمو» — دون أي خبرة سابقة.</p>
             <ul class="stemo-points">
-              <li>19 درساً</li><li>4 مستويات</li><li>+50 أمراً برمجياً</li><li>مرشد ذكي بالذكاء الاصطناعي</li><li>للأعمار 7–16</li>
+              <li>19 درساً</li><li>4 مستويات</li><li>+50 أمراً برمجياً</li><li>مرشد ذكي بالذكاء الاصطناعي</li><li>للأعمار <bdi dir="ltr">7–16</bdi></li>
             </ul>
             <div class="hero-actions" style="margin-top:0">
               <a class="btn btn-cyan" href="${C.stemo.url}" target="_blank" rel="noopener">ادخل منصة ستيمو ${ICON.ext}</a>

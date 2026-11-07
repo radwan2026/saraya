@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ألعاب العلوم — محاكاة ستيم</title>
+  <meta name="description" content="منصة محاكاة تعليمية تفاعلية للأطفال (8–12 سنة): ركّب، شغّل، واختبر معلوماتك." />
+
+  <!-- خط عربي مرح وواضح للأطفال -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS عبر CDN مع تخصيص الخط الافتراضي -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Baloo Bhaijaan 2"', 'Cairo', 'system-ui', 'sans-serif'] } } } };
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- ترتيب التحميل مهم: البيانات ← منطق التطبيق ← Alpine (يُشغَّل أخيراً) -->
+  <!-- إعدادات أكاديمية ستيم وصلاحيات الاشتراك -->
+  <link rel="icon" href="../assets/img/favicon.png" />
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/access.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 min-h-screen antialiased" x-data="stemApp" x-cloak>
+
+  <!-- لوحة القصاصات الاحتفالية -->
+  <canvas id="confetti" class="fixed inset-0 pointer-events-none z-[60]"></canvas>
+
+  <!-- =================================================================
+       الشريط العلوي: الشعار + شريط نقاط الخبرة + المستوى + الصورة الرمزية
+       ================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 sm:gap-5">
+      <button @click="goHome()" class="flex items-center gap-2 shrink-0" :aria-label="t('brand')">
+        <img src="../assets/img/logo-mark.png" alt="" class="w-11 h-11 drop-shadow-md" />
+        <span class="hidden md:block leading-tight text-start">
+          <span class="block font-extrabold text-purple-700 text-lg" x-text="t('brand')"></span>
+          <span class="block text-xs text-gray-400" x-text="t('brandSub')"></span>
+        </span>
+      </button>
+
+      <!-- عنوان الدرس الحالي (يظهر داخل الدرس فقط) -->
+      <h1 class="hidden lg:block font-extrabold text-xl text-purple-900 truncate" x-show="view === 'lesson'"
+          x-text="lesson ? (lang === 'ar' ? 'درس: ' : 'Lesson: ') + tr(lesson.title) : ''"></h1>
+
+      <!-- شريط نقاط الخبرة التراكمي -->
+      <div class="flex-1 flex justify-end">
+        <div class="w-full max-w-xs flex items-center gap-2 rounded-2xl px-3 py-1.5 bg-purple-50 transition" :class="xpGlow && 'xp-glow'">
+          <span class="shrink-0 grid place-items-center w-9 h-9 rounded-xl bg-purple-600 text-white text-xs font-extrabold leading-none text-center"
+                :title="t('level')"><span>Lv<br><span class="text-sm" x-text="level"></span></span></span>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between text-[11px] font-bold text-purple-700">
+              <span class="truncate" x-text="levelName"></span>
+              <span class="whitespace-nowrap" dir="ltr" x-text="xp + ' XP'"></span>
+            </div>
+            <div class="h-3 rounded-full bg-white border border-purple-100 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 transition-all duration-700" :style="`width:${levelProgress}%`"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- حالة الاشتراك -->
+      <a x-show="!access.active" href="../simulation.html#subscribe" class="hidden sm:inline-flex shrink-0 items-center gap-1 h-10 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-extrabold text-sm shadow-sm"
+         x-text="lang === 'ar' ? '⭐ اشترك' : '⭐ Subscribe'"></a>
+      <span x-show="access.active" class="hidden sm:inline-flex shrink-0 items-center gap-1 h-10 px-3 rounded-xl bg-green-100 text-green-700 font-bold text-sm"
+            :title="access.expires ? (lang === 'ar' ? 'ينتهي في ' : 'Expires ') + access.expires : ''"
+            x-text="lang === 'ar' ? '✓ مشترك' : '✓ Subscribed'"></span>
+      <a href="../index.html" class="hidden md:inline-flex shrink-0 items-center h-10 px-3 rounded-xl bg-gray-100 hover:bg-purple-100 font-bold text-purple-700 text-sm"
+         :title="lang === 'ar' ? 'العودة لموقع أكاديمية ستيم' : 'Back to STEAM Academy'" x-text="lang === 'ar' ? 'أكاديمية ستيم ↗' : 'STEAM Academy ↗'"></a>
+      <button @click="toggleLang()" class="shrink-0 h-10 px-3 rounded-xl bg-gray-100 hover:bg-purple-100 font-bold text-purple-700" x-text="lang === 'ar' ? 'EN' : 'عربي'"></button>
+      <button @click="sound = !sound; save()" class="hidden sm:grid shrink-0 w-10 h-10 place-items-center rounded-xl bg-gray-100 hover:bg-purple-100 text-lg" :title="t('sound')" x-text="sound ? '🔊' : '🔇'"></button>
+      <button @click="cycleAvatar()" class="shrink-0 w-11 h-11 rounded-full bg-purple-100 border-2 border-purple-300 text-2xl grid place-items-center hover:scale-105 transition" x-text="avatar" :title="displayName()"></button>
+    </div>
+  </header>
+
+  <!-- =================================================================
+       لوحة التحكم الرئيسية (Dashboard)
+       ================================================================= -->
+  <main x-show="view === 'dashboard'" class="max-w-7xl mx-auto px-4 py-6 grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div class="space-y-6 min-w-0">
+
+      <!-- بطاقة الترحيب والإحصائيات -->
+      <section class="rounded-3xl p-6 sm:p-8 text-white shadow-md bg-gradient-to-br from-purple-600 via-purple-600 to-fuchsia-500 relative overflow-hidden">
+        <div class="absolute -top-10 -end-10 w-48 h-48 rounded-full bg-white/10"></div>
+        <div class="absolute -bottom-16 end-24 w-40 h-40 rounded-full bg-white/10"></div>
+        <div class="relative flex flex-col sm:flex-row sm:items-center gap-5">
+          <div class="text-6xl w-20 h-20 rounded-3xl bg-white/20 grid place-items-center shrink-0" x-text="avatar"></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 class="text-2xl sm:text-3xl font-extrabold">
+                <span x-text="t('hello')"></span>
+                <span x-show="!editingName" x-text="displayName()"></span>
+              </h2>
+              <input x-show="editingName" x-model="playerName" @keydown.enter="editingName = false; save()" @blur="editingName = false; save()"
+                     maxlength="18" class="rounded-xl px-3 py-1 text-purple-900 font-bold w-40" :placeholder="t('editName')" />
+              <button x-show="!editingName" @click="editingName = true; $nextTick(() => $el.previousElementSibling.focus())"
+                      class="text-sm bg-white/20 hover:bg-white/30 rounded-lg px-2 py-0.5" :title="t('editName')">✏️</button>
+            </div>
+            <p class="text-purple-100 text-lg" x-text="t('welcome')"></p>
+            <p class="mt-1 inline-block text-sm font-bold bg-white/20 rounded-full px-3 py-0.5" x-text="`${t('level')} ${level} · ${levelName}`"></p>
+          </div>
+          <button @click="openLesson(nextLesson.id)" class="shrink-0 bg-white text-purple-700 font-extrabold rounded-2xl px-6 py-3 shadow-md hover:scale-105 transition">
+            <span x-text="t('continue')"></span> <span x-text="nextLesson.emoji"></span>
+          </button>
+        </div>
+        <div class="relative grid grid-cols-3 gap-3 mt-6">
+          <div class="rounded-2xl bg-white/15 p-3 text-center">
+            <div class="text-2xl font-extrabold" dir="ltr" x-text="`${doneCount}/${lessons.length}`"></div>
+            <div class="text-xs text-purple-100" x-text="t('lessonsDone')"></div>
+          </div>
+          <div class="rounded-2xl bg-white/15 p-3 text-center">
+            <div class="text-2xl font-extrabold" x-text="xp"></div>
+            <div class="text-xs text-purple-100" x-text="t('totalXp')"></div>
+          </div>
+          <div class="rounded-2xl bg-white/15 p-3 text-center">
+            <div class="text-2xl font-extrabold" dir="ltr" x-text="`${starCount}/${lessons.length * 3}`"></div>
+            <div class="text-xs text-purple-100" x-text="t('stars') + ' ⭐'"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- شريط التجربة المجانية (يظهر لغير المشتركين) -->
+      <section x-show="!access.active && lockedCount > 0" class="rounded-3xl p-5 sm:p-6 bg-gradient-to-l from-amber-300 to-yellow-200 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-md">
+        <div class="text-4xl">🔓</div>
+        <div class="flex-1">
+          <h2 class="text-xl font-extrabold" x-text="lang === 'ar' ? `أنت في النسخة التجريبية: ${lessons.length - lockedCount} دروس مجانية` : `Free trial: ${lessons.length - lockedCount} free lessons`"></h2>
+          <p class="text-sm font-semibold opacity-80" x-text="lang === 'ar' ? `اشترك لفتح ${lockedCount} دروس أخرى، أو أدخل كود التفعيل إن كان لديك.` : `Subscribe to unlock ${lockedCount} more lessons, or enter your activation code.`"></p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <a href="../simulation.html#subscribe" class="rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-extrabold px-5 py-2.5 shadow" x-text="lang === 'ar' ? 'اشترك الآن' : 'Subscribe'"></a>
+          <button @click="lockLesson = null; lockOpen = true; codeMsg = null" class="rounded-2xl bg-white/80 hover:bg-white font-extrabold px-5 py-2.5" x-text="lang === 'ar' ? 'لدي كود تفعيل' : 'I have a code'"></button>
+        </div>
+      </section>
+
+      <!-- شبكة الدروس العشرة — تُبنى تلقائياً من مصفوفة LESSONS -->
+      <section>
+        <h2 class="text-2xl font-extrabold text-purple-900 mb-4" x-text="t('lessons')"></h2>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          <template x-for="(l, i) in lessons" :key="l.id">
+            <article class="group bg-white rounded-3xl shadow-md p-4 flex flex-col hover:-translate-y-1 hover:shadow-xl transition duration-200 border-2"
+                     :class="status(l.id) === 'completed' ? 'border-green-200' : 'border-transparent'">
+              <div class="relative aspect-[4/3] rounded-2xl bench-grid border border-gray-100 overflow-hidden p-1">
+                <div class="w-full h-full" x-html="thumbs[l.id]" :class="isLocked(l) && 'opacity-40 grayscale'"></div>
+                <div x-show="isLocked(l)" class="absolute inset-0 grid place-items-center">
+                  <span class="rounded-2xl bg-purple-900/85 text-white font-extrabold px-4 py-2 shadow-lg text-sm" x-text="lang === 'ar' ? '🔒 للمشتركين' : '🔒 Subscribers'"></span>
+                </div>
+                <span class="absolute top-2 start-2 w-8 h-8 rounded-xl bg-purple-600 text-white font-extrabold grid place-items-center text-sm shadow" x-text="i + 1"></span>
+                <span class="absolute top-2 end-2 text-xs font-bold rounded-full px-2.5 py-1 shadow-sm"
+                      :class="{ 'bg-green-100 text-green-700': status(l.id) === 'completed', 'bg-amber-100 text-amber-700': status(l.id) === 'inProgress', 'bg-purple-100 text-purple-700': status(l.id) === 'new' }"
+                      x-text="t(status(l.id))"></span>
+              </div>
+              <div class="flex items-center gap-2 mt-3 text-xs font-bold">
+                <span class="rounded-full bg-gray-100 text-gray-600 px-2 py-0.5" x-text="tr(l.category)"></span>
+                <span class="rounded-full px-2 py-0.5" :class="['bg-green-50 text-green-700','bg-amber-50 text-amber-700','bg-rose-50 text-rose-700'][l.level - 1]" x-text="levelLabel(l.level)"></span>
+                <span class="ms-auto text-gray-400" x-text="`⏱ ${l.minutes} ${t('minutes')}`"></span>
+              </div>
+              <h3 class="mt-2 text-xl font-extrabold text-gray-900"><span x-text="l.emoji"></span> <span x-text="tr(l.title)"></span></h3>
+              <p class="text-gray-500 text-sm" x-text="tr(l.concept)"></p>
+              <div class="mt-auto pt-3 flex items-center gap-2">
+                <div class="text-lg tracking-tight" :title="t('stars')">
+                  <template x-for="s in 3"><span :class="s <= (prog(l.id).stars || 0) ? '' : 'grayscale opacity-30'">⭐</span></template>
+                </div>
+                <button @click="openLesson(l.id)" class="ms-auto rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-5 py-2 shadow-md group-hover:scale-105 transition"
+                        :class="isLocked(l) && '!bg-amber-400 !text-amber-950 hover:!bg-amber-300'"
+                        x-text="isLocked(l) ? (lang === 'ar' ? '🔒 افتح الدرس' : '🔒 Unlock') : (status(l.id) === 'completed' ? t('replay') : t('start'))"></button>
+              </div>
+            </article>
+          </template>
+        </div>
+      </section>
+    </div>
+
+    <!-- الشريط الجانبي: لوحة الصدارة الأسبوعية (نموذج واجهة) -->
+    <aside class="space-y-6">
+      <section class="bg-white rounded-3xl shadow-md p-5 lg:sticky lg:top-24">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-extrabold text-purple-900" x-text="t('leaderboard')"></h2>
+          <span class="text-2xl">🏆</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-1"><span x-text="t('resetsIn')"></span> <span class="font-bold text-purple-600" x-text="resetCountdown"></span></p>
+        <ol class="mt-4 space-y-2">
+          <template x-for="row in leaderboard.slice(0, 5)" :key="row.rank + (row.me ? 'me' : '')">
+            <li class="flex items-center gap-3 rounded-2xl px-3 py-2 transition"
+                :class="row.me ? 'bg-purple-600 text-white shadow-md' : (row.rank === 1 ? 'bg-purple-100' : 'bg-gray-50')">
+              <span class="w-6 text-center font-extrabold" x-text="['🥇','🥈','🥉'][row.rank - 1] || row.rank"></span>
+              <span class="w-9 h-9 rounded-full grid place-items-center text-xl" :class="row.me ? 'bg-white/20' : 'bg-white shadow-sm'" x-text="row.avatar"></span>
+              <span class="flex-1 font-bold truncate" x-text="row.me ? `${tr(row.name)} (${t('you')})` : tr(row.name)"></span>
+              <span class="font-extrabold text-sm" dir="ltr" x-text="row.xp"></span>
+            </li>
+          </template>
+        </ol>
+        <!-- إذا لم يكن الطالب ضمن الخمسة الأوائل نعرض ترتيبه أسفل القائمة -->
+        <div x-show="myRank > 5" class="mt-2 flex items-center gap-3 rounded-2xl px-3 py-2 bg-purple-600 text-white">
+          <span class="w-6 text-center font-extrabold" x-text="myRank"></span>
+          <span class="w-9 h-9 rounded-full grid place-items-center text-xl bg-white/20" x-text="avatar"></span>
+          <span class="flex-1 font-bold truncate" x-text="`${displayName()} (${t('you')})`"></span>
+          <span class="font-extrabold text-sm" dir="ltr" x-text="weekly.xp"></span>
+        </div>
+        <p class="mt-3 text-xs text-gray-500 text-center"><span x-text="t('weeklyXp')"></span>: <b class="text-purple-700" x-text="weekly.xp"></b></p>
+      </section>
+
+      <section class="bg-white rounded-3xl shadow-md p-5">
+        <h2 class="text-lg font-extrabold text-purple-900 mb-3" x-text="lang === 'ar' ? 'كيف تلعب؟' : 'How to play'"></h2>
+        <ol class="space-y-3">
+          <template x-for="(s, i) in [['🧩', t('assembly'), lang === 'ar' ? 'اسحب القطع وركّب المجسّم' : 'Drag parts to build the model'], ['⚡', t('simulation'), lang === 'ar' ? 'شغّله وشاهد العلم يعمل' : 'Power it on and watch science work'], ['🏅', t('quiz'), lang === 'ar' ? 'أجب واجمع نقاط الخبرة' : 'Answer and collect XP']]">
+            <li class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-2xl bg-purple-100 grid place-items-center text-xl" x-text="s[0]"></span>
+              <div><div class="font-bold" x-text="`${i + 1}. ${s[1]}`"></div><div class="text-sm text-gray-500" x-text="s[2]"></div></div>
+            </li>
+          </template>
+        </ol>
+        <button @click="resetAll()" class="mt-4 w-full text-xs text-gray-400 hover:text-rose-500" x-text="t('resetAll')"></button>
+      </section>
+    </aside>
+  </main>
+
+  <!-- =================================================================
+       مساحة عمل الدرس: التجميع ← المحاكاة ← الاختبار
+       ================================================================= -->
+  <template x-if="view === 'lesson' && lesson">
+    <main class="max-w-7xl mx-auto px-4 py-5 space-y-5">
+
+      <!-- شريط الدرس: زر الرجوع + الخطوات المتسلسلة -->
+      <div class="bg-white rounded-3xl shadow-md p-3 sm:p-4 flex flex-col md:flex-row md:items-center gap-3">
+        <div class="flex items-center gap-3">
+          <button @click="goHome()" class="w-11 h-11 rounded-2xl bg-gray-100 hover:bg-purple-100 grid place-items-center text-xl font-bold text-purple-700" :aria-label="t('back')"
+                  x-text="lang === 'ar' ? '→' : '←'"></button>
+          <span class="text-3xl" x-text="lesson.emoji"></span>
+          <div>
+            <h2 class="font-extrabold text-xl text-gray-900 leading-tight" x-text="tr(lesson.title)"></h2>
+            <p class="text-sm text-gray-500" x-text="tr(lesson.concept)"></p>
+          </div>
+        </div>
+        <nav class="md:ms-auto grid grid-cols-3 gap-1.5 md:w-[460px]">
+          <template x-for="(m, i) in ['assembly', 'simulation', 'quiz']" :key="m">
+            <button @click="setMode(m)"
+                    class="relative rounded-2xl px-2 py-2 text-center transition font-bold"
+                    :class="mode === m ? 'bg-purple-700 text-white shadow-md' : (canEnter(m) ? 'bg-purple-100 text-purple-800 hover:bg-purple-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed')">
+              <span class="block text-lg leading-none" x-text="canEnter(m) ? i + 1 : '🔒'"></span>
+              <span class="block text-xs sm:text-sm" x-text="t(m)"></span>
+            </button>
+          </template>
+        </nav>
+      </div>
+
+      <!-- ===================== الوضع 1: التجميع ===================== -->
+      <section x-show="mode === 'assembly'" class="grid gap-5 lg:grid-cols-[250px_1fr_270px]">
+
+        <!-- المخزن: القطع المفككة -->
+        <div class="bg-white rounded-3xl shadow-md p-4 order-2 lg:order-none">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-extrabold text-lg text-purple-900" x-text="tr(lesson.title)"></h3>
+            <span class="text-xs font-bold text-purple-600 bg-purple-50 rounded-full px-2 py-0.5" x-text="`🧰 ${t('inventory')}`"></span>
+          </div>
+          <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-2 gap-3">
+            <template x-for="p in lesson.parts" :key="p.id">
+              <button class="inv-item relative rounded-2xl border-2 p-2 text-center transition select-none touch-none"
+                      :draggable="!placed[p.id]"
+                      @dragstart="onDragStart($event, p.id)" @dragend="onDragEnd()"
+                      @pointerdown="onPointerDown($event, p.id)"
+                      @click="selectPart(p.id)"
+                      :title="tr(p.tip)"
+                      :class="placed[p.id] ? 'border-green-200 bg-green-50 opacity-50' : (selectedPart === p.id ? 'border-purple-500 bg-purple-100 ring-4 ring-purple-200 scale-105' : (dragging === p.id ? 'border-purple-400 bg-purple-50 opacity-60' : 'border-gray-100 bg-gray-50 hover:border-purple-300 hover:bg-purple-50'))">
+                <div class="aspect-square w-full pointer-events-none" x-html="partIcon(p)"></div>
+                <div class="text-xs sm:text-sm font-bold text-gray-700 leading-tight mt-1" x-text="tr(p.name)"></div>
+                <span x-show="placed[p.id]" class="absolute -top-2 -end-2 w-6 h-6 rounded-full bg-green-500 text-white text-xs grid place-items-center shadow">✓</span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <!-- طاولة العمل: أماكن التركيب -->
+        <div class="bg-white rounded-3xl shadow-md p-4 order-1 lg:order-none min-w-0">
+          <div class="flex items-center gap-3 mb-3">
+            <h3 class="font-extrabold text-lg text-purple-900" x-text="`🛠️ ${t('workbench')}`"></h3>
+            <div class="flex-1 h-3 rounded-full bg-gray-100 overflow-hidden">
+              <div class="h-full bg-purple-500 rounded-full transition-all duration-500" :style="`width:${placedCount / lesson.parts.length * 100}%`"></div>
+            </div>
+            <span class="text-sm font-bold text-gray-500" dir="ltr" x-text="`${placedCount}/${lesson.parts.length}`"></span>
+          </div>
+          <div x-ref="bench"
+               class="relative aspect-[4/3] w-full rounded-2xl bench-grid border-2 border-dashed transition"
+               :class="[(dragging || touchDrag?.active) ? 'border-purple-400 bg-purple-50/40' : 'border-purple-200', benchShake ? 'shake' : '', selectedPart ? 'cursor-crosshair' : '']"
+               @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
+               @drop.prevent="onDrop($event)"
+               @click="onBenchClick($event)">
+            <div class="absolute inset-0 p-1" x-html="benchScene()"></div>
+          </div>
+          <!-- رسالة التوجيه -->
+          <div class="mt-3 rounded-2xl px-4 py-2.5 font-bold text-sm sm:text-base min-h-[46px] flex items-center gap-2"
+               :class="{ 'bg-purple-50 text-purple-800': message?.type === 'info', 'bg-green-50 text-green-700': message?.type === 'ok', 'bg-amber-50 text-amber-700': message?.type === 'warn' }">
+            <span x-text="message?.type === 'ok' ? '✅' : (message?.type === 'warn' ? '⚠️' : '💡')"></span>
+            <span x-text="message?.text"></span>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button @click="showHint()" x-show="!isAssembled" class="rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-4 py-2" x-text="`💡 ${t('hint')}`"></button>
+            <button @click="resetBench()" x-show="placedCount > 0" class="rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 py-2" x-text="`↺ ${t('resetBench')}`"></button>
+            <button @click="autoBuild()" x-show="prog(lesson.id).assembled && !isAssembled" class="rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold px-4 py-2" x-text="`⚡ ${t('autoBuild')}`"></button>
+            <button @click="setMode('simulation')" x-show="isAssembled" class="ms-auto rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-2.5 shadow-md animate-bounce" x-text="`${t('goSim')} ⚡`"></button>
+          </div>
+        </div>
+
+        <!-- خطوات التجميع -->
+        <div class="bg-white rounded-3xl shadow-md p-4 order-3 lg:order-none">
+          <h3 class="font-extrabold text-lg text-purple-900 mb-3" x-text="`📋 ${t('steps')}`"></h3>
+          <ol class="space-y-2">
+            <template x-for="(p, i) in lesson.parts" :key="p.id">
+              <li class="flex items-start gap-3 rounded-2xl p-2 transition"
+                  :class="placed[p.id] ? 'bg-green-50' : ((p.needs || []).every(n => placed[n]) ? 'bg-purple-50' : 'bg-gray-50 opacity-70')">
+                <span class="shrink-0 w-7 h-7 rounded-full grid place-items-center text-sm font-extrabold"
+                      :class="placed[p.id] ? 'bg-green-500 text-white' : ((p.needs || []).every(n => placed[n]) ? 'bg-purple-600 text-white' : 'bg-gray-300 text-white')"
+                      x-text="placed[p.id] ? '✓' : ((p.needs || []).every(n => placed[n]) ? i + 1 : '🔒')"></span>
+                <div class="min-w-0">
+                  <div class="font-bold leading-tight" :class="placed[p.id] && 'line-through text-gray-400'" x-text="tr(p.name)"></div>
+                  <div class="text-xs text-gray-500" x-text="tr(p.tip)"></div>
+                </div>
+              </li>
+            </template>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ===================== الوضع 2: المحاكاة (ويبقى خلف نافذة الاختبار) ===================== -->
+      <section x-show="mode === 'simulation' || mode === 'quiz'" class="grid gap-5 lg:grid-cols-[1fr_340px]">
+        <div class="bg-white rounded-3xl shadow-md p-4 min-w-0">
+          <!-- المسرح: الكلاس powered يشغّل كل حركات CSS، و--speed يتحكم بسرعتها -->
+          <div class="relative aspect-[4/3] w-full rounded-2xl bench-grid border-2 overflow-hidden transition"
+               :class="powered ? 'powered border-green-300' : 'border-gray-100'" :style="`--speed:${speed}`">
+            <div class="absolute inset-0 p-1" x-html="simScene()"></div>
+            <div x-show="!powered" x-transition.opacity class="absolute bottom-3 inset-x-3 text-center">
+              <span class="inline-block bg-white/90 rounded-full px-4 py-1.5 font-bold text-purple-700 shadow" x-text="t('simHint')"></span>
+            </div>
+          </div>
+          <!-- أدوات التحكم -->
+          <div class="mt-4 flex flex-wrap items-center gap-4">
+            <button @click="togglePower($event)" class="power-btn rounded-3xl px-7 py-3.5 text-xl font-extrabold text-white shadow-md transition hover:scale-105"
+                    :class="powered ? 'on bg-green-500' : 'bg-purple-600'">
+              <span x-text="powered ? '⏻ ' + t('powerOff') : '⏻ ' + t('powerOn')"></span>
+            </button>
+            <label class="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-2 flex-1 min-w-[200px]">
+              <span class="font-bold text-gray-600" x-text="`🐢 ${t('speed')}`"></span>
+              <input type="range" min="0.5" max="2" step="0.25" x-model.number="speed" class="flex-1 accent-purple-600" />
+              <span class="font-extrabold text-purple-700 w-10" dir="ltr" x-text="`×${speed}`"></span>
+            </label>
+            <button @click="setMode('quiz')" class="rounded-2xl px-6 py-3 font-extrabold shadow-md transition"
+                    :class="canEnter('quiz') ? 'bg-amber-400 hover:bg-amber-500 text-amber-950' : 'bg-gray-200 text-gray-400 cursor-not-allowed'"
+                    :title="canEnter('quiz') ? '' : t('quizLocked')"
+                    x-text="canEnter('quiz') ? `🏅 ${t('startQuiz')}` : `🔒 ${t('startQuiz')}`"></button>
+          </div>
+        </div>
+
+        <!-- لوحة الشرح -->
+        <div class="space-y-5">
+          <div class="bg-white rounded-3xl shadow-md p-5">
+            <h3 class="font-extrabold text-lg text-purple-900 mb-3" x-text="`⚡ ${t('energyFlow')}`"></h3>
+            <div class="flex flex-wrap items-center gap-1.5" :class="powered && 'powered-flow'">
+              <template x-for="(f, i) in lesson.flow" :key="i">
+                <div class="flex items-center gap-1.5">
+                  <span class="flow-chip rounded-2xl border-2 border-purple-100 bg-white px-2.5 py-1.5 text-sm font-bold text-gray-700 flex items-center gap-1"
+                        :style="`animation-delay:${i * 0.4}s`">
+                    <span class="text-lg" x-text="f.icon"></span><span x-text="tr(f)"></span>
+                  </span>
+                  <span x-show="i < lesson.flow.length - 1" class="text-purple-300 font-bold" x-text="lang === 'ar' ? '←' : '→'"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl shadow-md p-5">
+            <h3 class="font-extrabold text-lg text-purple-900 mb-2" x-text="`🔬 ${t('whatsHappening')}`"></h3>
+            <p class="text-gray-700 leading-relaxed" x-text="tr(lesson.explain)"></p>
+            <div class="mt-4 rounded-2xl bg-amber-50 p-3">
+              <div class="font-extrabold text-amber-700" x-text="`💡 ${t('funFact')}`"></div>
+              <p class="text-amber-900" x-text="tr(lesson.fact)"></p>
+            </div>
+          </div>
+          <div x-show="lesson.photo" class="bg-white rounded-3xl shadow-md p-5">
+            <h3 class="font-extrabold text-lg text-purple-900 mb-2" x-text="`📸 ${t('realKit')}`"></h3>
+            <img :src="lesson.photo" :alt="tr(lesson.title)" class="w-full max-h-56 object-contain rounded-2xl bg-gray-50" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== الوضع 3: الاختبار (نافذة منبثقة) ===================== -->
+      <div x-show="mode === 'quiz'" x-transition.opacity class="fixed inset-0 z-50 bg-purple-950/40 backdrop-blur-sm grid place-items-center p-4" @keydown.escape.window="mode === 'quiz' && closeQuiz()">
+        <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-5 sm:p-7 max-h-[92vh] overflow-y-auto" x-transition.scale.90>
+
+          <!-- أثناء الأسئلة -->
+          <template x-if="!quizFinished && question">
+            <div>
+              <div class="flex items-center gap-3">
+                <span class="text-3xl" x-text="lesson.emoji"></span>
+                <div class="flex-1">
+                  <div class="text-sm font-bold text-purple-600" x-text="`${t('question')} ${qi + 1} ${t('of')} ${lesson.quiz.length}`"></div>
+                  <div class="flex gap-1.5 mt-1">
+                    <template x-for="n in lesson.quiz.length"><span class="h-2 flex-1 rounded-full" :class="n - 1 < qi || (n - 1 === qi && chosen !== null) ? 'bg-purple-600' : (n - 1 === qi ? 'bg-purple-300' : 'bg-gray-200')"></span></template>
+                  </div>
+                </div>
+                <button @click="closeQuiz()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 text-xl" aria-label="close">✕</button>
+              </div>
+              <h3 class="mt-5 text-2xl font-extrabold text-gray-900 leading-snug" x-text="tr(question.q)"></h3>
+              <div class="mt-5 grid sm:grid-cols-2 gap-3">
+                <template x-for="(o, i) in question.options" :key="qi + '-' + i">
+                  <button @click="answer(i, $event)"
+                          class="text-start rounded-2xl border-2 p-4 font-bold text-lg flex items-center gap-3 transition"
+                          :class="chosen === i ? 'border-green-500 bg-green-50 text-green-800 correct-glow' : (wrongPicks.includes(i) ? 'border-rose-300 bg-rose-50 text-rose-400 line-through' : (chosen !== null ? 'border-gray-100 text-gray-400' : 'border-gray-200 hover:border-purple-400 hover:bg-purple-50'))">
+                    <span class="shrink-0 w-9 h-9 rounded-xl grid place-items-center font-extrabold"
+                          :class="chosen === i ? 'bg-green-500 text-white' : (wrongPicks.includes(i) ? 'bg-rose-200 text-white' : 'bg-purple-100 text-purple-700')"
+                          x-text="chosen === i ? '✓' : (wrongPicks.includes(i) ? '✕' : (lang === 'ar' ? ['أ','ب','ج','د'][i] : 'ABCD'[i]))"></span>
+                    <span x-text="tr(o)"></span>
+                  </button>
+                </template>
+              </div>
+              <p x-show="wrongPicks.length && chosen === null" class="mt-4 font-bold text-rose-500" x-text="t('wrong')"></p>
+              <div x-show="chosen !== null" x-transition class="mt-5 rounded-2xl bg-green-50 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex-1">
+                  <div class="font-extrabold text-green-700 text-lg">🎉 <span x-text="t('correct')"></span>
+                    <span x-show="answerXp > 0" class="ms-2 rounded-full bg-purple-600 text-white text-sm px-2 py-0.5" dir="ltr" x-text="`+${answerXp} XP`"></span></div>
+                  <p class="text-green-900" x-text="tr(question.why)"></p>
+                  <p x-show="answerXp === 0" class="text-xs text-gray-500" x-text="t('already')"></p>
+                </div>
+                <button @click="nextQuestion()" class="rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-3 shadow-md"
+                        x-text="qi < lesson.quiz.length - 1 ? t('next') : t('finish')"></button>
+              </div>
+            </div>
+          </template>
+
+          <!-- شاشة نهاية الدرس -->
+          <template x-if="quizFinished">
+            <div class="text-center py-4">
+              <div class="text-7xl">🏆</div>
+              <h3 class="mt-2 text-3xl font-extrabold text-purple-900" x-text="t('quizDone')"></h3>
+              <div class="mt-3 text-5xl">
+                <template x-for="s in 3"><span :class="s <= firstTry ? '' : 'grayscale opacity-30'">⭐</span></template>
+              </div>
+              <p class="mt-3 text-lg font-bold text-gray-600"><span x-text="t('earned')"></span>: <span class="text-purple-700" dir="ltr" x-text="`+${runXp} XP`"></span></p>
+              <div class="mt-6 flex flex-wrap justify-center gap-3">
+                <button @click="goHome()" class="rounded-2xl bg-gray-100 hover:bg-gray-200 font-extrabold px-6 py-3" x-text="t('backHome')"></button>
+                <button @click="goNextLesson()" class="rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-3 shadow-md" x-text="`${t('nextLesson')} ${lang === 'ar' ? '←' : '→'}`"></button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </main>
+  </template>
+
+  <!-- القطعة التي تتبع الإصبع أثناء السحب باللمس -->
+  <div x-show="touchDrag?.active" class="fixed z-50 w-20 h-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-2xl bg-white/90 shadow-xl border-2 border-purple-400 p-1"
+       :style="touchDrag ? `left:${touchDrag.x}px;top:${touchDrag.y}px` : ''"
+       x-html="touchDrag && lesson ? partIcon(lesson.parts.find(p => p.id === touchDrag.id)) : ''"></div>
+
+  <!-- إشعار الانتقال إلى مستوى جديد -->
+  <div x-show="levelUpShow" x-transition class="fixed top-24 inset-x-0 z-[65] flex justify-center pointer-events-none">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-purple-300 px-8 py-4 text-center">
+      <div class="text-4xl">🚀</div>
+      <div class="text-2xl font-extrabold text-purple-700" x-text="t('levelUp')"></div>
+      <div class="font-bold text-gray-600" x-text="`${t('level')} ${level} · ${levelName}`"></div>
+    </div>
+  </div>
+
+  <!-- نافذة: الدرس مقفل / إدخال كود التفعيل -->
+  <div x-show="lockOpen" x-transition.opacity class="fixed inset-0 z-50 bg-purple-950/70 backdrop-blur-sm grid place-items-center p-4" @click.self="lockOpen = false" @keydown.escape.window="lockOpen = false">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-6 text-center" role="dialog" aria-modal="true">
+      <div class="text-5xl mb-2">🔐</div>
+      <h2 class="text-2xl font-extrabold text-purple-900"
+          x-text="lockLesson ? (lang === 'ar' ? `درس «${tr(lockLesson.title)}» للمشتركين` : `“${tr(lockLesson.title)}” is for subscribers`) : (lang === 'ar' ? 'تفعيل الاشتراك' : 'Activate subscription')"></h2>
+      <p class="text-gray-500 mt-1" x-text="lang === 'ar' ? 'أدخل كود التفعيل الذي وصلك من أكاديمية ستيم لفتح جميع الدروس.' : 'Enter the activation code you received from STEAM Academy to unlock all lessons.'"></p>
+      <form class="mt-4 flex flex-col gap-3" @submit.prevent="activateCode()">
+        <input x-model="codeInput" dir="ltr" autocomplete="off" spellcheck="false" placeholder="STEAM-XXXX-XXXX"
+               class="w-full text-center tracking-widest font-bold text-lg rounded-2xl border-2 border-purple-200 focus:border-purple-500 outline-none px-4 py-3 uppercase" />
+        <button type="submit" :disabled="codeBusy" class="rounded-2xl bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white font-extrabold px-5 py-3 shadow-md"
+                x-text="codeBusy ? '…' : (lang === 'ar' ? 'تفعيل' : 'Activate')"></button>
+      </form>
+      <p x-show="codeMsg" class="mt-3 font-bold text-sm" :class="codeMsg && codeMsg.ok ? 'text-green-600' : 'text-rose-600'" x-text="codeMsg && codeMsg.text"></p>
+      <div class="mt-5 pt-4 border-t border-gray-100">
+        <p class="text-sm text-gray-500 mb-2" x-text="lang === 'ar' ? 'ليس لديك كود؟' : 'No code yet?'"></p>
+        <a href="../simulation.html#subscribe" class="inline-block rounded-2xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-extrabold px-6 py-2.5 shadow" x-text="lang === 'ar' ? '⭐ اشترك أونلاين الآن' : '⭐ Subscribe online'"></a>
+      </div>
+      <button @click="lockOpen = false" class="mt-4 text-sm text-gray-400 hover:text-gray-600" x-text="lang === 'ar' ? 'إغلاق' : 'Close'"></button>
+    </div>
+  </div>
+
+  <footer class="max-w-7xl mx-auto px-4 pb-8 pt-2 text-center text-xs text-gray-400" x-text="lang === 'ar' ? 'صُنع بحب للمهندسين الصغار 💜' : 'Made with 💜 for little engineers'"></footer>
+</body>
+</html>
