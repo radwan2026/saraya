@@ -24,26 +24,26 @@ def grad(w,hh,c1,c2):
     t=np.clip((x+(1-y))/2,0,1)[...,None]
     g=H(c1)*(1-t)+H(c2)*t
     return Image.fromarray((g*255).astype(np.uint8)).convert('RGBA')
-def badge(text,c1,c2,side,S=190):
-    pad=40; W=S+pad*2; img=Image.new('RGBA',(W,W),(0,0,0,0))
-    R=int(S*0.24); off=int(S*0.07)
+def badge(text,c1,c2,side,BW=270,BH=130):
+    pad=40; W=BW+pad*2; Hh=BH+pad*2; img=Image.new('RGBA',(W,Hh),(0,0,0,0))
+    R=int(BH*0.3); off=int(BH*0.09)
     # shadow
-    sh=Image.new('RGBA',(W,W),(0,0,0,0)); ImageDraw.Draw(sh).rounded_rectangle([pad+off,pad+off*2,pad+S+off,pad+S+off*2],R,fill=(0,0,0,70))
+    sh=Image.new('RGBA',(W,Hh),(0,0,0,0)); ImageDraw.Draw(sh).rounded_rectangle([pad+off,pad+off*2,pad+BW+off,pad+BH+off*2],R,fill=(0,0,0,70))
     img.alpha_composite(sh.filter(ImageFilter.GaussianBlur(10)))
-    # offset "side" layer (3D cube depth)
-    ImageDraw.Draw(img).rounded_rectangle([pad+off,pad+off,pad+S+off,pad+S+off],R,fill=tuple(int(v*255) for v in H(side))+(255,))
-    m=Image.new('L',(W,W),0); ImageDraw.Draw(m).rounded_rectangle([pad,pad,pad+S,pad+S],R,fill=255)
-    gi=Image.new('RGBA',(W,W),(0,0,0,0)); gi.paste(grad(S,S,c1,c2),(pad,pad)); img.paste(gi,(0,0),m)
+    # offset "side" layer (3D depth)
+    ImageDraw.Draw(img).rounded_rectangle([pad+off,pad+off,pad+BW+off,pad+BH+off],R,fill=tuple(int(v*255) for v in H(side))+(255,))
+    m=Image.new('L',(W,Hh),0); ImageDraw.Draw(m).rounded_rectangle([pad,pad,pad+BW,pad+BH],R,fill=255)
+    gi=Image.new('RGBA',(W,Hh),(0,0,0,0)); gi.paste(grad(BW,BH,c1,c2),(pad,pad)); img.paste(gi,(0,0),m)
     # gloss
-    gl=Image.new('RGBA',(W,W),(0,0,0,0)); ImageDraw.Draw(gl).rounded_rectangle([pad+8,pad+8,pad+S-8,pad+S*0.45],R-6,fill=(255,255,255,38)); img.alpha_composite(gl)
-    dr=ImageDraw.Draw(img); fs=int(S*0.62) if len(text)<=3 else int(S*0.42)
+    gl=Image.new('RGBA',(W,Hh),(0,0,0,0)); ImageDraw.Draw(gl).rounded_rectangle([pad+8,pad+6,pad+BW-8,pad+BH*0.45],R-6,fill=(255,255,255,38)); img.alpha_composite(gl)
+    dr=ImageDraw.Draw(img); fs=int(BH*0.62)
     f=ImageFont.truetype(FONT,fs)
-    while dr.textlength(text,font=f)>S*0.84: fs-=2; f=ImageFont.truetype(FONT,fs)
-    dr.text((pad+S/2+3,pad+S/2+4),text,font=f,fill=(0,0,0,60),anchor='mm')
-    dr.text((pad+S/2,pad+S/2),text,font=f,fill='white',anchor='mm')
+    while dr.textlength(text,font=f)>BW*0.78: fs-=2; f=ImageFont.truetype(FONT,fs)
+    dr.text((pad+BW/2+3,pad+BH/2+4),text,font=f,fill=(0,0,0,60),anchor='mm')
+    dr.text((pad+BW/2,pad+BH/2),text,font=f,fill='white',anchor='mm')
     return img
 def compose(logo,bdg,name):
-    W,Hh=700,512; c=Image.new('RGBA',(W,Hh),(0,0,0,0)); c.alpha_composite(logo,(0,0))
+    W,Hh=790,512; c=Image.new('RGBA',(W,Hh),(0,0,0,0)); c.alpha_composite(logo,(0,0))
     c.alpha_composite(bdg,(430, 455-bdg.height+30))
     c.save(OUT+name+'.png')
     bg=Image.new('RGBA',c.size,(255,255,255,255)); bg.alpha_composite(c); bg.convert('RGB').save(OUT+name+'-white-bg.jpg',quality=95)
