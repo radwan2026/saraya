@@ -33,6 +33,8 @@ button, input { font-family: inherit; }
 #space { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 
 /* ---------- الشعار ---------- */
+.logo-img { height: 56px; width: auto; flex: none; filter: drop-shadow(0 3px 8px rgba(0,0,0,.45)); }
+.logo-img.big { height: 130px; filter: drop-shadow(0 10px 30px rgba(25,185,122,.45)); }
 .logo {
   width: 44px; height: 44px; flex: none; border-radius: 14px; position: relative;
   display: flex; align-items: center; justify-content: center;
@@ -219,7 +221,8 @@ button, input { font-family: inherit; }
   .brand-txt b { font-size: 17px; }
   .hud-info { display: none; }
   .pill { font-size: 14px; padding: 4px 9px 2px; }
-  .logo { width: 38px; height: 38px; font-size: 27px; }
+  .logo-img { height: 46px; }
+  .logo-img.big { height: 104px; }
   .launch { font-size: 21px; padding: 10px 24px 8px; }
   .panel h1 { font-size: 32px; }
   .levels { grid-template-columns: repeat(2, 1fr); }

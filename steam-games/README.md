@@ -6,6 +6,7 @@
 ```
 steam-games/
 ├── index.html            صفحة القسم (مثال لبطاقات الألعاب)
+├── assets/logo.png       شعار G GAME
 ├── assets/fonts/         خط Jannat LT (عادي وعريض)
 └── planet-race/          🪐 سباق الكواكب
     ├── index.html
