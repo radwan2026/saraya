@@ -57,3 +57,7 @@ recolor('#1E5BFF','#21D4FD','#7FE7FF').save(OUT+'saraya-pro-icon.png')
 recolor('#FF7A00','#FFC300','#FF5500',ref=0.55,lo=0.88).save(OUT+'saraya-club-icon.png')
 w=np.asarray(orig).copy(); w[...,:3]=255; w[...,3]=(w[...,3]*np.where(yellow,0.55,1.0)).astype(np.uint8)
 Image.fromarray(w).save(OUT+'saraya-mono-white.png')
+
+# GAME variant (green)
+compose(recolor('#0E9F6E','#6EDB5A','#B8F26B',ref=0.58,lo=0.8),badge('GAME','#0E9F6E','#6EDB5A','#065F46'),'saraya-game')
+recolor('#0E9F6E','#6EDB5A','#B8F26B',ref=0.58,lo=0.8).save(OUT+'saraya-game-icon.png')
