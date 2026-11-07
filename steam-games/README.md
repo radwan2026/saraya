@@ -11,7 +11,7 @@ steam-games/
 ├── planet-race/          🪐 سباق الكواكب
 └── forest-of-life/       🌳 غابة الحياة
     ├── index.html
-    ├── cover.jpg         غلاف اللعبة
+    ├── cover.webp        غلاف اللعبة
     ├── style.css
     ├── ecosystem.js      محاكاة النظام البيئي (دوال نقية، مختبرة)
     ├── audio.js          الموسيقى والأصوات (مولّدة، بلا ملفات)
