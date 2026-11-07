@@ -35,7 +35,11 @@
     .game:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(14,107,70,.18); }
     .cover { height: 170px; display: flex; align-items: center; justify-content: center; font-size: 84px; position: relative;
       background: radial-gradient(circle at 50% 55%, #ffd23f 0 20px, rgba(255,160,40,.4) 21px 36px, transparent 37px), radial-gradient(circle at 75% 30%, rgba(63,207,110,.35), transparent 50%), linear-gradient(160deg, #071233, #030817); }
-    .cover .new { position: absolute; top: 12px; right: 12px; background: var(--lime); color: #06331f; font-size: 14px; font-weight: 900; padding: 3px 12px 1px; border-radius: 99px; }
+    .cover.has-img { height: auto; aspect-ratio: 1024 / 688; background: #071233; }
+    .cover.has-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
+    .game:hover .cover.has-img img { transform: scale(1.04); }
+    .cover { overflow: hidden; }
+    .cover .new { position: absolute; bottom: 12px; right: 12px; background: var(--lime); color: #06331f; font-size: 14px; font-weight: 900; padding: 3px 12px 1px; border-radius: 99px; }
     .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
     .body h2 { font-size: 24px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .body h2 small { font-size: 14px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; }
@@ -63,7 +67,7 @@
 
     <div class="grid">
       <a class="game" href="planet-race/index.html">
-        <div class="cover">🪐<span class="new">جديد</span></div>
+        <div class="cover has-img"><img src="planet-race/cover.webp" alt="غلاف لعبة سباق الكواكب: صواريخ تنطلق من الأرض نحو المريخ وزحل" loading="lazy"><span class="new">جديد</span></div>
         <div class="body">
           <h2>سباق الكواكب <small>العمر 7+</small></h2>
           <p>أطلق صاروخك من الأرض واهبط على المريخ والمشتري وزحل! جاذبية الشمس تحني المسار والكوكب لا يتوقف — اختر الزاوية والقوة ولحظة الإطلاق.</p>

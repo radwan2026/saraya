@@ -10,6 +10,7 @@ steam-games/
 ├── assets/fonts/         خط Jannat LT (عادي وعريض)
 └── planet-race/          🪐 سباق الكواكب
     ├── index.html
+    ├── cover.webp        غلاف اللعبة
     ├── style.css
     ├── physics.js        الفيزياء (دوال نقية، مختبرة)
     └── game.js           الرسم والتحكم والمراحل
