@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d3b2a">
+  <meta name="description" content="لعبة علمية للأطفال: أعد الحياة إلى الأرض الجافة، وابنِ غابة متوازنة — المطر والنباتات والسلسلة الغذائية والتلقيح.">
+  <title>غابة الحياة — STEAM Games</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="مشهد الغابة: سماء ونهار وليل، وأرض تنمو فيها النباتات وتعيش فيها الحيوانات"></canvas>
+
+    <!-- الشريط العلوي -->
+    <header class="hud-top">
+      <button class="icon-btn" id="btnMenu" title="القائمة" aria-label="القائمة">☰</button>
+      <div class="brand">
+        <img class="logo-img" src="../assets/logo.png" alt="G GAME">
+        <div class="brand-txt"><small>STEAM Games</small><b>غابة الحياة</b></div>
+      </div>
+      <div class="goals" id="goals"></div>
+      <div class="hud-right">
+        <div class="energy" id="energy" title="طاقة الحياة"><span class="spark">✨</span><b id="energyVal">0</b></div>
+        <div class="balance" id="balance" title="ميزان الحياة">
+          <div class="balance-bar"><i id="balanceFill"></i></div>
+          <small id="balanceTxt">ميزان الحياة</small>
+        </div>
+        <button class="icon-btn" id="btnBook" title="موسوعة الغابة" aria-label="موسوعة الغابة">📖<span class="dot hidden" id="bookDot"></span></button>
+        <button class="icon-btn" id="btnSpeed" title="سرعة الزمن" aria-label="سرعة الزمن">⏩</button>
+        <button class="icon-btn" id="btnMusic" title="الموسيقى" aria-label="الموسيقى">🎵</button>
+        <button class="icon-btn" id="btnSound" title="المؤثرات الصوتية" aria-label="المؤثرات الصوتية">🔊</button>
+      </div>
+    </header>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="tip" class="tip hidden" role="status" aria-live="polite">
+      <div class="tip-icon">💡</div>
+      <div><small>هل تعلم؟</small><p id="tipText"></p></div>
+    </div>
+    <div id="rotateHint" class="rotate-hint hidden">📱↻ أدر جهازك أفقياً لتستمتع بالغابة كاملة</div>
+
+    <!-- شريط الأدوات -->
+    <footer class="toolbar" id="toolbar" role="toolbar" aria-label="أدوات الغابة"></footer>
+
+    <!-- ============ الشاشات ============ -->
+    <section class="screen" id="scrMenu">
+      <div class="panel menu-panel">
+        <img class="logo-hero" src="../assets/logo.png" alt="G GAME">
+        <span class="chip">STEAM Games</span>
+        <h1>غابة الحياة <span aria-hidden="true">🌳</span></h1>
+        <p class="lead">الأرض جافة وحزينة… أنزل المطر، ازرع البذور، وادعُ الحيوانات لتسكنها. لكن انتبه: الغابة تعيش فقط إذا بقيت <b>متوازنة</b>!</p>
+        <div class="menu-actions">
+          <button class="btn primary" id="btnPlay">🌱 ابدأ الرحلة <small>5 مهمات ونجوم</small></button>
+          <button class="btn sky" id="btnFree">🏞️ غابتي الحرّة <small>ابنِ بلا حدود</small></button>
+          <div class="row tight">
+            <button class="btn ghost" id="btnMenuBook">📖 الموسوعة</button>
+            <button class="btn ghost" id="btnHelp">❓ كيف ألعب؟</button>
+          </div>
+        </div>
+        <div class="steam-tags"><span class="s">S علوم</span><span class="e">E هندسة</span><span class="a">A فنون</span><span class="m">M رياضيات</span><span class="age">العمر 6+</span></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrLevels">
+      <div class="panel wide">
+        <h2>مهمات الغابة</h2>
+        <div class="levels" id="levels"></div>
+        <div class="row"><button class="btn ghost" data-go="menu">↩ رجوع</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrIntro">
+      <div class="panel intro">
+        <div class="intro-art" id="introArt"></div>
+        <small class="muted" id="introSub"></small>
+        <h2 id="introTitle"></h2>
+        <p class="lead" id="introText"></p>
+        <ul class="goal-list" id="introGoals"></ul>
+        <div class="row"><button class="btn primary" id="btnIntroGo">🌱 هيا نبدأ!</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrResult">
+      <div class="panel result">
+        <div class="stars" id="resStars"></div>
+        <h2 id="resTitle"></h2>
+        <div class="fact"><span>🧪 ماذا تعلّمنا؟</span><p id="resLesson"></p></div>
+        <div class="row" id="resActions"></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrBook">
+      <div class="panel wide">
+        <h2>📖 موسوعة الغابة</h2>
+        <p class="muted" id="bookCount"></p>
+        <div class="book" id="book"></div>
+        <div class="row"><button class="btn primary" data-go="back">إغلاق</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrHelp">
+      <div class="panel help">
+        <h2>كيف ألعب؟</h2>
+        <ol>
+          <li><b>اختر أداة</b> من الشريط السفلي، ثم <b>انقر على الأرض</b> لتضعها.</li>
+          <li><b>🌧️ المطر</b> يروي التربة. لاحظ لون الأرض: البنّي جافّ، والأخضر رطب.</li>
+          <li>كل أداة تكلّف <b>✨ طاقة حياة</b>، وتزيد الطاقة كلما ازدهرت الغابة. <b>اجمع الثمار المضيئة</b> بالنقر عليها!</li>
+          <li>راقب <b>ميزان الحياة</b> في الأعلى: إن صار أحمر فاقرأ السبب وأصلحه.</li>
+          <li>كل كائن جديد تكتشفه يُضاف إلى <b>📖 الموسوعة</b>.</li>
+        </ol>
+        <div class="science">
+          <h3>🧪 العلم في الغابة</h3>
+          <p><b>المنتِجات:</b> النباتات تصنع غذاءها من الماء والضوء.</p>
+          <p><b>المستهلكات:</b> الأرانب تأكل العشب، والثعالب تأكل الأرانب.</p>
+          <p><b>المحلِّلات:</b> الفطر يعيد بقايا الكائنات غذاءً للتربة.</p>
+          <p><b>التلقيح والتحوّل:</b> النحل والفراشات تساعد الأزهار، واليرقة تصبح فراشة.</p>
+        </div>
+        <div class="row"><button class="btn primary" data-go="back">فهمت!</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrPause">
+      <div class="panel small">
+        <h2>استراحة 🍃</h2>
+        <div class="menu-actions">
+          <button class="btn primary" id="btnResume">▶ متابعة</button>
+          <button class="btn ghost" id="btnRestart">↻ إعادة المهمة</button>
+          <button class="btn ghost" data-go="menu">🏠 القائمة الرئيسية</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="ecosystem.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
