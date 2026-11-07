@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STEAM Games — ألعاب علمية</title>
+  <style>
+    @font-face { font-family: 'Jannat LT'; src: url('assets/fonts/JannatLT-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Jannat LT'; src: url('assets/fonts/JannatLT-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: swap; }
+    :root {
+      --g1: #19b97a; --g2: #3fcf6e; --lime: #b5ef6a; --deep: #0e6b46;
+      --bg: #f3fbf5; --card: #fff; --ink: #0d2b1e; --muted: #5d7a6b; --line: #d8eedf;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #07140e; --card: #0f2219; --ink: #eafff2; --muted: #93b8a3; --line: #1d3a2b; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jannat LT', 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--ink); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+    header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .logo {
+      width: 72px; height: 72px; flex: none; border-radius: 22px; position: relative; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(140deg, var(--lime), var(--g2) 35%, var(--g1) 70%, var(--deep));
+      box-shadow: 0 6px 0 var(--deep); color: #fff; font: 900 52px/1 'Arial Black', Arial, sans-serif;
+    }
+    .logo::before { content: ""; position: absolute; width: 18px; height: 18px; top: -10px; left: -7px; border-radius: 50%; background: var(--lime); }
+    header h1 { direction: ltr; text-align: right; font: 900 34px/1.2 'Arial Black', Arial, sans-serif; color: var(--g1); }
+    header p { color: var(--muted); font-size: 17px; }
+    .steam { display: inline-flex; gap: 4px; direction: ltr; margin-top: 6px; }
+    .steam span { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font: 900 15px Arial, sans-serif; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; margin-top: 28px; }
+    .game { background: var(--card); border: 2px solid var(--line); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+    .game:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(14,107,70,.18); }
+    .cover { height: 170px; display: flex; align-items: center; justify-content: center; font-size: 84px; position: relative;
+      background: radial-gradient(circle at 50% 55%, #ffd23f 0 20px, rgba(255,160,40,.4) 21px 36px, transparent 37px), radial-gradient(circle at 75% 30%, rgba(63,207,110,.35), transparent 50%), linear-gradient(160deg, #071233, #030817); }
+    .cover .new { position: absolute; top: 12px; right: 12px; background: var(--lime); color: #06331f; font-size: 14px; font-weight: 900; padding: 3px 12px 1px; border-radius: 99px; }
+    .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .body h2 { font-size: 24px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .body h2 small { font-size: 14px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; }
+    .body p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tags span { font-size: 14px; padding: 3px 10px 1px; border-radius: 99px; background: rgba(25,185,122,.12); color: var(--g1); font-weight: 700; }
+    .play { margin-top: auto; text-align: center; padding: 11px 10px 9px; border-radius: 14px; font-weight: 900; font-size: 18px; color: #fff; background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 4px 0 var(--deep); }
+    .soon { opacity: .6; border-style: dashed; }
+    .soon .cover { background: linear-gradient(160deg, #1b3a2b, #0c1f16); }
+    .soon .play { background: var(--line); color: var(--muted); box-shadow: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo" aria-hidden="true">G</div>
+      <div>
+        <h1>STEAM Games</h1>
+        <p>ألعاب علمية بصرية تعلّم وتمتع — علوم • تقنية • هندسة • فنون • رياضيات</p>
+        <div class="steam">
+          <span style="background:#19b97a" title="علوم">S</span><span style="background:#4363d8" title="تقنية">T</span><span style="background:#f58231" title="هندسة">E</span><span style="background:#e6194b" title="فنون">A</span><span style="background:#911eb4" title="رياضيات">M</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <a class="game" href="planet-race/index.html">
+        <div class="cover">🪐<span class="new">جديد</span></div>
+        <div class="body">
+          <h2>سباق الكواكب <small>العمر 7+</small></h2>
+          <p>أطلق صاروخك من الأرض واهبط على المريخ والمشتري وزحل! جاذبية الشمس تحني المسار والكوكب لا يتوقف — اختر الزاوية والقوة ولحظة الإطلاق.</p>
+          <div class="tags"><span>S • علوم</span><span>T • تقنية</span><span>M • رياضيات</span><span>👩‍🚀 لاعب واحد</span><span>👫 لاعبان</span></div>
+          <p><b style="color:var(--g1)">يتعلّم الطفل:</b> الجاذبية، المدارات وقانون كبلر، نافذة الإطلاق، معلومات عن الكواكب.</p>
+          <span class="play">▶ العب الآن</span>
+        </div>
+      </a>
+      <div class="game soon" aria-disabled="true">
+        <div class="cover">🌋</div>
+        <div class="body">
+          <h2>مختبر البركان <small>قريباً</small></h2>
+          <p>اخلط المكوّنات واكتشف التفاعلات الكيميائية بالألوان والفقاعات.</p>
+          <span class="play">قريباً</span>
+        </div>
+      </div>
+      <div class="game soon" aria-disabled="true">
+        <div class="cover">🌱</div>
+        <div class="body">
+          <h2>غابة الحياة <small>قريباً</small></h2>
+          <p>ابنِ نظاماً بيئياً متوازناً وتعلّم السلسلة الغذائية.</p>
+          <span class="play">قريباً</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

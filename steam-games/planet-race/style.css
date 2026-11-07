@@ -1,0 +1,234 @@
+/* ===============================================================
+   سباق الكواكب — STEAM Games
+   الهوية: أخضر G GAME + فضاء ليلي، خط Jannat LT
+   =============================================================== */
+@font-face { font-family: 'Jannat LT'; src: url('../assets/fonts/JannatLT-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Jannat LT'; src: url('../assets/fonts/JannatLT-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: swap; }
+
+:root {
+  --g1: #19b97a; --g2: #3fcf6e; --lime: #b5ef6a; --deep: #0e6b46;
+  --blue: #4f7cff; --blue-deep: #2a46b8;
+  --gold: #ffd23f; --red: #ff5a4f;
+  --ink: #fff; --muted: #b9d3e6;
+  --panel: rgba(8, 20, 42, .9);
+  --stroke: rgba(181, 239, 106, .35);
+  --font: 'Jannat LT', 'Segoe UI', Tahoma, Arial, sans-serif;
+  --top: 64px; --bottom: 96px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #030817; }
+body { font-family: var(--font); color: var(--ink); user-select: none; -webkit-user-select: none; }
+button, input { font-family: inherit; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+
+#app {
+  position: fixed; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(60vmax 50vmax at 85% 10%, rgba(63, 207, 110, .14), transparent 60%),
+    radial-gradient(60vmax 60vmax at 5% 70%, rgba(70, 90, 255, .16), transparent 60%),
+    linear-gradient(180deg, #030817 0%, #071233 55%, #04081a 100%);
+}
+#space { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+/* ---------- الشعار ---------- */
+.logo {
+  width: 44px; height: 44px; flex: none; border-radius: 14px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--lime), var(--g2) 35%, var(--g1) 70%, var(--deep));
+  box-shadow: 0 4px 0 var(--deep); color: #fff; font: 900 32px/1 'Arial Black', Arial, sans-serif;
+}
+.logo::before { content: ""; position: absolute; width: 12px; height: 12px; top: -7px; left: -4px; border-radius: 50%; background: var(--lime); }
+.logo.big { width: 96px; height: 96px; border-radius: 30px; font-size: 70px; box-shadow: 0 8px 0 var(--deep), 0 16px 40px rgba(25,185,122,.5); }
+.logo.big::before { width: 24px; height: 24px; top: -14px; left: -10px; }
+.chip, .brand-txt small {
+  display: inline-block; direction: ltr; color: #fff; border-radius: 8px; padding: 3px 9px 2px;
+  font: 900 11px/1.3 'Arial Black', Arial, sans-serif; letter-spacing: 1.5px;
+  background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 2px 0 var(--deep);
+}
+
+/* ---------- الشريط العلوي ---------- */
+.hud-top {
+  position: absolute; top: 0; left: 0; right: 0; height: var(--top); z-index: 5;
+  display: flex; align-items: center; gap: 12px; padding: 0 12px;
+  background: linear-gradient(180deg, rgba(2, 6, 18, .92), rgba(2, 6, 18, .55));
+  border-bottom: 1px solid rgba(181,239,106,.15);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-txt b { display: block; font-size: 21px; font-weight: 900; line-height: 1.2; }
+.hud-info { flex: 1; text-align: center; font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-info .lvl { color: var(--lime); }
+.hud-stats { display: flex; gap: 8px; align-items: center; }
+.pill { padding: 5px 12px 3px; border-radius: 99px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); font-size: 17px; font-weight: 700; white-space: nowrap; }
+.pill.p1 { border-color: var(--g2); background: rgba(25,185,122,.25); }
+.pill.p2 { border-color: var(--blue); background: rgba(79,124,255,.25); }
+.pill.turn { box-shadow: 0 0 0 3px var(--gold); }
+.rockets { letter-spacing: 2px; }
+.rockets .used { opacity: .25; filter: grayscale(1); }
+.icon-btn {
+  width: 42px; height: 42px; flex: none; border: 0; border-radius: 12px; cursor: pointer;
+  background: rgba(255,255,255,.08); color: #fff; font-size: 20px;
+}
+.icon-btn:hover { background: rgba(255,255,255,.16); }
+
+/* ---------- أدوات التحكم ---------- */
+.controls {
+  position: absolute; left: 0; right: 0; bottom: 0; min-height: var(--bottom); z-index: 5;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px 22px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(2, 6, 18, .94), rgba(2, 6, 18, .6));
+  border-top: 1px solid rgba(181,239,106,.15);
+}
+.controls.locked .power, .controls.locked .angle-box, .controls.locked .launch { opacity: .45; pointer-events: none; }
+.ctrl-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ctrl-label { font-size: 13px; color: var(--muted); }
+.power { display: flex; gap: 5px; direction: ltr; align-items: flex-end; height: 44px; }
+.power button {
+  width: 34px; border: 0; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,.1);
+  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 3px; color: #fff; font-weight: 900; font-size: 13px;
+}
+.power button.on { background: linear-gradient(0deg, var(--g1), var(--lime)); color: #06331f; box-shadow: 0 0 14px rgba(181,239,106,.6); }
+.angle-box { display: flex; align-items: center; gap: 6px; }
+.angle-box b { min-width: 52px; text-align: center; font-size: 22px; direction: ltr; }
+.mini { width: 36px; height: 36px; border: 0; border-radius: 10px; background: rgba(255,255,255,.1); color: #fff; font-size: 20px; cursor: pointer; }
+.launch {
+  border: 0; cursor: pointer; padding: 12px 34px 9px; border-radius: 18px; font-size: 24px; font-weight: 900; color: #fff;
+  background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 6px 0 var(--deep), 0 0 26px rgba(63,207,110,.45);
+  transition: transform .08s;
+}
+.launch:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--deep); }
+.launch.p2 { background: linear-gradient(180deg, #7096ff, var(--blue)); box-shadow: 0 6px 0 var(--blue-deep), 0 0 26px rgba(79,124,255,.5); }
+.ctrl-hint { width: 100%; text-align: center; font-size: 13px; color: var(--muted); }
+
+/* ---------- رسائل ---------- */
+.toast {
+  position: absolute; top: calc(var(--top) + 12px); left: 50%; z-index: 6; max-width: min(92vw, 640px);
+  transform: translate(-50%, -20px); opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
+  padding: 10px 20px 8px; border-radius: 18px; text-align: center; font-size: 19px; font-weight: 700; line-height: 1.5;
+  background: var(--panel); border: 2px solid var(--stroke); box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.good { border-color: var(--lime); background: rgba(14, 107, 70, .95); }
+.toast.warn { border-color: var(--gold); }
+.toast.bad { border-color: var(--red); }
+
+.turn-banner {
+  position: absolute; left: 50%; top: 42%; z-index: 7; transform: translate(-50%, -50%);
+  padding: 18px 40px 14px; border-radius: 26px; font-size: 34px; font-weight: 900; pointer-events: none;
+  background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 8px 0 var(--deep), 0 20px 50px rgba(0,0,0,.5);
+  animation: bannerIn 1.6s ease forwards;
+}
+.turn-banner.p2 { background: linear-gradient(180deg, #7096ff, var(--blue)); box-shadow: 0 8px 0 var(--blue-deep), 0 20px 50px rgba(0,0,0,.5); }
+@keyframes bannerIn {
+  0% { transform: translate(-50%, -50%) scale(.4); opacity: 0; }
+  15%, 75% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0; }
+}
+
+/* ---------- الشاشات ---------- */
+.screen {
+  position: absolute; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center;
+  padding: 16px; overflow-y: auto; background: rgba(2, 6, 18, .62); backdrop-filter: blur(3px);
+}
+.panel {
+  width: min(560px, 100%); margin: auto; padding: 26px 24px; border-radius: 28px; text-align: center;
+  background: var(--panel); border: 2px solid var(--stroke); box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  animation: panelIn .45s cubic-bezier(.2,1.4,.4,1);
+}
+.panel.small { width: min(380px, 100%); }
+@keyframes panelIn { from { transform: scale(.85); opacity: 0; } }
+.panel h1 { font-size: 40px; font-weight: 900; margin: 12px 0 6px; }
+.panel h2 { font-size: 30px; font-weight: 900; margin-bottom: 10px; }
+.lead { color: var(--muted); font-size: 18px; line-height: 1.7; }
+.hero-logo { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.menu-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+.row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.btn {
+  border: 0; cursor: pointer; padding: 13px 22px 10px; border-radius: 18px; color: #fff; font-size: 21px; font-weight: 900;
+  background: rgba(255,255,255,.1); transition: transform .08s, filter .2s;
+}
+.btn small { display: block; font-size: 14px; font-weight: 400; opacity: .85; }
+.btn:hover { filter: brightness(1.12); }
+.btn:active { transform: translateY(3px); }
+.btn.primary { background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 5px 0 var(--deep); }
+.btn.blue { background: linear-gradient(180deg, #7096ff, var(--blue)); box-shadow: 0 5px 0 var(--blue-deep); }
+.btn.ghost { background: transparent; border: 2px solid rgba(255,255,255,.25); }
+.steam-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.steam-tags span { padding: 3px 10px 1px; border-radius: 99px; font-size: 14px; font-weight: 700; }
+.steam-tags .s { background: var(--g1); } .steam-tags .t { background: #4363d8; } .steam-tags .m { background: #911eb4; }
+.steam-tags .age { background: rgba(255,255,255,.12); }
+
+/* المراحل */
+.levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+.level {
+  position: relative; border: 2px solid rgba(255,255,255,.12); border-radius: 20px; padding: 12px 6px 8px; cursor: pointer;
+  background: rgba(255,255,255,.05); color: #fff; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.level:hover:not(:disabled) { border-color: var(--lime); }
+.level:disabled { cursor: not-allowed; opacity: .45; }
+.level .num { position: absolute; top: 6px; right: 10px; font-weight: 900; color: var(--muted); }
+.level .pl { width: 52px; height: 52px; }
+.level b { font-size: 16px; }
+.level small { font-size: 12px; color: var(--muted); }
+.level .st { font-size: 16px; letter-spacing: 1px; }
+.level .lock { position: absolute; top: 6px; left: 8px; font-size: 18px; }
+
+/* إعداد لاعبين */
+.duo-names { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.duo-names label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 700; text-align: right; }
+.duo-names input { padding: 10px 12px 8px; border-radius: 14px; border: 2px solid; background: rgba(0,0,0,.3); color: #fff; font-size: 19px; }
+.duo-names .p1 input { border-color: var(--g2); }
+.duo-names .p2 input { border-color: var(--blue); }
+.opt-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 17px; }
+.seg { display: flex; gap: 4px; background: rgba(255,255,255,.07); padding: 4px; border-radius: 14px; }
+.seg button { border: 0; padding: 7px 14px 5px; border-radius: 10px; background: transparent; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+.seg button.on { background: var(--g1); }
+
+/* بطاقة الكوكب */
+.planet-art { width: 130px; height: 130px; margin: 0 auto 6px; }
+.fact { margin-top: 14px; padding: 12px 16px; border-radius: 18px; background: rgba(181,239,106,.08); border: 1px solid var(--stroke); text-align: right; }
+.fact span { color: var(--lime); font-weight: 900; font-size: 15px; }
+.fact p { font-size: 18px; line-height: 1.6; }
+.goal { margin-top: 12px; font-size: 17px; color: var(--muted); }
+
+/* النتيجة */
+.stars { font-size: 54px; letter-spacing: 6px; min-height: 66px; }
+.stars .off { opacity: .2; filter: grayscale(1); }
+.stars span { display: inline-block; animation: starPop .5s cubic-bezier(.2,1.8,.4,1) backwards; }
+.stars span:nth-child(2) { animation-delay: .2s; } .stars span:nth-child(3) { animation-delay: .4s; }
+@keyframes starPop { from { transform: scale(0) rotate(-90deg); } }
+.result p { font-size: 19px; line-height: 1.6; }
+.scoreboard { display: flex; gap: 12px; justify-content: center; margin: 12px 0; }
+.scoreboard div { flex: 1; padding: 12px; border-radius: 18px; border: 2px solid; }
+.scoreboard .p1 { border-color: var(--g2); background: rgba(25,185,122,.15); }
+.scoreboard .p2 { border-color: var(--blue); background: rgba(79,124,255,.15); }
+.scoreboard b { display: block; font-size: 42px; }
+.scoreboard .win { box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(255,210,63,.4); }
+
+/* كيف ألعب */
+.help ol { text-align: right; padding-right: 20px; font-size: 17px; line-height: 1.8; }
+.science { margin-top: 14px; text-align: right; padding: 12px 16px; border-radius: 18px; background: rgba(79,124,255,.12); border: 1px solid rgba(79,124,255,.4); }
+.science h3 { font-size: 19px; margin-bottom: 4px; }
+.science p { font-size: 16px; line-height: 1.7; }
+
+/* ---------- الشاشات الصغيرة ---------- */
+@media (max-width: 640px) {
+  :root { --top: 56px; --bottom: 132px; }
+  .brand-txt small { display: none; }
+  .brand-txt b { font-size: 17px; }
+  .hud-info { display: none; }
+  .pill { font-size: 14px; padding: 4px 9px 2px; }
+  .logo { width: 38px; height: 38px; font-size: 27px; }
+  .launch { font-size: 21px; padding: 10px 24px 8px; }
+  .panel h1 { font-size: 32px; }
+  .levels { grid-template-columns: repeat(2, 1fr); }
+  .duo-names { grid-template-columns: 1fr; }
+}
+@media (max-height: 520px) {
+  :root { --top: 52px; --bottom: 76px; }
+  .ctrl-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

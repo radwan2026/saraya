@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071233">
+  <title>سباق الكواكب — STEAM Games</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="space" aria-label="مشهد المجموعة الشمسية: الشمس في الوسط والأرض أسفلها والكوكب الهدف يدور في مداره"></canvas>
+
+    <!-- الشريط العلوي -->
+    <header class="hud-top">
+      <button class="icon-btn" id="btnMenu" title="القائمة" aria-label="القائمة">☰</button>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">G</div>
+        <div class="brand-txt"><small>STEAM Games</small><b>سباق الكواكب</b></div>
+      </div>
+      <div class="hud-info" id="hudInfo"></div>
+      <div class="hud-stats" id="hudStats"></div>
+      <button class="icon-btn" id="btnSound" title="الصوت" aria-label="تشغيل/إيقاف الصوت">🔊</button>
+    </header>
+
+    <!-- رسالة سريعة -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="turnBanner" class="turn-banner hidden"></div>
+
+    <!-- أدوات التحكم -->
+    <footer class="controls" id="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">قوة الإطلاق</span>
+        <div class="power" id="power" role="radiogroup" aria-label="قوة الإطلاق"></div>
+      </div>
+      <div class="ctrl-group angle">
+        <span class="ctrl-label">الزاوية</span>
+        <div class="angle-box">
+          <button class="mini" id="angLeft" aria-label="تدوير لليسار">↶</button>
+          <b id="angleVal">60°</b>
+          <button class="mini" id="angRight" aria-label="تدوير لليمين">↷</button>
+        </div>
+      </div>
+      <button class="launch" id="btnLaunch">🚀 إطلاق</button>
+      <div class="ctrl-hint">اسحب على الشاشة لتصويب الصاروخ، واختر لحظة الإطلاق المناسبة!</div>
+    </footer>
+
+    <!-- ============ الشاشات ============ -->
+
+    <!-- القائمة الرئيسية -->
+    <section class="screen" id="scrMenu">
+      <div class="panel menu-panel">
+        <div class="hero-logo"><div class="logo big">G</div><span class="chip">STEAM Games</span></div>
+        <h1>سباق الكواكب 🪐</h1>
+        <p class="lead">أطلق صاروخك من الأرض واهبط على الكواكب! جاذبية الشمس تحني مسارك، والكوكب لا يتوقف عن الدوران… فهل تعرف متى تُطلق؟</p>
+        <div class="menu-actions">
+          <button class="btn primary" id="btnSingle">👩‍🚀 لاعب واحد <small>6 مراحل ونجوم</small></button>
+          <button class="btn blue" id="btnDuo">👫 لاعبان <small>تحدٍّ على نفس الجهاز</small></button>
+          <button class="btn ghost" id="btnHelp">📘 كيف ألعب؟</button>
+        </div>
+        <div class="steam-tags"><span class="s">S علوم</span><span class="t">T تقنية</span><span class="m">M رياضيات</span><span class="age">العمر 7+</span></div>
+      </div>
+    </section>
+
+    <!-- اختيار المرحلة -->
+    <section class="screen hidden" id="scrLevels">
+      <div class="panel">
+        <h2>اختر رحلتك</h2>
+        <div class="levels" id="levels"></div>
+        <div class="row"><button class="btn ghost" data-go="menu">↩ رجوع</button></div>
+      </div>
+    </section>
+
+    <!-- إعداد اللاعبين -->
+    <section class="screen hidden" id="scrDuo">
+      <div class="panel">
+        <h2>تحدّي لاعبَين</h2>
+        <p class="muted">تتبادلان الأدوار: لكل لاعب صاروخ واحد في كل جولة. الهبوط = 3 نقاط، المرور القريب = نقطة.</p>
+        <div class="duo-names">
+          <label class="p1">اللاعب الأول<input id="name1" maxlength="14" value="رائد 1"></label>
+          <label class="p2">اللاعب الثاني<input id="name2" maxlength="14" value="رائد 2"></label>
+        </div>
+        <div class="opt-row">
+          <span>عدد الجولات</span>
+          <div class="seg" id="segRounds"><button data-v="3">3</button><button data-v="5" class="on">5</button><button data-v="7">7</button></div>
+        </div>
+        <div class="opt-row">
+          <span>المساعدة</span>
+          <div class="seg" id="segGuide"><button data-v="1">سهل</button><button data-v="0.5" class="on">متوسط</button><button data-v="0">صعب</button></div>
+        </div>
+        <div class="row">
+          <button class="btn ghost" data-go="menu">↩ رجوع</button>
+          <button class="btn primary" id="btnDuoStart">🚀 ابدأ التحدي</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- بطاقة الكوكب قبل المرحلة -->
+    <section class="screen hidden" id="scrIntro">
+      <div class="panel intro">
+        <div class="planet-art" id="introArt"></div>
+        <small class="muted" id="introSub"></small>
+        <h2 id="introTitle"></h2>
+        <div class="fact"><span>🔭 هل تعلم؟</span><p id="introFact"></p></div>
+        <p class="goal" id="introGoal"></p>
+        <div class="row"><button class="btn primary" id="btnIntroGo">انطلق!</button></div>
+      </div>
+    </section>
+
+    <!-- نتيجة المرحلة -->
+    <section class="screen hidden" id="scrResult">
+      <div class="panel result">
+        <div class="stars" id="resStars"></div>
+        <h2 id="resTitle"></h2>
+        <p id="resText"></p>
+        <div class="fact" id="resFactBox"><span>🧪 ماذا تعلّمنا؟</span><p id="resFact"></p></div>
+        <div class="row" id="resActions"></div>
+      </div>
+    </section>
+
+    <!-- كيف ألعب -->
+    <section class="screen hidden" id="scrHelp">
+      <div class="panel help">
+        <h2>كيف ألعب؟</h2>
+        <ol>
+          <li><b>صوّب:</b> اسحب بإصبعك أو بالفأرة على الشاشة لتدير الصاروخ (أو استخدم الأسهم ← →).</li>
+          <li><b>اختر القوة:</b> القوة الأكبر تجعل الصاروخ أسرع ومساره أكثر استقامة.</li>
+          <li><b>انتظر اللحظة المناسبة:</b> الكوكب يتحرك! أطلق عندما تعرف أنه سيصل إلى نهاية مسارك مع صاروخك (المسافة أو Enter).</li>
+          <li><b>احذر الشمس ☀️:</b> جاذبيتها تسحب الصاروخ، فإذا اقترب منها كثيراً احترق.</li>
+        </ol>
+        <div class="science">
+          <h3>🧪 العلم في اللعبة</h3>
+          <p><b>الجاذبية:</b> كل جسم كبير يجذب ما حوله، لذلك ينحني مسار الصاروخ نحو الشمس.</p>
+          <p><b>قانون كبلر:</b> كلما ابتعد الكوكب عن الشمس دار حولها أبطأ: المريخ أسرع من المشتري، والمشتري أسرع من زحل.</p>
+          <p><b>نافذة الإطلاق:</b> العلماء يطلقون المركبات في لحظة محسوبة حتى تلتقي بالكوكب، لا حيث هو الآن بل حيث <b>سيكون</b>.</p>
+        </div>
+        <div class="row"><button class="btn primary" data-go="back">فهمت!</button></div>
+      </div>
+    </section>
+
+    <!-- القائمة أثناء اللعب -->
+    <section class="screen hidden" id="scrPause">
+      <div class="panel small">
+        <h2>استراحة ⏸</h2>
+        <div class="menu-actions">
+          <button class="btn primary" id="btnResume">▶ متابعة</button>
+          <button class="btn ghost" id="btnPauseHelp">📘 كيف ألعب؟</button>
+          <button class="btn ghost" data-go="menu">🏠 القائمة الرئيسية</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="physics.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

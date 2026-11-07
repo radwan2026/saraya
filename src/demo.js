@@ -35,14 +35,6 @@ export class DemoBots {
     this.onPhase = this.onPhase.bind(this);
   }
 
-  /** تبديل اللعبة التي يلعب فيها اللاعبون الوهميون (عند تغيير اللعبة النشطة) */
-  setGame(game) {
-    const wasRunning = this.running;
-    this.stop();
-    this.game = game;
-    if (wasRunning) this.start();
-  }
-
   start() {
     if (this.running) return;
     this.running = true;
@@ -71,7 +63,6 @@ export class DemoBots {
 
   /** رقم «ذكي» قليلاً: الأغلب يختار أرقاماً صغيرة/متوسطة */
   randomNumber() {
-    if (typeof this.game.botNumber === 'function') return this.game.botNumber();
     const { minNumber, maxNumber } = this.game.opt;
     const r = Math.random() ** 1.6; // انحياز نحو الأرقام الصغيرة
     return minNumber + Math.floor(r * (maxNumber - minNumber + 1));
