@@ -389,56 +389,86 @@
     // الأرجل القريبة
     leg(g, -30, -58 + bob, la(0, 0.6) - 0.1, Math.abs(la(0.6, 0.9)), 30, 30, 11, 8, horse);
     leg(g, 40, -60 + bob, la(Math.PI + 0.5, 0.7) + 0.1, -Math.abs(la(Math.PI + 1.1, 0.9)) * -1, 30, 30, 11, 8, horse);
-    // غطاء السرج
-    var cloak = o.cloak || '#1f8f5a';
-    g.fillStyle = cloak; g.beginPath(); g.moveTo(-28, -96 + bob); g.lineTo(22, -96 + bob); g.lineTo(18, -64 + bob); g.lineTo(-24, -64 + bob); g.fill();
-    g.fillStyle = '#e8b64a'; g.fillRect(-26, -68 + bob, 46, 4);
-    for (var f = 0; f < 6; f++) { g.beginPath(); g.arc(-22 + f * 8, -61 + bob, 2.4, 0, TAU); g.fill(); }
+    // غطاء السرج (عنابي بحواف ذهبية)
+    var cloak = o.cloak || '#7a1f2a';
+    g.fillStyle = cloak; g.beginPath(); g.moveTo(-30, -97 + bob); g.lineTo(24, -97 + bob); g.lineTo(20, -62 + bob); g.lineTo(-26, -62 + bob); g.fill();
+    g.fillStyle = '#d9a441'; g.fillRect(-28, -67 + bob, 50, 4); g.fillRect(-29, -97 + bob, 52, 3);
+    for (var f = 0; f < 7; f++) { g.beginPath(); g.moveTo(-24 + f * 7.5, -62 + bob); g.lineTo(-21 + f * 7.5, -55 + bob); g.lineTo(-18 + f * 7.5, -62 + bob); g.fill(); }
     // ======== الفارس ========
     var by = bob;
     var swing = o.swing || 0;
-    // العباءة الطائرة
-    var wave = Math.sin(t * 8) * 6 * (0.4 + gal);
-    g.fillStyle = shade(cloak, -0.15);
-    g.beginPath(); g.moveTo(-6, -142 + by); g.quadraticCurveTo(-40, -130 + by + wave, -66 - gal * 18, -104 + by + wave * 1.4);
-    g.quadraticCurveTo(-40, -108 + by, -14, -100 + by); g.fill();
-    // الساق
-    g.strokeStyle = '#efe9da'; g.lineWidth = 11; g.lineCap = 'round';
-    g.beginPath(); g.moveTo(-2, -102 + by); g.lineTo(16, -84 + by); g.lineTo(10, -62 + by); g.stroke();
-    g.fillStyle = '#6a3e1e'; g.beginPath(); g.ellipse(13, -60 + by, 8, 4, 0, 0, TAU); g.fill();
-    // الدرع الدائري خلف الظهر
-    g.save(); g.translate(-14, -124 + by);
-    g.fillStyle = '#b5862a'; g.beginPath(); g.arc(0, 0, 17, 0, TAU); g.fill();
-    g.fillStyle = cloak; g.beginPath(); g.arc(0, 0, 13, 0, TAU); g.fill();
-    starShape(g, 0, 0, 9, 5, 8, '#f3d27a', t * 0.2);
-    g.restore();
-    // الجذع
-    var tg = g.createLinearGradient(-10, -150, 14, -100);
-    tg.addColorStop(0, '#ffffff'); tg.addColorStop(1, o.robe || '#e9e2cf');
-    g.fillStyle = tg;
-    g.beginPath(); g.moveTo(-10, -100 + by); g.lineTo(-8, -142 + by); g.quadraticCurveTo(4, -150 + by, 16, -142 + by); g.lineTo(14, -100 + by); g.fill();
-    g.fillStyle = '#7a4a22'; g.fillRect(-10, -122 + by, 25, 7);
-    g.fillStyle = '#e8b64a'; g.fillRect(1, -122 + by, 5, 7);
-    // الرأس واللثام
-    g.fillStyle = '#e8b48a'; g.beginPath(); g.arc(6, -158 + by, 11, 0, TAU); g.fill();
-    g.fillStyle = '#fbfaf5';
-    g.beginPath(); g.arc(4, -162 + by, 13, Math.PI * 0.95, Math.PI * 2.1); g.fill();
-    g.beginPath(); g.moveTo(-8, -162 + by); g.quadraticCurveTo(-26 - gal * 10, -150 + by + wave, -30 - gal * 16, -132 + by + wave); g.lineTo(-12, -146 + by); g.fill();
-    g.strokeStyle = '#222'; g.lineWidth = 3; g.beginPath(); g.moveTo(-8, -167 + by); g.lineTo(18, -167 + by); g.stroke();
-    g.fillStyle = '#222'; g.beginPath(); g.arc(11, -158 + by, 1.8, 0, TAU); g.fill();
-    g.strokeStyle = '#a0603a'; g.lineWidth = 1.5; g.beginPath(); g.arc(10, -153 + by, 3, 0.2, 1.4); g.stroke();
-    // الذراع والسيف
+    var wave = Math.sin(t * 7) * 6 * (0.4 + gal);
+    var cape = o.cape || '#3a2418';
+    var skin = '#d39a6a', skinD = '#b27a4e';
+    var leather = '#5a3420', gold = '#d9a441';
+    // العباءة الداكنة الطائرة
+    var cg = g.createLinearGradient(-90, -150, 0, -90);
+    cg.addColorStop(0, shade(cape, -0.25)); cg.addColorStop(1, cape);
+    g.fillStyle = cg;
+    g.beginPath(); g.moveTo(-2, -150 + by);
+    g.quadraticCurveTo(-36, -150 + by + wave * 0.4, -70 - gal * 22, -128 + by + wave);
+    g.quadraticCurveTo(-84 - gal * 26, -112 + by + wave * 1.3, -90 - gal * 30, -92 + by + wave * 1.6);
+    g.lineTo(-72 - gal * 20, -96 + by + wave); g.lineTo(-60 - gal * 14, -88 + by + wave * 0.8);
+    g.quadraticCurveTo(-34, -100 + by, -10, -104 + by); g.closePath(); g.fill();
+    g.strokeStyle = gold; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(-90 - gal * 30, -92 + by + wave * 1.6); g.lineTo(-72 - gal * 20, -96 + by + wave); g.lineTo(-60 - gal * 14, -88 + by + wave * 0.8); g.stroke();
+    // الساق: ثوب أبيض متدلٍّ وجزمة جلدية
+    g.fillStyle = '#f4efe3';
+    g.beginPath(); g.moveTo(-8, -104 + by); g.quadraticCurveTo(14, -98 + by, 20, -80 + by); g.lineTo(6, -74 + by); g.quadraticCurveTo(-4, -86 + by, -10, -96 + by); g.fill();
+    g.fillStyle = '#4a2a16';
+    g.beginPath(); g.moveTo(8, -82 + by); g.lineTo(20, -80 + by); g.lineTo(18, -60 + by); g.lineTo(24, -56 + by); g.lineTo(6, -55 + by); g.lineTo(6, -78 + by); g.fill();
+    g.fillStyle = gold; g.fillRect(7, -79 + by, 13, 2.5);
+    // الجذع: قميص أبيض وصدرية جلدية بزخارف ذهبية
+    g.fillStyle = '#f6f2e8';
+    g.beginPath(); g.moveTo(-11, -100 + by); g.lineTo(-9, -146 + by); g.quadraticCurveTo(4, -154 + by, 17, -146 + by); g.lineTo(15, -100 + by); g.fill();
+    var vg = g.createLinearGradient(-10, -146, 16, -104);
+    vg.addColorStop(0, '#7a4a2a'); vg.addColorStop(1, leather);
+    g.fillStyle = vg;
+    g.beginPath(); g.moveTo(-10, -106 + by); g.lineTo(-8, -145 + by); g.lineTo(0, -149 + by); g.lineTo(5, -112 + by); g.lineTo(14, -146 + by); g.lineTo(16, -140 + by); g.lineTo(14, -106 + by); g.fill();
+    g.strokeStyle = gold; g.lineWidth = 1.4;
+    g.beginPath(); g.moveTo(-6, -142 + by); g.lineTo(-5, -110 + by); g.moveTo(12, -140 + by); g.lineTo(11, -110 + by); g.stroke();
+    g.fillStyle = gold; g.beginPath(); g.arc(9, -137 + by, 3.4, 0, TAU); g.fill();
+    g.fillStyle = '#7a4a10'; g.beginPath(); g.arc(9, -137 + by, 1.4, 0, TAU); g.fill();
+    // الحزام العنابي
+    g.fillStyle = '#7a1f2a'; g.fillRect(-11, -110 + by, 27, 9);
+    g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(-11, -104 + by, 27, 2);
+    g.fillStyle = gold; g.beginPath(); g.arc(4, -105.5 + by, 3.6, 0, TAU); g.fill();
+    // الرأس: وجه بلحية قصيرة، شماغ أبيض وعقال أسود
+    g.fillStyle = skin; g.fillRect(2, -156 + by, 8, 8); // الرقبة
+    g.beginPath(); g.ellipse(7, -164 + by, 11, 12.5, 0, 0, TAU); g.fill();
+    g.beginPath(); g.moveTo(16, -168 + by); g.lineTo(21, -161 + by); g.lineTo(16, -159 + by); g.fill(); // الأنف
+    g.fillStyle = '#1e140c';
+    g.beginPath(); g.moveTo(-2, -164 + by); g.quadraticCurveTo(0, -150 + by, 9, -150 + by); g.quadraticCurveTo(17, -150 + by, 18, -156 + by); g.quadraticCurveTo(12, -155 + by, 9, -157 + by); g.quadraticCurveTo(2, -158 + by, 1, -166 + by); g.fill();
+    g.fillRect(9, -158.5 + by, 9, 2.2); // الشارب
+    g.fillStyle = '#1e140c'; g.beginPath(); g.ellipse(12, -168 + by, 1.8, 2.2, 0, 0, TAU); g.fill();
+    g.strokeStyle = '#1e140c'; g.lineWidth = 2; g.beginPath(); g.moveTo(8, -173 + by); g.lineTo(16, -171.5 + by); g.stroke();
+    // الشماغ: يغطي الرأس وينسدل خلف الكتفين ويطير بالريح
+    g.fillStyle = '#fbf9f2';
+    g.beginPath(); g.moveTo(-6, -158 + by); g.quadraticCurveTo(-8, -184 + by, 8, -182 + by); g.quadraticCurveTo(20, -182 + by, 19, -172 + by);
+    g.lineTo(-2, -170 + by); g.quadraticCurveTo(-4, -160 + by, -2, -150 + by); g.lineTo(-12, -142 + by); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(-6, -170 + by); g.quadraticCurveTo(-30 - gal * 12, -168 + by + wave, -44 - gal * 20, -150 + by + wave * 1.3);
+    g.quadraticCurveTo(-30, -150 + by, -10, -146 + by); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(-10, -166 + by); g.quadraticCurveTo(-26, -160 + by + wave * 0.6, -36 - gal * 14, -152 + by + wave); g.stroke();
+    g.fillStyle = '#1a1414';
+    g.beginPath(); g.ellipse(6, -179 + by, 13, 3.2, -0.08, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(6, -175 + by, 13, 2.8, -0.08, 0, TAU); g.fill();
+    // الذراع: كمّ أبيض وسوار جلدي، والسيف المنحني بواقٍ ذهبي
     var sa = o.sword === 'swing' ? lerp(-2.2, 0.9, easeOut(swing)) : (o.sword === 'down' ? 0.6 : -1.1 + Math.sin(t * 2) * 0.05);
-    g.save(); g.translate(10, -136 + by); g.rotate(sa);
-    g.strokeStyle = '#efe9da'; g.lineWidth = 8; g.beginPath(); g.moveTo(0, 0); g.lineTo(22, 4); g.stroke();
-    g.fillStyle = '#e8b48a'; g.beginPath(); g.arc(24, 4, 4.5, 0, TAU); g.fill();
-    g.fillStyle = '#c9952a'; g.fillRect(20, -2, 4, 14); // واقي المقبض
-    // نصل منحنٍ
-    var blade = g.createLinearGradient(26, 0, 90, -10);
-    blade.addColorStop(0, '#e9eef5'); blade.addColorStop(0.6, '#ffffff'); blade.addColorStop(1, '#b8c4d4');
+    g.save(); g.translate(10, -138 + by); g.rotate(sa);
+    g.strokeStyle = '#f6f2e8'; g.lineWidth = 9; g.lineCap = 'round'; g.beginPath(); g.moveTo(0, 0); g.lineTo(14, 3); g.stroke();
+    g.strokeStyle = leather; g.lineWidth = 9; g.lineCap = 'butt'; g.beginPath(); g.moveTo(13, 3); g.lineTo(22, 4.5); g.stroke();
+    g.strokeStyle = gold; g.lineWidth = 1.2; g.beginPath(); g.moveTo(17, -0.5); g.lineTo(17, 8.5); g.stroke();
+    g.fillStyle = skin; g.beginPath(); g.arc(25, 4.5, 4.8, 0, TAU); g.fill();
+    g.fillStyle = skinD; g.beginPath(); g.arc(26, 6, 2.4, 0, TAU); g.fill();
+    g.fillStyle = '#3a2418'; g.fillRect(18, 2.5, 7, 4); // المقبض
+    g.fillStyle = gold; g.beginPath(); g.moveTo(27, -5); g.lineTo(31, 4); g.lineTo(27, 13); g.lineTo(29, 4); g.fill(); // الواقي
+    var blade = g.createLinearGradient(30, -4, 96, -20);
+    blade.addColorStop(0, '#cfd6e0'); blade.addColorStop(0.5, '#ffffff'); blade.addColorStop(1, '#9aa6b8');
     g.fillStyle = blade;
-    g.beginPath(); g.moveTo(26, 1); g.quadraticCurveTo(62, -2, 92, -22); g.quadraticCurveTo(66, 4, 26, 8); g.fill();
-    if (o.glow) { g.strokeStyle = 'rgba(255,230,140,' + o.glow + ')'; g.lineWidth = 4; g.beginPath(); g.moveTo(28, 4); g.quadraticCurveTo(62, 1, 92, -22); g.stroke(); }
+    g.beginPath(); g.moveTo(30, 1.5); g.quadraticCurveTo(66, -1, 98, -26); g.quadraticCurveTo(72, 6, 30, 7.5); g.fill();
+    g.strokeStyle = 'rgba(80,90,110,.5)'; g.lineWidth = 1; g.beginPath(); g.moveTo(32, 4.5); g.quadraticCurveTo(66, 3, 96, -23); g.stroke();
+    if (o.glow) { g.strokeStyle = 'rgba(255,230,140,' + o.glow + ')'; g.lineWidth = 4; g.beginPath(); g.moveTo(32, 4); g.quadraticCurveTo(66, 1, 98, -26); g.stroke(); }
     g.restore();
     g.restore();
   }
@@ -467,6 +497,8 @@
       case 'owl': owl(g, t); break;
       case 'stone': stoneGolem(g, t, col); break;
       case 'sandlord': sandLord(g, t, col); break;
+      case 'elder': case 'scholar': case 'merchant': case 'bedouin': arabMan(g, t, look, col, o); break;
+      case 'sorcerer': case 'sorceress': case 'archsorcerer': sorcerer(g, t, look, col, o); break;
       default: robed(g, t, look, col, o);
     }
     g.restore();
@@ -551,6 +583,229 @@
     g.restore();
   }
 
+  // ------------------------------------------------------------------
+  // رجل عربي بالبشت (الشيخ الحكيم، التاجر، البدوي، العالِم)
+  // ------------------------------------------------------------------
+  var MEN = {
+    elder: { bisht: '#5a3420', beard: '#ecebe6', long: 1, head: 'shemagh', hand: 'cane', brow: '#e8e6e0' },
+    scholar: { bisht: '#2f5a4a', beard: '#ecebe6', long: 0.8, head: 'turban', hand: 'book', brow: '#e8e6e0' },
+    merchant: { bisht: '#8a3e16', beard: '#2a1a10', long: 0.55, head: 'turban', hand: 'scale', brow: '#2a1a10' },
+    bedouin: { bisht: '#a8865a', beard: '#1a120a', long: 0.4, head: 'redShemagh', hand: 'staff', brow: '#1a120a' },
+  };
+  function arabMan(g, t, look, col, o) {
+    var m = MEN[look];
+    var bisht = col && col !== '#ffffff' ? col : m.bisht;
+    var trim = '#c9963a', thobe = '#f3eee2', skin = '#d9a074', skinD = '#b8794e';
+    var breathe = Math.sin(t * 1.6) * 1.2;
+    var gest = Math.sin(t * 1.3) * 4 + (o.cast || 0) * -14;
+    g.save(); g.translate(0, breathe * 0.3);
+    // الحذاء
+    g.fillStyle = '#3a2a20';
+    g.beginPath(); g.ellipse(-10, -3, 16, 5, 0, 0, TAU); g.fill(); g.beginPath(); g.ellipse(18, -3, 15, 5, 0, 0, TAU); g.fill();
+    // البشت (العباءة) من الخلف
+    var bg = g.createLinearGradient(-50, -150, 40, 0);
+    bg.addColorStop(0, shade(bisht, 0.12)); bg.addColorStop(1, shade(bisht, -0.3));
+    g.fillStyle = bg;
+    g.beginPath(); g.moveTo(-26, -156); g.quadraticCurveTo(-46, -90, -54, -6); g.lineTo(42, -6); g.quadraticCurveTo(36, -90, 22, -156); g.quadraticCurveTo(-2, -164, -26, -156); g.fill();
+    // طيّات البشت
+    g.strokeStyle = 'rgba(0,0,0,.18)'; g.lineWidth = 2;
+    [[-34, -120, -42, -10], [-20, -130, -24, -10], [28, -110, 34, -10]].forEach(function (l) { g.beginPath(); g.moveTo(l[0], l[1]); g.quadraticCurveTo(l[0] - 4, (l[1] + l[3]) / 2, l[2], l[3]); g.stroke(); });
+    // الثوب الأبيض من الأمام مع حواف البشت الذهبية
+    g.fillStyle = thobe;
+    g.beginPath(); g.moveTo(-6, -152); g.lineTo(-14, -6); g.lineTo(12, -6); g.lineTo(10, -152); g.fill();
+    g.strokeStyle = trim; g.lineWidth = 4;
+    g.beginPath(); g.moveTo(-7, -150); g.lineTo(-16, -6); g.moveTo(11, -150); g.lineTo(14, -6); g.stroke();
+    g.strokeStyle = 'rgba(255,230,160,.6)'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(-9, -150); g.lineTo(-18, -6); g.stroke();
+    // الذراع البعيدة ممدودة بإشارة اليد
+    g.save(); g.translate(18, -138);
+    g.fillStyle = shade(bisht, -0.08);
+    g.beginPath(); g.moveTo(-6, -6); g.lineTo(34, 10 + gest * 0.4); g.lineTo(40, 30 + gest * 0.5); g.lineTo(6, 26); g.fill();
+    g.fillStyle = trim; g.beginPath(); g.moveTo(34, 10 + gest * 0.4); g.lineTo(40, 30 + gest * 0.5); g.lineTo(37, 30 + gest * 0.5); g.lineTo(31, 11 + gest * 0.4); g.fill();
+    g.fillStyle = thobe; g.fillRect(38, 14 + gest * 0.45, 8, 12);
+    g.fillStyle = skin;
+    var hx = 52, hy = 18 + gest * 0.5;
+    g.beginPath(); g.ellipse(hx, hy, 11, 5.5, -0.25, 0, TAU); g.fill();
+    for (var fi = 0; fi < 4; fi++) { g.beginPath(); g.ellipse(hx + 9 + fi * 0.5, hy - 5 + fi * 2.6, 6, 2.1, -0.4 + fi * 0.1, 0, TAU); g.fill(); }
+    g.beginPath(); g.ellipse(hx - 3, hy - 6, 2.5, 5, 0.6, 0, TAU); g.fill();
+    g.restore();
+    // الرأس
+    g.fillStyle = skin; g.fillRect(-2, -166, 12, 12);
+    g.beginPath(); g.ellipse(4, -178, 14, 16, 0, 0, TAU); g.fill();
+    g.beginPath(); g.moveTo(15, -184); g.quadraticCurveTo(24, -176, 17, -172); g.fill(); // الأنف
+    g.fillStyle = skinD; g.beginPath(); g.arc(-4, -177, 3, 0, TAU); g.fill(); // الأذن
+    g.fillStyle = '#1e140c'; g.beginPath(); g.ellipse(10, -182, 2, 2.6, 0, 0, TAU); g.fill();
+    g.strokeStyle = m.brow; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.moveTo(5, -188); g.quadraticCurveTo(10, -191, 15, -188); g.stroke();
+    // اللحية
+    var L = 30 + m.long * 52;
+    g.fillStyle = m.beard;
+    g.beginPath(); g.moveTo(-6, -180); g.quadraticCurveTo(-10, -160, -4, -170 + L * 0.6);
+    g.quadraticCurveTo(4, -170 + L, 10, -170 + L * 0.95); g.quadraticCurveTo(18, -170 + L * 0.6, 18, -168); g.quadraticCurveTo(10, -170, 4, -168); g.quadraticCurveTo(-2, -172, -6, -180); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 1;
+    for (var bl = 0; bl < 4; bl++) { g.beginPath(); g.moveTo(-2 + bl * 5, -164); g.quadraticCurveTo(0 + bl * 5, -170 + L * 0.6, 4 + bl * 3, -172 + L * 0.9); g.stroke(); }
+    g.fillStyle = m.beard; g.beginPath(); g.ellipse(14, -170, 7, 3, -0.2, 0, TAU); g.fill(); // الشارب
+    // غطاء الرأس
+    if (m.head === 'turban') {
+      var tc = look === 'merchant' ? '#efe2c4' : '#ffffff';
+      g.fillStyle = tc; g.beginPath(); g.ellipse(2, -192, 19, 12, -0.1, 0, TAU); g.fill();
+      g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 2;
+      for (var w = 0; w < 3; w++) { g.beginPath(); g.ellipse(2, -192 + w * 2, 18 - w * 4, 9 - w * 2, -0.25, 0.1, Math.PI); g.stroke(); }
+      if (look === 'scholar' && col) { g.fillStyle = col; g.fillRect(-16, -188, 34, 3); }
+    } else {
+      var red = m.head === 'redShemagh';
+      g.fillStyle = '#fbf9f2';
+      g.beginPath(); g.moveTo(-12, -172); g.quadraticCurveTo(-14, -202, 4, -200); g.quadraticCurveTo(20, -200, 18, -188); g.lineTo(-2, -186);
+      g.quadraticCurveTo(-8, -168, -6, -150); g.quadraticCurveTo(-26, -140, -32, -112); g.quadraticCurveTo(-34, -146, -12, -172); g.fill();
+      g.strokeStyle = 'rgba(0,0,0,.1)'; g.lineWidth = 1.5;
+      g.beginPath(); g.moveTo(-10, -180); g.quadraticCurveTo(-22, -150, -28, -120); g.stroke();
+      if (red) { g.fillStyle = '#c0392b'; for (var rx = 0; rx < 5; rx++) for (var ry = 0; ry < 3; ry++) g.fillRect(-10 + rx * 5.5, -198 + ry * 5, 2.4, 2.4); }
+      g.fillStyle = '#1a1414';
+      g.beginPath(); g.ellipse(3, -197, 15, 3.6, -0.08, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(3, -192.5, 15, 3.2, -0.08, 0, TAU); g.fill();
+    }
+    // الذراع القريبة وما تحمله
+    g.fillStyle = shade(bisht, 0.05);
+    g.beginPath(); g.moveTo(-20, -150); g.quadraticCurveTo(-30, -120, -18, -100); g.lineTo(2, -98); g.quadraticCurveTo(-4, -128, 4, -148); g.fill();
+    g.fillStyle = trim; g.fillRect(-18, -103, 21, 4);
+    g.fillStyle = thobe; g.fillRect(-14, -100, 13, 5);
+    var px = -6, py = -92;
+    if (m.hand === 'cane' || m.hand === 'staff') {
+      g.strokeStyle = m.hand === 'cane' ? '#6a3e1e' : '#7a5230'; g.lineWidth = 6; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(px - 1, m.hand === 'cane' ? py - 2 : py - 70);
+      for (var k = 1; k <= 8; k++) g.lineTo(px + Math.sin(k * 1.7) * 1.6, py + k * 11.5);
+      g.stroke();
+      if (m.hand === 'staff') { g.beginPath(); g.arc(px - 4, py - 72, 6, Math.PI * 0.2, Math.PI * 1.4); g.stroke(); }
+    } else if (m.hand === 'book') {
+      g.fillStyle = '#7a4a1a'; g.fillRect(px - 16, py - 10, 22, 18); g.fillStyle = '#f2e6c4'; g.fillRect(px - 14, py - 8, 18, 14);
+      g.strokeStyle = '#c9963a'; g.lineWidth = 1; g.beginPath(); g.moveTo(px - 5, py - 8); g.lineTo(px - 5, py + 6); g.stroke();
+    } else if (m.hand === 'scale') {
+      g.strokeStyle = '#c9952a'; g.lineWidth = 2; g.beginPath(); g.moveTo(px, py); g.lineTo(px, py + 26); g.moveTo(px - 16, py + 26); g.lineTo(px + 16, py + 26); g.stroke();
+      g.fillStyle = '#c9952a'; g.beginPath(); g.arc(px - 16, py + 31, 7, 0, Math.PI); g.arc(px + 16, py + 31, 7, 0, Math.PI); g.fill();
+    }
+    g.fillStyle = skin; g.beginPath(); g.ellipse(px, py, 7, 6, 0, 0, TAU); g.fill();
+    g.fillStyle = skinD; g.beginPath(); g.ellipse(px + 3, py + 1, 3, 4, 0, 0, TAU); g.fill();
+    // هالة هادئة لشيخ الحكمة
+    if (look === 'elder') {
+      g.globalCompositeOperation = 'lighter';
+      var ha = g.createRadialGradient(4, -178, 10, 4, -178, 60);
+      ha.addColorStop(0, 'rgba(255,230,160,.18)'); ha.addColorStop(1, 'rgba(255,230,160,0)');
+      g.fillStyle = ha; g.beginPath(); g.arc(4, -178, 60, 0, TAU); g.fill();
+      g.globalCompositeOperation = 'source-over';
+    }
+    g.restore();
+  }
+
+  // ------------------------------------------------------------------
+  // الساحر: رداء أسود بحواف ذهبية، حزام قرمزي، عصا بلورية ودخان سحري
+  // ------------------------------------------------------------------
+  function sorcerer(g, t, look, col, o) {
+    var c = col || '#6b3fa0';
+    var arch = look === 'archsorcerer', lady = look === 'sorceress';
+    var magic = shade(c, 0.35), magicD = shade(c, -0.2);
+    var gold = '#c8963e', robe = '#18131a', crimson = '#8a1c2c';
+    var cast = o.cast || 0;
+    var sway = Math.sin(t * 1.8) * 3;
+    g.save(); if (arch) g.scale(1.18, 1.18);
+    // البطانة/الوشاح الملوّن خلف الساحر بحافة ممزّقة متموّجة
+    g.fillStyle = shade(c, -0.35);
+    g.beginPath(); g.moveTo(-18, -160);
+    g.quadraticCurveTo(-58, -110, -70 + sway, -30);
+    for (var r = 0; r < 6; r++) g.lineTo(-70 + sway + r * 9 + (r % 2 ? 4 : 0), -18 + (r % 2 ? -10 : 6) + Math.sin(t * 4 + r) * 3);
+    g.lineTo(-10, -40); g.closePath(); g.fill();
+    // الحذاء المدبّب
+    g.fillStyle = '#111';
+    g.beginPath(); g.moveTo(-18, -6); g.lineTo(2, -6); g.lineTo(10, -10); g.lineTo(4, 0); g.lineTo(-18, 0); g.fill();
+    g.beginPath(); g.moveTo(14, -6); g.lineTo(34, -6); g.lineTo(44, -12); g.lineTo(36, 0); g.lineTo(14, 0); g.fill();
+    // الرداء الأسود المتّسع
+    var rg = g.createLinearGradient(-40, -160, 40, 0);
+    rg.addColorStop(0, '#2c2230'); rg.addColorStop(1, robe);
+    g.fillStyle = rg;
+    g.beginPath(); g.moveTo(-24, -156); g.quadraticCurveTo(-40, -80, -50 + sway, -6); g.lineTo(52 + sway, -6); g.quadraticCurveTo(38, -80, 24, -156); g.quadraticCurveTo(0, -164, -24, -156); g.fill();
+    // حواف ذهبية مزخرفة (الذيل وفتحة الأمام)
+    g.strokeStyle = gold; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(-50 + sway, -12); g.lineTo(52 + sway, -12); g.stroke();
+    g.lineWidth = 1.6; g.beginPath();
+    for (var z = 0; z < 16; z++) { var zx = -46 + sway + z * 6.2; g.lineTo(zx, z % 2 ? -22 : -15); }
+    g.stroke();
+    g.strokeStyle = gold; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(4, -150); g.quadraticCurveTo(2, -80, 8 + sway * 0.6, -12); g.stroke();
+    g.lineWidth = 1.2; g.beginPath();
+    for (var z2 = 0; z2 < 12; z2++) { var zy = -140 + z2 * 10.5; g.lineTo(9 + (z2 % 2 ? 4 : 0) + sway * 0.4 * (z2 / 12), zy); }
+    g.stroke();
+    // الحزام القرمزي ودلّاية ماسية
+    g.fillStyle = crimson; g.beginPath(); g.moveTo(-24, -104); g.lineTo(28, -104); g.lineTo(28, -91); g.lineTo(-24, -91); g.fill();
+    g.fillStyle = shade(crimson, -0.2); g.beginPath(); g.moveTo(-2, -92); g.lineTo(8, -92); g.lineTo(12 + sway * 0.5, -48); g.lineTo(0 + sway * 0.5, -50); g.fill();
+    g.fillStyle = gold; g.beginPath(); g.moveTo(4, -106); g.lineTo(10, -97.5); g.lineTo(4, -89); g.lineTo(-2, -97.5); g.fill();
+    g.fillStyle = magic; g.beginPath(); g.moveTo(4, -101); g.lineTo(6.5, -97.5); g.lineTo(4, -94); g.lineTo(1.5, -97.5); g.fill();
+    g.fillStyle = gold; g.beginPath(); g.moveTo(6 + sway * 0.5, -48); g.lineTo(10 + sway * 0.5, -40); g.lineTo(6 + sway * 0.5, -32); g.lineTo(2 + sway * 0.5, -40); g.fill();
+    // الذراع البعيدة تمدّ اليد بالسحر نحو الفارس
+    var ax = 50 + cast * 16, ay = -122 - cast * 24;
+    g.fillStyle = '#231b26';
+    g.beginPath(); g.moveTo(14, -150); g.lineTo(ax - 4, ay - 8); g.lineTo(ax + 2, ay + 14); g.lineTo(8, -112); g.fill();
+    g.strokeStyle = gold; g.lineWidth = 3; g.beginPath(); g.moveTo(ax - 4, ay - 8); g.lineTo(ax + 2, ay + 14); g.stroke();
+    g.fillStyle = '#c08a64';
+    g.beginPath(); g.ellipse(ax + 9, ay + 3, 8, 6, -0.3, 0, TAU); g.fill();
+    g.strokeStyle = '#c08a64'; g.lineWidth = 2.6; g.lineCap = 'round';
+    for (var cl = 0; cl < 4; cl++) { g.beginPath(); g.moveTo(ax + 13, ay - 1 + cl * 3); g.quadraticCurveTo(ax + 22, ay - 6 + cl * 3, ax + 24, ay + 1 + cl * 4); g.stroke(); }
+    // الدخان السحري المتلوّي
+    g.save(); g.globalCompositeOperation = 'lighter';
+    for (var sm = 0; sm < 5; sm++) {
+      var ph = t * 2 + sm * 1.3;
+      g.strokeStyle = hexA(sm % 2 ? magic : c, 0.55 + cast * 0.3);
+      g.lineWidth = 6 - sm * 0.8 + cast * 3; g.lineCap = 'round';
+      var sx = ax + 22, sy = ay - 4;
+      g.beginPath(); g.moveTo(sx, sy);
+      g.bezierCurveTo(sx + 14 + Math.sin(ph) * 10, sy - 18 - sm * 6, sx - 8 + Math.cos(ph * 1.3) * 12, sy - 34 - sm * 8, sx + 10 + Math.sin(ph * 0.8) * 14, sy - 52 - sm * 10 - cast * 20);
+      g.stroke();
+    }
+    var og = g.createRadialGradient(ax + 22, ay - 6, 2, ax + 22, ay - 6, 26 + cast * 20);
+    og.addColorStop(0, hexA(magic, 0.8)); og.addColorStop(1, hexA(c, 0));
+    g.fillStyle = og; g.beginPath(); g.arc(ax + 22, ay - 6, 26 + cast * 20, 0, TAU); g.fill();
+    g.restore();
+    // الرأس: عمامة داكنة بعصابة ملوّنة وجوهرة، ووجه في الظل بعينين متوهجتين
+    g.fillStyle = '#7a5a4a'; g.fillRect(-6, -168, 12, 12);
+    g.fillStyle = '#5a4038'; g.beginPath(); g.ellipse(0, -178, 14, 15, 0, 0, TAU); g.fill();
+    g.fillStyle = 'rgba(10,0,20,.55)'; g.beginPath(); g.ellipse(2, -176, 14, 13, 0, 0, TAU); g.fill();
+    var eye = arch ? '#ffcc4a' : magic;
+    g.fillStyle = eye; g.shadowColor = eye; g.shadowBlur = 12;
+    g.beginPath(); g.ellipse(6, -180, 3.4, 2, -0.15, 0, TAU); g.ellipse(13, -180.5, 2.6, 1.8, -0.15, 0, TAU); g.fill();
+    g.shadowBlur = 0;
+    // العمامة
+    g.fillStyle = '#1a1418'; g.beginPath(); g.ellipse(0, -193, 18, 13, -0.08, 0, TAU); g.fill();
+    g.fillStyle = crimson; g.beginPath(); g.ellipse(1, -188, 18, 4.5, -0.08, 0, TAU); g.fill();
+    g.fillStyle = gold; g.beginPath(); g.ellipse(14, -190, 4.5, 5.5, 0, 0, TAU); g.fill();
+    g.fillStyle = magicD; g.beginPath(); g.ellipse(14, -190, 2.6, 3.4, 0, 0, TAU); g.fill();
+    // ذيل العمامة الملوّن على الكتف
+    g.fillStyle = shade(c, -0.1);
+    g.beginPath(); g.moveTo(-12, -196); g.quadraticCurveTo(-34, -170 + sway, -30, -128 + sway); g.lineTo(-18, -134 + sway); g.quadraticCurveTo(-22, -166, -6, -186); g.fill();
+    if (lady) { g.fillStyle = hexA(magic, 0.7); g.beginPath(); g.moveTo(-4, -174); g.quadraticCurveTo(10, -168, 20, -174); g.lineTo(18, -162); g.quadraticCurveTo(8, -158, -2, -164); g.fill(); }
+    if (arch) { for (var sp = 0; sp < 5; sp++) starShape(g, -12 + sp * 6.5, -206 - (sp % 2) * 4, 4, 1.6, 4, gold, 0); }
+    // العصا الملتوية برأس شائك وبلّورة متوهجة
+    var stx = -34, sty = -100;
+    g.strokeStyle = '#2a1a16'; g.lineWidth = 6; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(stx + 2, 4);
+    for (var sk = 1; sk <= 12; sk++) g.lineTo(stx + Math.sin(sk * 1.3) * 2.2, 4 - sk * 21);
+    g.stroke();
+    g.fillStyle = gold; [-40, -120, -190].forEach(function (yy) { g.fillRect(stx - 4, yy, 8, 4); });
+    var cy = -258 + Math.sin(t * 3) * 2;
+    // المخالب الشائكة خلف البلّورة
+    g.strokeStyle = '#2a1a16'; g.lineWidth = 4; g.lineCap = 'round';
+    [[-1, 0], [1, 0], [-0.5, 1], [0.5, 1]].forEach(function (d) { g.beginPath(); g.moveTo(stx, cy + 22); g.quadraticCurveTo(stx + d[0] * 22, cy + 8, stx + d[0] * (14 - d[1] * 6), cy - 18 - d[1] * 6); g.stroke(); });
+    var cg2 = g.createRadialGradient(stx, cy, 2, stx, cy, 40 + cast * 18);
+    cg2.addColorStop(0, hexA(magic, 0.9)); cg2.addColorStop(1, hexA(c, 0));
+    g.fillStyle = cg2; g.beginPath(); g.arc(stx, cy, 40 + cast * 18, 0, TAU); g.fill();
+    // البلّورة
+    g.fillStyle = magicD; g.beginPath(); g.moveTo(stx, cy - 22); g.lineTo(stx + 11, cy - 2); g.lineTo(stx, cy + 16); g.lineTo(stx - 11, cy - 2); g.fill();
+    g.fillStyle = magic; g.beginPath(); g.moveTo(stx, cy - 22); g.lineTo(stx + 11, cy - 2); g.lineTo(stx, cy + 4); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.75)'; g.beginPath(); g.moveTo(stx - 1, cy - 17); g.lineTo(stx + 4, cy - 4); g.lineTo(stx - 3, cy - 5); g.fill();
+    // الذراع القريبة تمسك العصا
+    g.fillStyle = '#231b26';
+    g.beginPath(); g.moveTo(-18, -150); g.quadraticCurveTo(-34, -130, -36, -108); g.lineTo(-22, -104); g.quadraticCurveTo(-18, -128, -6, -146); g.fill();
+    g.strokeStyle = gold; g.lineWidth = 2.5; g.beginPath(); g.moveTo(-37, -108); g.lineTo(-21, -104); g.stroke();
+    g.fillStyle = '#c08a64'; g.beginPath(); g.ellipse(-32, -100, 7, 6, 0, 0, TAU); g.fill();
+    g.restore();
+  }
+
   function owl(g, t) {
     g.fillStyle = '#6a4a2a'; g.fillRect(-6, -90, 12, 90); g.fillRect(-40, -92, 80, 10);
     var blink = (Math.sin(t * 1.3) > 0.97) ? 0.15 : 1;
@@ -593,7 +848,7 @@
       g.fillStyle = hexA(shade(c, (i % 3) * 0.15), 0.7);
       g.beginPath(); g.arc(Math.cos(a) * r, -10 - i * 3 + Math.sin(a) * 4, 3, 0, TAU); g.fill();
     }
-    robed(g, t, 'sorcerer', c, {});
+    sorcerer(g, t, 'sorcerer', c, {});
   }
 
   function hexA(hex, a) {
