@@ -107,6 +107,17 @@ window.STEAM_CONFIG = {
         price: 25,
         ages: "8–12", category: "أحياء",
       },
+      {
+        id: "fares-al-darb",
+        title: "فارس الدرب",
+        emoji: "⚔️",
+        desc: "رحلة في العلم والإيمان: انطلق مع فارس الدرب في مغامرة عبر الصحراء والقلاع، وأجب عن الأسئلة لتختبر علمك وإيمانك.",
+        cover: "games/fares-al-darb/cover.webp",
+        url: "games/fares-al-darb/index.html",
+        download: "",
+        price: "",             // ← ضع سعر اللعبة هنا (مثال: 20)
+        ages: "9–14", category: "علم وإيمان",
+      },
 
       // مثال لإضافة لعبة جديدة مستقبلاً:
       // {

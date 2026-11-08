@@ -66,7 +66,7 @@
     const play = abs(`games/play.html?id=${encodeURIComponent(g.id)}`);
     return `
       <article class="gcard card reveal">
-        <a class="gcard-cover" href="${play}">
+        <a class="gcard-cover" href="${play}"${g.cover ? ` style="--cover:url('${esc(abs(g.cover))}')"` : ""}>
           ${g.cover ? `<img src="${esc(abs(g.cover))}" alt="" loading="lazy" onerror="this.remove()">` : ""}
           <span class="gcard-emoji" aria-hidden="true">${esc(g.emoji || "🎮")}</span>
           <span class="gcard-badge ${own ? "own" : ""}">${own ? "✓ مملوكة" : left > 0 ? `▶ تجربة ${Math.ceil(left / 60)} د` : "🔒 انتهت التجربة"}</span>
