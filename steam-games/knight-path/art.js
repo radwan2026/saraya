@@ -252,38 +252,71 @@
   // خلفيات مصمّمة (صور) لبعض المحطات — تحلّ محل السماء والطبقات المرسومة
   // ------------------------------------------------------------------
   var BACKDROPS = {};
-  /** img: صورة محمّلة. ground: نسبة ارتفاع خط الأرض في الصورة (0..1) لتقف الشخصيات عليه */
-  function setBackdrop(theme, img, opts) { BACKDROPS[theme] = { img: img, top: (opts && opts.top) || '#4e9ae6' }; }
+  /**
+   * img: صورة محمّلة.
+   * horizon: نسبة ارتفاع خط الأفق في الصورة (0..1) — يُوضع عند ارتفاع ثابت في المشهد.
+   * top: لون السماء فوق الصورة (يُقرأ تلقائياً من أعلى الصورة إن أمكن).
+   * road: لونا طريق الفارس (أعلى، أسفل).
+   */
+  function setBackdrop(theme, img, opts) {
+    opts = opts || {};
+    var top = opts.top || '#4e9ae6';
+    try { // نأخذ لون السماء من أعلى الصورة ليمتد بلا فاصل
+      var c = document.createElement('canvas'); c.width = 8; c.height = 2;
+      var cg = c.getContext('2d'); cg.drawImage(img, 0, 0, img.naturalWidth, 4, 0, 0, 8, 2);
+      var d = cg.getImageData(0, 0, 8, 1).data, r = 0, gg = 0, b = 0;
+      for (var i = 0; i < 32; i += 4) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; }
+      top = 'rgb(' + Math.round(r / 8) + ',' + Math.round(gg / 8) + ',' + Math.round(b / 8) + ')';
+    } catch (e) { /* عند الفتح من الملفات مباشرة نستخدم اللون المعطى */ }
+    BACKDROPS[theme] = { img: img, top: top, horizon: opts.horizon || 0.48, road: opts.road || ['#e8ad66', '#b8692f'] };
+  }
 
-  function backdrop(g, bd, t, scroll, vw) {
-    var img = bd.img;
-    // السماء فوق الصورة (للشاشات الطويلة)
-    g.fillStyle = bd.top; g.fillRect(-vw, -1200, W + vw * 2, 1300);
-    var h = 960, w = h * (img.naturalWidth / img.naturalHeight), y = -40;
-    // تكرار الصورة مع عكسها بالتناوب لتبدو متصلة بلا خط فاصل، وتتحرك ببطء (عمق)
-    var off = ((scroll * 0.22) % (w * 2) + w * 2) % (w * 2);
-    for (var x = -off - w * 2; x < W + vw + w; x += w) {
-      var k = Math.round((x + off) / w);
-      g.save();
-      if (k % 2) { g.translate(x + w, y); g.scale(-1, 1); g.drawImage(img, 0, 0, w, h); }
-      else g.drawImage(img, x, y, w, h);
-      g.restore();
-    }
-    // امتداد الرمل تحت الصورة
-    var sg = g.createLinearGradient(0, y + h - 40, 0, H + 300);
-    sg.addColorStop(0, '#e0893c'); sg.addColorStop(1, '#a8582a');
-    g.fillStyle = sg; g.fillRect(-vw, y + h - 2, W + vw * 2, 400);
-    // طريق خفيف تحت الأقدام
-    g.fillStyle = 'rgba(150,80,40,.18)'; g.fillRect(-vw, GY + 10, W + vw * 2, 60);
-    g.fillStyle = 'rgba(255,240,210,.18)';
-    tiled(g, scroll, 1, 90, vw, function (xx) { g.fillRect(xx, GY + 30, 30, 3); });
+  var HORIZON_Y = 455; // ارتفاع الأفق في المشهد
+
+  /**
+   * الخلفية صورة واحدة بمقاسها الأصلي (تكبير متساوٍ بلا مطّ ولا عكس)،
+   * تنزلق ببطء في اتجاه واحد حسب pan (0..1)، وطريق الفارس طبقة مستقلة أمامها.
+   */
+  function backdrop(g, bd, t, scroll, vw, pan) {
+    var img = bd.img, iw = img.naturalWidth, ih = img.naturalHeight;
+    var Wv = W + vw * 2;
+    var s = Math.max((Wv * 1.12) / iw, (HORIZON_Y + 260) / (ih * bd.horizon));
+    var dw = iw * s, dh = ih * s;
+    var x0 = -vw - (dw - Wv) * (pan == null ? 0.5 : pan);
+    var y0 = HORIZON_Y - bd.horizon * dh;
+    g.fillStyle = bd.top; g.fillRect(-vw - 10, -4000, Wv + 20, y0 + 4002);
+    g.drawImage(img, x0, y0, dw, dh);
+    road(g, scroll, vw, bd.road);
+  }
+
+  /** طريق الفارس: شريط مستقل بحافة مظلّلة يفصله عن الخلفية */
+  function road(g, scroll, vw, col) {
+    var top = GY - 16;
+    var sh = g.createLinearGradient(0, top - 34, 0, top);
+    sh.addColorStop(0, 'rgba(70,30,8,0)'); sh.addColorStop(1, 'rgba(70,30,8,.35)');
+    g.fillStyle = sh; g.fillRect(-vw, top - 34, W + vw * 2, 34);
+    var rg = g.createLinearGradient(0, top, 0, H + 120);
+    rg.addColorStop(0, col[0]); rg.addColorStop(1, col[1]);
+    g.fillStyle = rg; g.fillRect(-vw, top, W + vw * 2, H + 2000 - top);
+    g.fillStyle = 'rgba(255,240,200,.55)'; g.fillRect(-vw, top, W + vw * 2, 3);
+    // حصى على حافة الطريق وآثار القوافل — تتحرك بسرعة الفارس
+    tiled(g, scroll, 1, 140, vw, function (x) {
+      g.fillStyle = 'rgba(110,50,20,.55)';
+      g.beginPath(); g.ellipse(x + 20, top + 6, 9, 4, 0, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(x + 86, top + 9, 5, 3, 0, 0, TAU); g.fill();
+      g.fillStyle = 'rgba(120,60,25,.18)';
+      g.beginPath(); g.ellipse(x + 60, GY + 48, 22, 5, 0, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(x + 120, GY + 112, 14, 4, 0, 0, TAU); g.fill();
+    });
+    g.fillStyle = 'rgba(255,240,210,.22)';
+    tiled(g, scroll, 1, 90, vw, function (x) { g.fillRect(x, GY + 26, 34, 3); });
   }
 
   /** المشهد الكامل لمحطة. scroll يزيد مع التقدّم في الرحلة. vw: امتداد يمين/يسار للشاشات العريضة */
-  function world(g, stage, t, scroll, vw) {
+  function world(g, stage, t, scroll, vw, pan) {
     var c = THEMES[stage.theme];
     var bd = BACKDROPS[stage.theme];
-    if (bd && bd.img.complete && bd.img.naturalWidth) { backdrop(g, bd, t, scroll, vw); return; }
+    if (bd && bd.img.complete && bd.img.naturalWidth) { backdrop(g, bd, t, scroll, vw, pan); return; }
     sky(g, stage.time, t, vw);
     tiled(g, scroll, 0.08, 1600, vw, function (x) { FAR[stage.theme](g, x, c, t); });
     tiled(g, scroll, 0.3, 1600, vw, function (x) { MID[stage.theme](g, x, c, t); });

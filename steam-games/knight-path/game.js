@@ -364,7 +364,8 @@
   }
 
   function drawTravel(t) {
-    ART.world(ctx, stage, t, -scroll, cam.vw);
+    // الخلفية تنزلق ببطء في اتجاه واحد طوال الرحلة (من 1 إلى 0)
+    ART.world(ctx, stage, t, -scroll, cam.vw, 1 - Math.min(1, run.t / run.dur));
     for (const o of run.objs) {
       if (o.kind === 'obs') { ctx.globalAlpha = o.hit ? 0.5 : 1; ART.obstacle(ctx, o.type, o.x, t); ctx.globalAlpha = 1; }
       else ART.pickup(ctx, o.type, o.x, o.y, t);
@@ -378,8 +379,8 @@
 
   function weather(t) {
     if (stage.theme === 'desert') { // عاصفة رملية خفيفة
-      ctx.fillStyle = 'rgba(230,180,110,.35)';
-      for (let i = 0; i < 70; i++) { const x = ((i * 137 + t * 900) % (1600 + cam.vw * 2)) - cam.vw; const y = 300 + ((i * 71) % 420); ctx.fillRect(x, y + Math.sin(t * 3 + i) * 6, 26, 2); }
+      ctx.fillStyle = 'rgba(240,200,140,.28)';
+      for (let i = 0; i < 40; i++) { const x = ((i * 137 + t * 700) % (1600 + cam.vw * 2)) - cam.vw; const y = 140 + ((i * 71) % 260); ctx.fillRect(x, y + Math.sin(t * 3 + i) * 6, 22, 2); }
     }
     if (stage.theme === 'castle') {
       ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2;
@@ -880,7 +881,7 @@
 
   // خلفيات مصمّمة لبعض المحطات (أضف صورة لأي محطة بسطر واحد هنا)
   const BACKDROPS = {
-    desert: { src: 'bg-desert.webp', top: '#4e9ae6' }, // تبوك: صحراء وصخور حمراء وعاصفة رملية
+    desert: { src: 'bg-desert.webp', top: '#4e9ae6', horizon: 0.48, road: ['#eeb06a', '#bf6a30'] }, // تبوك: صحراء وصخور حمراء وعاصفة رملية
   };
   for (const [theme, b] of Object.entries(BACKDROPS)) {
     const img = new Image();
@@ -1095,7 +1096,7 @@
   // مشهد المبارزة
   // ------------------------------------------------------------------
   function drawDuel(t, dt) {
-    ART.world(ctx, stage, t, -stageIdx * 900 - 300, cam.vw);
+    ART.world(ctx, stage, t, -stageIdx * 900 - 300, cam.vw, 0.8);
     weather(t);
     if (mode === 'duo') {
       duo.swing = duo.swing.map((s) => (s > 0 ? (s + dt * 2.6 > 1 ? 0 : s + dt * 2.6) : 0));
