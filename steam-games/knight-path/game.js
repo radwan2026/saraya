@@ -877,6 +877,16 @@
   }
 
   const logoImg = new Image(); logoImg.src = '../assets/logo.png';
+
+  // خلفيات مصمّمة لبعض المحطات (أضف صورة لأي محطة بسطر واحد هنا)
+  const BACKDROPS = {
+    desert: { src: 'bg-desert.webp', top: '#4e9ae6' }, // تبوك: صحراء وصخور حمراء وعاصفة رملية
+  };
+  for (const [theme, b] of Object.entries(BACKDROPS)) {
+    const img = new Image();
+    img.onload = () => ART.setBackdrop(theme, img, b);
+    img.src = b.src;
+  }
   function goCert() {
     const c = $('cert'); const g = c.getContext('2d');
     const w = c.width, h = c.height;

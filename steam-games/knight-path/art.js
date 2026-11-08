@@ -248,9 +248,42 @@
     return 'rgb(' + f(r) + ',' + f(gg) + ',' + f(b) + ')';
   }
 
+  // ------------------------------------------------------------------
+  // خلفيات مصمّمة (صور) لبعض المحطات — تحلّ محل السماء والطبقات المرسومة
+  // ------------------------------------------------------------------
+  var BACKDROPS = {};
+  /** img: صورة محمّلة. ground: نسبة ارتفاع خط الأرض في الصورة (0..1) لتقف الشخصيات عليه */
+  function setBackdrop(theme, img, opts) { BACKDROPS[theme] = { img: img, top: (opts && opts.top) || '#4e9ae6' }; }
+
+  function backdrop(g, bd, t, scroll, vw) {
+    var img = bd.img;
+    // السماء فوق الصورة (للشاشات الطويلة)
+    g.fillStyle = bd.top; g.fillRect(-vw, -1200, W + vw * 2, 1300);
+    var h = 960, w = h * (img.naturalWidth / img.naturalHeight), y = -40;
+    // تكرار الصورة مع عكسها بالتناوب لتبدو متصلة بلا خط فاصل، وتتحرك ببطء (عمق)
+    var off = ((scroll * 0.22) % (w * 2) + w * 2) % (w * 2);
+    for (var x = -off - w * 2; x < W + vw + w; x += w) {
+      var k = Math.round((x + off) / w);
+      g.save();
+      if (k % 2) { g.translate(x + w, y); g.scale(-1, 1); g.drawImage(img, 0, 0, w, h); }
+      else g.drawImage(img, x, y, w, h);
+      g.restore();
+    }
+    // امتداد الرمل تحت الصورة
+    var sg = g.createLinearGradient(0, y + h - 40, 0, H + 300);
+    sg.addColorStop(0, '#e0893c'); sg.addColorStop(1, '#a8582a');
+    g.fillStyle = sg; g.fillRect(-vw, y + h - 2, W + vw * 2, 400);
+    // طريق خفيف تحت الأقدام
+    g.fillStyle = 'rgba(150,80,40,.18)'; g.fillRect(-vw, GY + 10, W + vw * 2, 60);
+    g.fillStyle = 'rgba(255,240,210,.18)';
+    tiled(g, scroll, 1, 90, vw, function (xx) { g.fillRect(xx, GY + 30, 30, 3); });
+  }
+
   /** المشهد الكامل لمحطة. scroll يزيد مع التقدّم في الرحلة. vw: امتداد يمين/يسار للشاشات العريضة */
   function world(g, stage, t, scroll, vw) {
     var c = THEMES[stage.theme];
+    var bd = BACKDROPS[stage.theme];
+    if (bd && bd.img.complete && bd.img.naturalWidth) { backdrop(g, bd, t, scroll, vw); return; }
     sky(g, stage.time, t, vw);
     tiled(g, scroll, 0.08, 1600, vw, function (x) { FAR[stage.theme](g, x, c, t); });
     tiled(g, scroll, 0.3, 1600, vw, function (x) { MID[stage.theme](g, x, c, t); });
@@ -645,6 +678,6 @@
     for (var c = 0; c < 4; c++) { var cx = c % 2 ? W - 38 : 38, cy = c < 2 ? 38 : H - 38; starShape(g, cx, cy, 18, 8, 8, 'rgba(160,100,30,.8)', t * 0.2); }
   }
 
-  var API = { W: W, H: H, GY: GY, THEMES: THEMES, MAP_PTS: MAP_PTS, world: world, knight: knight, person: person, obstacle: obstacle, pickup: pickup, falcon: falcon, map: map, starShape: starShape, shade: shade, hexA: hexA, palm: palm, minaret: minaret, dome: dome };
+  var API = { setBackdrop: setBackdrop, W: W, H: H, GY: GY, THEMES: THEMES, MAP_PTS: MAP_PTS, world: world, knight: knight, person: person, obstacle: obstacle, pickup: pickup, falcon: falcon, map: map, starShape: starShape, shade: shade, hexA: hexA, palm: palm, minaret: minaret, dome: dome };
   root.KnightArt = API;
 })(window);
