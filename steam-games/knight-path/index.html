@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2a1a0e">
+  <meta name="description" content="مغامرة تعليمية: فارس عربي يرحل على طريق الحج الشامي من دمشق إلى مكة، ويواجه الحرّاس والسحرة بالأسئلة العلمية والدينية.">
+  <title>فارس الدرب — STEAM Games</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="مشهد الرحلة"></canvas>
+    <div id="flash" class="flash"></div>
+
+    <!-- الشريط العلوي -->
+    <header class="hud" id="hud">
+      <button class="icon-btn" id="btnPause" title="القائمة" aria-label="القائمة">☰</button>
+      <div class="brand"><img src="../assets/logo.png" alt="G GAME"><b>فارس الدرب</b></div>
+      <div class="hud-mid" id="hudMid"></div>
+      <div class="hud-res">
+        <span class="res" title="التمر"><i>🌴</i><b id="resDates">0</b></span>
+        <span class="res" title="قِرب الماء"><i>💧</i><b id="resWater">0</b></span>
+      </div>
+      <button class="icon-btn" id="btnMusic" title="الموسيقى" aria-label="الموسيقى">🎵</button>
+      <button class="icon-btn" id="btnSound" title="المؤثرات" aria-label="المؤثرات">🔊</button>
+    </header>
+
+    <!-- مبارزة: أشرطة الحياة -->
+    <div class="bars hidden" id="bars">
+      <div class="bar enemy"><span class="nm" id="enemyName"></span><div class="track"><i id="enemyHp"></i></div></div>
+      <div class="vs">⚔️</div>
+      <div class="bar player"><span class="nm" id="playerName"></span><div class="track"><i id="playerHp"></i></div></div>
+    </div>
+
+    <!-- فقاعة الكلام -->
+    <div class="speech hidden" id="speech"><b id="speaker"></b><p id="speechText"></p><button class="btn small gold" id="speechNext">متابعة ◀</button></div>
+
+    <!-- لوحة السؤال -->
+    <section class="qpanel hidden" id="qpanel" aria-live="polite">
+      <div class="qhead">
+        <span class="chip" id="qCat"></span>
+        <div class="timer"><i id="qTimer"></i></div>
+        <span class="qcount" id="qCount"></span>
+      </div>
+      <h2 class="qtext" id="qText"></h2>
+      <div class="answers" id="answers"></div>
+      <div class="order hidden" id="order">
+        <div class="slots" id="slots"></div>
+        <div class="pool" id="pool"></div>
+        <div class="row tight"><button class="btn small ghost" id="orderReset">↺ من جديد</button><button class="btn small gold" id="orderOk">✔ تأكيد</button></div>
+      </div>
+      <div class="explain hidden" id="explain"></div>
+      <div class="lifelines" id="lifelines">
+        <button class="life" id="lfFalcon" title="الصقر يدلّك على الإجابة"><i>🦅</i><b>0</b></button>
+        <button class="life" id="lfShield" title="درع الحكمة: يحذف إجابتين خاطئتين"><i>🛡️</i><b>1</b></button>
+        <button class="life" id="lfWater" title="قِربة ماء: تعيد جزءاً من حياتك"><i>💧</i><b>0</b></button>
+        <button class="life" id="lfTime" title="ساعة الرمل: تُوقف الوقت 10 ثوانٍ"><i>⏳</i><b>1</b></button>
+      </div>
+      <div class="veil" id="veil"></div>
+    </section>
+
+    <!-- الرحلة -->
+    <div class="runner-ui hidden" id="runnerUi">
+      <div class="progress"><span id="runFrom"></span><div class="track"><i id="runProg"></i><b id="runHorse">🐎</b></div><span id="runTo"></span></div>
+      <div class="run-hint" id="runHint">اضغط على الشاشة أو المسافة للقفز ⤴</div>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+
+    <!-- ============ الشاشات ============ -->
+    <section class="screen" id="scrTitle">
+      <div class="panel title-panel">
+        <img class="cover-art hidden" id="coverArt" src="cover.jpg" alt="فارس الدرب">
+        <div class="title-logo" id="titleLogo">
+          <img src="../assets/logo.png" alt="G GAME">
+          <h1>فارس الدرب</h1>
+          <p class="tag">من الشام إلى مكة… بالعلم نعبر الطريق</p>
+        </div>
+        <div class="menu-actions">
+          <button class="btn gold big" id="btnContinue">🐎 تابع الرحلة</button>
+          <button class="btn green" id="btnNew">✨ رحلة جديدة</button>
+          <div class="row tight">
+            <button class="btn ghost" id="btnDuo">⚔️ مبارزة فارسين</button>
+            <button class="btn ghost" id="btnCodex">📜 المخطوطة</button>
+            <button class="btn ghost" id="btnHelp">❓ كيف ألعب</button>
+          </div>
+        </div>
+        <div class="steam-tags"><span class="s">S علوم</span><span class="t">T تقنية</span><span class="m">M رياضيات</span><span class="d">دين وقيم</span><span class="h">تاريخ</span></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrSetup">
+      <div class="panel">
+        <h2>من هو الفارس؟</h2>
+        <label class="field">اسم الفارس<input id="setupName" maxlength="18" placeholder="اكتب اسمك"></label>
+        <p class="muted">اختر العمر لتناسبك الأسئلة:</p>
+        <div class="ages" id="ages"></div>
+        <div class="row"><button class="btn ghost" data-go="title">↩ رجوع</button><button class="btn gold" id="setupGo">🐎 انطلق من دمشق</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden map-screen" id="scrMap">
+      <div class="map-side">
+        <div class="rank" id="rankBox"></div>
+        <button class="btn green" id="btnShop">⛺ مخيم القافلة</button>
+        <button class="btn ghost" id="btnMapCodex">📜 المخطوطة</button>
+        <button class="btn gold hidden" id="btnCert">🏅 شهادتي</button>
+      </div>
+      <div class="station-card hidden" id="stationCard">
+        <small id="scSub"></small>
+        <h2 id="scName"></h2>
+        <div class="sc-stars" id="scStars"></div>
+        <ul id="scFoes"></ul>
+        <button class="btn gold big" id="scGo">🐎 انطلق</button>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrReward">
+      <div class="panel scroll-panel">
+        <div class="seal" id="rwSeal">✦</div>
+        <small class="muted" id="rwSub">ختم المحطة</small>
+        <h2 id="rwTitle"></h2>
+        <div class="stars" id="rwStars"></div>
+        <div class="loot" id="rwLoot"></div>
+        <div class="fact"><span id="rwArtifact"></span><p id="rwFact"></p></div>
+        <div class="row" id="rwActions"></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrShop">
+      <div class="panel wide">
+        <h2>⛺ مخيم القافلة</h2>
+        <p class="muted">استرح، واشترِ ما يقوّيك للطريق بالتمر الذي جمعته 🌴 <b id="shopDates"></b></p>
+        <div class="shop" id="shop"></div>
+        <div class="row"><button class="btn gold" data-go="map">↩ إلى الخريطة</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrCodex">
+      <div class="panel wide">
+        <h2>📜 مخطوطة الرحلة</h2>
+        <p class="muted" id="codexStats"></p>
+        <div class="codex" id="codex"></div>
+        <div class="row"><button class="btn gold" data-go="back">إغلاق</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrHelp">
+      <div class="panel help">
+        <h2>كيف ألعب؟</h2>
+        <ol>
+          <li><b>الرحلة:</b> فرسك يعدو وحده، فاضغط على الشاشة أو المسافة للقفز فوق الصخور والعقارب، واجمع <b>🌴 التمر</b> و<b>💧 الماء</b>.</li>
+          <li><b>المبارزة:</b> كل إجابة صحيحة ضربة سيف، وكلما أجبت أسرع كانت الضربة أقوى ⚡. والإجابة الخاطئة تعطي الخصم فرصة.</li>
+          <li><b>المساعدات:</b> 🦅 الصقر يدلّك، و🛡️ الدرع يحذف إجابتين، و💧 الماء يشفيك، و⏳ الساعة توقف الوقت.</li>
+          <li><b>خدع السحرة:</b> الظلال تُخفي السؤال، فحرّك إصبعك لتنيره. والرياح تبعثر الكلمات، والسراب يحرّك الإجابات، والرمال تُسرع الوقت.</li>
+          <li><b>⛺ مخيم القافلة:</b> طوّر سيفك ودرعك وصقرك وسرجك بالتمر.</li>
+        </ol>
+        <div class="science"><b>💡 الهدف:</b> أن تتعلّم وأنت تلعب. بعد كل سؤال يظهر شرح قصير، فاقرأه، ففيه سرّ الإجابة!</div>
+        <div class="row"><button class="btn gold" data-go="back">فهمت!</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrPause">
+      <div class="panel small">
+        <h2>استراحة ⛺</h2>
+        <div class="menu-actions">
+          <button class="btn gold" id="btnResume">▶ متابعة</button>
+          <button class="btn ghost" id="btnPauseHelp">❓ كيف ألعب</button>
+          <button class="btn ghost" id="btnToMap">🗺️ الخريطة</button>
+          <button class="btn ghost" data-go="title">🏠 القائمة الرئيسية</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrLose">
+      <div class="panel small">
+        <div class="big-icon">🛡️</div>
+        <h2>سقط درعك هذه المرة!</h2>
+        <p class="muted" id="loseText">لا بأس يا فارس، فكل فارس يتعلّم من عثرته.</p>
+        <div class="menu-actions">
+          <button class="btn gold" id="btnRetry">⚔️ أعد المبارزة</button>
+          <button class="btn ghost" id="btnLoseMap">🗺️ الخريطة</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrDuo">
+      <div class="panel">
+        <h2>⚔️ مبارزة فارسين</h2>
+        <p class="muted">على نفس الجهاز: يتناوب الفارسان على الأسئلة، وكل إجابة صحيحة ضربة على الخصم!</p>
+        <div class="duo-names">
+          <label class="p1">الفارس الأخضر<input id="duo1" maxlength="14" value="فارس 1"></label>
+          <label class="p2">الفارس الأزرق<input id="duo2" maxlength="14" value="فارس 2"></label>
+        </div>
+        <p class="muted">مستوى الأسئلة:</p>
+        <div class="ages" id="duoAges"></div>
+        <div class="row"><button class="btn ghost" data-go="title">↩ رجوع</button><button class="btn gold" id="duoGo">⚔️ ابدأ المبارزة</button></div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="scrFinal">
+      <div class="panel scroll-panel">
+        <div class="big-icon">🌅</div>
+        <h2 id="finTitle"></h2>
+        <p class="lead" id="finText"></p>
+        <div class="row" id="finActions"></div>
+      </div>
+    </section>
+
+    <section class="screen hidden cert-screen" id="scrCert">
+      <canvas id="cert" width="1600" height="1130"></canvas>
+      <div class="row">
+        <button class="btn gold" id="certDl">⬇ تحميل الشهادة</button>
+        <button class="btn ghost" data-go="back">إغلاق</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="engine.js"></script>
+  <script src="art.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
