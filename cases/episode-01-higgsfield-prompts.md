@@ -132,3 +132,44 @@ Close-up of a 1950s reel-to-reel tape recorder on a wooden desk at night, comple
 ```
 
 > اللقطة 3 (الساعة) واللقطة 5 (ملف القضية) تبقيان كما هما، وتعملان مع الصورتين الجديدتين.
+
+---
+
+# الدفعة الرابعة: اكتشاف الجثة والأدلة
+
+### اللقطة 12: آثار الطين على الدرج (المشهد 2)
+**المدة:** 6 ثوانٍ
+```
+Black and white film noir, early morning inside a dim 1950s shop. Low-angle shot of narrow old wooden stairs with muddy shoe prints of a man's leather shoe climbing the steps. Camera: slow, steady crane up the staircase following the footprints step by step toward the half-open door at the top, where pale morning light spills out. Dust particles float in the thin light, a hanging lamp sways very slightly, a drop of water falls from a step. Ominous, silent, suspenseful. High contrast, deep shadows, film grain. Sound: creaking wooden steps, a slow heartbeat-like low drone, distant dripping water.
+```
+
+### اللقطة 13: لحظة الاكتشاف (المشهد 2)
+**المدة:** 6 ثوانٍ
+```
+Black and white 1950s film noir, an old merchant's upstairs office in the morning, light through window blinds casting stripes across a Persian carpet. In the foreground the elderly man's motionless hand with a ring lies on the carpet. In the doorway, the young man with slicked-back hair and a dark jacket freezes, his eyes widen in horror, he grips the door frame, his lips part as he gasps and calls out. Dust floats in the light stripes, a loose paper on the floor stirs slightly in a draft. Camera: slow rack focus from the motionless hand in the foreground to the young man's shocked face in the doorway. No gore. High contrast, film grain, realistic emotion. Sound: door creak, a sharp gasp, then a muffled cry, dramatic low string hit.
+```
+
+### اللقطة 14: الخزنة المفتوحة (المشهد 3، الدليل 2)
+**المدة:** 5 ثوانٍ
+```
+Black and white film noir evidence shot of a heavy old iron safe standing open in a 1950s office, empty velvet jewelry trays on its shelves. Light through the window blinds slowly shifts across the floor and the safe as a cloud passes outside. Camera: slow dolly in toward the combination dial on the open door, ending in a close-up of the dial with no scratches or damage. Dust floats in the light beams. High contrast, deep blacks, film grain, still and silent mood. Sound: faint ticking of a clock, distant street noise, a soft metallic creak of the door.
+```
+
+### اللقطة 15: كوبا الشاي (المشهد 3، الدليل 4)
+**المدة:** 5 ثوانٍ
+```
+Black and white film noir evidence shot on an old wooden desk: two traditional tea glasses on an engraved metal tray, one half full of mint tea with a mint leaf, the other completely empty and spotless, beside an ornate teapot and a lit oil lamp. The oil lamp flame flickers gently, a thin wisp of steam no longer rises, light stripes from the blinds lie across the desk. Camera: slow lateral slide from the half-full glass to the empty glass, with rack focus landing on the clean empty glass. High contrast, shallow depth of field, film grain. Sound: faint ticking clock, a soft flicker of the lamp flame, silence.
+```
+
+### اللقطة 16: صفحة دفتر الديون (المشهد 3، الدليل 7)
+**المدة:** 5 ثوانٍ
+```
+Close-up of an old open accounting ledger with handwritten Arabic entries in columns under warm lamp light. One entry is circled in red pencil. Camera: very slow, smooth push-in toward the circled entry, ending with it centered and sharp. The warm lamp light flickers gently, dust floats in the air, the fountain pen rests beside the page. The handwriting and numbers stay perfectly still, sharp and legible, with no warping or changes. Warm amber noir tones, shallow depth of field, film grain. Sound: faint rain outside, a soft paper rustle.
+```
+
+## ملاحظات الدفعة الرابعة
+1. **صورة الدرج:** على اليسار لافتة «Dr Pepper 5¢» وملصق إنجليزي، ويبدو المكان بقالة أمريكية لا محل ذهب في طرابلس. يجب تعديل اليسار (Inpaint) إلى واجهة عرض مجوهرات، أو قصّ اللقطة على الدرج فقط.
+2. **صورة الخزنة:** على الجدار تقويم إنجليزي «Riverside Mercantile Co. APRIL 1956»، والقصة في يناير 1957. يُستبدل بتقويم عربي لشهر يناير 1957 أو يُحذف.
+3. **صورة الشاي:** رقم الدليل على الطاولة «3»، والشاي في السيناريو هو الدليل رقم 4. يُعدّل الرقم أو يُحذف. والخريطة في الخلفية مكتوب عليها «LIBYA» بالإنجليزية، فالأفضل تعريبها.
+4. **صورة دفتر الديون:** الرقم «300» مكتوب بأرقام لاتينية وسط أرقام عربية مشرقية. فرق بسيط، والأجمل توحيده «٣٠٠».
+5. **صورة الاكتشاف:** ممتازة. انتبه فقط إلى أن الخزنة فيها تبدو مليئة بالأوراق، بينما في لقطة الدليل تظهر فارغة. لا بأس بذلك لأن اللص أخذ الذهب وترك الأوراق.
