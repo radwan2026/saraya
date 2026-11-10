@@ -255,3 +255,15 @@ Black and white 1950s film noir, night, heavy rain in a narrow arcaded souq of o
 3. **أداة الجريمة:** الصنجة مكتوب عليها «١٠٠ غرام»، وهذا وزن خفيف لا يقتل. اجعلها «١ كيلو» أو «٥٠٠ غرام». وعلى الكيس تاريخ «٢٠٢٥/٤/١٤»، والصحيح ١٤/١/١٩٥٧. ويُفضّل أن يظهر الختم الأحمر مكسوراً على الكيس.
 4. **المفتش في نصف ظل:** الصورة قوية. لكن المباني خلف برج الساعة تبدو ناطحات سحاب حديثة مضاءة، والأفضل مدينة منخفضة من الخمسينيات.
 5. **سليمان تحت المظلة:** ممتازة ومطابقة للشخصية تماماً.
+
+### اللقطة 27: إغلاق الملف (نهاية الحل)
+**المدة:** 6 ثوانٍ
+```
+Top-down close-up on a dark wooden desk under a green banker's lamp: an aged case file titled in Arabic. A man's hand in a dark suit sleeve presses a wooden rubber stamp firmly onto the file, holds it for a beat, then lifts it away slowly, revealing the fresh red ink stamp glistening wet. Beside the file a half-burned red leather ledger, a faint ember still glowing at its charred edge, a thin wisp of smoke rising. Camera: static overhead, very slight push-in after the stamp lifts. The Arabic text on the file stays sharp and unchanged. Warm amber light, deep shadows, film grain. Sound: a heavy thud of the stamp, paper creak, faint crackle of the ember, then a closing music sting.
+```
+
+**ملاحظات على صورة إغلاق الملف (يجب تعديلها):**
+- رأس الملف «جمهورية مصر العربية – النيابة العامة» مع **شعار النسر المصري** الرسمي، وعلى الدفتر المحروق النسر نفسه. القصة في طرابلس 1957، واستخدام شعار دولة حقيقي غير مناسب. استبدله بنص بلا شعار مثل «شرطة طرابلس – قسم التحقيقات».
+- التاريخ «٢٠٢٣/١٠/١٢» ورقم القضية «٢٠٢١/٤٨»؛ والصحيح **001/1957** و**14/1/1957**.
+- الموضوع «جرائم فساد مالي وإداري» والتهمة «اختلاس – استغلال نفوذ»؛ والصحيح **جريمة قتل**، والتهمة **قتل عمد واختلاس**. وخانة اسم المتهم فارغة، والأقوى درامياً كتابة «سليمان الفيتوري».
+- الدفتر المحروق مكتوب عليه «سجلات التحقيقات السرية»، والمفروض أنه **الدفتر الأحمر للحسابات 1956** الذي وُجد نصف محروق في فرن سليمان.
