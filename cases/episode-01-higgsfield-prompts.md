@@ -173,3 +173,44 @@ Close-up of an old open accounting ledger with handwritten Arabic entries in col
 3. **صورة الشاي:** رقم الدليل على الطاولة «3»، والشاي في السيناريو هو الدليل رقم 4. يُعدّل الرقم أو يُحذف. والخريطة في الخلفية مكتوب عليها «LIBYA» بالإنجليزية، فالأفضل تعريبها.
 4. **صورة دفتر الديون:** الرقم «300» مكتوب بأرقام لاتينية وسط أرقام عربية مشرقية. فرق بسيط، والأجمل توحيده «٣٠٠».
 5. **صورة الاكتشاف:** ممتازة. انتبه فقط إلى أن الخزنة فيها تبدو مليئة بالأوراق، بينما في لقطة الدليل تظهر فارغة. لا بأس بذلك لأن اللص أخذ الذهب وترك الأوراق.
+
+---
+
+# الدفعة الخامسة: الشهود والمتهمون وبقية الأدلة
+
+### اللقطة 17: الكيس المختوم (المشهد 3، الدليل 8)
+**المدة:** 8 ثوانٍ
+```
+Cinematic 1950s noir, a dim detective office at night, rain pouring outside the window with blurred street lamps and a vintage car. The grey-mustached inspector in a waistcoat and loosened tie holds up a sealed brown paper evidence bag with a red wax seal, studies it for a moment with narrowed eyes, then turns his gaze directly to the camera as if telling a secret. He slowly lowers the bag into the open desk drawer, closes the drawer and turns the brass key in the lock. Camera: slow push-in, ending in a close-up of the key turning in the lock. Warm green banker's lamp light, deep shadows, film grain, realistic movement. Sound: rain on the window, paper rustle, the drawer sliding shut, a sharp metallic click of the lock.
+```
+
+### اللقطة 18: الغفير فرج يدلي بشهادته (المشهد 4)
+**المدة:** 8 ثوانٍ
+```
+Cinematic 1950s noir, a detective office on a grey rainy day. An old night watchman in a brown wool hooded cloak sits on the edge of a wooden chair, nervously twisting his knitted cap in his rough hands. He glances toward the rainy window as if remembering that night, then looks back at the inspector and begins to speak quietly with worried eyes. Beside him the kerosene lantern on the floor flickers. Behind him the tape recorder reels turn slowly. In the blurred foreground the inspector's hand writes in a notebook. Camera: slow push-in toward the old man's face, keeping the foreground soft. Warm muted tones, green lamp glow, rain streaming down the window, film grain. Sound: heavy rain on glass, whir of the tape reels, pen scratching on paper.
+```
+
+### اللقطة 19: زينب (المشهد 6)
+**المدة:** 8 ثوانٍ
+```
+Cinematic 1950s drama, the dim salon of a wealthy house in Tripoli, soft daylight through lace curtains, the framed portrait of an old bearded man with a black mourning ribbon on the wall behind her. An elegant Arab woman in a black mourning dress and black headscarf sits upright on an ornate sofa, perfectly still and composed. She slowly lifts her eyes to the off-camera inspector, her fingers tighten slightly in her lap, a faint bitter half-smile appears and fades, and she answers calmly. The lace curtain moves gently in a draft, dust floats in the window light. Camera: slow push-in from medium shot to close-up, over the blurred shoulder of the inspector in the foreground. Muted warm tones, deep shadows, film grain, subtle realistic facial expression. Sound: a ticking mantel clock, faint street sounds outside, silence.
+```
+
+### اللقطة 20: صورة الدفتر الأحمر المثبتة على اللوح (المشهد 3، الدليل 3)
+**المدة:** 5 ثوانٍ
+```
+A vintage faded photograph pinned to a cork evidence board with a brass pin, showing a red leather accounting ledger on an office desk. Camera: very slow push-in toward the ledger in the photograph. Warm lamp light slowly sweeps across the photo surface as if a lamp is being moved, revealing the texture of the old paper and the gold embossed year. The photograph itself stays completely still and unchanged. Warm amber tones, shallow depth of field, film grain. Sound: faint rain, a low suspenseful drone.
+```
+
+### اللقطة 21: منفضة السجائر (المشهد 3، الدليل 6)
+**المدة:** 5 ثوانٍ
+```
+Black and white film noir evidence shot from above: a cut-crystal ashtray with a single cigarette butt and ash on a dark desk, a crumpled Arabic cigarette pack beside it, an evidence number card and a small measuring scale. Camera: very slow overhead orbit around the ashtray. A hard light moves slowly, making sparkling highlights and star-shaped reflections travel through the crystal and across the desk. Everything else stays still; the printed text stays sharp and unchanged. High contrast, deep blacks, film grain, forensic mood. Sound: faint ticking clock, a camera shutter click.
+```
+
+## ملاحظات الدفعة الخامسة
+1. **منفضة السجائر (الأهم):** بطاقة مسرح الجريمة مكتوب عليها «رقم القضية 47/1958» و«التاريخ 1958/3/12»، والصحيح **001/1957** و**14/1/1957**. وعلبة السجائر عليها «شركة الشرقية للدخان – القاهرة»، وهي شركة حقيقية في مصر، والأفضل اسم مصنع خيالي في طرابلس مثل «مصنع دخان طرابلس». ورقم الدليل في الصورة «3»، والمنفضة في السيناريو هي الدليل رقم 6.
+2. **الدفتر الأحمر:** على كعبه كتابة إنجليزية «LEDGER ACCOUNTS GENERAL»، وعلى الصينية كلمة «IN»، والأفضل تعريبهما («دفتر الحسابات العام»). والمدينة من النافذة تبدو أمريكية؛ لا بأس بذلك لأن الصورة صغيرة ومثبتة على اللوح.
+3. **الغفير فرج:** الرجل في مقدمة الصورة أسود الشعر، أما المفتش هاشم فشعره وشاربه رماديان. بما أنه ظاهر من الخلف وبشكل ضبابي فالأمر مقبول، لكن الأدق تعديله. وجهاز التسجيل في هذه الصورة بعدادات VU حديثة، وهو يختلف عن جهاز الخمسينيات بالعين الخضراء. ويمكن اعتباره جهاز المفتش لا جهاز الحاج.
+4. **زينب:** الصورة ممتازة. صورة الحاج على الجدار بغترة وعقال على الطريقة الخليجية، والأقرب لتاجر طرابلسي في الخمسينيات طاقية حمراء أو عمامة بيضاء مع جرد.
+5. **المفتش والكيس:** ممتازة ومطابقة للسيناريو تماماً، وهي الآن الصورة المرجعية لشكل المفتش هاشم في بقية الحلقة.
