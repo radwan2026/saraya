@@ -60,3 +60,45 @@ Top-down overhead shot of an aged paper case file on a dark wooden desk, surroun
 ## لقطات المشهد 0 الناقصة
 - يد تطرق باب «مجوهرات القماطي» ثلاث طرقات.
 - بكرات جهاز التسجيل تدور ثم تتوقف في مكتب الحاج.
+
+---
+
+# الدفعة الثانية
+
+### اللقطة 6: جهاز التسجيل في مكتب الحاج يتوقف (المشهد 0)
+**الصورة:** جهاز البكرات أمام نافذة المطر · **المدة:** 6 ثوانٍ
+
+```
+Close-up of a vintage reel-to-reel tape recorder on a desk at night, warm lamp light, rain streaming down the window behind it with soft golden bokeh city lights. The two tape reels spin steadily and the VU meter needles bounce gently with a man's voice. Then an older man's finger enters frame and presses the stop key; the reels slow down and come to a complete stop, the needles drop to zero. Camera: static, very slow push-in toward the reels. Dust particles float in the lamplight. Warm amber noir lighting, shallow depth of field, film grain. The label on the machine stays unchanged. Sound: mechanical whir of the reels, rain on glass, a sharp mechanical click, then only the rain.
+```
+
+### اللقطة 7: الشريط يُشغَّل في مكتب المفتش (المشهد 9)
+**الصورة:** نفس صورة جهاز التسجيل · **المدة:** 8 ثوانٍ
+
+```
+Close-up of a vintage reel-to-reel tape recorder at night, completely still at first. A man's hand presses the play key with a click. The reels begin to turn slowly, then reach steady speed; the VU meter needles start moving with a voice, rising and falling. Rain streams down the window behind, golden bokeh lights blur outside. Camera: very slow push-in toward the VU meters, ending on the glowing needles. Warm amber lamp light, deep shadows, dust in the light beam, film grain, suspenseful noir mood. Sound: click of the play key, tape hiss and soft whir, heavy rain on the glass.
+```
+
+### اللقطة 8: استجواب خليل (المشهد 5)
+**الصورة:** غرفة التحقيق والمصباح المعلّق · **المدة:** 8 ثوانٍ · **Genre:** `noir`
+
+```
+1950s film noir interrogation room, single bare bulb hanging under a metal shade above a metal table. A nervous young Arab man with slicked-back black hair and a dark jacket sits at the table. He takes a quick nervous drag of his cigarette, exhales a thick cloud of smoke that curls up into the light, glances sideways avoiding eye contact, then looks back toward the inspector with fear in his eyes. His fingers tremble slightly. In the foreground, the inspector in a fedora sits with his back to the camera, silhouetted and motionless. The bulb sways very slightly, making the shadows move across the wall. Camera: slow push-in over the inspector's shoulder toward the young man's face. Desaturated, high-contrast lighting, deep blacks, film grain. Realistic facial expression, natural movement. Sound: buzzing bulb, faint rain against the barred window, the young man breathing out smoke.
+```
+
+**لقطة تكميلية (نهاية الاستجواب، 5 ثوانٍ):**
+```
+Same 1950s interrogation room. Close-up on the young man's trembling hand as he stubs out his cigarette hard in the metal ashtray, smoke rising through the beam of the single bulb. Camera: static close-up, shallow depth of field. High-contrast noir lighting, desaturated, film grain. Sound: the cigarette being crushed, buzzing bulb, silence.
+```
+
+### اللقطة 9: الأسطى مصطفى في محل الساعات (المشهد 7)
+**الصورة:** الساعاتي العجوز وعدسته · **المدة:** 10 ثوانٍ
+
+```
+Old watchmaker's shop in a 1950s North African souq, warm sunlight pouring through the open arched doorway, dust floating in the light. Dozens of antique clocks cover the wall, their pendulums swinging and their second hands ticking. An elderly Libyan watchmaker in a white turban, red cap and traditional embroidered robe works with a loupe over his eye, carefully turning a tiny brass gear with tweezers. After a moment he pauses, slowly raises his head, removes the loupe from his eye and looks off-camera with a calm, bitter, knowing expression. Outside the doorway, people in traditional clothing walk slowly through the bright market. Camera: slow push-in from medium shot to a close-up of his face. Warm golden tones, rich textures, cinematic realism, shallow depth of field. The Arabic sign and the flag on the wall stay unchanged. Sound: dozens of clocks ticking out of sync, faint market noise outside.
+```
+
+## ملاحظات الدفعة الثانية
+1. **جهاز التسجيل:** مكتوب عليه «TEAC A-3300S»، وهو اسم تجاري حقيقي وطراز من السبعينيات، أي بعد زمن القصة بعشرين سنة. يُفضّل إعادة توليد الصورة بجهاز بكرات خمسيني بلا اسم ماركة، أو بلوحة صغيرة باسم عربي.
+2. **محل الساعاتي:** علم المملكة الليبية (الأحمر والأسود والأخضر بالهلال والنجمة) مناسب تماماً لسنة 1957. والصورة نهارية ملونة، وهذا يطابق السيناريو لأن الاستجواب يجري في الحاضر.
+3. **الحوار:** نماذج الفيديو ما زالت ضعيفة في نطق الحوار العربي بحركة شفاه دقيقة. الأفضل توليد اللقطات بتمثيل صامت، ثم تسجيل الحوار بصوت ممثل وتركيبه بأداة **Sync Lipsync** في Higgsfield.
