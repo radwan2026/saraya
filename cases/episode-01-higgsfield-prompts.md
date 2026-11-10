@@ -102,3 +102,33 @@ Old watchmaker's shop in a 1950s North African souq, warm sunlight pouring throu
 1. **جهاز التسجيل:** مكتوب عليه «TEAC A-3300S»، وهو اسم تجاري حقيقي وطراز من السبعينيات، أي بعد زمن القصة بعشرين سنة. يُفضّل إعادة توليد الصورة بجهاز بكرات خمسيني بلا اسم ماركة، أو بلوحة صغيرة باسم عربي.
 2. **محل الساعاتي:** علم المملكة الليبية (الأحمر والأسود والأخضر بالهلال والنجمة) مناسب تماماً لسنة 1957. والصورة نهارية ملونة، وهذا يطابق السيناريو لأن الاستجواب يجري في الحاضر.
 3. **الحوار:** نماذج الفيديو ما زالت ضعيفة في نطق الحوار العربي بحركة شفاه دقيقة. الأفضل توليد اللقطات بتمثيل صامت، ثم تسجيل الحوار بصوت ممثل وتركيبه بأداة **Sync Lipsync** في Higgsfield.
+
+---
+
+# الدفعة الثالثة (بعد إعادة توليد الصور)
+
+### اللقطة 10: يد تطرق الباب (المشهد 0، بعد لقطة الحذاء)
+**المدة:** 5 ثوانٍ
+```
+Black and white 1950s film noir, night, heavy rain. A man's black-gloved hand knocks firmly three times on the old carved wooden door of the jewelry shop, each knock deliberate, then the hand pauses against the wood. Rainwater drips steadily from the edge of the Arabic shop sign above, the iron lantern flickers and sways slightly, rain streaks fall through its light. Far down the arcade, a small dark figure stands still under the arches. The closed umbrella in the lower corner drips. Camera: static, very slight push-in toward the hand. The Arabic sign stays sharp and unchanged. High contrast, deep blacks, glistening wet wood, 35mm film grain. Sound: three heavy wooden knocks, heavy rain, dripping water, a distant thunder roll.
+```
+
+### اللقطة 11: خليل يصل صباحاً (المشهد 2)
+**المدة:** 6 ثوانٍ
+```
+Black and white 1950s film noir, early grey misty morning after the rain in an empty arcaded souq. The young man in the dark jacket stands in the doorway of the jewelry shop, takes a slow nervous drag of his cigarette, exhales smoke that drifts into the mist, and glances back down the empty wet street with a worried look. Then he turns toward the dark interior of the shop and slowly steps inside. Mist drifts between the arches, drops fall from the lanterns and the arches into puddles, ripples break the reflection of the minaret. Camera: static, then a slow push-in toward the doorway as he disappears into the darkness. The Arabic sign stays sharp and unchanged. Soft diffused light, film grain, realistic movement. Sound: dripping water, distant rooster and morning birds, his footsteps on wet stone, a creaking door.
+```
+
+### تحديث اللقطتين 6 و7 لتناسب جهاز التسجيل الجديد (عين خضراء بدل العدادات)
+
+**اللقطة 6: الجهاز يتوقف (المشهد 0)، 6 ثوانٍ**
+```
+Close-up of a 1950s reel-to-reel tape recorder on a wooden desk at night, warm lamp light, rain running down the window behind with golden bokeh lights. The two metal reels spin steadily, the brown tape running between them, and the green magic-eye indicator flickers with a man's voice. Then an older man's finger enters frame and presses one of the cream piano-key buttons; the reels slow down and stop completely, the green eye fades to a dim steady glow. Camera: static, very slow push-in toward the reels. Dust floats in the lamplight. Warm amber noir lighting, film grain. Sound: mechanical whir of the reels, rain on glass, a sharp click, then only rain.
+```
+
+**اللقطة 7: المفتش يشغّل الشريط (المشهد 9)، 8 ثوانٍ**
+```
+Close-up of a 1950s reel-to-reel tape recorder on a wooden desk at night, completely still. A man's hand presses a cream piano-key button with a click. The metal reels begin to turn slowly, then reach steady speed; the green magic-eye indicator comes alive and pulses with a voice. Rain streams down the window behind with golden bokeh lights. Camera: very slow push-in ending on the glowing green eye. Warm amber lamp light, dust in the air, deep shadows, film grain, suspenseful noir mood. Sound: click, tape hiss, soft whir, rain on the glass.
+```
+
+> اللقطة 3 (الساعة) واللقطة 5 (ملف القضية) تبقيان كما هما، وتعملان مع الصورتين الجديدتين.
