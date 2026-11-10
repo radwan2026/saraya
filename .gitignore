@@ -4,3 +4,4 @@ npm-debug.log*
 
 # Rendered episode videos exceed GitHub's 100MB file limit; regenerate with cases/comic-engine
 cases/assets/episode-01-comic.mp4
+cases/assets/episode-01-tiktok.mp4
