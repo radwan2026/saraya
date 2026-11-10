@@ -1,3 +1,6 @@
 node_modules/
 npm-debug.log*
 .DS_Store
+
+# Rendered episode videos exceed GitHub's 100MB file limit; regenerate with cases/comic-engine
+cases/assets/episode-01-comic.mp4
