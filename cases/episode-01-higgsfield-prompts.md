@@ -214,3 +214,44 @@ Black and white film noir evidence shot from above: a cut-crystal ashtray with a
 3. **الغفير فرج:** الرجل في مقدمة الصورة أسود الشعر، أما المفتش هاشم فشعره وشاربه رماديان. بما أنه ظاهر من الخلف وبشكل ضبابي فالأمر مقبول، لكن الأدق تعديله. وجهاز التسجيل في هذه الصورة بعدادات VU حديثة، وهو يختلف عن جهاز الخمسينيات بالعين الخضراء. ويمكن اعتباره جهاز المفتش لا جهاز الحاج.
 4. **زينب:** الصورة ممتازة. صورة الحاج على الجدار بغترة وعقال على الطريقة الخليجية، والأقرب لتاجر طرابلسي في الخمسينيات طاقية حمراء أو عمامة بيضاء مع جرد.
 5. **المفتش والكيس:** ممتازة ومطابقة للسيناريو تماماً، وهي الآن الصورة المرجعية لشكل المفتش هاشم في بقية الحلقة.
+
+---
+
+# الدفعة السادسة: لحظة الزلّة، والآن دورك، والحل
+
+### اللقطة 22: عينا المفتش لحظة الزلّة (المشهد 8)
+**المدة:** 5 ثوانٍ
+```
+Extreme close-up of a grey-mustached Arab inspector in his fifties, writing in a notebook with a fountain pen. Suddenly his pen stops mid-word. His eyes slowly lift from the page and narrow slightly, his brows tighten in silent realization, he holds perfectly still. Light through window blinds falls across his face in stripes. Camera: static, with a barely perceptible push-in toward his eyes. Warm dim noir lighting, shallow depth of field, film grain, subtle realistic micro-expression. Sound: the pen scratching then stopping, a wall clock ticking, a low tense string note.
+```
+
+### اللقطة 23: المفتش أمام لوح الأدلة (المشهد 10)
+**المدة:** 10 ثوانٍ
+```
+Cinematic 1950s noir, a dark detective office at night. A man in a fedora and dark coat stands with his back to camera in front of a large evidence board covered with black and white suspect portraits and evidence photos connected by red strings. He steps slowly closer and raises his hand, touching the four suspect portraits one by one. Rain streams down the window on the left, city lights blur outside, the green banker's lamp glows in the foreground, the overhead lamp sways very slightly. Camera: slow arc around the man from behind his shoulder toward the board. All photos and labels on the board stay still and unchanged. Warm amber light, deep shadows, film grain. Sound: rain, a ticking clock, slow footsteps on wooden floor.
+```
+
+### اللقطة 24: المفتش في نصف ظل، «الآن دورك» (المشهد 10)
+**المدة:** 8 ثوانٍ
+```
+Cinematic noir portrait of a grey-mustached Arab inspector in a waistcoat and loosened tie sitting at his desk in a dark office at night, his face half lit by cold blue light from a rainy window, the illuminated clock tower behind him. He stares directly into the camera, serious and challenging, then leans forward very slightly toward the lens, as if speaking to the viewer, and holds his gaze. Raindrops slide down the window, the city lights flicker softly. Camera: very slow push-in to a close-up of his eyes. Deep shadows, film grain, realistic subtle expression. Sound: heavy rain on glass, distant clock-tower bells striking, then silence.
+```
+
+### اللقطة 25: أداة الجريمة تُكشف (الحل)
+**المدة:** 6 ثوانٍ
+```
+Close-up under the warm light of a green banker's lamp: a man's hand slowly pulls a heavy engraved brass scale weight out of a brown paper evidence bag on a dark wooden desk, lifts it into the lamplight and turns it slowly so the engraved Arabic numerals catch the light. The paper bag rustles and settles. Camera: slow push-in following the weight upward, ending on the engraved numbers. Warm golden highlights, deep black background, shallow depth of field, film grain, dramatic reveal. Sound: paper rustle, a heavy metallic clink, a deep dramatic music hit.
+```
+
+### اللقطة 26: كشف وجه القاتل (الحل)
+**المدة:** 8 ثوانٍ
+```
+Black and white 1950s film noir, night, heavy rain in a narrow arcaded souq of old Tripoli. A slim man in a grey three-piece suit, fedora and round wire-rimmed glasses walks slowly forward under a large black umbrella, rain pouring off its edges. He pauses, turns his head and glances over his shoulder down the alley, then slowly turns his cold, calculating gaze straight into the camera; a faint thin smile. Raindrops glisten on his glasses, lanterns sway, passersby with umbrellas move in the background. Camera: slow dolly backward in front of him, then stops as he looks into the lens. High contrast, deep blacks, glistening wet cobblestones, film grain. Sound: heavy rain on the umbrella, footsteps, a single clock-tower chime.
+```
+
+## ملاحظات الدفعة السادسة
+1. **لوح الأدلة (الأهم):** أسماء المتهمين خاطئة: «عادل منصور، ليلى فؤاد، الحاج سالم، مروان شريف». الصحيح: **خليل القماطي، زينب، الأسطى مصطفى، الأستاذ سليمان الفيتوري**. وبطاقة القضية تقول «القضية رقم ١٢ – سرقة الساعة والمجوهرات»، والصحيح «القضية الأولى – جريمة قتل». وفي الزاوية لوحة إنجليزية «INSPECTOR HASHEM». والأفضل أن تكون صور المتهمين على اللوح هي نفس وجوه الشخصيات التي ولّدتها، وأن تظهر زينب بغطاء الرأس الأسود كما في مشهدها. هذا اللوح هو ملخص القضية للمشاهد قبل السؤال، فيجب أن يكون دقيقاً.
+2. **عينا المفتش:** المفتش هنا يلبس **نظارة**. في بقية اللقطات لا يلبسها، والنظارة المستديرة هي علامة سليمان. ظهور المفتش بنظارة في لحظة الزلّة بالذات قد يربك المشاهد، فاحذفها بالـ Inpaint.
+3. **أداة الجريمة:** الصنجة مكتوب عليها «١٠٠ غرام»، وهذا وزن خفيف لا يقتل. اجعلها «١ كيلو» أو «٥٠٠ غرام». وعلى الكيس تاريخ «٢٠٢٥/٤/١٤»، والصحيح ١٤/١/١٩٥٧. ويُفضّل أن يظهر الختم الأحمر مكسوراً على الكيس.
+4. **المفتش في نصف ظل:** الصورة قوية. لكن المباني خلف برج الساعة تبدو ناطحات سحاب حديثة مضاءة، والأفضل مدينة منخفضة من الخمسينيات.
+5. **سليمان تحت المظلة:** ممتازة ومطابقة للشخصية تماماً.
