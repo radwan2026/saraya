@@ -168,6 +168,15 @@ def render_shot(i):
     if not istitle:
         src=Image.open(B+'comic/panels/'+sh['panel']+'.png').convert('RGB')
         sw_,shh=src.size; side=sh['side']
+        vid=None
+        if sh.get('video'):
+            vp=B+'comic/'+sh['video']
+            cd=float(subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',vp],capture_output=True,text=True).stdout)
+            kk=dur/cd
+            vf=f'scale={P}:{P}:flags=lanczos,'+(f'minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts={kk:.4f}*PTS,' if kk>1.03 else '')+f'fps={FPS}'
+            raw=subprocess.run(['ffmpeg','-loglevel','error','-i',vp,'-vf',vf,
+                                '-f','rawvideo','-pix_fmt','rgb24','-'],capture_output=True).stdout
+            vid=np.frombuffer(raw,np.uint8).reshape(-1,P,P,3)
         if VERT: side='U'; px,py=PX,PY
         else: px=W-M-P if side=='R' else M; py=M
         colx0=M if side=='R' else M+P+80; colx1=colx0+COLW
@@ -215,7 +224,9 @@ def render_shot(i):
             (fx0,fy0),(fx1,fy1)=sh['f']; fx=fx0+(fx1-fx0)*u; fy=fy0+(fy1-fy0)*u
             side_len=min(sw_,shh)/z
             cx=min(max(fx*sw_,side_len/2),sw_-side_len/2); cy=min(max(fy*shh,side_len/2),shh-side_len/2)
-            pan=src.transform((P,P),Image.EXTENT,(cx-side_len/2,cy-side_len/2,cx+side_len/2,cy+side_len/2),Image.BILINEAR)
+            if vid is not None: pan=Image.fromarray(vid[min(fi,len(vid)-1)])
+            else:
+                pan=src.transform((P,P),Image.EXTENT,(cx-side_len/2,cy-side_len/2,cx+side_len/2,cy+side_len/2),Image.BILINEAR)
             # rain
             if drops:
                 rl=Image.new('RGBA',(P,P),(0,0,0,0)); d=ImageDraw.Draw(rl)
