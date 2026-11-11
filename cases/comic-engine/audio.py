@@ -156,9 +156,27 @@ for f,a in((73.42,1),(110,.55),(146.83,.35),(155.56,.12)):
 dr*=(0.75+0.25*np.sin(2*np.pi*.07*t))
 dr=chunked(lambda n: np.zeros(n))+dr
 mix+=norm(dr)*.10*lv
+# ---------------- voice-over (recorded narrator) ----------------
+import json, os
+VO='/tmp/claude-0/-home-user-saraya/5ff36b23-2257-528a-8aa2-85aceb2b057c/scratchpad/vo/'
+if os.path.exists('vo_place.json'):
+    with wave.open(VO+'vo.wav') as w: vo=np.frombuffer(w.readframes(w.getnframes()),np.int16).astype(float)/32768
+    vtrack=np.zeros(N); pres=np.zeros(N)
+    for si,off,a,e in json.load(open('vo_place.json')):
+        a0=max(0,int((a-0.04)*SR)); e0=int((e+0.12)*SR); seg=vo[a0:e0].copy()
+        f=int(0.01*SR); seg[:f]*=np.linspace(0,1,f); seg[-f:]*=np.linspace(1,0,f)
+        i=int((starts[si]+off-0.04)*SR); seg=seg[:N-i]; vtrack[i:i+len(seg)]+=seg; pres[i:i+len(seg)]=1
+    duck=1-0.55*np.clip(smooth(pres,int(0.35*SR)),0,1)
+    bed_peak=np.percentile(np.abs(mix),99.9)+1e-9
+    mix=mix/bed_peak*0.55*duck
+    mix+=vtrack/(np.abs(vtrack).max()+1e-9)*0.95
+    mix=np.tanh(mix*1.1)*0.93
+    VODONE=True
+else: VODONE=False
 # master
 fade=np.ones(N); fade[:int(.5*SR)]=np.linspace(0,1,int(.5*SR)); fade[-int(2*SR):]=np.linspace(1,0,int(2*SR))
-mix*=fade; mix=np.tanh(mix/ (np.percentile(np.abs(mix),99.9)+1e-9)*0.8)*0.92
+mix*=fade
+if not VODONE: mix=np.tanh(mix/ (np.percentile(np.abs(mix),99.9)+1e-9)*0.8)*0.92
 st=np.stack([mix,np.roll(mix,int(.0007*SR))*.97],1)  # slight width
 st=(st[:int(TOT*SR)]*32767).astype(np.int16)
 with wave.open('audio.wav','wb') as w: w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())
