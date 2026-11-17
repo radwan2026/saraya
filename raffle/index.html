@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سحب مخيم المدار — رالي تي تي بودان 2027</title>
+<meta name="description" content="سجّل للدخول في السحب على إقامة مجانية ضمن مخيم المدار في رالي تي تي بودان 2027">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6efe4;
+    --card: #ffffff;
+    --ink: #2b1d12;
+    --muted: #7a6656;
+    --accent: #c4561c;
+    --accent-ink: #ffffff;
+    --line: #e6d8c6;
+    --error: #b42318;
+    --ok: #1e7a46;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Tajawal", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 80% -10%, #f2c98f 0, transparent 45%),
+      linear-gradient(180deg, var(--bg) 0%, #ead9c0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px -20px rgba(80, 40, 10, .35);
+    overflow: hidden;
+  }
+  .hero {
+    background: linear-gradient(135deg, #c4561c, #8a3410);
+    color: #fff;
+    padding: 28px 24px 24px;
+    text-align: center;
+  }
+  .hero .tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    background: rgba(255,255,255,.18);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .hero h1 { margin: 0 0 6px; font-size: 26px; font-weight: 800; line-height: 1.35; }
+  .hero p { margin: 0; font-size: 15px; opacity: .92; line-height: 1.6; }
+  form, .done { padding: 24px; }
+  label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+  .field { margin-bottom: 18px; }
+  input {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 13px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: #fffdf9;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s;
+  }
+  input:focus { border-color: var(--accent); }
+  input[type="tel"] { direction: ltr; text-align: right; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 5px; }
+  .err { font-size: 13px; color: var(--error); margin-top: 5px; min-height: 0; }
+  input.bad { border-color: var(--error); }
+  button {
+    width: 100%;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 800;
+    padding: 14px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    cursor: pointer;
+  }
+  button:disabled { opacity: .6; cursor: wait; }
+  .msg { margin-top: 14px; text-align: center; font-size: 14px; color: var(--error); }
+  .done { text-align: center; display: none; }
+  .done .icon { font-size: 54px; }
+  .done h2 { margin: 8px 0; color: var(--ok); }
+  .done p { color: var(--muted); line-height: 1.7; }
+  .hp { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); opacity: 0; pointer-events: none; }
+  html { background: #ead9c0; overflow-x: hidden; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 0 24px 20px; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="hero">
+      <span class="tag">رالي تي تي بودان 2027</span>
+      <h1>ادخل السحب على إقامة مجانية</h1>
+      <p>ضمن <strong>مخيم المدار</strong> — سجّل بياناتك وبالتوفيق!</p>
+    </div>
+
+    <form id="f" novalidate>
+      <div class="field">
+        <label for="name">الاسم الثلاثي</label>
+        <input id="name" name="name" type="text" autocomplete="name" placeholder="مثال: محمد أحمد علي" required>
+        <div class="err" id="nameErr"></div>
+      </div>
+      <div class="field">
+        <label for="phone">رقم الهاتف</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05xxxxxxxx" required>
+        <div class="hint">يُستخدم للتواصل معك في حال الفوز فقط</div>
+        <div class="err" id="phoneErr"></div>
+      </div>
+      <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" id="btn">سجّلني في السحب</button>
+      <div class="msg" id="msg"></div>
+    </form>
+
+    <div class="done" id="done">
+      <div class="icon">🎉</div>
+      <h2>تم تسجيلك بنجاح!</h2>
+      <p>شكراً لمشاركتك في السحب على إقامة مجانية ضمن مخيم المدار.<br>سنتواصل مع الفائز على رقم الهاتف المسجّل.</p>
+    </div>
+
+    <footer>مخيم المدار · رالي تي تي بودان 2027</footer>
+  </main>
+
+<script>
+  // Submissions are emailed via FormSubmit (no server needed).
+  const ENDPOINT = "https://formsubmit.co/ajax/radzenrad@gmail.com";
+
+  const f = document.getElementById("f");
+  const nameEl = document.getElementById("name");
+  const phoneEl = document.getElementById("phone");
+  const btn = document.getElementById("btn");
+  const msg = document.getElementById("msg");
+
+  // Convert Arabic-Indic / Persian digits to Latin digits.
+  const toLatin = s => s.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 0x0660)
+                        .replace(/[۰-۹]/g, d => d.charCodeAt(0) - 0x06F0);
+
+  function setErr(input, el, text) {
+    el.textContent = text;
+    input.classList.toggle("bad", !!text);
+    return !text;
+  }
+
+  function validate() {
+    const name = nameEl.value.trim().replace(/\s+/g, " ");
+    const parts = name.split(" ").filter(Boolean);
+    const okName = setErr(nameEl, document.getElementById("nameErr"),
+      !name ? "الرجاء كتابة الاسم" :
+      parts.length < 3 ? "الرجاء كتابة الاسم الثلاثي (ثلاثة أسماء على الأقل)" : "");
+
+    const phone = toLatin(phoneEl.value).replace(/[\s\-()]/g, "");
+    const okPhone = setErr(phoneEl, document.getElementById("phoneErr"),
+      !phone ? "الرجاء كتابة رقم الهاتف" :
+      !/^\+?\d{8,15}$/.test(phone) ? "رقم الهاتف غير صحيح" : "");
+
+    return okName && okPhone ? { name, phone } : null;
+  }
+
+  f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    const data = validate();
+    if (!data) return;
+    if (f._honey.value) return; // bot
+
+    btn.disabled = true;
+    btn.textContent = "جارٍ الإرسال…";
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          "الاسم الثلاثي": data.name,
+          "رقم الهاتف": data.phone,
+          "وقت التسجيل": new Date().toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" }),
+          _subject: "مشارك جديد — سحب مخيم المدار، رالي تي تي بودان 2027",
+          _template: "table",
+          _captcha: "false"
+        })
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || out.success === "false" || out.success === false) throw new Error(out.message || res.status);
+      f.style.display = "none";
+      document.getElementById("done").style.display = "block";
+    } catch (err) {
+      msg.textContent = "تعذّر الإرسال، تأكد من الاتصال بالإنترنت وحاول مرة أخرى.";
+      btn.disabled = false;
+      btn.textContent = "سجّلني في السحب";
+    }
+  });
+</script>
+</body>
+</html>
