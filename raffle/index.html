@@ -139,6 +139,7 @@
 <script>
   // Submissions are emailed via FormSubmit (no server needed).
   const ENDPOINT = "https://formsubmit.co/ajax/radzenrad@gmail.com";
+  const FALLBACK_ENDPOINT = "https://formsubmit.co/radzenrad@gmail.com";
 
   const f = document.getElementById("f");
   const nameEl = document.getElementById("name");
@@ -180,29 +181,58 @@
 
     btn.disabled = true;
     btn.textContent = "جارٍ الإرسال…";
+
+    const payload = {
+      "الاسم الثلاثي": data.name,
+      "رقم الهاتف": data.phone,
+      "وقت التسجيل": new Date().toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" }),
+      _subject: "مشارك جديد — سحب مخيم المدار، رالي تي تي بودان 2027",
+      _template: "table",
+      _captcha: "false"
+    };
+
+    // Try a background send with a timeout; if it stalls or fails,
+    // fall back to a normal form POST, which always goes through.
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15000);
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          "الاسم الثلاثي": data.name,
-          "رقم الهاتف": data.phone,
-          "وقت التسجيل": new Date().toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" }),
-          _subject: "مشارك جديد — سحب مخيم المدار، رالي تي تي بودان 2027",
-          _template: "table",
-          _captcha: "false"
-        })
+        body: JSON.stringify(payload),
+        signal: ctrl.signal
       });
+      clearTimeout(timer);
       const out = await res.json().catch(() => ({}));
       if (!res.ok || out.success === "false" || out.success === false) throw new Error(out.message || res.status);
-      f.style.display = "none";
-      document.getElementById("done").style.display = "block";
+      showDone();
     } catch (err) {
-      msg.textContent = "تعذّر الإرسال، تأكد من الاتصال بالإنترنت وحاول مرة أخرى.";
-      btn.disabled = false;
-      btn.textContent = "سجّلني في السحب";
+      clearTimeout(timer);
+      nativeSubmit(payload);
     }
   });
+
+  function showDone() {
+    f.style.display = "none";
+    document.getElementById("done").style.display = "block";
+  }
+
+  function nativeSubmit(payload) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = FALLBACK_ENDPOINT;
+    const next = location.origin + location.pathname + "?done=1";
+    Object.entries({ ...payload, _next: next }).forEach(([k, v]) => {
+      const i = document.createElement("input");
+      i.type = "hidden"; i.name = k; i.value = v;
+      form.appendChild(i);
+    });
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  // Returning from the fallback submission.
+  if (new URLSearchParams(location.search).get("done") === "1") showDone();
 </script>
 </body>
 </html>
