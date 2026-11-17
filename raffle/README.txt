@@ -3,7 +3,7 @@
 
 محتويات الملف:
 - index.html   : صفحة النموذج (الاسم الثلاثي + رقم الهاتف)
-- qr-code.png  : رمز QR للطباعة (يفتح https://radwan2026.github.io/saraya/raffle/)
+- qr-code.png  : رمز QR للطباعة (يفتح https://magnificent-beijinho-0760f9.netlify.app)
 - qr-code.svg  : رمز QR بصيغة متجهة للمطابع
 
 كل تسجيل يُرسل تلقائياً إلى: radzenrad@gmail.com
